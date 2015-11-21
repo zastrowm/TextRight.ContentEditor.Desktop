@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRight.ContentEditor.Desktop", "TextRight.ContentEditor.Desktop\TextRight.ContentEditor.Desktop.csproj", "{D5A1D3D7-CAA8-4460-8F22-221ECF74FEE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRight.ContentEditor.Desktop.Tests", "TextRight.ContentEditor.Desktop.Tests\TextRight.ContentEditor.Desktop.Tests.csproj", "{B29C2A71-0F34-4B6E-AEC4-4D0ACCECD8EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5A1D3D7-CAA8-4460-8F22-221ECF74FEE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5A1D3D7-CAA8-4460-8F22-221ECF74FEE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5A1D3D7-CAA8-4460-8F22-221ECF74FEE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5A1D3D7-CAA8-4460-8F22-221ECF74FEE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B29C2A71-0F34-4B6E-AEC4-4D0ACCECD8EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B29C2A71-0F34-4B6E-AEC4-4D0ACCECD8EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B29C2A71-0F34-4B6E-AEC4-4D0ACCECD8EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B29C2A71-0F34-4B6E-AEC4-4D0ACCECD8EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
