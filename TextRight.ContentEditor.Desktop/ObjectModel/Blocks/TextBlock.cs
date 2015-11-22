@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Desktop.Blocks
+namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
@@ -74,7 +74,7 @@ namespace TextRight.ContentEditor.Desktop.Blocks
       => _spans.GetEnumerator();
 
     /// <inheritdoc/>
-    IEnumerator IEnumerable.GetEnumerator() 
+    IEnumerator IEnumerable.GetEnumerator()
       => GetEnumerator();
   }
 }

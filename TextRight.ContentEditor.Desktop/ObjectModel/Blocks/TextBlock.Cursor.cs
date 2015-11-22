@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Desktop.Blocks
+namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
   /// <summary> A text block. </summary>
   public partial class TextBlock
@@ -31,7 +31,7 @@ namespace TextRight.ContentEditor.Desktop.Blocks
 
       /// <summary> Get the character before the current cursor position. </summary>
       public char CharacterBefore
-       => _offsetIntoSpan != 0 ? _span.Text[_offsetIntoSpan - 1] : '\0';
+        => _offsetIntoSpan != 0 ? _span.Text[_offsetIntoSpan - 1] : '\0';
 
       /// <inheritdoc />
       public void MoveToBeginning()

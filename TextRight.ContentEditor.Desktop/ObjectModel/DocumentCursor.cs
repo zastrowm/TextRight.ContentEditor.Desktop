@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Desktop.Blocks
 {

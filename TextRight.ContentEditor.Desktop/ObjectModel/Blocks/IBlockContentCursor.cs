@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Desktop.Blocks
+namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
   /// <summary> A cursor that can move through a specific type of block. </summary>
   public interface IBlockContentCursor

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Desktop.Blocks;
+using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Desktop.Tests
 {

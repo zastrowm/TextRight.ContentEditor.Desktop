@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Desktop.Blocks
+namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
   /// <summary>
   ///  Contains a span of single run of text that is styled or has some sort of other data

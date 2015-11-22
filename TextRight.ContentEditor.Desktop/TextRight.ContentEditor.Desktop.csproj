@@ -62,16 +62,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Blocks\Block.cs" />
-    <Compile Include="Blocks\BlockCollection.cs" />
-    <Compile Include="Blocks\BlockTreeWalker.cs" />
-    <Compile Include="Blocks\BlockType.cs" />
-    <Compile Include="Blocks\DocumentCursor.cs" />
-    <Compile Include="Blocks\DocumentOwner.cs" />
-    <Compile Include="Blocks\IBlockContentCursor.cs" />
-    <Compile Include="Blocks\TextBlock.Cursor.cs" />
-    <Compile Include="Blocks\TextBlock.cs" />
-    <Compile Include="Blocks\TextSpan.cs" />
+    <Compile Include="ObjectModel\Blocks\Block.cs" />
+    <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
+    <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
+    <Compile Include="ObjectModel\Blocks\BlockType.cs" />
+    <Compile Include="ObjectModel\DocumentCursor.cs" />
+    <Compile Include="ObjectModel\DocumentOwner.cs" />
+    <Compile Include="ObjectModel\Blocks\IBlockContentCursor.cs" />
+    <Compile Include="ObjectModel\Blocks\TextBlock.Cursor.cs" />
+    <Compile Include="ObjectModel\Blocks\TextBlock.cs" />
+    <Compile Include="ObjectModel\Blocks\TextSpan.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

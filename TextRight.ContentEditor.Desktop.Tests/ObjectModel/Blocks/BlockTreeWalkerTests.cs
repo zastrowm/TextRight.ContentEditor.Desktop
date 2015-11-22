@@ -2,19 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using TextRight.ContentEditor.Desktop.Blocks;
+using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Desktop.Tests
+namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
 {
   public class BlockTreeWalkerTests
   {
-    static Block a, a1, a11, a12, a13, b, b1, b11, b12, b111, c;
-    private static Block nullBlock = null;
+    private static Block a;
+    private static Block a1;
+    private static Block a11;
+    private static Block a12;
+    private static Block a13;
+    private static Block b;
+    private static Block b1;
+    private static Block b11;
+    private static Block b12;
+    private static Block b111;
+    private static Block c;
+    private static readonly Block nullBlock = null;
 
-    static BlockCollection collection = new BlockCollection()
+    private static BlockCollection collection = new BlockCollection()
     {
       (a = new BlockCollection()
       {

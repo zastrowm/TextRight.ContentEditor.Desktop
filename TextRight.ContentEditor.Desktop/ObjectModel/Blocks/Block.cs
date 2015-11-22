@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Desktop.Blocks
+namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
   /// <summary>
   ///   Represents a top-level block.
