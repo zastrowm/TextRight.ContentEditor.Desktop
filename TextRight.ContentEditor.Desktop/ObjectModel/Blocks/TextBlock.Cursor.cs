@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Desktop.Blocks;
 
 namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
@@ -97,6 +98,41 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
         _offsetIntoSpan = _span.Length;
 
         return true;
+      }
+
+      /// <inheritdoc/>
+      public ISerializedBlockCursor Serialize()
+        => new SerializedData(this);
+
+      public void InsertText(string text)
+      {
+        _span.Text = _span.Text.Insert(_offsetIntoSpan, text);
+        _offsetIntoSpan += text.Length;
+      }
+
+      /// <summary> The cursor's serialized data. </summary>
+      private class SerializedData : ISerializedBlockCursor
+      {
+        private readonly int _spanId;
+        private readonly int _offset;
+        private readonly BlockPath _path;
+
+        public SerializedData(TextBlockCursor cursor)
+        {
+          _spanId = cursor._span.Index;
+          _offset = cursor._offsetIntoSpan;
+          _path = cursor.Block.GetBlockPath();
+        }
+
+        public IBlockContentCursor Deserialize(DocumentOwner owner)
+        {
+          var block = ((TextBlock)owner.Root.GetBlockFromPath(_path));
+          return new TextBlockCursor(block)
+          {
+            _offsetIntoSpan = _offset,
+            _span = block.GetSpanAtIndex(_spanId),
+          };
+        }
       }
     }
   }

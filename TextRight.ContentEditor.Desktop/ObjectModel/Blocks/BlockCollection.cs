@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
@@ -77,6 +78,24 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     /// <summary> Get the last block in the collection. </summary>
     public Block LastBlock
       => _childrenCollection[_childrenCollection.Count - 1];
+
+    /// <summary> Get the block in the hierarchy from the given block path. </summary>
+    /// <param name="path"> The path to the block to retrieve. </param>
+    /// <returns> The block from path. </returns>
+    public Block GetBlockFromPath(BlockPath path)
+    {
+      BlockCollection collection = this;
+      Block block = null;
+
+      for (int i = path.Ids.Length - 1; i >= 0; i--)
+      {
+        Debug.Assert(collection != null);
+        block = collection._childrenCollection[i];
+        collection = block as BlockCollection;
+      }
+
+      return block;
+    }
 
     /// <inheritdoc/>
     public override IBlockContentCursor GetCursor()

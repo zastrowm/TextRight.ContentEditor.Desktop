@@ -41,5 +41,29 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     /// <summary> Gets a block-specific iterator. </summary>
     /// <returns> An iterate that can move through the block. </returns>
     public abstract IBlockContentCursor GetCursor();
+
+    /// <summary> Get the path down to this block in the document. </summary>
+    /// <returns> The path to the block in the hierarchy </returns>
+    public BlockPath GetBlockPath()
+    {
+      var ids = new List<int>();
+      var block = this;
+
+      while (block != null)
+      {
+        ids.Add(block.Index);
+        block = block.Parent;
+      }
+
+      return new BlockPath
+      {
+        Ids = ids.ToArray(),
+      };
+    }
+  }
+
+  public struct BlockPath
+  {
+    public int[] Ids;
   }
 }

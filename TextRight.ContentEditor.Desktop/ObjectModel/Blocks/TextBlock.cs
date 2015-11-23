@@ -77,5 +77,16 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator()
       => GetEnumerator();
+
+    /// <summary> Retrieves the span at the given index. </summary>
+    /// <param name="spanIndex"> The zero-based index of the span to retrieve. </param>
+    /// <returns> The span at the given index. </returns>
+    private TextSpan GetSpanAtIndex(int spanIndex)
+    {
+      if (spanIndex < 0 || spanIndex >= _spans.Count)
+        throw new ArgumentOutOfRangeException(nameof(spanIndex), spanIndex, $"Number of spans: {_spans.Count}");
+
+      return _spans[spanIndex];
+    }
   }
 }

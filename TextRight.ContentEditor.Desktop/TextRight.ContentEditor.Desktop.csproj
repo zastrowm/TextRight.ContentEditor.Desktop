@@ -58,6 +58,8 @@
     <Compile Include="View\DocumentEditor.xaml.cs">
       <DependentUpon>DocumentEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\DocumentEditorBridge.cs" />
+    <Compile Include="View\TextSpanViewRun.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

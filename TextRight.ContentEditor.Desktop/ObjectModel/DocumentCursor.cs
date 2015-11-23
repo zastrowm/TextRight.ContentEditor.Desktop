@@ -25,12 +25,12 @@ namespace TextRight.ContentEditor.Desktop.Blocks
     /// <summary> Moves the cursor forward within its current block. </summary>
     /// <returns> True if the cursor moved forward, false if it did not move forward. </returns>
     public bool MoveForwardInBlock()
-      => _blockCursor.MoveBackward();
+      => _blockCursor.MoveForward();
 
     /// <summary> Moves the cursor backward within its current block. </summary>
     /// <returns> True if the cursor moved backward false if it did not move backward. </returns>
     public bool MoveBackwardInBlock()
-      => _blockCursor.MoveForward();
+      => _blockCursor.MoveBackward();
 
     /// <summary> Move the cursor forward in the document. </summary>
     /// <returns> True if the cursor was moved forward, false otherwise. </returns>
@@ -70,6 +70,14 @@ namespace TextRight.ContentEditor.Desktop.Blocks
       _blockCursor = nextCursor;
 
       return true;
+    }
+
+    // TODO this should be somewhere else
+    /// <summary> Inserts text at the given cursor location. </summary>
+    /// <param name="text"> The text to insert. </param>
+    public void InsertText(string text)
+    {
+      _blockCursor.InsertText(text);
     }
   }
 }
