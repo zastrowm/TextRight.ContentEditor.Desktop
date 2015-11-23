@@ -16,6 +16,18 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     public TextBlock()
     {
       _spans = new List<TextSpan>();
+      AppendSpan(new TextSpan(""));
+    }
+
+    /// <summary> Appends the given span to the TextBlock. </summary>
+    /// <param name="span"> The span to add. </param>
+    public void AppendSpan(TextSpan span)
+    {
+      span.Index = _spans.Count;
+      span.Parent = this;
+      _spans.Add(span);
+
+      // TODO add child to element tree
     }
 
     /// <summary> Removes the given span from the text block. </summary>
@@ -48,17 +60,6 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       {
         _spans[i].Index = i;
       }
-    }
-
-    /// <summary> Appends the given span to the TextBlock. </summary>
-    /// <param name="span"> The span to add. </param>
-    public void AppendSpan(TextSpan span)
-    {
-      span.Index = _spans.Count;
-      span.Parent = this;
-      _spans.Add(span);
-
-      // TODO add child to element tree
     }
 
     /// <inheritdoc/>

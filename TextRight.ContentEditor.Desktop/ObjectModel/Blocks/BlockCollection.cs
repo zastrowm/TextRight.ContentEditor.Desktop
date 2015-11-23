@@ -14,6 +14,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     public BlockCollection()
     {
       _childrenCollection = new List<Block>();
+      Append(new TextBlock());
     }
 
     /// <summary> The blocks that exist in the collection. </summary>
