@@ -8,29 +8,30 @@ namespace TextRight.ContentEditor.Desktop.Blocks
   /// <summary> Holds a specific spot in the document. </summary>
   public class DocumentCursor
   {
-    private IBlockContentCursor _blockCursor;
-
     /// <summary> Constructor. </summary>
     /// <param name="owner"> The Document that owns the given cursor. </param>
     /// <param name="blockCursor"> The block cursor. </param>
     public DocumentCursor(DocumentOwner owner, IBlockContentCursor blockCursor)
     {
       Owner = owner;
-      _blockCursor = blockCursor;
+      BlockCursor = blockCursor;
     }
 
     /// <summary> The Document that owns the given cursor. </summary>
     public DocumentOwner Owner { get; }
 
+    /// <summary> The cursor that points to the content within the block. </summary>
+    public IBlockContentCursor BlockCursor { get; private set; }
+
     /// <summary> Moves the cursor forward within its current block. </summary>
     /// <returns> True if the cursor moved forward, false if it did not move forward. </returns>
     public bool MoveForwardInBlock()
-      => _blockCursor.MoveForward();
+      => BlockCursor.MoveForward();
 
     /// <summary> Moves the cursor backward within its current block. </summary>
     /// <returns> True if the cursor moved backward false if it did not move backward. </returns>
     public bool MoveBackwardInBlock()
-      => _blockCursor.MoveBackward();
+      => BlockCursor.MoveBackward();
 
     /// <summary> Move the cursor forward in the document. </summary>
     /// <returns> True if the cursor was moved forward, false otherwise. </returns>
@@ -39,7 +40,7 @@ namespace TextRight.ContentEditor.Desktop.Blocks
       if (MoveForwardInBlock())
         return true;
 
-      var block = _blockCursor.Block;
+      var block = BlockCursor.Block;
       var nextBlock = BlockTreeWalker.GetNextNonContainerBlock(block);
 
       if (nextBlock == null)
@@ -47,7 +48,7 @@ namespace TextRight.ContentEditor.Desktop.Blocks
 
       var nextCursor = nextBlock.GetCursor();
       nextCursor.MoveToBeginning();
-      _blockCursor = nextCursor;
+      BlockCursor = nextCursor;
 
       return true;
     }
@@ -59,7 +60,7 @@ namespace TextRight.ContentEditor.Desktop.Blocks
       if (MoveBackwardInBlock())
         return true;
 
-      var block = _blockCursor.Block;
+      var block = BlockCursor.Block;
       var previousBlock = BlockTreeWalker.GetPreviousNonContainerBlock(block);
 
       if (previousBlock == null)
@@ -67,7 +68,7 @@ namespace TextRight.ContentEditor.Desktop.Blocks
 
       var nextCursor = previousBlock.GetCursor();
       nextCursor.MoveToBeginning();
-      _blockCursor = nextCursor;
+      BlockCursor = nextCursor;
 
       return true;
     }
@@ -77,7 +78,7 @@ namespace TextRight.ContentEditor.Desktop.Blocks
     /// <param name="text"> The text to insert. </param>
     public void InsertText(string text)
     {
-      _blockCursor.InsertText(text);
+      BlockCursor.InsertText(text);
     }
   }
 }

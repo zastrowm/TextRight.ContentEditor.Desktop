@@ -16,7 +16,7 @@ namespace TextRight.ContentEditor.Desktop.View
   {
     private readonly FlowDocument _flowDocument;
     private readonly DocumentOwner _document;
-    private readonly DocumentCursor _cursor;
+    public DocumentCursor Cursor { get; }
 
     public DocumentEditorBridge(FlowDocument flowDocument, DocumentOwner document)
     {
@@ -31,7 +31,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
       var cursor = _document.Root.FirstBlock.GetCursor();
       cursor.MoveToBeginning();
-      _cursor = new DocumentCursor(_document, cursor);
+      Cursor = new DocumentCursor(_document, cursor);
     }
 
     public void HandleKeyDown(Key key)
@@ -39,17 +39,17 @@ namespace TextRight.ContentEditor.Desktop.View
       switch (key)
       {
         case Key.Left:
-          _cursor.MoveBackwardInBlock();
+          Cursor.MoveBackwardInBlock();
           break;
         case Key.Right:
-          _cursor.MoveForwardInBlock();
+          Cursor.MoveForwardInBlock();
           break;
       }
     }
 
     public void InsertText(string text)
     {
-      _cursor.InsertText(text);
+      Cursor.InsertText(text);
     }
   }
 }

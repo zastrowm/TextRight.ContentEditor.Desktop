@@ -1,14 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Desktop.Utilities;
 
 namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
+  /// <summary> Hosts the view for the TextSpan. </summary>
+  public interface ITextSpanResponder
+  {
+    /// <summary> Invoked when the TextSpan's text changes. </summary>
+    /// <param name="span"> The span whose text has changed. </param>
+    void TextUpdated(TextSpan span);
+
+    /// <summary> Measures the text at the given location. </summary>
+    /// <param name="offset"> The offset at which the text should be measured. </param>
+    MeasuredRectangle Measure(int offset);
+  }
+
   /// <summary>
   ///  Contains a span of single run of text that is styled or has some sort of other data
   ///  associated with it.
   /// </summary>
-  public class TextSpan : DocumentElement<TextSpan.ChangeType>
+  public class TextSpan
   {
     /// <summary> Default constructor. </summary>
     public TextSpan(string text)
@@ -30,7 +43,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       internal set
       {
         _text = value;
-        Notify(ChangeType.TextChanged);
+        Target?.TextUpdated(this);
       }
     }
 
@@ -40,16 +53,14 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     public int Length
       => Text.Length;
 
-    /// <summary> The various types of changes that can occur in a TextSpan. </summary>
-    public enum ChangeType
+    public MeasuredRectangle Measure(int offset)
     {
-      /// <summary> The text has changed. </summary>
-      TextChanged,
-
-      /// <summary>
-      ///  The style that the TextSpan is using has changed.
-      /// </summary>
-      StyleChanged,
+      return Target.Measure(offset);
     }
+
+    /// <summary>
+    ///  The object that receives all notifications of changes from this instance.
+    /// </summary>
+    public ITextSpanResponder Target { get; set; }
   }
 }

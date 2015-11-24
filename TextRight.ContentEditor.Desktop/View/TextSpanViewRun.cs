@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Documents;
-using TextRight.ContentEditor.Desktop.ObjectModel;
 using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
+using TextRight.ContentEditor.Desktop.Utilities;
 
 namespace TextRight.ContentEditor.Desktop.View
 {
   /// <summary>
   ///  Associates a WPF Run with a TextSpan and keeps them in sync.
   /// </summary>
-  public class TextSpanViewRun : Run, INotifee<TextSpan.ChangeType>
+  public class TextSpanViewRun : Run, ITextSpanResponder
   {
     private readonly TextSpan _span;
 
@@ -19,21 +19,27 @@ namespace TextRight.ContentEditor.Desktop.View
     public TextSpanViewRun(TextSpan span)
     {
       _span = span;
-      _span.AssociatedNotifiee = this;
+      _span.Target = this;
     }
 
-    public void MarkChange(DocumentElement<TextSpan.ChangeType> element, TextSpan.ChangeType changeType)
+    /// <inheritdoc/>
+    public void TextUpdated(TextSpan span)
     {
-      switch (changeType)
+      Text = _span.Text;
+    }
+
+    /// <inheritdoc/>
+    public MeasuredRectangle Measure(int offset)
+    {
+      // TODO Debug/Assert not null
+      var rect = ContentStart.GetPositionAtOffset(offset).GetCharacterRect(LogicalDirection.Forward);
+      return new MeasuredRectangle()
       {
-        case TextSpan.ChangeType.TextChanged:
-          Text = _span.Text;
-          break;
-        case TextSpan.ChangeType.StyleChanged:
-          break;
-        default:
-          throw new ArgumentOutOfRangeException(nameof(changeType), changeType, null);
-      }
+        X = rect.X,
+        Y = rect.Y,
+        Width = rect.Width,
+        Height = rect.Height
+      };
     }
   }
 }
