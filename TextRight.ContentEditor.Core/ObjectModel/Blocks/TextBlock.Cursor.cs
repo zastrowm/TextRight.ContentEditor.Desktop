@@ -23,7 +23,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       /// <summary>
       ///  The span that the cursor is currently pointing towards.
       /// </summary>
-      public TextSpan Span { get; private set; }
+      public StyledTextSpan Span { get; private set; }
 
       /// <summary>
       ///  The offset into <see cref="Span"/> where this cursor is pointing.

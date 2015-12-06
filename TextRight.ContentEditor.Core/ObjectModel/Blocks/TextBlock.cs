@@ -5,23 +5,28 @@ using System.Linq;
 
 namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
+  /// <summary> Hosts the view for the TextBlock. </summary>
+  public interface ITextBlockView
+  {
+  }
+
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
   /// </summary>
-  public partial class TextBlock : Block, IEnumerable<TextSpan>
+  public partial class TextBlock : Block, IEnumerable<StyledTextSpan>
   {
-    private readonly List<TextSpan> _spans;
+    private readonly List<StyledTextSpan> _spans;
 
     /// <summary> Default constructor. </summary>
     public TextBlock()
     {
-      _spans = new List<TextSpan>();
-      AppendSpan(new TextSpan(""));
+      _spans = new List<StyledTextSpan>();
+      AppendSpan(new StyledTextSpan(""));
     }
 
     /// <summary> Appends the given span to the TextBlock. </summary>
     /// <param name="span"> The span to add. </param>
-    public void AppendSpan(TextSpan span)
+    public void AppendSpan(StyledTextSpan span)
     {
       span.Index = _spans.Count;
       span.Parent = this;
@@ -32,7 +37,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 
     /// <summary> Removes the given span from the text block. </summary>
     /// <param name="span"> The span to remove. </param>
-    public void RemoveSpan(TextSpan span)
+    public void RemoveSpan(StyledTextSpan span)
     {
       var originalIndex = span.Index;
 
@@ -71,7 +76,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       => BlockType.TextBlock;
 
     /// <inheritdoc/>
-    public IEnumerator<TextSpan> GetEnumerator()
+    public IEnumerator<StyledTextSpan> GetEnumerator()
       => _spans.GetEnumerator();
 
     /// <inheritdoc/>
@@ -81,7 +86,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     /// <summary> Retrieves the span at the given index. </summary>
     /// <param name="spanIndex"> The zero-based index of the span to retrieve. </param>
     /// <returns> The span at the given index. </returns>
-    private TextSpan GetSpanAtIndex(int spanIndex)
+    private StyledTextSpan GetSpanAtIndex(int spanIndex)
     {
       if (spanIndex < 0 || spanIndex >= _spans.Count)
         throw new ArgumentOutOfRangeException(nameof(spanIndex), spanIndex, $"Number of spans: {_spans.Count}");

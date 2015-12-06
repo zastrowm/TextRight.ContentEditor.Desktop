@@ -13,7 +13,7 @@ namespace TextRight.ContentEditor.Desktop.Tests
       collection.Append(block);
     }
 
-    public static void Add(this TextBlock block, TextSpan span)
+    public static void Add(this TextBlock block, StyledTextSpan span)
     {
       block.AppendSpan(span);
     }

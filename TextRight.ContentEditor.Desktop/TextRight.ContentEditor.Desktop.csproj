@@ -54,11 +54,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="View\CaretView.cs" />
     <Compile Include="View\DocumentEditor.xaml.cs">
       <DependentUpon>DocumentEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DocumentEditorBridge.cs" />
-    <Compile Include="View\TextSpanViewRun.cs" />
+    <Compile Include="View\TextBlockView.cs" />
+    <Compile Include="View\StyledTextSpanView.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

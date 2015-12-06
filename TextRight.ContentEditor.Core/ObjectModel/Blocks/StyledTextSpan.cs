@@ -10,7 +10,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
   {
     /// <summary> Invoked when the TextSpan's text changes. </summary>
     /// <param name="span"> The span whose text has changed. </param>
-    void TextUpdated(TextSpan span);
+    void TextUpdated(StyledTextSpan span);
 
     /// <summary> Measures the text at the given location. </summary>
     /// <param name="offset"> The offset at which the text should be measured. </param>
@@ -21,10 +21,10 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
   ///  Contains a span of single run of text that is styled or has some sort of other data
   ///  associated with it.
   /// </summary>
-  public class TextSpan
+  public class StyledTextSpan
   {
     /// <summary> Default constructor. </summary>
-    public TextSpan(string text)
+    public StyledTextSpan(string text)
     {
       Text = text;
       Index = -1;
@@ -52,11 +52,6 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     /// <summary> The number of characters in the TextSpan. </summary>
     public int Length
       => Text.Length;
-
-    public MeasuredRectangle Measure(int offset)
-    {
-      return Target.Measure(offset);
-    }
 
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.

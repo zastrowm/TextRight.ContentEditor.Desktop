@@ -2,36 +2,41 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Desktop.Blocks;
 using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
+using TextBlock = TextRight.ContentEditor.Desktop.ObjectModel.Blocks.TextBlock;
 
 namespace TextRight.ContentEditor.Desktop.View
 {
   /// <summary>
   ///  Creates an editor from a FlowDocument and associated TextRight Document.
   /// </summary>
-  public class DocumentEditorBridge
+  public class DocumentEditorContextView
   {
+    private readonly Canvas _canvas;
     private readonly FlowDocument _flowDocument;
-    private readonly DocumentOwner _document;
-    public DocumentCursor Cursor { get; }
+    private readonly DocumentEditorContext _editor;
+    private readonly CaretView _caretView;
 
-    public DocumentEditorBridge(FlowDocument flowDocument, DocumentOwner document)
+    public DocumentCursor Cursor => _editor.Caret;
+
+    public DocumentEditorContextView(Canvas canvas, FlowDocument flowDocument, DocumentEditorContext editor)
     {
+      _canvas = canvas;
       _flowDocument = flowDocument;
-      _document = document;
+      _editor = editor;
 
-      var paragraph = ((Paragraph)flowDocument.Blocks.FirstBlock);
-      var firstRun = paragraph.Inlines.FirstInline;
-      paragraph.Inlines.Remove(firstRun);
+      _caretView = new CaretView(_editor.Caret);
+      _canvas.Children.Add(_caretView.Element);
 
-      paragraph.Inlines.Add(new TextSpanViewRun(((TextBlock)_document.Root.FirstBlock).First()));
+      // clear out the existing content
+      flowDocument.Blocks.Clear();
 
-      var cursor = _document.Root.FirstBlock.GetCursor();
-      cursor.MoveToBeginning();
-      Cursor = new DocumentCursor(_document, cursor);
+      flowDocument.Blocks.Add(new TextBlockView((TextBlock)_editor.Document.Root.FirstBlock));
     }
 
     public void HandleKeyDown(Key key)
@@ -54,6 +59,11 @@ namespace TextRight.ContentEditor.Desktop.View
         return;
 
       textCursor.InsertText(text);
+    }
+
+    public void UpdateCaretPosition()
+    {
+      _caretView.SyncPosition();
     }
   }
 }

@@ -16,8 +16,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\IBlockContentCursor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\TextBlock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\TextBlock.Cursor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\TextSpan.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\StyledTextSpan.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\DocumentCursor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\DocumentEditorContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\DocumentOwner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\MeasuredRectangle.cs" />
   </ItemGroup>
