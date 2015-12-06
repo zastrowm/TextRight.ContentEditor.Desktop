@@ -9,7 +9,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
   public partial class TextBlock
   {
     /// <summary> Iterates a TextBlock. </summary>
-    internal class TextBlockCursor : IBlockContentCursor
+    internal class TextBlockCursor : IBlockContentCursor, ITextContentCursor
     {
       private readonly TextBlock _block;
 
@@ -112,10 +112,17 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       public ISerializedBlockCursor Serialize()
         => new SerializedData(this);
 
-      public void InsertText(string text)
+      /// <inheritdoc/>
+      void ITextContentCursor.InsertText(string text)
       {
         Span.Text = Span.Text.Insert(OffsetIntoSpan, text);
         OffsetIntoSpan += text.Length;
+      }
+
+      /// <inheritdoc/>
+      bool ITextContentCursor.CanInsertText()
+      {
+        return true;
       }
 
       /// <summary> The cursor's serialized data. </summary>
@@ -136,10 +143,10 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
         {
           var block = ((TextBlock)owner.Root.GetBlockFromPath(_path));
           return new TextBlockCursor(block)
-          {
-            OffsetIntoSpan = _offset,
-            Span = block.GetSpanAtIndex(_spanId),
-          };
+                 {
+                   OffsetIntoSpan = _offset,
+                   Span = block.GetSpanAtIndex(_spanId),
+                 };
         }
       }
     }

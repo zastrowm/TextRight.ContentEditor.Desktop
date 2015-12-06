@@ -5,6 +5,20 @@ using TextRight.ContentEditor.Desktop.Blocks;
 
 namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
+  /// <summary>
+  ///  A <see cref="IBlockContentCursor"/> that allows the user to insert text.
+  /// </summary>
+  public interface ITextContentCursor
+  {
+    /// <summary> Inserts a text described by text. </summary>
+    /// <param name="text"> The text. </param>
+    void InsertText(string text);
+
+    /// <summary> True if the user can currently insert text. </summary>
+    /// <returns> true if we can insert text, false if not. </returns>
+    bool CanInsertText();
+  }
+
   /// <summary> A cursor that can move through a specific type of block. </summary>
   public interface IBlockContentCursor
   {
@@ -32,8 +46,6 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     ///  An ISerializedBlockCursor that represents the serialized cursor.
     /// </returns>
     ISerializedBlockCursor Serialize();
-
-    void InsertText(string text);
   }
 
   /// <summary> Saved data that can be turned back into a IBlockContentCursor. </summary>

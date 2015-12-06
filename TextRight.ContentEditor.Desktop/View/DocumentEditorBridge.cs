@@ -49,7 +49,11 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public void InsertText(string text)
     {
-      Cursor.InsertText(text);
+      var textCursor = Cursor.BlockCursor as ITextContentCursor;
+      if (textCursor?.CanInsertText() != true)
+        return;
+
+      textCursor.InsertText(text);
     }
   }
 }

@@ -72,13 +72,5 @@ namespace TextRight.ContentEditor.Desktop.Blocks
 
       return true;
     }
-
-    // TODO this should be somewhere else
-    /// <summary> Inserts text at the given cursor location. </summary>
-    /// <param name="text"> The text to insert. </param>
-    public void InsertText(string text)
-    {
-      BlockCursor.InsertText(text);
-    }
   }
 }
