@@ -13,9 +13,9 @@ namespace TextRight.ContentEditor.Desktop.Tests
       collection.Append(block);
     }
 
-    public static void Add(this TextBlock block, StyledTextSpan span)
+    public static void Add(this TextBlock block, StyledTextFragment fragment)
     {
-      block.AppendSpan(span);
+      block.AppendSpan(fragment);
     }
 
     /// <summary>

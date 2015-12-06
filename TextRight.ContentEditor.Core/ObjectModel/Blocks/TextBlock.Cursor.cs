@@ -23,10 +23,10 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       /// <summary>
       ///  The span that the cursor is currently pointing towards.
       /// </summary>
-      public StyledTextSpan Span { get; private set; }
+      public StyledTextFragment Fragment { get; private set; }
 
       /// <summary>
-      ///  The offset into <see cref="Span"/> where this cursor is pointing.
+      ///  The offset into <see cref="Fragment"/> where this cursor is pointing.
       /// </summary>
       public int OffsetIntoSpan { get; private set; }
 
@@ -36,31 +36,31 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 
       /// <summary> Get the character after the current cursor position. </summary>
       public char CharacterAfter
-        => OffsetIntoSpan != Span.Length ? Span.Text[OffsetIntoSpan] : '\0';
+        => OffsetIntoSpan != Fragment.Length ? Fragment.Text[OffsetIntoSpan] : '\0';
 
       /// <summary> Get the character before the current cursor position. </summary>
       public char CharacterBefore
-        => OffsetIntoSpan != 0 ? Span.Text[OffsetIntoSpan - 1] : '\0';
+        => OffsetIntoSpan != 0 ? Fragment.Text[OffsetIntoSpan - 1] : '\0';
 
       /// <inheritdoc />
       public void MoveToBeginning()
       {
-        Span = _block._spans[0];
+        Fragment = _block._spans[0];
         OffsetIntoSpan = 0;
       }
 
       /// <inheritdoc />
       public void MoveToEnd()
       {
-        Span = _block._spans[_block._spans.Count - 1];
-        OffsetIntoSpan = Span.Length;
+        Fragment = _block._spans[_block._spans.Count - 1];
+        OffsetIntoSpan = Fragment.Length;
       }
 
       /// <inheritdoc />
       public bool MoveForward()
       {
         // we move right to end of the span
-        if (OffsetIntoSpan < Span.Length)
+        if (OffsetIntoSpan < Fragment.Length)
         {
           OffsetIntoSpan++;
           return true;
@@ -68,9 +68,9 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 
         // we're at the end of the span and as long as we can move to the next span,
         // do so. 
-        if (Span.Index + 1 < _block._spans.Count)
+        if (Fragment.Index + 1 < _block._spans.Count)
         {
-          Span = _block._spans[Span.Index + 1];
+          Fragment = _block._spans[Fragment.Index + 1];
           // we're never at offset=0 unless we're at the beginning of the first span.
           OffsetIntoSpan = 1;
           return true;
@@ -92,7 +92,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
           return true;
         }
 
-        if (OffsetIntoSpan != 1 || Span.Index == 0)
+        if (OffsetIntoSpan != 1 || Fragment.Index == 0)
         {
           // at offset 1 of the first span, so go to offset 0 which indicates the
           // beginning of the block. 
@@ -102,8 +102,8 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 
         // we're at the beginning of the current span, so go ahead and move onto
         // previous span. 
-        Span = _block._spans[Span.Index - 1];
-        OffsetIntoSpan = Span.Length;
+        Fragment = _block._spans[Fragment.Index - 1];
+        OffsetIntoSpan = Fragment.Length;
 
         return true;
       }
@@ -115,7 +115,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       /// <inheritdoc/>
       void ITextContentCursor.InsertText(string text)
       {
-        Span.Text = Span.Text.Insert(OffsetIntoSpan, text);
+        Fragment.Text = Fragment.Text.Insert(OffsetIntoSpan, text);
         OffsetIntoSpan += text.Length;
       }
 
@@ -134,7 +134,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 
         public SerializedData(TextBlockCursor cursor)
         {
-          _spanId = cursor.Span.Index;
+          _spanId = cursor.Fragment.Index;
           _offset = cursor.OffsetIntoSpan;
           _path = cursor.Block.GetBlockPath();
         }
@@ -145,7 +145,7 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
           return new TextBlockCursor(block)
                  {
                    OffsetIntoSpan = _offset,
-                   Span = block.GetSpanAtIndex(_spanId),
+                   Fragment = block.GetSpanAtIndex(_spanId),
                  };
         }
       }

@@ -6,11 +6,11 @@ using TextRight.ContentEditor.Desktop.Utilities;
 namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
   /// <summary> Hosts the view for the TextSpan. </summary>
-  public interface ITextSpanResponder
+  public interface IStyledTextSpanView
   {
     /// <summary> Invoked when the TextSpan's text changes. </summary>
-    /// <param name="span"> The span whose text has changed. </param>
-    void TextUpdated(StyledTextSpan span);
+    /// <param name="fragment"> The span whose text has changed. </param>
+    void TextUpdated(StyledTextFragment fragment);
 
     /// <summary> Measures the text at the given location. </summary>
     /// <param name="offset"> The offset at which the text should be measured. </param>
@@ -21,10 +21,10 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
   ///  Contains a span of single run of text that is styled or has some sort of other data
   ///  associated with it.
   /// </summary>
-  public class StyledTextSpan
+  public class StyledTextFragment : IViewableObject<IStyledTextSpanView>
   {
     /// <summary> Default constructor. </summary>
-    public StyledTextSpan(string text)
+    public StyledTextFragment(string text)
     {
       Text = text;
       Index = -1;
@@ -56,6 +56,6 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.
     /// </summary>
-    public ITextSpanResponder Target { get; set; }
+    public IStyledTextSpanView Target { get; set; }
   }
 }

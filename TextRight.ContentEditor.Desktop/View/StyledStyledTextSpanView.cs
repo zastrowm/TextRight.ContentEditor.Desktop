@@ -10,22 +10,22 @@ namespace TextRight.ContentEditor.Desktop.View
   /// <summary>
   ///  Associates a WPF Run with a TextSpan and keeps them in sync.
   /// </summary>
-  public class StyledTextSpanView : Run, ITextSpanResponder
+  public class StyledStyledTextSpanView : Run, IStyledTextSpanView
   {
-    private readonly StyledTextSpan _span;
+    private readonly StyledTextFragment _fragment;
 
     /// <summary> Constructor. </summary>
-    /// <param name="span"> The span to keep synchronized. </param>
-    public StyledTextSpanView(StyledTextSpan span)
+    /// <param name="fragment"> The span to keep synchronized. </param>
+    public StyledStyledTextSpanView(StyledTextFragment fragment)
     {
-      _span = span;
-      _span.Target = this;
+      _fragment = fragment;
+      _fragment.Target = this;
     }
 
     /// <inheritdoc/>
-    public void TextUpdated(StyledTextSpan span)
+    public void TextUpdated(StyledTextFragment fragment)
     {
-      Text = _span.Text;
+      Text = _fragment.Text;
     }
 
     /// <inheritdoc/>

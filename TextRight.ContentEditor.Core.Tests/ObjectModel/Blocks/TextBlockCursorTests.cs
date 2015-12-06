@@ -9,7 +9,7 @@ namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
 {
   public class TextBlockCursorTests
   {
-    public StyledTextSpan a, b, c, d, e;
+    public StyledTextFragment a, b, c, d, e;
 
     public TextBlock Block;
 
@@ -18,9 +18,9 @@ namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
     {
       Block = new TextBlock()
               {
-                (a = new StyledTextSpan("123")),
-                (b = new StyledTextSpan("456")),
-                (c = new StyledTextSpan("789")),
+                (a = new StyledTextFragment("123")),
+                (b = new StyledTextFragment("456")),
+                (c = new StyledTextFragment("789")),
               };
 
       // The first TextSpan was auto added

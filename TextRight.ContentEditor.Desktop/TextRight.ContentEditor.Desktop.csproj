@@ -58,9 +58,9 @@
     <Compile Include="View\DocumentEditor.xaml.cs">
       <DependentUpon>DocumentEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\DocumentEditorBridge.cs" />
+    <Compile Include="View\DocumentEditorContextView.cs" />
     <Compile Include="View\TextBlockView.cs" />
-    <Compile Include="View\StyledTextSpanView.cs" />
+    <Compile Include="View\StyledStyledTextSpanView.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
