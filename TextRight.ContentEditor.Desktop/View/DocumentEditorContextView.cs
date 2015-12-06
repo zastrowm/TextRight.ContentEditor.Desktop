@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -15,28 +16,60 @@ namespace TextRight.ContentEditor.Desktop.View
   /// <summary>
   ///  Creates an editor from a FlowDocument and associated TextRight Document.
   /// </summary>
-  public class DocumentEditorContextView
+  public class DocumentEditorContextView : Canvas
   {
-    private readonly Canvas _canvas;
     private readonly FlowDocument _flowDocument;
     private readonly DocumentEditorContext _editor;
     private readonly CaretView _caretView;
+    private readonly FlowDocumentScrollViewer _documentViewer;
 
     public DocumentCursor Cursor => _editor.Caret;
 
-    public DocumentEditorContextView(Canvas canvas, FlowDocument flowDocument, DocumentEditorContext editor)
+    public DocumentEditorContextView(DocumentEditorContext editor)
     {
-      _canvas = canvas;
-      _flowDocument = flowDocument;
       _editor = editor;
 
       _caretView = new CaretView(_editor.Caret);
-      _canvas.Children.Add(_caretView.Element);
+      Children.Add(_caretView.Element);
 
       // clear out the existing content
-      flowDocument.Blocks.Clear();
+      _flowDocument = new FlowDocument();
+      _flowDocument.Blocks.Add(new TextBlockView((TextBlock)_editor.Document.Root.FirstBlock));
 
-      flowDocument.Blocks.Add(new TextBlockView((TextBlock)_editor.Document.Root.FirstBlock));
+      _documentViewer = new FlowDocumentScrollViewer()
+                        {
+                          Document = _flowDocument,
+                        };
+
+      Children.Add(_documentViewer);
+
+      SetTop(_documentViewer, 0);
+      SetLeft(_documentViewer, 0);
+      SetZIndex(_documentViewer, 0);
+    }
+
+    protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+    {
+      base.OnRenderSizeChanged(sizeInfo);
+
+      _documentViewer.Width = sizeInfo.NewSize.Width;
+      _documentViewer.Height = sizeInfo.NewSize.Height;
+    }
+
+    protected override void OnTextInput(TextCompositionEventArgs e)
+    {
+      base.OnTextInput(e);
+
+      InsertText(e.Text);
+      UpdateCaretPosition();
+    }
+
+    protected override void OnPreviewKeyDown(KeyEventArgs e)
+    {
+      base.OnPreviewKeyDown(e);
+
+      HandleKeyDown(e.Key);
+      UpdateCaretPosition();
     }
 
     public void HandleKeyDown(Key key)

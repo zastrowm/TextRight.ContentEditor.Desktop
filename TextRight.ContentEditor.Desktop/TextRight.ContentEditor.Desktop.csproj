@@ -55,7 +55,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="View\CaretView.cs" />
-    <Compile Include="View\DocumentEditor.xaml.cs">
+    <Compile Include="DocumentEditor.xaml.cs">
       <DependentUpon>DocumentEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DocumentEditorContextView.cs" />
@@ -73,7 +73,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\DocumentEditor.xaml">
+    <Page Include="DocumentEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
