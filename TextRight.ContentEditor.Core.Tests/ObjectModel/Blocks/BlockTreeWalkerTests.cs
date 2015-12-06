@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
@@ -21,32 +22,57 @@ namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
     private static Block b12;
     private static Block b111;
     private static Block c;
-    private static readonly Block nullBlock = null;
+    private static readonly Block NullBlock = null;
+    private static readonly Dictionary<Block, string> NameLookup = new Dictionary<Block, string>();
 
-    private static BlockCollection collection = new BlockCollection()
+    private static readonly BlockCollection Collection
+      = new BlockCollection()
+        {
+          (a = new BlockCollection()
+               {
+                 (a1 = new BlockCollection()
+                       {
+                         (a11 = new TextBlock()),
+                         (a12 = new TextBlock()),
+                         (a13 = new TextBlock()),
+                       })
+               }),
+          (b = new BlockCollection()
+               {
+                 (b1 = new BlockCollection()
+                       {
+                         (b11 = new BlockCollection()
+                                {
+                                  (b111 = new TextBlock())
+                                }),
+                         (b12 = new TextBlock()),
+                       })
+               }),
+          (c = new TextBlock()),
+        };
+
+    static BlockTreeWalkerTests()
     {
-      (a = new BlockCollection()
+      try
       {
-        (a1 = new BlockCollection()
-        {
-          (a11 = new TextBlock()),
-          (a12 = new TextBlock()),
-          (a13 = new TextBlock()),
-        })
-      }),
-      (b = new BlockCollection()
+        Collection.RemoveFirstChilds();
+      }
+      catch (Exception e)
       {
-        (b1 = new BlockCollection()
-        {
-          (b11 = new BlockCollection()
-          {
-            (b111 = new TextBlock())
-          }),
-          (b12 = new TextBlock()),
-        })
-      }),
-      (c = new TextBlock()),
-    };
+        Console.WriteLine(e);
+      }
+    }
+
+    /// <summary> Gets the name of the given block. </summary>
+    public static string GetNameOf(Block block)
+    {
+      return typeof(BlockTreeWalkerTests)
+        .GetTypeInfo()
+        .GetFields(BindingFlags.NonPublic | BindingFlags.Static)
+        .Where(f => f.FieldType == typeof(Block))
+        .FirstOrDefault(f => f.GetValue(null) == block)
+        ?.Name;
+    }
 
     public static IEnumerable<TestCaseData> GetNextData()
     {
@@ -54,7 +80,7 @@ namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
       yield return CreateTestCase(() => a12, () => a13, "simple move (end)");
       yield return CreateTestCase(() => a13, () => b111, "move to sub-level");
       yield return CreateTestCase(() => b111, () => b12, "move to parent level");
-      yield return CreateTestCase(() => c, () => nullBlock, "end of document");
+      yield return CreateTestCase(() => c, () => NullBlock, "end of document");
     }
 
     [Test]
@@ -62,6 +88,8 @@ namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
     public void GetNextContainerBlock_Works(TestData data)
     {
       var nextBlock = BlockTreeWalker.GetNextNonContainerBlock(data.Current);
+
+      Assert.That(GetNameOf(nextBlock), Is.EqualTo(GetNameOf(data.Expected)));
       Assert.That(nextBlock, Is.EqualTo(data.Expected));
     }
 
@@ -71,7 +99,7 @@ namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
       yield return CreateTestCase(() => a13, () => a12, "simple move (end)");
       yield return CreateTestCase(() => b111, () => a13, "move to parent level");
       yield return CreateTestCase(() => b12, () => b111, "move to sub-level");
-      yield return CreateTestCase(() => a11, () => nullBlock, "beginning of document");
+      yield return CreateTestCase(() => a11, () => NullBlock, "beginning of document");
     }
 
     [Test]
@@ -79,6 +107,8 @@ namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
     public void GetPreviousContainerBlock_Works(TestData data)
     {
       var nextBlock = BlockTreeWalker.GetPreviousNonContainerBlock(data.Current);
+
+      Assert.That(GetNameOf(nextBlock), Is.EqualTo(GetNameOf(data.Expected)));
       Assert.That(nextBlock, Is.EqualTo(data.Expected));
     }
 
@@ -90,13 +120,13 @@ namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
       )
     {
       var data = new TestData()
-      {
-        Current = currentBlock.Compile().Invoke(),
-        Expected = expectedBlock.Compile().Invoke(),
-        CurrentName = Utils.GetFieldInfo(currentBlock).Name,
-        ExpectedName = Utils.GetFieldInfo(expectedBlock).Name,
-        Description = description,
-      };
+                 {
+                   Current = currentBlock.Compile().Invoke(),
+                   Expected = expectedBlock.Compile().Invoke(),
+                   CurrentName = Utils.GetFieldInfo(currentBlock).Name,
+                   ExpectedName = Utils.GetFieldInfo(expectedBlock).Name,
+                   Description = description,
+                 };
 
       return data.ToTestCase();
     }

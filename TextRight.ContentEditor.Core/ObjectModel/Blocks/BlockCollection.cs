@@ -28,6 +28,21 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 
       _childrenCollection.Add(block);
       block.Index = _childrenCollection.Count - 1;
+
+      // TODO notify
+    }
+
+    public void RemoveBlock(Block block)
+    {
+      // TODO what else do we need to do?
+
+      int oldIndex = block.Index;
+
+      block.Parent = null;
+      _childrenCollection.Remove(block);
+      ReIndexChildren(oldIndex);
+
+      // TODO notify
     }
 
     /// <summary> Gets the block that follows the given block. </summary>
@@ -56,12 +71,12 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       return _childrenCollection[block.Index - 1];
     }
 
-    /// <summary>
-    ///   Reset the index of each child in the block collection.
-    /// </summary>
-    private void ReIndexChildren()
+    /// <summary> Reset the index of each child in the block collection. </summary>
+    /// <param name="startIndex"> The index at which the children should have their
+    ///  indices renumbered. </param>
+    private void ReIndexChildren(int startIndex = 0)
     {
-      for (var i = 0; i < _childrenCollection.Count; i++)
+      for (var i = startIndex; i < _childrenCollection.Count; i++)
       {
         _childrenCollection[i].Index = i;
       }

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TextRight.ContentEditor.Desktop.Tests
@@ -16,13 +14,13 @@ namespace TextRight.ContentEditor.Desktop.Tests
     {
       MemberExpression member = propertyLambda.Body as MemberExpression;
       if (member == null)
-        throw new ArgumentException(string.Format(
+        throw new ArgumentException(String.Format(
           "Expression '{0}' refers to a method, not a property.",
           propertyLambda.ToString()));
 
       PropertyInfo propInfo = member.Member as PropertyInfo;
       if (propInfo == null)
-        throw new ArgumentException(string.Format(
+        throw new ArgumentException(String.Format(
           "Expression '{0}' refers to a field, not a property.",
           propertyLambda.ToString()));
 
@@ -33,7 +31,7 @@ namespace TextRight.ContentEditor.Desktop.Tests
     {
       MemberExpression member = fieldLambda.Body as MemberExpression;
       if (member == null)
-        throw new ArgumentException(string.Format(
+        throw new ArgumentException(String.Format(
           "Expression '{0}' refers to a method, not a property.",
           fieldLambda.ToString()));
 

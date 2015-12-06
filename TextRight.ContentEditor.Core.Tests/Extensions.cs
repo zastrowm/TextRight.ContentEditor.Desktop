@@ -17,5 +17,19 @@ namespace TextRight.ContentEditor.Desktop.Tests
     {
       block.AppendSpan(span);
     }
+
+    /// <summary>
+    ///  By default, a BlockCollection has a single child. That interferes with
+    ///  our added elements, so remove the elements that were auto-added.
+    /// </summary>
+    public static void RemoveFirstChilds(this BlockCollection collection)
+    {
+      collection.RemoveBlock(collection.FirstBlock);
+
+      foreach (var block in collection.Children)
+      {
+        (block as BlockCollection)?.RemoveFirstChilds();
+      }
+    }
   }
 }
