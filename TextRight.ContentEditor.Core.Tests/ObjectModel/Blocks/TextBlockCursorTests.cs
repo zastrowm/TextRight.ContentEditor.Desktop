@@ -9,14 +9,23 @@ namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
 {
   public class TextBlockCursorTests
   {
-    public static TextSpan a, b, c, d, e;
+    public TextSpan a, b, c, d, e;
 
-    public static TextBlock Block = new TextBlock()
+    public TextBlock Block;
+
+    [SetUp]
+    public void Setup()
     {
-      (a = new TextSpan("123")),
-      (b = new TextSpan("456")),
-      (c = new TextSpan("789")),
-    };
+      Block = new TextBlock()
+              {
+                (a = new TextSpan("123")),
+                (b = new TextSpan("456")),
+                (c = new TextSpan("789")),
+              };
+
+      // The first TextSpan was auto added
+      Block.RemoveSpan(Block.First());
+    }
 
     [Test]
     public void BeginningPointsToBeginning()
