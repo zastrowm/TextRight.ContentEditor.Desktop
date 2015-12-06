@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>13e63ed6-31df-44c6-b289-eb046995f8af</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>TextRight.ContentEditor.Core</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\Block.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\BlockCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\BlockTreeWalker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\BlockType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\IBlockContentCursor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\TextBlock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\TextBlock.Cursor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\TextSpan.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\DocumentCursor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\DocumentOwner.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\MeasuredRectangle.cs" />
+  </ItemGroup>
+</Project>

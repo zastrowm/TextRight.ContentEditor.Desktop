@@ -54,7 +54,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Utilities\MeasuredRectangle.cs" />
     <Compile Include="View\DocumentEditor.xaml.cs">
       <DependentUpon>DocumentEditor.xaml</DependentUpon>
     </Compile>
@@ -68,16 +67,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ObjectModel\Blocks\Block.cs" />
-    <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
-    <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
-    <Compile Include="ObjectModel\Blocks\BlockType.cs" />
-    <Compile Include="ObjectModel\DocumentCursor.cs" />
-    <Compile Include="ObjectModel\DocumentOwner.cs" />
-    <Compile Include="ObjectModel\Blocks\IBlockContentCursor.cs" />
-    <Compile Include="ObjectModel\Blocks\TextBlock.Cursor.cs" />
-    <Compile Include="ObjectModel\Blocks\TextBlock.cs" />
-    <Compile Include="ObjectModel\Blocks\TextSpan.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -115,6 +104,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup />
+  <Import Project="..\TextRight.ContentEditor.Core\TextRight.ContentEditor.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

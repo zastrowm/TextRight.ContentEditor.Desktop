@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B29C2A71-0F34-4B6E-AEC4-4D0ACCECD8EE}</ProjectGuid>
+    <ProjectGuid>{55F81399-BB1B-4F3B-A7F0-5B44675FF879}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TextRight.ContentEditor.Desktop.Tests</RootNamespace>
-    <AssemblyName>TextRight.ContentEditor.Desktop.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>TextRight.ContentEditor.Core.Tests</RootNamespace>
+    <AssemblyName>TextRight.ContentEditor.Core.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -44,17 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="ObjectModel\Blocks\BlockTreeWalkerTests.cs" />
+    <Compile Include="ObjectModel\Blocks\TextBlockCursorTests.cs" />
+    <Compile Include="ObjectModel\Blocks\TextBlockTests.cs" />
+    <Compile Include="ObjectModel\DocumentOwnerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TextRight.ContentEditor.Desktop\TextRight.ContentEditor.Desktop.csproj">
-      <Project>{d5a1d3d7-caa8-4460-8f22-221ecf74fee2}</Project>
-      <Name>TextRight.ContentEditor.Desktop</Name>
-    </ProjectReference>
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="..\TextRight.ContentEditor.Core\TextRight.ContentEditor.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
