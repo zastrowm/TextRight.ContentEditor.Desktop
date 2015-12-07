@@ -9,6 +9,9 @@
     <Import_RootNamespace>TextRight.ContentEditor.Core</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Editing\Commands\DelegateActionCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editing\Commands\IActionCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editing\DocumentEditorContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\Block.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\BlockCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\BlockTreeWalker.cs" />
@@ -19,7 +22,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\TextBlock.Cursor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\StyledTextFragment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\DocumentCursor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\DocumentEditorContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\DocumentOwner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\MeasuredRectangle.cs" />
   </ItemGroup>
