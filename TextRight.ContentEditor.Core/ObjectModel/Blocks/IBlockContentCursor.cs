@@ -17,6 +17,16 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     /// <summary> True if the user can currently insert text. </summary>
     /// <returns> true if we can insert text, false if not. </returns>
     bool CanInsertText();
+
+    /// <summary>
+    ///  Removes the given number of characters from the text block.
+    /// </summary>
+    /// <param name="numberOfCharacters"> The number of characters to delete. </param>
+    void DeleteText(int numberOfCharacters);
+
+    /// <summary> Determine if we can delete text. </summary>
+    /// <returns> true if we can delete text, false if not. </returns>
+    bool CanDeleteText();
   }
 
   /// <summary> A cursor that can move through a specific type of block. </summary>
@@ -46,6 +56,12 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     ///  An ISerializedBlockCursor that represents the serialized cursor.
     /// </returns>
     ISerializedBlockCursor Serialize();
+
+    /// <summary> True if the cursor is at the end of the block. </summary>
+    bool IsAtEnd { get; }
+
+    /// <summary> True if the cursor is at the end of the block. </summary>
+    bool IsAtBeginning { get; }
   }
 
   /// <summary> Saved data that can be turned back into a IBlockContentCursor. </summary>

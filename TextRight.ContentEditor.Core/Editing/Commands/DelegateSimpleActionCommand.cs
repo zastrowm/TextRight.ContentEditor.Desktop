@@ -7,18 +7,23 @@ using TextRight.ContentEditor.Core.ObjectModel;
 namespace TextRight.ContentEditor.Desktop.Commands
 {
   /// <summary> An action command that takes in a delegate to perform the command. </summary>
-  internal class DelegateActionCommand : IActionCommand
+  internal class DelegateSimpleActionCommand : ISimpleActionCommand
   {
     private readonly Action<DocumentEditorContext> _callback;
 
-    public DelegateActionCommand(string id, Action<DocumentEditorContext> callback)
+    /// <summary> Constructor. </summary>
+    /// <param name="id"> The unique id of the command. </param>
+    /// <param name="callback"> The callback. </param>
+    public DelegateSimpleActionCommand(string id, Action<DocumentEditorContext> callback)
     {
       Id = id;
       _callback = callback;
     }
 
+    /// <inheritdoc />
     public string Id { get; }
 
+    /// <inheritdoc />
     public void Execute(DocumentEditorContext context)
     {
       _callback.Invoke(context);

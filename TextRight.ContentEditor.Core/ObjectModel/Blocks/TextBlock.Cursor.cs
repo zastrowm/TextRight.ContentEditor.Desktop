@@ -9,7 +9,22 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
   public partial class TextBlock
   {
     /// <summary> Iterates a TextBlock. </summary>
-    internal class TextBlockCursor : IBlockContentCursor, ITextContentCursor
+    /// <remarks>
+    ///  When pointing at a TextBlock, the cursor is really pointing at one of the
+    ///  fragments within the TextBlock, in which case there are a couple special
+    ///  cases of where the cursor can be looking:
+    ///    - At the beginning of the block (also the beginning of the first span).
+    ///      In which case, the OffsetIntoSpan will be 0, the only time it should
+    ///      ever be zero
+    ///    - In the middle of a fragment, thus OffsetIntoSpan is greater than 0  
+    ///      and less than or equal to Fragment.Length
+    ///    - At the end of a fragment, in which case OffsetIntoSpan is equal to  
+    ///      Fragment.Length
+    ///    - At the end of the last fragment, which means that OffsetIntoSpan is
+    ///      equal to Fragment.Length and we're pointing to the last fragment.
+    /// </remarks>
+    internal class TextBlockCursor : IBlockContentCursor,
+                                     ITextContentCursor
     {
       private readonly TextBlock _block;
 
@@ -57,6 +72,16 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       }
 
       /// <inheritdoc />
+      public bool IsAtEnd
+      {
+        get
+        {
+          return OffsetIntoSpan >= Fragment.Length
+                 && Fragment.Index + 1 >= _block._spans.Count;
+        }
+      }
+
+      /// <inheritdoc />
       public bool MoveForward()
       {
         // we move right to end of the span
@@ -77,6 +102,12 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
         }
 
         return false;
+      }
+
+      /// <inheritdoc />
+      public bool IsAtBeginning
+      {
+        get { return OffsetIntoSpan == 0; }
       }
 
       /// <inheritdoc />
@@ -113,16 +144,43 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
         => new SerializedData(this);
 
       /// <inheritdoc/>
+      bool ITextContentCursor.CanInsertText()
+      {
+        return true;
+      }
+
+      /// <inheritdoc/>
       void ITextContentCursor.InsertText(string text)
       {
         Fragment.Text = Fragment.Text.Insert(OffsetIntoSpan, text);
         OffsetIntoSpan += text.Length;
       }
 
-      /// <inheritdoc/>
-      bool ITextContentCursor.CanInsertText()
+      /// <inheritdoc />
+      public bool CanDeleteText()
       {
         return true;
+      }
+
+      /// <inheritdoc />
+      void ITextContentCursor.DeleteText(int numberOfCharacters)
+      {
+        //while (numberOfCharacters > 0)
+        {
+          int numberOfCharactersRemainingInCurrentFragment = Fragment.Length - OffsetIntoSpan;
+          int numberOfCharactersToRemove = numberOfCharacters;
+
+          if (numberOfCharactersToRemove > numberOfCharactersRemainingInCurrentFragment)
+          {
+            numberOfCharactersToRemove = numberOfCharactersRemainingInCurrentFragment;
+          }
+
+          // TODO special case when we're deleting the entire fragment
+          Fragment.Text = Fragment.Text.Remove(OffsetIntoSpan, numberOfCharactersToRemove);
+
+          numberOfCharacters -= numberOfCharactersToRemove;
+          // TODO what happens for multiple fragments
+        }
       }
 
       /// <summary> The cursor's serialized data. </summary>

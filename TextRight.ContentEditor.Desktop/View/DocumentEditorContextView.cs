@@ -8,7 +8,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Desktop.Commands;
-using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
 using TextBlock = TextRight.ContentEditor.Desktop.ObjectModel.Blocks.TextBlock;
 
 namespace TextRight.ContentEditor.Desktop.View
@@ -22,7 +21,7 @@ namespace TextRight.ContentEditor.Desktop.View
     private readonly DocumentEditorContext _editor;
     private readonly CaretView _caretView;
     private readonly FlowDocumentScrollViewer _documentViewer;
-    private readonly Dictionary<Key, IActionCommand> _keyCommands;
+    private readonly Dictionary<Key, ISimpleActionCommand> _keyCommands;
 
     public DocumentEditorContextView(DocumentEditorContext editor)
     {
@@ -46,10 +45,13 @@ namespace TextRight.ContentEditor.Desktop.View
       SetLeft(_documentViewer, 0);
       SetZIndex(_documentViewer, 0);
 
-      _keyCommands = new Dictionary<Key, IActionCommand>()
+      _keyCommands = new Dictionary<Key, ISimpleActionCommand>()
                      {
                        { Key.Left, DocumentEditorContext.Commands.MoveCursorBackward },
                        { Key.Right, DocumentEditorContext.Commands.MoveCursorForward },
+                       { Key.Enter, DocumentEditorContext.Commands.CreateNewParagraph },
+                       { Key.Delete, DocumentEditorContext.Commands.DeleteNextCharacter },
+                       { Key.Back, DocumentEditorContext.Commands.DeletePreviousCharacter },
                      };
     }
 
@@ -73,26 +75,28 @@ namespace TextRight.ContentEditor.Desktop.View
     {
       base.OnPreviewKeyDown(e);
 
-      HandleKeyDown(e.Key);
-      UpdateCaretPosition();
+      if (HandleKeyDown(e.Key))
+      {
+        e.Handled = true;
+        UpdateCaretPosition();
+      }
     }
 
-    public void HandleKeyDown(Key key)
+    public bool HandleKeyDown(Key key)
     {
-      IActionCommand command;
+      ISimpleActionCommand command;
       if (_keyCommands.TryGetValue(key, out command))
       {
-        command.Execute(_editor);
+        _editor.Execute(command);
+        return true;
       }
+
+      return false;
     }
 
     public void InsertText(string text)
     {
-      var textCursor = _editor.Caret.BlockCursor as ITextContentCursor;
-      if (textCursor?.CanInsertText() != true)
-        return;
-
-      textCursor.InsertText(text);
+      new InsertTextCommand(text).Execute(_editor);
     }
 
     public void UpdateCaretPosition()
