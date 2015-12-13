@@ -23,8 +23,8 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     ///    - At the end of the last fragment, which means that OffsetIntoSpan is
     ///      equal to Fragment.Length and we're pointing to the last fragment.
     /// </remarks>
-    internal class TextBlockCursor : IBlockContentCursor,
-                                     ITextContentCursor
+    public class TextBlockCursor : IBlockContentCursor,
+                                   ITextContentCursor
     {
       private readonly TextBlock _block;
 

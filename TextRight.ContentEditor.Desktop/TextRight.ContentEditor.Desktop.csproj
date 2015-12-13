@@ -106,8 +106,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="..\TextRight.ContentEditor.Core\TextRight.ContentEditor.Core.projitems" Label="Shared" />
+  <ItemGroup>
+    <ProjectReference Include="..\TextRight.ContentEditor.Core\TextRight.ContentEditor.Core.csproj">
+      <Project>{eaf30f61-5664-4230-8726-2f2156990ca6}</Project>
+      <Name>TextRight.ContentEditor.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

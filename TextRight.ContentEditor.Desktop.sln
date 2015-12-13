@@ -7,20 +7,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRight.ContentEditor.Des
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRight.ContentEditor.Desktop.Tests", "TextRight.ContentEditor.Desktop.Tests\TextRight.ContentEditor.Desktop.Tests.csproj", "{B29C2A71-0F34-4B6E-AEC4-4D0ACCECD8EE}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TextRight.ContentEditor.Core", "TextRight.ContentEditor.Core\TextRight.ContentEditor.Core.shproj", "{13E63ED6-31DF-44C6-B289-EB046995F8AF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRight.ContentEditor.Core.Tests", "TextRight.ContentEditor.Core.Tests\TextRight.ContentEditor.Core.Tests.csproj", "{55F81399-BB1B-4F3B-A7F0-5B44675FF879}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{75243A59-F2DC-49A3-8360-90AD1EB6521E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{A3B01608-414E-4248-A952-04C866F2742C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRight.ContentEditor.Core", "TextRight.ContentEditor.Core\TextRight.ContentEditor.Core.csproj", "{EAF30F61-5664-4230-8726-2F2156990CA6}"
+EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		TextRight.ContentEditor.Core\TextRight.ContentEditor.Core.projitems*{55f81399-bb1b-4f3b-a7f0-5b44675ff879}*SharedItemsImports = 4
-		TextRight.ContentEditor.Core\TextRight.ContentEditor.Core.projitems*{13e63ed6-31df-44c6-b289-eb046995f8af}*SharedItemsImports = 13
-		TextRight.ContentEditor.Core\TextRight.ContentEditor.Core.projitems*{d5a1d3d7-caa8-4460-8f22-221ecf74fee2}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -38,6 +33,10 @@ Global
 		{55F81399-BB1B-4F3B-A7F0-5B44675FF879}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55F81399-BB1B-4F3B-A7F0-5B44675FF879}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55F81399-BB1B-4F3B-A7F0-5B44675FF879}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAF30F61-5664-4230-8726-2F2156990CA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF30F61-5664-4230-8726-2F2156990CA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAF30F61-5664-4230-8726-2F2156990CA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF30F61-5664-4230-8726-2F2156990CA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,7 +44,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D5A1D3D7-CAA8-4460-8F22-221ECF74FEE2} = {75243A59-F2DC-49A3-8360-90AD1EB6521E}
 		{B29C2A71-0F34-4B6E-AEC4-4D0ACCECD8EE} = {A3B01608-414E-4248-A952-04C866F2742C}
-		{13E63ED6-31DF-44C6-B289-EB046995F8AF} = {75243A59-F2DC-49A3-8360-90AD1EB6521E}
 		{55F81399-BB1B-4F3B-A7F0-5B44675FF879} = {A3B01608-414E-4248-A952-04C866F2742C}
+		{EAF30F61-5664-4230-8726-2F2156990CA6} = {75243A59-F2DC-49A3-8360-90AD1EB6521E}
 	EndGlobalSection
 EndGlobal
