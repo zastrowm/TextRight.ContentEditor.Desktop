@@ -84,5 +84,81 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       Assert.That(cursor.CharacterBefore, Is.EqualTo(beforeChar));
       Assert.That(cursor.CharacterAfter, Is.EqualTo(afterChar));
     }
+
+    private TextBlock.TextBlockCursor GetCursor(int amount)
+    {
+      var cursor = (TextBlock.TextBlockCursor)Block.GetCursor();
+      cursor.MoveToBeginning();
+
+      while (amount > 0)
+      {
+        cursor.MoveForward();
+        amount -= 1;
+      }
+      return cursor;
+    }
+
+    [Test]
+    public void DetachingAtEndOfFirstSpan_DetachesIntoTwoGroups()
+    {
+      var cursor = GetCursor(3);
+      var spans = cursor.ExtractToEnd();
+
+      Assert.That(spans.Length, Is.EqualTo(2));
+      Assert.That(spans[0], Is.EqualTo(b));
+      Assert.That(spans[1], Is.EqualTo(c));
+
+      Assert.That(Block.ChildCount, Is.EqualTo(1));
+      Assert.That(Block.First(), Is.EqualTo(a));
+    }
+
+    [Test]
+    public void DetachingAtMiddleOfSpan_DetachesIntoNewFragment()
+    {
+      var cursor = GetCursor(2);
+      var spans = cursor.ExtractToEnd();
+
+      Assert.That(spans.Length, Is.EqualTo(3));
+      Assert.That(spans[0].Text, Is.EqualTo("3"));
+      Assert.That(spans[1], Is.EqualTo(b));
+      Assert.That(spans[2], Is.EqualTo(c));
+
+      Assert.That(Block.ChildCount, Is.EqualTo(1));
+      Assert.That(Block.First(), Is.EqualTo(a));
+      Assert.That(Block.First().Text, Is.EqualTo("12"));
+    }
+
+    [Test]
+    public void DetachingAtBeginningOfFirstSpan_DetachesAllFragments()
+    {
+      var cursor = GetCursor(0);
+      var spans = cursor.ExtractToEnd();
+
+      Assert.That(spans.Length, Is.EqualTo(3));
+      Assert.That(spans[0].Text, Is.EqualTo("123"));
+      Assert.That(spans[1], Is.EqualTo(b));
+      Assert.That(spans[2], Is.EqualTo(c));
+
+      Assert.That(Block.ChildCount, Is.EqualTo(1));
+      Assert.That(Block.First(), Is.EqualTo(a));
+      Assert.That(Block.First().Text, Is.EqualTo(""));
+    }
+
+    [Test]
+    public void DetachingAtEndOfLastSpan_DetachesNoFragments()
+    {
+      var cursor = GetCursor(9);
+      var spans = cursor.ExtractToEnd();
+
+      Assert.That(spans.Length, Is.EqualTo(0));
+
+      Assert.That(Block.ChildCount, Is.EqualTo(3));
+      Assert.That(Block.ElementAt(0), Is.EqualTo(a));
+      Assert.That(Block.ElementAt(0).Text, Is.EqualTo("123"));
+      Assert.That(Block.ElementAt(1), Is.EqualTo(b));
+      Assert.That(Block.ElementAt(1).Text, Is.EqualTo("456"));
+      Assert.That(Block.ElementAt(2), Is.EqualTo(c));
+      Assert.That(Block.ElementAt(2).Text, Is.EqualTo("789"));
+    }
   }
 }

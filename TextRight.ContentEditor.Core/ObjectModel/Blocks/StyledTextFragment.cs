@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -15,6 +16,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Measures the text at the given location. </summary>
     /// <param name="offset"> The offset at which the text should be measured. </param>
     MeasuredRectangle Measure(int offset);
+
+    /// <summary> Notifies the view that the representation is detached from the original TextBlock. </summary>
+    void Detach();
   }
 
   /// <summary>
@@ -36,6 +40,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> The TextBlock that owns the span. </summary>
     public TextBlock Parent { get; internal set; }
 
+    /// <summary> The sibling fragment that follows this fragment. </summary>
+    public StyledTextFragment Next { get; internal set; }
+
+    /// <summary> The sibling fragment that this fragment follows. </summary>
+    public StyledTextFragment Previous { get; internal set; }
+
     /// <summary> The text in the span. </summary>
     public string Text
     {
@@ -56,6 +66,13 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.
     /// </summary>
+    [CanBeNull]
     public IStyledTextSpanView Target { get; set; }
+
+    /// <summary> Detach the fragment from any views. </summary>
+    public void Detach()
+    {
+      Target?.Detach();
+    }
   }
 }

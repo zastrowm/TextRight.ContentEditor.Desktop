@@ -31,5 +31,23 @@ namespace TextRight.ContentEditor.Core.Tests
         (block as BlockCollection)?.RemoveFirstChilds();
       }
     }
+
+    /// <summary>
+    ///  Move the block cursor the correct number of units forward or backward.
+    /// </summary>
+    public static void Move(this IBlockContentCursor cursor, int amount)
+    {
+      while (amount > 0)
+      {
+        cursor.MoveForward();
+        amount--;
+      }
+
+      while (amount < 0)
+      {
+        cursor.MoveBackward();
+        amount++;
+      }
+    }
   }
 }

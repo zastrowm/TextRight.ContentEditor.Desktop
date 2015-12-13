@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TextRight.ContentEditor.Core</RootNamespace>
     <AssemblyName>TextRight.ContentEditor.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,12 +50,12 @@
     <Compile Include="Editing\Commands\InsertTextCommand.cs" />
     <Compile Include="Editing\Commands\ISimpleActionCommand.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
+    <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
     <Compile Include="ObjectModel\Blocks\BlockType.cs" />
     <Compile Include="ObjectModel\Blocks\IBlockContentCursor.cs" />
     <Compile Include="ObjectModel\Blocks\IViewableObject.cs" />
-    <Compile Include="ObjectModel\Blocks\previousSibling.cs" />
     <Compile Include="ObjectModel\Blocks\StyledTextFragment.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlock.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlock.Cursor.cs" />
@@ -60,7 +64,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\MeasuredRectangle.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

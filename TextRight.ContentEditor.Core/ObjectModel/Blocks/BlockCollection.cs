@@ -39,6 +39,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     public void Append(Block block)
     {
+      // TODO what if the existing span is empty, should it be removed?
       block.Parent = this;
 
       _childrenCollection.Add(block);
@@ -70,6 +71,31 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       ReIndexChildren(beforeBlock.Index);
 
       Target?.NotifyBlockInserted(beforeBlock, newBlock, GetNextBlock(newBlock));
+    }
+
+    /// <summary> Inserts a block at the given position. </summary>
+    /// <exception cref="ArgumentNullException"> Thrown when one or more required
+    ///  arguments are null. </exception>
+    /// <exception cref="ArgumentException"> Thrown when one or more arguments
+    ///  have unsupported or illegal values. </exception>
+    /// <param name="afterBlock"> The block the new block should be placed before. </param>
+    /// <param name="newBlock"> The block that should be inserted at the given position. </param>
+    private void InsertBlockBefore(Block afterBlock, Block newBlock)
+    {
+      if (afterBlock == null)
+        throw new ArgumentNullException(nameof(afterBlock));
+      if (newBlock == null)
+        throw new ArgumentNullException(nameof(newBlock));
+      if (afterBlock.Parent != this)
+        throw new ArgumentException(nameof(afterBlock) + " is not a child of the given collection", nameof(newBlock));
+      if (newBlock.Parent != null)
+        throw new ArgumentException(nameof(newBlock) + " is already parented", nameof(newBlock));
+
+      newBlock.Parent = this;
+      _childrenCollection.Insert(afterBlock.Index, newBlock);
+      ReIndexChildren(afterBlock.Index);
+
+      Target?.NotifyBlockInserted(GetPreviousBlock(newBlock), newBlock, afterBlock);
     }
 
     public void RemoveBlock(Block block)
@@ -134,6 +160,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public Block LastBlock
       => _childrenCollection[_childrenCollection.Count - 1];
 
+    /// <summary> The number of children in the collection. </summary>
+    public int ChildCount
+      => _childrenCollection.Count;
+
     /// <summary> Get the block in the hierarchy from the given block path. </summary>
     /// <param name="path"> The path to the block to retrieve. </param>
     /// <returns> The block from path. </returns>
@@ -174,15 +204,14 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="caret"> The caret that specified the position. </param>
     /// <returns> true if we can break, false if not. </returns>
     public bool CanBreak(DocumentCursor caret)
-    {
-      var blockCursor = caret.BlockCursor;
-
-      return blockCursor.Block.Parent == this
-             && (blockCursor.IsAtBeginning || blockCursor.IsAtEnd);
-    }
+      => true;
 
     /// <summary> Breaks the block into two at the given location. </summary>
     /// <param name="caret"> The caret at which the block should be split. </param>
+    /// <returns>
+    ///  The block that is the next sibling of the original block that was split
+    ///  into two.
+    /// </returns>
     public Block Break(DocumentCursor caret)
     {
       if (!CanBreak(caret))
@@ -190,15 +219,38 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
       var targetBlock = caret.BlockCursor.Block;
 
-      Block newBlock = null;
+      Block secondaryBlock = null;
 
       if (caret.BlockCursor.IsAtEnd)
       {
-        newBlock = new TextBlock();
-        InsertBlockAfter(targetBlock, newBlock);
+        secondaryBlock = new TextBlock();
+        InsertBlockAfter(targetBlock, secondaryBlock);
+      }
+      else if (caret.BlockCursor.IsAtBeginning)
+      {
+        secondaryBlock = targetBlock;
+        InsertBlockBefore(targetBlock, new TextBlock());
+      }
+      else
+      {
+        var textBlockCursor = (TextBlock.TextBlockCursor)caret.BlockCursor;
+        var fragments = textBlockCursor.ExtractToEnd();
+
+        var newTextBlock = new TextBlock();
+        secondaryBlock = newTextBlock;
+
+        // TODO should this be done by AppendSpan automatically?
+        newTextBlock.RemoveSpan(newTextBlock.First());
+
+        foreach (var fragment in fragments)
+        {
+          newTextBlock.AppendSpan(fragment);
+        }
+
+        InsertBlockAfter(targetBlock, secondaryBlock);
       }
 
-      return newBlock;
+      return secondaryBlock;
     }
   }
 }

@@ -12,14 +12,19 @@ namespace TextRight.ContentEditor.Desktop.View
   /// </summary>
   public class StyledStyledTextSpanView : Run, IStyledTextSpanView
   {
+    private readonly TextBlockView _textBlockView;
     private readonly StyledTextFragment _fragment;
 
     /// <summary> Constructor. </summary>
+    /// <param name="textBlockView"></param>
     /// <param name="fragment"> The span to keep synchronized. </param>
-    public StyledStyledTextSpanView(StyledTextFragment fragment)
+    public StyledStyledTextSpanView(TextBlockView textBlockView, StyledTextFragment fragment)
     {
+      _textBlockView = textBlockView;
       _fragment = fragment;
       _fragment.Target = this;
+
+      TextUpdated(_fragment);
     }
 
     /// <inheritdoc/>
@@ -40,6 +45,13 @@ namespace TextRight.ContentEditor.Desktop.View
                Width = rect.Width,
                Height = rect.Height
              };
+    }
+
+    public void Detach()
+    {
+      // TODO we should recycle this view (pool it)?
+      _fragment.Target = null;
+      _textBlockView.Inlines.Remove(this);
     }
   }
 }

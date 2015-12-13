@@ -21,7 +21,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
       foreach (var span in block)
       {
-        Inlines.Add(new StyledStyledTextSpanView(span));
+        Inlines.Add(new StyledStyledTextSpanView(this, span));
       }
     }
   }

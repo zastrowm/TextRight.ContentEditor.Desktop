@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -206,6 +207,15 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                  };
         }
       }
+
+      /// <summary>
+      ///  Extracts the content from the current location to the end of the block.
+      /// </summary>
+      public StyledTextFragment[] ExtractToEnd()
+      {
+        return _block.ExtractContentToEnd(this);
+      }
     }
+
   }
 }

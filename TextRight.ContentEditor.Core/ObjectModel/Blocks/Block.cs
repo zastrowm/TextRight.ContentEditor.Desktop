@@ -64,6 +64,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
   public struct BlockPath
   {
-    public int[] Ids;
+    public int[] Ids { get; set; }
   }
 }
