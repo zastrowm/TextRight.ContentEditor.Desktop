@@ -8,7 +8,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Desktop.Commands;
-using TextBlock = TextRight.ContentEditor.Desktop.ObjectModel.Blocks.TextBlock;
 
 namespace TextRight.ContentEditor.Desktop.View
 {
@@ -31,8 +30,7 @@ namespace TextRight.ContentEditor.Desktop.View
       Children.Add(_caretView.Element);
 
       // clear out the existing content
-      _flowDocument = new FlowDocument();
-      _flowDocument.Blocks.Add(new TextBlockView((TextBlock)_editor.Document.Root.FirstBlock));
+      _flowDocument = new FlowDocumentBlockCollectionView(_editor.Document.Root);
 
       _documentViewer = new FlowDocumentScrollViewer()
                         {
@@ -49,7 +47,7 @@ namespace TextRight.ContentEditor.Desktop.View
                      {
                        { Key.Left, DocumentEditorContext.Commands.MoveCursorBackward },
                        { Key.Right, DocumentEditorContext.Commands.MoveCursorForward },
-                       { Key.Enter, DocumentEditorContext.Commands.CreateNewParagraph },
+                       { Key.Enter, DocumentEditorContext.Commands.BreakBlock },
                        { Key.Delete, DocumentEditorContext.Commands.DeleteNextCharacter },
                        { Key.Back, DocumentEditorContext.Commands.DeletePreviousCharacter },
                      };

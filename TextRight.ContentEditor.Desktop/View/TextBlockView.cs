@@ -17,6 +17,7 @@ namespace TextRight.ContentEditor.Desktop.View
     public TextBlockView(TextBlock block)
     {
       _block = block;
+      _block.Target = this;
 
       foreach (var span in block)
       {

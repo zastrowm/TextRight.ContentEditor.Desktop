@@ -59,6 +59,7 @@
       <DependentUpon>DocumentEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DocumentEditorContextView.cs" />
+    <Compile Include="View\FlowDocumentBlockCollectionView.cs" />
     <Compile Include="View\TextBlockView.cs" />
     <Compile Include="View\StyledStyledTextSpanView.cs" />
     <Page Include="App\MainWindow.xaml">

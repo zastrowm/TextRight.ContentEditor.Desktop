@@ -14,7 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Editing\Commands\InsertTextCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Editing\Commands\ISimpleActionCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Editing\DocumentEditorContext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\Block.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\previousSibling.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\BlockCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\BlockTreeWalker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObjectModel\Blocks\BlockType.cs" />

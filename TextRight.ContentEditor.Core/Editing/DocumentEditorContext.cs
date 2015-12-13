@@ -59,6 +59,24 @@ namespace TextRight.ContentEditor.Core.ObjectModel
       command.Execute(this);
     }
 
+    /// <summary> Break the current block at the current position. </summary>
+    private void BreakCurrentBlock()
+    {
+      var currentBlock = Caret.BlockCursor.Block;
+      var parentBlock = currentBlock.Parent;
+
+      if (parentBlock.CanBreak(Caret))
+      {
+        var newBlock = parentBlock.Break(Caret);
+        if (newBlock != null)
+        {
+          var cursor = newBlock.GetCursor();
+          cursor.MoveToBeginning();
+          Caret.MoveTo(cursor);
+        }
+      }
+    }
+
     /// <summary> Commands available for operating on the DocumentEditorContext. </summary>
     public static class Commands
     {
@@ -76,8 +94,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel
       public static ISimpleActionCommand DeletePreviousCharacter { get; }
         = new DelegateSimpleActionCommand("Caret.DeleteNext", e => e.DeletePreviousCharacter());
 
-      public static ISimpleActionCommand CreateNewParagraph { get; }
-        = new DelegateSimpleActionCommand("Block.CreateParagraph", e => e.CreateParagraph());
+      public static ISimpleActionCommand BreakBlock { get; }
+        = new DelegateSimpleActionCommand("Block.Break", e => e.BreakCurrentBlock());
     }
   }
 }

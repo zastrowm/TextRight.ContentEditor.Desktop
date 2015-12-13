@@ -17,6 +17,13 @@ namespace TextRight.ContentEditor.Desktop.Blocks
       BlockCursor = blockCursor;
     }
 
+    /// <summary> Move to the position at the given block cursor. </summary>
+    /// <param name="blockCursor"> The block cursor. </param>
+    public void MoveTo(IBlockContentCursor blockCursor)
+    {
+      BlockCursor = blockCursor;
+    }
+
     /// <summary> The Document that owns the given cursor. </summary>
     public DocumentOwner Owner { get; }
 
@@ -67,7 +74,7 @@ namespace TextRight.ContentEditor.Desktop.Blocks
         return false;
 
       var nextCursor = previousBlock.GetCursor();
-      nextCursor.MoveToBeginning();
+      nextCursor.MoveToEnd();
       BlockCursor = nextCursor;
 
       return true;

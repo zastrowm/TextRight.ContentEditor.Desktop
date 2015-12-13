@@ -3,9 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using TextRight.ContentEditor.Desktop.Blocks;
 
 namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
 {
+  /// <summary> Holds the view representation of the BlockCollection. </summary>
+  public interface IBlockCollectionView
+  {
+    /// <summary> Notifies a block inserted. </summary>
+    /// <param name="previousSibling"> The before block. </param>
+    /// <param name="newBlock"> The new block. </param>
+    /// <param name="nextSibling"> The after block. </param>
+    void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling);
+  }
+
   /// <summary> Holds a collection of blocks. </summary>
   public class BlockCollection : Block, IEnumerable<Block>
   {
@@ -22,6 +33,11 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     public IEnumerable<Block> Children
       => _childrenCollection;
 
+    /// <summary>
+    ///  The object that receives all notifications of changes from this instance.
+    /// </summary>
+    public IBlockCollectionView Target { get; set; }
+
     public void Append(Block block)
     {
       block.Parent = this;
@@ -29,7 +45,32 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       _childrenCollection.Add(block);
       block.Index = _childrenCollection.Count - 1;
 
-      // TODO notify
+      Target?.NotifyBlockInserted(GetPreviousBlock(block), block, null);
+    }
+
+    /// <summary> Inserts a block at the given position. </summary>
+    /// <exception cref="ArgumentNullException"> Thrown when one or more required
+    ///  arguments are null. </exception>
+    /// <exception cref="ArgumentException"> Thrown when one or more arguments
+    ///  have unsupported or illegal values. </exception>
+    /// <param name="beforeBlock"> The block the new block should be placed after. </param>
+    /// <param name="newBlock"> The block that should be inserted at the given position. </param>
+    private void InsertBlockAfter(Block beforeBlock, Block newBlock)
+    {
+      if (beforeBlock == null)
+        throw new ArgumentNullException(nameof(beforeBlock));
+      if (newBlock == null)
+        throw new ArgumentNullException(nameof(newBlock));
+      if (beforeBlock.Parent != this)
+        throw new ArgumentException(nameof(beforeBlock) + " is not a child of the given collection", nameof(newBlock));
+      if (newBlock.Parent != null)
+        throw new ArgumentException(nameof(newBlock) + " is already parented", nameof(newBlock));
+
+      newBlock.Parent = this;
+      _childrenCollection.Insert(beforeBlock.Index + 1, newBlock);
+      ReIndexChildren(beforeBlock.Index);
+
+      Target?.NotifyBlockInserted(beforeBlock, newBlock, GetNextBlock(newBlock));
     }
 
     public void RemoveBlock(Block block)
@@ -128,6 +169,37 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
     IEnumerator IEnumerable.GetEnumerator()
     {
       return GetEnumerator();
+    }
+
+    /// <summary> True if the block can break into two at the given position. </summary>
+    /// <param name="caret"> The caret that specified the position. </param>
+    /// <returns> true if we can break, false if not. </returns>
+    public bool CanBreak(DocumentCursor caret)
+    {
+      var blockCursor = caret.BlockCursor;
+
+      return blockCursor.Block.Parent == this
+             && (blockCursor.IsAtBeginning || blockCursor.IsAtEnd);
+    }
+
+    /// <summary> Breaks the block into two at the given location. </summary>
+    /// <param name="caret"> The caret at which the block should be split. </param>
+    public Block Break(DocumentCursor caret)
+    {
+      if (!CanBreak(caret))
+        return null;
+
+      var targetBlock = caret.BlockCursor.Block;
+
+      Block newBlock = null;
+
+      if (caret.BlockCursor.IsAtEnd)
+      {
+        newBlock = new TextBlock();
+        InsertBlockAfter(targetBlock, newBlock);
+      }
+
+      return newBlock;
     }
   }
 }
