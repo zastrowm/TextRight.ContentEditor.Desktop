@@ -6,8 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using TextRight.ContentEditor.Desktop.Blocks;
-using TextBlock = TextRight.ContentEditor.Desktop.ObjectModel.Blocks.TextBlock;
+using TextRight.ContentEditor.Core.ObjectModel;
+using TextBlock = TextRight.ContentEditor.Core.ObjectModel.Blocks.TextBlock;
 
 namespace TextRight.ContentEditor.Desktop.View
 {

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Documents;
-using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
-using TextRight.ContentEditor.Desktop.Utilities;
+using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Desktop.View
 {

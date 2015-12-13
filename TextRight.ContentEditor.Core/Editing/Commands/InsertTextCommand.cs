@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel;
-using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Desktop.Commands
+namespace TextRight.ContentEditor.Core.Editing.Commands
 {
   /// <summary> Allows text to be inserted into document. </summary>
   public struct InsertTextCommand : IActionCommand

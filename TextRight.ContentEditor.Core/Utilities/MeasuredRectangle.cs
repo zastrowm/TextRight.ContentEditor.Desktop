@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TextRight.ContentEditor.Desktop.Utilities
+namespace TextRight.ContentEditor.Core.Utilities
 {
   /// <summary> Contains a measurement of a location within the block. </summary>
   public struct MeasuredRectangle

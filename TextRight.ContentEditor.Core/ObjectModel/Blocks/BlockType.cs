@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
+namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> The various types of block. </summary>
   public enum BlockType

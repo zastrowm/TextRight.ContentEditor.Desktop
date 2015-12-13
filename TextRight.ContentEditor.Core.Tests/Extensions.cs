@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Desktop.Tests
+namespace TextRight.ContentEditor.Core.Tests
 {
   public static class Extensions
   {

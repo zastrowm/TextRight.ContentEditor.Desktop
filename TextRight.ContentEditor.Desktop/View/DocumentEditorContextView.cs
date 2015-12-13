@@ -6,8 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using TextRight.ContentEditor.Core.ObjectModel;
-using TextRight.ContentEditor.Desktop.Commands;
+using TextRight.ContentEditor.Core.Editing;
+using TextRight.ContentEditor.Core.Editing.Commands;
 
 namespace TextRight.ContentEditor.Desktop.View
 {

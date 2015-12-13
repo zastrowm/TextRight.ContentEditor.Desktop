@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Desktop.Blocks
+namespace TextRight.ContentEditor.Core.ObjectModel
 {
   /// <summary> Represents a single TextRight document. </summary>
   public class DocumentOwner

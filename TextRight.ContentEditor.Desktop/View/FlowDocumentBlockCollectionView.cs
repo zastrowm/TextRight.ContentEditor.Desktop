@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Documents;
-using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
-using Block = TextRight.ContentEditor.Desktop.ObjectModel.Blocks.Block;
-using BlockCollection = TextRight.ContentEditor.Desktop.ObjectModel.Blocks.BlockCollection;
+using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using Block = TextRight.ContentEditor.Core.ObjectModel.Blocks.Block;
+using BlockCollection = TextRight.ContentEditor.Core.ObjectModel.Blocks.BlockCollection;
 
 namespace TextRight.ContentEditor.Desktop.View
 {

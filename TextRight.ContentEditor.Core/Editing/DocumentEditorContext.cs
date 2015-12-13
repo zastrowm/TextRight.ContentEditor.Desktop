@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Desktop.Blocks;
-using TextRight.ContentEditor.Desktop.Commands;
-using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.Editing.Commands;
+using TextRight.ContentEditor.Core.ObjectModel;
+using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.ObjectModel
+namespace TextRight.ContentEditor.Core.Editing
 {
   /// <summary> Represents a TextRight document that is being edited. </summary>
   public class DocumentEditorContext

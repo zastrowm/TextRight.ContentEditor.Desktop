@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Desktop.Commands
+namespace TextRight.ContentEditor.Core.Editing.Commands
 {
   /// <summary> Interface for action command. </summary>
   public interface ISimpleActionCommand : IActionCommand

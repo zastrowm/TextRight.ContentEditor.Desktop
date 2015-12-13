@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel;
 
-namespace TextRight.ContentEditor.Desktop.Commands
+namespace TextRight.ContentEditor.Core.Editing.Commands
 {
   /// <summary>
   ///  A command that can be executed against a

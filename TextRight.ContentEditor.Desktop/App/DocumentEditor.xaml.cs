@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using TextRight.ContentEditor.Core.ObjectModel;
+using TextRight.ContentEditor.Core.Editing;
+using TextRight.ContentEditor.Desktop.View;
 
-namespace TextRight.ContentEditor.Desktop.View
+namespace TextRight.ContentEditor.Desktop.App
 {
   /// <summary>
   /// Interaction logic for DocumentEditor.xaml

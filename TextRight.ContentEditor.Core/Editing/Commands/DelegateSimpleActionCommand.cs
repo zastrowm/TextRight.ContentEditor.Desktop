@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Core.ObjectModel;
 
-namespace TextRight.ContentEditor.Desktop.Commands
+namespace TextRight.ContentEditor.Core.Editing.Commands
 {
   /// <summary> An action command that takes in a delegate to perform the command. </summary>
   internal class DelegateSimpleActionCommand : ISimpleActionCommand

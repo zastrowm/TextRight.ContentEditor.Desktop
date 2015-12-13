@@ -7,8 +7,8 @@
     <ProjectGuid>{EAF30F61-5664-4230-8726-2F2156990CA6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TextRight.ContentEditor.Core2</RootNamespace>
-    <AssemblyName>TextRight.ContentEditor.Core2</AssemblyName>
+    <RootNamespace>TextRight.ContentEditor.Core</RootNamespace>
+    <AssemblyName>TextRight.ContentEditor.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

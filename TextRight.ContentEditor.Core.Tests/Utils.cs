@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace TextRight.ContentEditor.Desktop.Tests
+namespace TextRight.ContentEditor.Core.Tests
 {
   /// <summary> Utility helpers. </summary>
   public static class Utils

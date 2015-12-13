@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
+namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary>
   ///   Represents a top-level block.
@@ -56,9 +56,9 @@ namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
       }
 
       return new BlockPath
-      {
-        Ids = ids.ToArray(),
-      };
+             {
+               Ids = ids.ToArray(),
+             };
     }
   }
 

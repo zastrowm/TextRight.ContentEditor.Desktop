@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using TextRight.ContentEditor.Desktop.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Desktop.Tests.ObjectModel.Blocks
+namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
 {
   public class BlockTreeWalkerTests
   {

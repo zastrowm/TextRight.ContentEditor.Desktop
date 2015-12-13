@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Desktop.Blocks;
 
-namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
+namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary>
   ///  A <see cref="IBlockContentCursor"/> that allows the user to insert text.

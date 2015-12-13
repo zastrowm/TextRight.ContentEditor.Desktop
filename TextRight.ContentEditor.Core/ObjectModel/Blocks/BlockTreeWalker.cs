@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Desktop.ObjectModel.Blocks
+namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> Walks a document navigating between blocks. </summary>
   public static class BlockTreeWalker
