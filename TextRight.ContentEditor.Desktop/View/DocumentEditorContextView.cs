@@ -20,7 +20,7 @@ namespace TextRight.ContentEditor.Desktop.View
     private readonly DocumentEditorContext _editor;
     private readonly CaretView _caretView;
     private readonly FlowDocumentScrollViewer _documentViewer;
-    private readonly Dictionary<Key, ISimpleActionCommand> _keyCommands;
+    private readonly KeyboardShortcutCollection _keyCommands;
 
     public DocumentEditorContextView(DocumentEditorContext editor)
     {
@@ -43,10 +43,12 @@ namespace TextRight.ContentEditor.Desktop.View
       SetLeft(_documentViewer, 0);
       SetZIndex(_documentViewer, 0);
 
-      _keyCommands = new Dictionary<Key, ISimpleActionCommand>()
+      _keyCommands = new KeyboardShortcutCollection()
                      {
                        { Key.Left, DocumentEditorContext.Commands.MoveCursorBackward },
+                       { ModifierKeys.Control, Key.Left, DocumentEditorContext.Commands.MoveToPreviousWord },
                        { Key.Right, DocumentEditorContext.Commands.MoveCursorForward },
+                       { ModifierKeys.Control, Key.Right, DocumentEditorContext.Commands.MoveToNextWord },
                        { Key.Enter, DocumentEditorContext.Commands.BreakBlock },
                        { Key.Delete, DocumentEditorContext.Commands.DeleteNextCharacter },
                        { Key.Back, DocumentEditorContext.Commands.DeletePreviousCharacter },
@@ -82,8 +84,8 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public bool HandleKeyDown(Key key)
     {
-      ISimpleActionCommand command;
-      if (_keyCommands.TryGetValue(key, out command))
+      ISimpleActionCommand command = _keyCommands.Lookup(Keyboard.Modifiers, key);
+      if (command != null)
       {
         _editor.Execute(command);
         return true;

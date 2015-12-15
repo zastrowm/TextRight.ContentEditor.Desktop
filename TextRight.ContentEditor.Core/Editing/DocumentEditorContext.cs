@@ -96,6 +96,12 @@ namespace TextRight.ContentEditor.Core.Editing
 
       public static ISimpleActionCommand BreakBlock { get; }
         = new DelegateSimpleActionCommand("Block.Break", e => e.BreakCurrentBlock());
+
+      public static ISimpleActionCommand MoveToNextWord { get; }
+        = new DelegateSimpleActionCommand("Caret.MoveForwardWord", CaretWordMover.MoveCaretToBeginningOfNextWord);
+
+      public static ISimpleActionCommand MoveToPreviousWord { get; }
+        = new DelegateSimpleActionCommand("Caret.MoveBackwardWord", CaretWordMover.MoveCaretToEndOfPreviousWord);
     }
   }
 }
