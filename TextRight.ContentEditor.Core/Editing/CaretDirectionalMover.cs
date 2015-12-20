@@ -136,7 +136,130 @@ namespace TextRight.ContentEditor.Core.Editing
 
     public static void MoveCaretUpInDocument(DocumentEditorContext context)
     {
-      throw new NotImplementedException();
+      var textBlockCursor = (TextBlock.TextBlockCursor)context.Caret.BlockCursor;
+
+      switch (context.CaretMovementMode.CurrentMode)
+      {
+        case CaretMovementMode.Mode.None:
+        {
+          double left = textBlockCursor.MeasureCursorPosition().Left;
+          context.CaretMovementMode.SetModeToPosition(left);
+          goto case CaretMovementMode.Mode.Position;
+        }
+        case CaretMovementMode.Mode.Position:
+        {
+          bool didMove;
+          MoveToEndOfPreviousLine(textBlockCursor, out didMove);
+          if (didMove)
+          {
+            MoveToPosition(textBlockCursor, context.CaretMovementMode.Position, CursorMover.MoveLeft);
+          }
+          break;
+        }
+        case CaretMovementMode.Mode.Home:
+          break;
+        case CaretMovementMode.Mode.End:
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
+    }
+
+    public static void MoveCaretDownInDocument(DocumentEditorContext context)
+    {
+      var textBlockCursor = (TextBlock.TextBlockCursor)context.Caret.BlockCursor;
+
+      switch (context.CaretMovementMode.CurrentMode)
+      {
+        case CaretMovementMode.Mode.None:
+        {
+          double left = textBlockCursor.MeasureCursorPosition().Left;
+          context.CaretMovementMode.SetModeToPosition(left);
+          goto case CaretMovementMode.Mode.Position;
+        }
+        case CaretMovementMode.Mode.Position:
+        {
+          bool didMove;
+          MoveToBeginningOfNextLine(textBlockCursor, out didMove);
+          if (didMove)
+          {
+            MoveToPosition(textBlockCursor, context.CaretMovementMode.Position, CursorMover.MoveRight);
+          }
+          break;
+        }
+        case CaretMovementMode.Mode.Home:
+          break;
+        case CaretMovementMode.Mode.End:
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
+    }
+
+    private static bool MoveToPosition(TextBlock.TextBlockCursor textBlockCursor,
+                                       double desiredPosition,
+                                       CursorMover cursorMover)
+    {
+      var lastClosest = textBlockCursor.MeasureCursorPosition();
+      double closestDistance = lastClosest.HorizontalDistanceTo(desiredPosition);
+
+      int timesMoved = 0;
+      bool didGoTooFar = false;
+
+      do
+      {
+        var currentPosition = textBlockCursor.MeasureCursorPosition();
+
+        // we may have gone too far, so exit out
+        if (!currentPosition.IsInlineTo(lastClosest))
+        {
+          didGoTooFar = true;
+          break;
+        }
+
+        // we may have moved past the position, in which case exit out
+        var currentDistance = currentPosition.HorizontalDistanceTo(desiredPosition);
+        if (!(currentDistance <= closestDistance))
+        {
+          didGoTooFar = true;
+          break;
+        }
+
+        closestDistance = currentDistance;
+        lastClosest = currentPosition;
+
+        timesMoved++;
+
+        // if we can't move back anymore, then stop trying
+        if (!cursorMover.MoveTowards(textBlockCursor))
+          break;
+      } while (true);
+
+      if (didGoTooFar)
+      {
+        cursorMover.MoveAway(textBlockCursor);
+        timesMoved--;
+      }
+
+      return timesMoved == 0;
+    }
+
+    private struct CursorMover
+    {
+      public Func<TextBlock.TextBlockCursor, bool> MoveTowards;
+      public Func<TextBlock.TextBlockCursor, bool> MoveAway;
+
+      public static readonly CursorMover MoveLeft = new CursorMover()
+                                                    {
+                                                      MoveAway = cursor => cursor.MoveForward(),
+                                                      MoveTowards = cursor => cursor.MoveBackward(),
+                                                    };
+
+      public static readonly CursorMover MoveRight = new CursorMover()
+                                                     {
+                                                       MoveAway = cursor => cursor.MoveBackward(),
+                                                       MoveTowards = cursor => cursor.MoveForward(),
+                                                     };
     }
 
     /// <summary>
@@ -162,6 +285,11 @@ namespace TextRight.ContentEditor.Core.Editing
       // inline with the other
       // TODO do we need some sort of buffer (perhaps subtracting a small number from top?
       return second.Top < first.Bottom;
+    }
+
+    internal static double HorizontalDistanceTo(this MeasuredRectangle rect, double left)
+    {
+      return Math.Abs(rect.Left - left);
     }
 
     /// <summary> How the cursor moved (used by methods in this class). </summary>

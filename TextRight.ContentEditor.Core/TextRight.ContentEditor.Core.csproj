@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\CaretDirectionalMover.cs" />
+    <Compile Include="Editing\CaretMovementMode.cs" />
     <Compile Include="Editing\CaretWordMover.cs" />
     <Compile Include="Editing\Commands\DelegateSimpleActionCommand.cs" />
     <Compile Include="Editing\Commands\IActionCommand.cs" />

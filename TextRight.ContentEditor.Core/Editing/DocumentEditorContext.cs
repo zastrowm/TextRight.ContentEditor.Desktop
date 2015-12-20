@@ -17,7 +17,9 @@ namespace TextRight.ContentEditor.Core.Editing
 
       var cursor = Document.Root.FirstBlock.GetCursor();
       cursor.MoveToBeginning();
+
       Caret = new DocumentCursor(Document, cursor);
+      CaretMovementMode = new CaretMovementMode();
     }
 
     /// <summary> The document that is being edited. </summary>
@@ -25,6 +27,9 @@ namespace TextRight.ContentEditor.Core.Editing
 
     /// <summary> The Caret's current position. </summary>
     public DocumentCursor Caret { get; }
+
+    /// <summary> Movement information about the caret. </summary>
+    public CaretMovementMode CaretMovementMode { get; }
 
     /// <summary> Removes the character after the cursor. </summary>
     private void DeleteNextCharacter()
@@ -110,6 +115,14 @@ namespace TextRight.ContentEditor.Core.Editing
       public static ISimpleActionCommand MoveToEndOfLine { get; }
         = new DelegateSimpleActionCommand("Caret.MoveToLineEnd",
                                           c => CaretDirectionalMover.MoveCaretToEndOfLine(c));
+
+      public static ISimpleActionCommand MoveUp { get; }
+        = new DelegateSimpleActionCommand("Caret.MoveUp",
+                                          c => CaretDirectionalMover.MoveCaretUpInDocument(c));
+
+      public static ISimpleActionCommand MoveDown { get; }
+        = new DelegateSimpleActionCommand("Caret.MoveUp",
+                                          c => CaretDirectionalMover.MoveCaretDownInDocument(c));
     }
   }
 }

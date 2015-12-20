@@ -54,9 +54,14 @@ namespace TextRight.ContentEditor.Desktop.View
                        { Key.Back, DocumentEditorContext.Commands.DeletePreviousCharacter },
                        { Key.Home, DocumentEditorContext.Commands.MoveToBeginningOfLine },
                        { Key.End, DocumentEditorContext.Commands.MoveToEndOfLine },
+                       { Key.Up, DocumentEditorContext.Commands.MoveUp },
+                       { Key.Down, DocumentEditorContext.Commands.MoveDown },
                      };
 
-      InsertText("This is an example of a document within the editor.  It has many features");
+      InsertText("This is an example of a document within the editor.  It has many features that extend onto" +
+                 "multiple lines enough that we can start to create paragraphs.  Don't also forget" +
+                 "about X & Y and those other things that extend the line length for the X-Files.  " +
+                 "Isn't that great");
     }
 
     public void Initialize()
