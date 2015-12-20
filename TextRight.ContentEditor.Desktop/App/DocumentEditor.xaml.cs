@@ -17,6 +17,13 @@ namespace TextRight.ContentEditor.Desktop.App
     {
       InitializeComponent();
 
+      Loaded += delegate
+                {
+                  var view = ((DocumentEditorContextView)Content);
+                  view.Initialize();
+                  view.Focus();
+                };
+
       Content = new DocumentEditorContextView(new DocumentEditorContext());
     }
   }

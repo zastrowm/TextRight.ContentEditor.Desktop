@@ -6,7 +6,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Editing
 {
   /// <summary> Moves a caret forward by through different words. </summary>
-  internal class CaretWordMover
+  internal static class CaretWordMover
   {
     /// <summary> Moves the caret to the beginning of the next word. </summary>
     /// <param name="context"> The context's whose caret should be moved. </param>

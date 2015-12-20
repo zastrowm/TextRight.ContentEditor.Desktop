@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -110,6 +110,30 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         get { return OffsetIntoSpan == 0; }
       }
 
+      private MeasuredRectangle MeasureForward()
+      {
+        if (IsAtEnd || Fragment.Target == null)
+          return MeasuredRectangle.Invalid;
+
+        return Fragment.Target.Measure(OffsetIntoSpan);
+      }
+
+      private MeasuredRectangle MeasureBackward()
+      {
+        if (IsAtBeginning || Fragment.Target == null)
+          return MeasuredRectangle.Invalid;
+
+        return Fragment.Target.Measure(OffsetIntoSpan - 1);
+      }
+
+      /// <inheritdoc />
+      public MeasuredRectangle MeasureCursorPosition()
+      {
+        return !IsAtBeginning && CharacterBefore != ' '
+          ? MeasureBackward().FlattenRight()
+          : MeasureForward().FlattenLeft();
+      }
+
       /// <inheritdoc />
       public bool MoveBackward()
       {
@@ -216,6 +240,5 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         return _block.ExtractContentToEnd(this);
       }
     }
-
   }
 }

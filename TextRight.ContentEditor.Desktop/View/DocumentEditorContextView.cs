@@ -52,7 +52,16 @@ namespace TextRight.ContentEditor.Desktop.View
                        { Key.Enter, DocumentEditorContext.Commands.BreakBlock },
                        { Key.Delete, DocumentEditorContext.Commands.DeleteNextCharacter },
                        { Key.Back, DocumentEditorContext.Commands.DeletePreviousCharacter },
+                       { Key.Home, DocumentEditorContext.Commands.MoveToBeginningOfLine },
+                       { Key.End, DocumentEditorContext.Commands.MoveToEndOfLine },
                      };
+
+      InsertText("This is an example of a document within the editor.  It has many features");
+    }
+
+    public void Initialize()
+    {
+      UpdateCaretPosition();
     }
 
     protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)

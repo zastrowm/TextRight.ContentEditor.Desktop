@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Documents;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
@@ -37,13 +38,24 @@ namespace TextRight.ContentEditor.Desktop.View
     public MeasuredRectangle Measure(int offset)
     {
       // TODO Debug/Assert not null
-      var rect = ContentStart.GetPositionAtOffset(offset).GetCharacterRect(LogicalDirection.Forward);
+
+      // GetPositionAtOffset always returns zero width, so to get the width of the full character, 
+      // we need to measure the left side and then measure the right
+      var position = ContentStart.GetPositionAtOffset(offset);
+      Debug.Assert(position != null);
+
+      var nextPosition = position.GetPositionAtOffset(1);
+      Debug.Assert(nextPosition != null);
+
+      var leftRect = position.GetCharacterRect(LogicalDirection.Forward);
+      var rightRect = nextPosition.GetCharacterRect(LogicalDirection.Backward);
+
       return new MeasuredRectangle()
              {
-               X = rect.X,
-               Y = rect.Y,
-               Width = rect.Width,
-               Height = rect.Height
+               X = leftRect.X,
+               Y = leftRect.Y,
+               Width = rightRect.X - leftRect.X,
+               Height = leftRect.Height
              };
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -61,6 +62,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <summary> True if the cursor is at the end of the block. </summary>
     bool IsAtBeginning { get; }
+
+    /// <summary> Returns a measurement of where a cursor should appear </summary>
+    /// <returns> A MeasuredRectangle representing where the cursor should appear. </returns>
+    MeasuredRectangle MeasureCursorPosition();
   }
 
   /// <summary> Saved data that can be turned back into a IBlockContentCursor. </summary>

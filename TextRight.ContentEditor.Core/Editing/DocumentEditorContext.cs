@@ -102,6 +102,14 @@ namespace TextRight.ContentEditor.Core.Editing
 
       public static ISimpleActionCommand MoveToPreviousWord { get; }
         = new DelegateSimpleActionCommand("Caret.MoveBackwardWord", CaretWordMover.MoveCaretToEndOfPreviousWord);
+
+      public static ISimpleActionCommand MoveToBeginningOfLine { get; }
+        = new DelegateSimpleActionCommand("Caret.MoveToLineBegimning",
+                                          c => CaretDirectionalMover.MoveCaretToBeginningOfLine(c));
+
+      public static ISimpleActionCommand MoveToEndOfLine { get; }
+        = new DelegateSimpleActionCommand("Caret.MoveToLineEnd",
+                                          c => CaretDirectionalMover.MoveCaretToEndOfLine(c));
     }
   }
 }

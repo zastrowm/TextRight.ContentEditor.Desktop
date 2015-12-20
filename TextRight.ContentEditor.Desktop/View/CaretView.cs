@@ -50,7 +50,7 @@ namespace TextRight.ContentEditor.Desktop.View
       var textCursor = (TextBlock.TextBlockCursor)_cursor.BlockCursor;
 
       var block = (TextBlock)_cursor.BlockCursor.Block;
-      var measure = textCursor.Fragment.Target.Measure(textCursor.OffsetIntoSpan);
+      var measure = textCursor.MeasureCursorPosition();
 
       // TODO should core being doing this?
       UpdatePosition(measure.X, measure.Y, measure.Height);
