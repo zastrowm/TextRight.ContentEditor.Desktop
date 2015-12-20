@@ -10,6 +10,7 @@ namespace TextRight.ContentEditor.Core.Editing
   internal static class CaretDirectionalMover
   {
     private const bool DidNotMove = false;
+
     private const bool DidMove = true;
 
     /// <summary> Moves the caret to the beginning of the line. </summary>
@@ -83,33 +84,30 @@ namespace TextRight.ContentEditor.Core.Editing
     private static EndMovementState MoveToEndOfPreviousLine(TextBlock.TextBlockCursor textBlockCursor,
                                                             out bool didMoveToNextLine)
     {
-      var originalPosition = textBlockCursor.MeasureCursorPosition();
-      var numTurns = 0;
-
-      didMoveToNextLine = false;
-
-      // We keep moving until we're not on the line anymore, and then correct
-      // back if we go too far.
-      while (!didMoveToNextLine && textBlockCursor.MoveBackward())
-      {
-        numTurns++;
-        didMoveToNextLine = !textBlockCursor.MeasureCursorPosition().IsInlineTo(originalPosition);
-      }
-
-      switch (numTurns)
-      {
-        case 0:
-          return EndMovementState.CouldNotMoveWithinBlock;
-        case 1:
-          return EndMovementState.MovedWithOneMove;
-        default:
-          return EndMovementState.MovedWithMoreThanOneMove;
-      }
+      return MoveToLine(textBlockCursor, MoveLeftMover, out didMoveToNextLine);
     }
 
     /// <selfdoc />
     private static EndMovementState MoveToBeginningOfNextLine(TextBlock.TextBlockCursor textBlockCursor,
                                                               out bool didMoveToNextLine)
+    {
+      return MoveToLine(textBlockCursor, MoveRightMover, out didMoveToNextLine);
+    }
+
+    public static void MoveCaretUpInDocument(DocumentEditorContext context)
+    {
+      MoveTowardsPositionInNextLine(context, MoveLeftMover);
+    }
+
+    public static void MoveCaretDownInDocument(DocumentEditorContext context)
+    {
+      MoveTowardsPositionInNextLine(context, MoveRightMover);
+    }
+
+    /// <selfdoc />
+    private static EndMovementState MoveToLine(TextBlock.TextBlockCursor textBlockCursor,
+                                               IDirectionalMover mover,
+                                               out bool didMoveToNextLine)
     {
       var originalPosition = textBlockCursor.MeasureCursorPosition();
       var numTurns = 0;
@@ -117,7 +115,7 @@ namespace TextRight.ContentEditor.Core.Editing
 
       // We keep moving until we're not on the line anymore, and then correct
       // back if we go too far.
-      while (!didMoveToNextLine && textBlockCursor.MoveForward())
+      while (!didMoveToNextLine && mover.MoveTowards(textBlockCursor))
       {
         numTurns++;
         didMoveToNextLine = (!textBlockCursor.MeasureCursorPosition().IsInlineTo(originalPosition));
@@ -134,7 +132,7 @@ namespace TextRight.ContentEditor.Core.Editing
       }
     }
 
-    public static void MoveCaretUpInDocument(DocumentEditorContext context)
+    private static void MoveTowardsPositionInNextLine(DocumentEditorContext context, IDirectionalMover mover)
     {
       var textBlockCursor = (TextBlock.TextBlockCursor)context.Caret.BlockCursor;
 
@@ -149,41 +147,10 @@ namespace TextRight.ContentEditor.Core.Editing
         case CaretMovementMode.Mode.Position:
         {
           bool didMove;
-          MoveToEndOfPreviousLine(textBlockCursor, out didMove);
+          MoveToLine(textBlockCursor, mover, out didMove);
           if (didMove)
           {
-            MoveToPosition(textBlockCursor, context.CaretMovementMode.Position, CursorMover.MoveLeft);
-          }
-          break;
-        }
-        case CaretMovementMode.Mode.Home:
-          break;
-        case CaretMovementMode.Mode.End:
-          break;
-        default:
-          throw new ArgumentOutOfRangeException();
-      }
-    }
-
-    public static void MoveCaretDownInDocument(DocumentEditorContext context)
-    {
-      var textBlockCursor = (TextBlock.TextBlockCursor)context.Caret.BlockCursor;
-
-      switch (context.CaretMovementMode.CurrentMode)
-      {
-        case CaretMovementMode.Mode.None:
-        {
-          double left = textBlockCursor.MeasureCursorPosition().Left;
-          context.CaretMovementMode.SetModeToPosition(left);
-          goto case CaretMovementMode.Mode.Position;
-        }
-        case CaretMovementMode.Mode.Position:
-        {
-          bool didMove;
-          MoveToBeginningOfNextLine(textBlockCursor, out didMove);
-          if (didMove)
-          {
-            MoveToPosition(textBlockCursor, context.CaretMovementMode.Position, CursorMover.MoveRight);
+            MoveToPosition(textBlockCursor, context.CaretMovementMode.Position, mover);
           }
           break;
         }
@@ -198,7 +165,7 @@ namespace TextRight.ContentEditor.Core.Editing
 
     private static bool MoveToPosition(TextBlock.TextBlockCursor textBlockCursor,
                                        double desiredPosition,
-                                       CursorMover cursorMover)
+                                       IDirectionalMover cursorMover)
     {
       var lastClosest = textBlockCursor.MeasureCursorPosition();
       double closestDistance = lastClosest.HorizontalDistanceTo(desiredPosition);
@@ -237,29 +204,57 @@ namespace TextRight.ContentEditor.Core.Editing
 
       if (didGoTooFar)
       {
-        cursorMover.MoveAway(textBlockCursor);
+        cursorMover.GetReversedMover().MoveTowards(textBlockCursor);
         timesMoved--;
       }
 
       return timesMoved == 0;
     }
 
-    private struct CursorMover
+    private static readonly IDirectionalMover MoveRightMover = MoveForwardMover.Instance;
+    private static readonly IDirectionalMover MoveLeftMover = MoveBackwardMover.Instance;
+
+    private interface IDirectionalMover
     {
-      public Func<TextBlock.TextBlockCursor, bool> MoveTowards;
-      public Func<TextBlock.TextBlockCursor, bool> MoveAway;
+      bool MoveTowards(TextBlock.TextBlockCursor cursor);
+      bool DidReachEdge(TextBlock.TextBlockCursor cursor);
+      IDirectionalMover GetReversedMover();
+    }
 
-      public static readonly CursorMover MoveLeft = new CursorMover()
-                                                    {
-                                                      MoveAway = cursor => cursor.MoveForward(),
-                                                      MoveTowards = cursor => cursor.MoveBackward(),
-                                                    };
+    private class MoveBackwardMover : IDirectionalMover
+    {
+      public static readonly IDirectionalMover Instance = new MoveBackwardMover();
 
-      public static readonly CursorMover MoveRight = new CursorMover()
-                                                     {
-                                                       MoveAway = cursor => cursor.MoveBackward(),
-                                                       MoveTowards = cursor => cursor.MoveForward(),
-                                                     };
+      private MoveBackwardMover()
+      {
+      }
+
+      public bool MoveTowards(TextBlock.TextBlockCursor cursor)
+        => cursor.MoveBackward();
+
+      public bool DidReachEdge(TextBlock.TextBlockCursor cursor)
+        => cursor.IsAtBeginning;
+
+      public IDirectionalMover GetReversedMover()
+        => MoveForwardMover.Instance;
+    }
+
+    private class MoveForwardMover : IDirectionalMover
+    {
+      public static readonly IDirectionalMover Instance = new MoveForwardMover();
+
+      private MoveForwardMover()
+      {
+      }
+
+      public bool MoveTowards(TextBlock.TextBlockCursor cursor)
+        => cursor.MoveForward();
+
+      public bool DidReachEdge(TextBlock.TextBlockCursor cursor)
+        => cursor.IsAtEnd;
+
+      public IDirectionalMover GetReversedMover()
+        => MoveBackwardMover.Instance;
     }
 
     /// <summary>
