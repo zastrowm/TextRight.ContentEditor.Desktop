@@ -45,17 +45,19 @@ namespace TextRight.ContentEditor.Desktop.View
 
       _keyCommands = new KeyboardShortcutCollection()
                      {
-                       { Key.Left, DocumentEditorContext.Commands.MoveCursorBackward },
-                       { ModifierKeys.Control, Key.Left, DocumentEditorContext.Commands.MoveToPreviousWord },
-                       { Key.Right, DocumentEditorContext.Commands.MoveCursorForward },
-                       { ModifierKeys.Control, Key.Right, DocumentEditorContext.Commands.MoveToNextWord },
+                       // editing commands
                        { Key.Enter, DocumentEditorContext.Commands.BreakBlock },
                        { Key.Delete, DocumentEditorContext.Commands.DeleteNextCharacter },
+                       // caret commands
+                       { Key.Left, CaretCommands.MoveBackward },
+                       { Key.Right, CaretCommands.MoveForward },
+                       { ModifierKeys.Control, Key.Left, CaretCommands.MoveToPreviousWord },
+                       { ModifierKeys.Control, Key.Right, CaretCommands.MoveToNextWord },
                        { Key.Back, DocumentEditorContext.Commands.DeletePreviousCharacter },
-                       { Key.Home, DocumentEditorContext.Commands.MoveToBeginningOfLine },
-                       { Key.End, DocumentEditorContext.Commands.MoveToEndOfLine },
-                       { Key.Up, DocumentEditorContext.Commands.MoveUp },
-                       { Key.Down, DocumentEditorContext.Commands.MoveDown },
+                       { Key.Home, CaretCommands.MoveToBeginningOfLine },
+                       { Key.End, CaretCommands.MoveToEndOfLine },
+                       { Key.Up, CaretCommands.MoveUp },
+                       { Key.Down, CaretCommands.MoveDown },
                      };
 
       InsertText("This is an example of a document within the editor.  It has many features that extend onto" +
