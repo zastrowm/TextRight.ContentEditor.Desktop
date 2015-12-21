@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.Editing
+namespace TextRight.ContentEditor.Core.Editing.Commands
 {
   /// <summary> Moves a caret forward by through different words. </summary>
   internal static class CaretWordMover

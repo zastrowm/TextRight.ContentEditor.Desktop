@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Core.Editing
+namespace TextRight.ContentEditor.Core.Editing.Commands
 {
   /// <summary>
   ///  Holds information about how a caret should move when navigating up or

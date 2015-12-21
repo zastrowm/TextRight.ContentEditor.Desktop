@@ -14,15 +14,4 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
     /// <param name="context"> The context on which the command should be executed. </param>
     void Execute(DocumentEditorContext context);
   }
-
-  /// <summary> A command which affects the Caret. </summary>
-  public interface ICaretCommand
-  {
-    /// <summary>
-    ///  True if <see cref="DocumentEditorContext.CaretMovementMode"/> should not
-    ///  have <see cref="CaretMovementMode.SetModeToNone"/> after the command is
-    ///  executed.
-    /// </summary>
-    bool ShouldPreserveCaretState { get; }
-  }
 }

@@ -45,14 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Editing\CaretDirectionalMover.cs" />
-    <Compile Include="Editing\CaretMovementMode.cs" />
-    <Compile Include="Editing\CaretWordMover.cs" />
+    <Compile Include="Editing\Commands\Caret\CaretCommands.cs" />
+    <Compile Include="Editing\Commands\Caret\CaretMovementMode.cs" />
+    <Compile Include="Editing\Commands\Caret\CaretWordMover.cs" />
     <Compile Include="Editing\Commands\DelegateSimpleActionCommand.cs" />
     <Compile Include="Editing\Commands\IActionCommand.cs" />
+    <Compile Include="Editing\Commands\Caret\ICaretCommand.cs" />
     <Compile Include="Editing\Commands\InsertTextCommand.cs" />
     <Compile Include="Editing\Commands\ISimpleActionCommand.cs" />
-    <Compile Include="Editing\Commands\SimpleCaretActionCommand.cs" />
+    <Compile Include="Editing\Commands\Caret\SimpleCaretActionCommand.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="Editing\TextBlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />

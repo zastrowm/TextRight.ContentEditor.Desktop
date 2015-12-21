@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.Editing.Commands;
 
-namespace TextRight.ContentEditor.Core.Editing
+namespace TextRight.ContentEditor.Core.Editing.Commands
 {
   /// <summary> Commands that operate on the current caret. </summary>
   public static class CaretCommands

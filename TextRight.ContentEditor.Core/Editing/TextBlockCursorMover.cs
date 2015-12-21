@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using TextRight.ContentEditor.Core.Utilities;
 
