@@ -48,13 +48,6 @@ namespace TextRight.ContentEditor.Core.Editing
       DeleteNextCharacter();
     }
 
-    /// <summary> Executes the given command </summary>
-    /// <param name="command"> The command to execute. </param>
-    public void Execute(ISimpleActionCommand command)
-    {
-      command.Execute(this);
-    }
-
     /// <summary> Executes the given command. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="command"> The command to execute. </param>
@@ -62,6 +55,12 @@ namespace TextRight.ContentEditor.Core.Editing
       where T : ISimpleActionCommand
     {
       command.Execute(this);
+
+      var caretCommand = command as ICaretCommand;
+      if (caretCommand != null && !caretCommand.ShouldPreserveCaretState)
+      {
+        CaretMovementMode.SetModeToNone();
+      }
     }
 
     /// <summary> Break the current block at the current position. </summary>
@@ -85,14 +84,6 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <summary> Commands available for operating on the DocumentEditorContext. </summary>
     public static class Commands
     {
-      /// <summary> A command which moves the cursor forward in the document. </summary>
-      public static ISimpleActionCommand MoveCursorForward { get; }
-        = new DelegateSimpleActionCommand("Caret.MoveForward", e => e.Caret.MoveForward());
-
-      /// <summary> A command which moves the cursor backward in the document. </summary>
-      public static ISimpleActionCommand MoveCursorBackward { get; }
-        = new DelegateSimpleActionCommand("Caret.MoveBackward", e => e.Caret.MoveBackward());
-
       public static ISimpleActionCommand DeleteNextCharacter { get; }
         = new DelegateSimpleActionCommand("Caret.DeleteNext", e => e.DeleteNextCharacter());
 
@@ -102,27 +93,42 @@ namespace TextRight.ContentEditor.Core.Editing
       public static ISimpleActionCommand BreakBlock { get; }
         = new DelegateSimpleActionCommand("Block.Break", e => e.BreakCurrentBlock());
 
+      public static ISimpleActionCommand MoveCursorForward { get; }
+        = new SimpleCaretActionCommand("Caret.MoveForward", e => e.Caret.MoveForward(),
+                                       shouldPreserveCaretState: false);
+
+      public static ISimpleActionCommand MoveCursorBackward { get; }
+        = new SimpleCaretActionCommand("Caret.MoveBackward", e => e.Caret.MoveBackward(),
+                                       shouldPreserveCaretState: false);
+
       public static ISimpleActionCommand MoveToNextWord { get; }
-        = new DelegateSimpleActionCommand("Caret.MoveForwardWord", CaretWordMover.MoveCaretToBeginningOfNextWord);
+        = new SimpleCaretActionCommand("Caret.MoveForwardWord",
+                                       CaretWordMover.MoveCaretToBeginningOfNextWord,
+                                       shouldPreserveCaretState: false);
 
       public static ISimpleActionCommand MoveToPreviousWord { get; }
-        = new DelegateSimpleActionCommand("Caret.MoveBackwardWord", CaretWordMover.MoveCaretToEndOfPreviousWord);
+        = new SimpleCaretActionCommand("Caret.MoveBackwardWord", CaretWordMover.MoveCaretToEndOfPreviousWord,
+                                       shouldPreserveCaretState: false);
 
       public static ISimpleActionCommand MoveToBeginningOfLine { get; }
-        = new DelegateSimpleActionCommand("Caret.MoveToLineBegimning",
-                                          c => CaretDirectionalMover.MoveCaretToBeginningOfLine(c));
+        = new SimpleCaretActionCommand("Caret.MoveToLineBeginning",
+                                       c => CaretDirectionalMover.MoveCaretToBeginningOfLine(c),
+                                       shouldPreserveCaretState: false);
 
       public static ISimpleActionCommand MoveToEndOfLine { get; }
-        = new DelegateSimpleActionCommand("Caret.MoveToLineEnd",
-                                          c => CaretDirectionalMover.MoveCaretToEndOfLine(c));
+        = new SimpleCaretActionCommand("Caret.MoveToLineEnd",
+                                       c => CaretDirectionalMover.MoveCaretToEndOfLine(c),
+                                       shouldPreserveCaretState: true);
 
       public static ISimpleActionCommand MoveUp { get; }
-        = new DelegateSimpleActionCommand("Caret.MoveUp",
-                                          c => CaretDirectionalMover.MoveCaretUpInDocument(c));
+        = new SimpleCaretActionCommand("Caret.MoveUp",
+                                       c => CaretDirectionalMover.MoveCaretUpInDocument(c),
+                                       shouldPreserveCaretState: true);
 
       public static ISimpleActionCommand MoveDown { get; }
-        = new DelegateSimpleActionCommand("Caret.MoveUp",
-                                          c => CaretDirectionalMover.MoveCaretDownInDocument(c));
+        = new SimpleCaretActionCommand("Caret.MoveUp",
+                                       c => CaretDirectionalMover.MoveCaretDownInDocument(c),
+                                       shouldPreserveCaretState: true);
     }
   }
 }

@@ -102,9 +102,25 @@ namespace TextRight.ContentEditor.Core.Editing
           break;
         }
         case CaretMovementMode.Mode.Home:
+        {
+          bool didMove;
+          MoveTowardsLineEdge(textBlockCursor, out didMove);
+          if (didMove)
+          {
+            BackwardMover.MoveCaretTowardsLineEdge(context);
+          }
           break;
+        }
         case CaretMovementMode.Mode.End:
+        {
+          bool didMove;
+          MoveTowardsLineEdge(textBlockCursor, out didMove);
+          if (didMove)
+          {
+            ForwardMover.MoveCaretTowardsLineEdge(context);
+          }
           break;
+        }
         default:
           throw new ArgumentOutOfRangeException();
       }

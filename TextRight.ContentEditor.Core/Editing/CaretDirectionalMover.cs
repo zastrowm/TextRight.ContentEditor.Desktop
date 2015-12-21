@@ -9,33 +9,30 @@ namespace TextRight.ContentEditor.Core.Editing
   {
     /// <summary> Moves the caret to the beginning of the line. </summary>
     /// <param name="context"> The context. </param>
-    /// <returns> True if the caret moved, false otherwise. </returns>
-    public static bool MoveCaretToBeginningOfLine(DocumentEditorContext context)
+    public static void MoveCaretToBeginningOfLine(DocumentEditorContext context)
     {
-      return MoveLeftMover.MoveCaretTowardsLineEdge(context);
+      TextBlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(context);
+      context.CaretMovementMode.SetModeToHome();
     }
 
     /// <summary> Move the caret to the end of the current line . </summary>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more
     ///  arguments are outside the required range. </exception>
     /// <param name="context"> The context. </param>
-    /// <returns> True if the cursor moved, false otherwise. </returns>
-    public static bool MoveCaretToEndOfLine(DocumentEditorContext context)
+    public static void MoveCaretToEndOfLine(DocumentEditorContext context)
     {
-      return MoveRightMover.MoveCaretTowardsLineEdge(context);
+      TextBlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(context);
+      context.CaretMovementMode.SetModeToEnd();
     }
 
     public static void MoveCaretUpInDocument(DocumentEditorContext context)
     {
-      MoveLeftMover.MoveCaretTowardsPositionInNextLine(context);
+      TextBlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context);
     }
 
     public static void MoveCaretDownInDocument(DocumentEditorContext context)
     {
-      MoveRightMover.MoveCaretTowardsPositionInNextLine(context);
+      TextBlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context);
     }
-
-    private static readonly TextBlockCursorMover MoveRightMover = TextBlockCursorMover.ForwardMover;
-    private static readonly TextBlockCursorMover MoveLeftMover = TextBlockCursorMover.BackwardMover;
   }
 }

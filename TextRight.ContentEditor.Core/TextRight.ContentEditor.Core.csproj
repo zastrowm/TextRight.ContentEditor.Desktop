@@ -52,6 +52,7 @@
     <Compile Include="Editing\Commands\IActionCommand.cs" />
     <Compile Include="Editing\Commands\InsertTextCommand.cs" />
     <Compile Include="Editing\Commands\ISimpleActionCommand.cs" />
+    <Compile Include="Editing\Commands\SimpleCaretActionCommand.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="Editing\TextBlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
