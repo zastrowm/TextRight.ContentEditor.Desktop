@@ -53,6 +53,7 @@
     <Compile Include="Editing\Commands\InsertTextCommand.cs" />
     <Compile Include="Editing\Commands\ISimpleActionCommand.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
+    <Compile Include="Editing\TextBlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
