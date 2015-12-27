@@ -58,12 +58,30 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
 
     private static void MoveCaretUpInDocument(DocumentEditorContext context)
     {
-      TextBlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context);
+      bool wasSuccessful = TextBlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context);
+      if (!wasSuccessful)
+      {
+        // move to the previous block
+        context.Caret.MoveBackward();
+        MoveToCurrentCursorPosition(context);
+      }
+    }
+
+    private static void MoveToCurrentCursorPosition(DocumentEditorContext context)
+    {
+      TextBlockCursorMover.BackwardMover.MoveToPosition(context);
+      TextBlockCursorMover.ForwardMover.MoveToPosition(context);
     }
 
     private static void MoveCaretDownInDocument(DocumentEditorContext context)
     {
-      TextBlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context);
+      bool wasSuccessful = TextBlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context);
+      if (!wasSuccessful)
+      {
+        // move to the next block
+        context.Caret.MoveForward();
+        MoveToCurrentCursorPosition(context);
+      }
     }
   }
 }

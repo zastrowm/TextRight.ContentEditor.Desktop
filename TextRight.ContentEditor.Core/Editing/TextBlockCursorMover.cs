@@ -80,7 +80,11 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more
     ///  arguments are outside the required range. </exception>
     /// <param name="context"> The context's whose caret should be updated. </param>
-    public void MoveCaretTowardsPositionInNextLine(DocumentEditorContext context)
+    /// <returns>
+    ///  True if the caret was moved to the next line, false if it was not able to
+    ///  be moved (reached edge of block.
+    /// </returns>
+    public bool MoveCaretTowardsPositionInNextLine(DocumentEditorContext context)
     {
       var textBlockCursor = (TextBlock.TextBlockCursor)context.Caret.BlockCursor;
 
@@ -100,27 +104,27 @@ namespace TextRight.ContentEditor.Core.Editing
           {
             MoveToPosition(textBlockCursor, context.CaretMovementMode.Position);
           }
-          break;
+          return didMove;
         }
         case CaretMovementMode.Mode.Home:
         {
-          bool didMove;
-          MoveTowardsLineEdge(textBlockCursor, out didMove);
-          if (didMove)
+          bool didMoveToNextLine;
+          var state = MoveTowardsLineEdge(textBlockCursor, out didMoveToNextLine);
+          if (didMoveToNextLine)
           {
             BackwardMover.MoveCaretTowardsLineEdge(context);
           }
-          break;
+          return state != EndMovementState.CouldNotMoveWithinBlock;
         }
         case CaretMovementMode.Mode.End:
         {
           bool didMove;
-          MoveTowardsLineEdge(textBlockCursor, out didMove);
+          var state = MoveTowardsLineEdge(textBlockCursor, out didMove);
           if (didMove)
           {
             ForwardMover.MoveCaretTowardsLineEdge(context);
           }
-          break;
+          return state != EndMovementState.CouldNotMoveWithinBlock;
         }
         default:
           throw new ArgumentOutOfRangeException();
@@ -167,6 +171,12 @@ namespace TextRight.ContentEditor.Core.Editing
         default:
           return EndMovementState.MovedWithMoreThanOneMove;
       }
+    }
+
+    public bool MoveToPosition(DocumentEditorContext context)
+    {
+      var cursor = (TextBlock.TextBlockCursor)context.Caret.BlockCursor;
+      return MoveToPosition(cursor, context.CaretMovementMode.Position);
     }
 
     /// <summary>

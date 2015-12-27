@@ -64,6 +64,10 @@ namespace TextRight.ContentEditor.Desktop.View
                  "multiple lines enough that we can start to create paragraphs.  Don't also forget" +
                  "about X & Y and those other things that extend the line length for the X-Files.  " +
                  "Isn't that great");
+
+      _editor.Execute(DocumentEditorContext.Commands.BreakBlock);
+
+      InsertText("Another paragraph with addition text sits here, right where you need it to be.");
     }
 
     public void Initialize()

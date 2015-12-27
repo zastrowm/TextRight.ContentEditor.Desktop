@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Documents;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using Block = TextRight.ContentEditor.Core.ObjectModel.Blocks.Block;
@@ -16,6 +17,8 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public FlowDocumentBlockCollectionView(BlockCollection blockCollection)
     {
+      TextAlignment = TextAlignment.Left;
+
       _blockCollection = blockCollection;
       _blockCollection.Target = this;
 
