@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using TextRight.ContentEditor.Core.Editing.Commands;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -17,7 +18,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   }
 
   /// <summary> Holds a collection of blocks. </summary>
-  public class BlockCollection : Block, IEnumerable<Block>
+  public class BlockCollection : Block,
+                                 IEnumerable<Block>,
+                                 ICommandProcessorHook
   {
     private readonly List<Block> _childrenCollection;
 
@@ -200,40 +203,42 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return GetEnumerator();
     }
 
-    /// <summary> True if the block can break into two at the given position. </summary>
-    /// <param name="caret"> The caret that specified the position. </param>
+    /// <summary>
+    ///  True if the block can break into two at the given position.
+    /// </summary>
+    /// <param name="cursor"> The caret that specified the position. </param>
     /// <returns> true if we can break, false if not. </returns>
-    public bool CanBreak(DocumentCursor caret)
+    public bool CanBreak(IBlockContentCursor cursor)
       => true;
 
     /// <summary> Breaks the block into two at the given location. </summary>
-    /// <param name="caret"> The caret at which the block should be split. </param>
+    /// <param name="cursor"> The caret at which the block should be split. </param>
     /// <returns>
     ///  The block that is the next sibling of the original block that was split
     ///  into two.
     /// </returns>
-    public Block Break(DocumentCursor caret)
+    public Block Break(IBlockContentCursor cursor)
     {
-      if (!CanBreak(caret))
+      if (!CanBreak(cursor))
         return null;
 
-      var targetBlock = caret.BlockCursor.Block;
+      var targetBlock = cursor.Block;
 
       Block secondaryBlock = null;
 
-      if (caret.BlockCursor.IsAtEnd)
+      if (cursor.IsAtEnd)
       {
         secondaryBlock = new TextBlock();
         InsertBlockAfter(targetBlock, secondaryBlock);
       }
-      else if (caret.BlockCursor.IsAtBeginning)
+      else if (cursor.IsAtBeginning)
       {
         secondaryBlock = targetBlock;
         InsertBlockBefore(targetBlock, new TextBlock());
       }
       else
       {
-        var textBlockCursor = (TextBlock.TextBlockCursor)caret.BlockCursor;
+        var textBlockCursor = (TextBlock.TextBlockCursor)cursor;
         var fragments = textBlockCursor.ExtractToEnd();
 
         var newTextBlock = new TextBlock();
@@ -252,5 +257,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
       return secondaryBlock;
     }
+
+    /// <inheritdoc />
+    public ICommandProcessor CommandProcessor
+      => BlockCollectionCommandProcessor.Instance;
   }
 }

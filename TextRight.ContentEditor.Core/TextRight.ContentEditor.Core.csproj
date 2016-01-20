@@ -45,26 +45,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Editing\Commands\Caret\CaretCommands.cs" />
+    <Compile Include="Editing\CommandExecutionContext.cs" />
+    <Compile Include="Editing\Commands\BuiltInCaretNavigationCommand.cs" />
     <Compile Include="Editing\Commands\Caret\CaretMovementMode.cs" />
     <Compile Include="Editing\Commands\Caret\CaretWordMover.cs" />
-    <Compile Include="Editing\Commands\DelegateSimpleActionCommand.cs" />
-    <Compile Include="Editing\Commands\IActionCommand.cs" />
+    <Compile Include="Editing\Commands\EditorCommand.cs" />
     <Compile Include="Editing\Commands\Caret\ICaretCommand.cs" />
+    <Compile Include="Editing\Commands\ICommandProcessor.cs" />
     <Compile Include="Editing\Commands\InsertTextCommand.cs" />
-    <Compile Include="Editing\Commands\ISimpleActionCommand.cs" />
-    <Compile Include="Editing\Commands\Caret\SimpleCaretActionCommand.cs" />
+    <Compile Include="Editing\Commands\CaretNavigationCommand.cs" />
+    <Compile Include="Editing\Commands\TextCommands.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="Editing\TextBlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
+    <Compile Include="ObjectModel\Blocks\BlockCollectionCommandProcessor.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
     <Compile Include="ObjectModel\Blocks\BlockType.cs" />
     <Compile Include="ObjectModel\Blocks\IBlockContentCursor.cs" />
+    <Compile Include="ObjectModel\Blocks\ICommandProcessorHook.cs" />
     <Compile Include="ObjectModel\Blocks\IViewableObject.cs" />
     <Compile Include="ObjectModel\Blocks\StyledTextFragment.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlock.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlock.Cursor.cs" />
+    <Compile Include="ObjectModel\Blocks\TextBlockCursorCommandProcessor.cs" />
     <Compile Include="ObjectModel\DocumentCursor.cs" />
     <Compile Include="ObjectModel\DocumentOwner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

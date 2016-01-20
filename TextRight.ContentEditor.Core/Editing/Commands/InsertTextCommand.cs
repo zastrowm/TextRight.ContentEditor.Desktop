@@ -6,7 +6,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Editing.Commands
 {
   /// <summary> Allows text to be inserted into document. </summary>
-  public struct InsertTextCommand : IActionCommand
+  public struct InsertTextCommand
   {
     private readonly string _textToInsert;
 
@@ -19,7 +19,7 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
     /// <param name="context"> The context to which the text should be added. </param>
     public void Execute(DocumentEditorContext context)
     {
-      var textCursor = context.Caret.BlockCursor as ITextContentCursor;
+      var textCursor = context.Cursor as ITextContentCursor;
       if (textCursor?.CanInsertText() != true)
         return;
 

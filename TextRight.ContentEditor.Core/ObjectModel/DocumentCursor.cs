@@ -32,12 +32,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel
 
     /// <summary> Moves the cursor forward within its current block. </summary>
     /// <returns> True if the cursor moved forward, false if it did not move forward. </returns>
-    public bool MoveForwardInBlock()
+    private bool MoveForwardInBlock()
       => BlockCursor.MoveForward();
 
     /// <summary> Moves the cursor backward within its current block. </summary>
     /// <returns> True if the cursor moved backward false if it did not move backward. </returns>
-    public bool MoveBackwardInBlock()
+    private bool MoveBackwardInBlock()
       => BlockCursor.MoveBackward();
 
     /// <summary> Move the cursor forward in the document. </summary>

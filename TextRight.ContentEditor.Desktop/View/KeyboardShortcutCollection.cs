@@ -22,7 +22,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <summary> Adds a keyboard shortcut associated with a command. </summary>
     /// <param name="key"> The key to associate with the command. </param>
     /// <param name="command"> The command. </param>
-    public void Add(Key key, ISimpleActionCommand command)
+    public void Add(Key key, EditorCommand command)
     {
       Add(0, key, command);
     }
@@ -33,7 +33,7 @@ namespace TextRight.ContentEditor.Desktop.View
     ///  SHIFT is held. </param>
     /// <param name="key"> The key to associate with the command. </param>
     /// <param name="command"> The command. </param>
-    public void Add(ModifierKeys modifier, Key key, ISimpleActionCommand command)
+    public void Add(ModifierKeys modifier, Key key, EditorCommand command)
     {
       // TODO thrown an exception on duplicate
       var newShortcut = new Shortcut(modifier, key, command);
@@ -62,7 +62,7 @@ namespace TextRight.ContentEditor.Desktop.View
     ///  be returned. </param>
     /// <param name="key"> The key to associate with the command. </param>
     /// <returns> The command associated with the modifier keys/key. </returns>
-    public ISimpleActionCommand Lookup(ModifierKeys modifers, Key key)
+    public EditorCommand Lookup(ModifierKeys modifers, Key key)
     {
       List<Shortcut> list;
       if (!_keyLookup.TryGetValue(key, out list))
@@ -110,7 +110,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <summary> Data storage for a keyboard shortcut. </summary>
     public class Shortcut
     {
-      public Shortcut(ModifierKeys modifers, Key key, ISimpleActionCommand command)
+      public Shortcut(ModifierKeys modifers, Key key, EditorCommand command)
       {
         Modifers = modifers;
         Key = key;
@@ -121,7 +121,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
       public Key Key { get; }
 
-      public ISimpleActionCommand Command { get; }
+      public EditorCommand Command { get; }
     }
   }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Core.Editing.Commands
@@ -10,82 +11,78 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
   {
     /// <summary> Moves the caret to the beginning of the next word. </summary>
     /// <param name="context"> The context's whose caret should be moved. </param>
-    public static void MoveCaretToBeginningOfNextWord(DocumentEditorContext context)
+    public static bool MoveCaretToBeginningOfNextWord(DocumentEditorContext context)
     {
-      var caret = context.Caret;
-      var blockCaret = caret.BlockCursor;
+      var blockCaret = context.Cursor;
 
-      if (!blockCaret.IsAtEnd && blockCaret is TextBlock.TextBlockCursor)
+      // we either don't know what kind of block cursor it is, or we want to move
+      // to the next block anyways. 
+      if (blockCaret.IsAtEnd)
       {
-        var textCursor = (TextBlock.TextBlockCursor)blockCaret;
+        return false;
+      }
 
-        CharacterType characterType = Characterize(textCursor.CharacterAfter);
-        CharacterType lastCharacterType;
+      var textCursor = (TextBlock.TextBlockCursor)blockCaret;
 
-        // navigate until we get to a character category that A) is different from the last
-        // seen category and B) is not an Don't-Care-Category (AKA < 0)
-        do
+      CharacterType characterType = Characterize(textCursor.CharacterAfter);
+      CharacterType lastCharacterType;
+
+      // navigate until we get to a character category that A) is different from the last
+      // seen category and B) is not an Don't-Care-Category (AKA < 0)
+      do
+      {
+        lastCharacterType = characterType;
+
+        if (!textCursor.MoveForward())
         {
-          lastCharacterType = characterType;
+          break;
+        }
 
-          if (!textCursor.MoveForward())
-          {
-            break;
-          }
+        characterType = Characterize(textCursor.CharacterAfter);
+      } while (lastCharacterType == characterType
+               || characterType < CharacterType.PlannedCharacters);
 
-          characterType = Characterize(textCursor.CharacterAfter);
-        } while (lastCharacterType == characterType
-                 || characterType < CharacterType.PlannedCharacters);
-      }
-      else
-      {
-        // we either don't know what kind of block cursor it is, or we want to move
-        // to the next block anyways. 
-        caret.MoveForward();
-      }
+      return true;
     }
 
     /// <summary> Moves the caret to the end of the previous word. </summary>
     /// <param name="context"> The context's whose caret should be moved. </param>
-    public static void MoveCaretToEndOfPreviousWord(DocumentEditorContext context)
+    public static bool MoveCaretToEndOfPreviousWord(DocumentEditorContext context)
     {
-      var caret = context.Caret;
-      var blockCaret = caret.BlockCursor;
+      var blockCaret = context.Cursor;
 
-      if (!blockCaret.IsAtBeginning && blockCaret is TextBlock.TextBlockCursor)
+      // we either don't know what kind of block cursor it is, or we want to move
+      // to the next block anyways. 
+      if (blockCaret.IsAtBeginning)
+        return false;
+
+      var textCursor = (TextBlock.TextBlockCursor)blockCaret;
+
+      CharacterType characterType;
+      CharacterType lastCharacterType;
+
+      // navigate backwards through all of the initial whitespace/undesirable characters
+      // until we reach a non whitespace/undesirable.
+      do
       {
-        var textCursor = (TextBlock.TextBlockCursor)blockCaret;
+        characterType = Characterize(textCursor.CharacterBefore);
+      } while (characterType < CharacterType.PlannedCharacters
+               && textCursor.MoveBackward());
 
-        CharacterType characterType;
-        CharacterType lastCharacterType;
-
-        // navigate backwards through all of the initial whitespace/undesirable characters
-        // until we reach a non whitespace/undesirable.
-        do
-        {
-          characterType = Characterize(textCursor.CharacterBefore);
-        } while (characterType < CharacterType.PlannedCharacters
-                 && textCursor.MoveBackward());
-
-        // now move backwards until we change categories
-        do
-        {
-          lastCharacterType = characterType;
-
-          if (!textCursor.MoveBackward())
-          {
-            break;
-          }
-
-          characterType = Characterize(textCursor.CharacterBefore);
-        } while (lastCharacterType == characterType);
-      }
-      else
+      // now move backwards until we change categories
+      do
       {
-        // we either don't know what kind of block cursor it is, or we want to move
-        // to the next block anyways. 
-        caret.MoveBackward();
-      }
+        lastCharacterType = characterType;
+
+        if (!textCursor.MoveBackward())
+        {
+          break;
+        }
+
+        characterType = Characterize(textCursor.CharacterBefore);
+      } while (lastCharacterType == characterType);
+
+      return true;
     }
 
     /// <summary> Identifies the "type" of the character for analyzing groups of words. </summary>

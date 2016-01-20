@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -24,7 +25,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     ///      equal to Fragment.Length and we're pointing to the last fragment.
     /// </remarks>
     public class TextBlockCursor : IBlockContentCursor,
-                                   ITextContentCursor
+                                   ITextContentCursor,
+                                   ICommandProcessorHook
     {
       private readonly TextBlock _block;
 
@@ -48,6 +50,30 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       /// <inheritdoc />
       public Block Block
         => _block;
+
+      internal SnapshotState State
+      {
+        get
+        {
+          return new SnapshotState()
+                 {
+                   OffsetIntoSpan = OffsetIntoSpan,
+                   Fragment = Fragment,
+                 };
+        }
+        set
+        {
+          OffsetIntoSpan = value.OffsetIntoSpan;
+          Fragment = value.Fragment;
+        }
+      }
+
+      internal struct SnapshotState
+      {
+        public int OffsetIntoSpan;
+        public StyledTextFragment Fragment;
+        public TextBlock Block;
+      }
 
       /// <summary> Get the character after the current cursor position. </summary>
       public char CharacterAfter
@@ -134,6 +160,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
           : MeasureForward().FlattenLeft();
       }
 
+      /// <summary> Attempts to process incoming commands. </summary>
+      public ICommandProcessor CommandProcessor
+        => TextBlockCursorCommandProcessor.Instance;
+
       /// <inheritdoc />
       public bool MoveBackward()
       {
@@ -187,7 +217,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       }
 
       /// <inheritdoc />
-      void ITextContentCursor.DeleteText(int numberOfCharacters)
+      public void DeleteText(int numberOfCharacters)
       {
         //while (numberOfCharacters > 0)
         {

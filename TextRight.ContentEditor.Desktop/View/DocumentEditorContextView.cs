@@ -46,18 +46,18 @@ namespace TextRight.ContentEditor.Desktop.View
       _keyCommands = new KeyboardShortcutCollection()
                      {
                        // editing commands
-                       { Key.Enter, DocumentEditorContext.Commands.BreakBlock },
-                       { Key.Delete, DocumentEditorContext.Commands.DeleteNextCharacter },
+                       { Key.Enter, TextCommands.BreakBlock },
+                       { Key.Delete, TextCommands.DeleteNextCharacter },
+                       { Key.Back, TextCommands.DeletePreviousCharacter },
                        // caret commands
-                       { Key.Left, CaretCommands.MoveBackward },
-                       { Key.Right, CaretCommands.MoveForward },
-                       { ModifierKeys.Control, Key.Left, CaretCommands.MoveToPreviousWord },
-                       { ModifierKeys.Control, Key.Right, CaretCommands.MoveToNextWord },
-                       { Key.Back, DocumentEditorContext.Commands.DeletePreviousCharacter },
-                       { Key.Home, CaretCommands.MoveToBeginningOfLine },
-                       { Key.End, CaretCommands.MoveToEndOfLine },
-                       { Key.Up, CaretCommands.MoveUp },
-                       { Key.Down, CaretCommands.MoveDown },
+                       { Key.Left, BuiltInCaretNavigationCommand.Backward },
+                       { Key.Right, BuiltInCaretNavigationCommand.Forward },
+                       { ModifierKeys.Control, Key.Left, BuiltInCaretNavigationCommand.PreviousWord },
+                       { ModifierKeys.Control, Key.Right, BuiltInCaretNavigationCommand.NextWord },
+                       { Key.Home, BuiltInCaretNavigationCommand.Home },
+                       { Key.End, BuiltInCaretNavigationCommand.End },
+                       { Key.Up, BuiltInCaretNavigationCommand.Up },
+                       { Key.Down, BuiltInCaretNavigationCommand.Down },
                      };
 
       InsertText("This is an example of a document within the editor.  It has many features that extend onto" +
@@ -65,9 +65,14 @@ namespace TextRight.ContentEditor.Desktop.View
                  "about X & Y and those other things that extend the line length for the X-Files.  " +
                  "Isn't that great");
 
-      _editor.Execute(DocumentEditorContext.Commands.BreakBlock);
+      _editor.Execute(TextCommands.BreakBlock);
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
+    }
+
+    public new void Focus()
+    {
+      _flowDocument.Focus();
     }
 
     public void Initialize()
@@ -104,7 +109,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public bool HandleKeyDown(Key key)
     {
-      ISimpleActionCommand command = _keyCommands.Lookup(Keyboard.Modifiers, key);
+      var command = _keyCommands.Lookup(Keyboard.Modifiers, key);
       if (command != null)
       {
         _editor.Execute(command);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
@@ -28,50 +29,65 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <summary> The Caret's current position. </summary>
     public DocumentCursor Caret { get; }
 
+    /// <summary> TODO </summary>
+    public IBlockContentCursor Cursor
+      => Caret.BlockCursor;
+
     /// <summary> Movement information about the caret. </summary>
     public CaretMovementMode CaretMovementMode { get; }
 
-    /// <summary> Removes the character after the cursor. </summary>
-    private void DeleteNextCharacter()
+    public bool Execute(EditorCommand command)
     {
-      var textCursor = Caret.BlockCursor as ITextContentCursor;
-      if (textCursor == null)
-        return;
-
-      textCursor.DeleteText(1);
-    }
-
-    /// <summary> Removes the character before the cursor. </summary>
-    private void DeletePreviousCharacter()
-    {
-      Caret.MoveBackward();
-      DeleteNextCharacter();
-    }
-
-    /// <summary> Executes the given command. </summary>
-    /// <typeparam name="T"> Generic type parameter. </typeparam>
-    /// <param name="command"> The command to execute. </param>
-    public void Execute<T>(T command)
-      where T : ISimpleActionCommand
-    {
-      command.Execute(this);
-
-      var caretCommand = command as ICaretCommand;
-      if (caretCommand != null && !caretCommand.ShouldPreserveCaretState)
+      // TODO put this somewhere better
+      if (command == TextCommands.BreakBlock)
       {
-        CaretMovementMode.SetModeToNone();
+        BreakCurrentBlock();
+        return true;
       }
+
+      var context = new CommandExecutionContext();
+      context.ConfigureFor(Cursor);
+
+      // first check if the caret itself handles the command
+      if (TryHandleCommand(command, context, Cursor as ICommandProcessorHook))
+        return true;
+
+      // if that doesn't work, walk up the tree checking to see if any of the
+      // blocks up to the top-most block can handle the command. 
+      do
+      {
+        if (TryHandleCommand(command, context, context.CurrentBlock as ICommandProcessorHook))
+          return true;
+      } while (context.MoveUp());
+
+      return false;
+    }
+
+    /// <summary>
+    ///  Allows the given processor hook to try and process the given command.
+    /// </summary>
+    /// <param name="command"> The command to try to handle. </param>
+    /// <param name="context"></param>
+    /// <param name="processorHook"> The processor hook, which can be null
+    ///   (convenient for passing in parameters using "as" cast that may or may not
+    ///   implement ICommandProcessorHook). </param>
+    /// <returns> True if the command was handled, false otherwise. </returns>
+    private bool TryHandleCommand(EditorCommand command,
+                                  CommandExecutionContext context,
+                                  [CanBeNull] ICommandProcessorHook processorHook)
+    {
+      return processorHook?.CommandProcessor?.TryProcess(this, command, context) == true;
     }
 
     /// <summary> Break the current block at the current position. </summary>
     private void BreakCurrentBlock()
     {
-      var currentBlock = Caret.BlockCursor.Block;
+      var currentBlock = Cursor.Block;
       var parentBlock = currentBlock.Parent;
 
-      if (parentBlock.CanBreak(Caret))
+      if (parentBlock.CanBreak(Cursor))
       {
-        var newBlock = parentBlock.Break(Caret);
+        var newBlock = parentBlock.Break(Cursor);
         if (newBlock != null)
         {
           var cursor = newBlock.GetCursor();
@@ -79,19 +95,6 @@ namespace TextRight.ContentEditor.Core.Editing
           Caret.MoveTo(cursor);
         }
       }
-    }
-
-    /// <summary> Commands available for operating on the DocumentEditorContext. </summary>
-    public static class Commands
-    {
-      public static ISimpleActionCommand DeleteNextCharacter { get; }
-        = new DelegateSimpleActionCommand("Caret.DeleteNext", e => e.DeleteNextCharacter());
-
-      public static ISimpleActionCommand DeletePreviousCharacter { get; }
-        = new DelegateSimpleActionCommand("Caret.DeleteNext", e => e.DeletePreviousCharacter());
-
-      public static ISimpleActionCommand BreakBlock { get; }
-        = new DelegateSimpleActionCommand("Block.Break", e => e.BreakCurrentBlock());
     }
   }
 }

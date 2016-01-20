@@ -44,7 +44,7 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <returns> True if the cursor moved, false otherwise. </returns>
     public bool MoveCaretTowardsLineEdge(DocumentEditorContext context)
     {
-      var cursor = (TextBlock.TextBlockCursor)context.Caret.BlockCursor;
+      var cursor = (TextBlock.TextBlockCursor)context.Cursor;
       bool didMoveToNextLine;
       var result = MoveTowardsLineEdge(cursor, out didMoveToNextLine);
 
@@ -86,7 +86,7 @@ namespace TextRight.ContentEditor.Core.Editing
     /// </returns>
     public bool MoveCaretTowardsPositionInNextLine(DocumentEditorContext context)
     {
-      var textBlockCursor = (TextBlock.TextBlockCursor)context.Caret.BlockCursor;
+      var textBlockCursor = (TextBlock.TextBlockCursor)context.Cursor;
 
       switch (context.CaretMovementMode.CurrentMode)
       {
@@ -175,7 +175,7 @@ namespace TextRight.ContentEditor.Core.Editing
 
     public bool MoveToPosition(DocumentEditorContext context)
     {
-      var cursor = (TextBlock.TextBlockCursor)context.Caret.BlockCursor;
+      var cursor = (TextBlock.TextBlockCursor)context.Cursor;
       return MoveToPosition(cursor, context.CaretMovementMode.Position);
     }
 
@@ -271,7 +271,8 @@ namespace TextRight.ContentEditor.Core.Editing
     /// </summary>
     private static bool AreInline(MeasuredRectangle original, MeasuredRectangle comparedTo)
     {
-      MeasuredRectangle first, second;
+      MeasuredRectangle first,
+                        second;
 
       if (original.Top <= comparedTo.Top)
       {
