@@ -88,30 +88,20 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
       /// <inheritdoc />
       void ICommandProcessorPipelineHook.PreProcess(EditorCommand command, DocumentEditorContext context)
       {
-        if (command != Up && command != Down)
+        var builtIn = command as BuiltInCaretNavigationCommand;
+        if (builtIn == null)
           return;
 
-        if (context.CaretMovementMode.CurrentMode == CaretMovementMode.Mode.None)
-        {
-          // make sure that when we move up/down, we have a non-None mode
-          TextBlock.TextBlockCursor textBlockCursor = (TextBlock.TextBlockCursor)context.Cursor;
-          context.CaretMovementMode.SetModeToPosition(textBlockCursor.MeasureCursorPosition().Left);
-        }
-      }
-
-      /// <inheritdoc />
-      void ICommandProcessorPipelineHook.PostProcess(EditorCommand command, DocumentEditorContext context)
-      {
-        var caretNavigationCommand = command as BuiltInCaretNavigationCommand;
-        if (caretNavigationCommand == null)
-          return;
-
-        // ReSharper disable once SwitchStatementMissingSomeCases
-        switch (caretNavigationCommand.Mode)
+        switch (builtIn.Mode)
         {
           case NavigationType.Up:
           case NavigationType.Down:
-            // this is taken care of by the pre-hook
+            if (context.CaretMovementMode.CurrentMode == CaretMovementMode.Mode.None)
+            {
+              // make sure that when we move up/down, we have a non-None mode
+              TextBlock.TextBlockCursor textBlockCursor = (TextBlock.TextBlockCursor)context.Cursor;
+              context.CaretMovementMode.SetModeToPosition(textBlockCursor.MeasureCursorPosition().Left);
+            }
             break;
           case NavigationType.Home:
             context.CaretMovementMode.SetModeToHome();
@@ -123,12 +113,18 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
             // if we move the caret and the command doesn't actually affect the cursor
             // state, then the state should be reset.  This is what preserves up/down
             // positioning. 
-            if (caretNavigationCommand.IsResetCursorStateRequired)
+            if (builtIn.IsResetCursorStateRequired)
             {
               context.CaretMovementMode.SetModeToNone();
             }
             break;
         }
+      }
+
+      /// <inheritdoc />
+      void ICommandProcessorPipelineHook.PostProcess(EditorCommand command, DocumentEditorContext context)
+      {
+        // no-op
       }
     }
   }
