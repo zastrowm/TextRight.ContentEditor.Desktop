@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Core.Editing.Commands
 {
@@ -17,10 +18,10 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
       = new BuiltInCaretNavigationCommand("Caret.Backward", NavigationType.Backward);
 
     public static BuiltInCaretNavigationCommand Up { get; }
-      = new BuiltInCaretNavigationCommand("Caret.Up", NavigationType.Up);
+      = new BuiltInCaretNavigationCommand("Caret.Up", NavigationType.Up, isCursorStatePreserved: true);
 
     public static BuiltInCaretNavigationCommand Down { get; }
-      = new BuiltInCaretNavigationCommand("Caret.Down", NavigationType.Down);
+      = new BuiltInCaretNavigationCommand("Caret.Down", NavigationType.Down, isCursorStatePreserved: true);
 
     public static BuiltInCaretNavigationCommand NextWord { get; }
       = new BuiltInCaretNavigationCommand("Caret.NextWord", NavigationType.NextWord);
@@ -29,10 +30,10 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
       = new BuiltInCaretNavigationCommand("Caret.PreviousWord", NavigationType.PreviousWord);
 
     public static BuiltInCaretNavigationCommand Home { get; }
-      = new BuiltInCaretNavigationCommand("Caret.Home", NavigationType.Home);
+      = new BuiltInCaretNavigationCommand("Caret.Home", NavigationType.Home, isCursorStatePreserved: true);
 
     public static BuiltInCaretNavigationCommand End { get; }
-      = new BuiltInCaretNavigationCommand("Caret.End", NavigationType.End);
+      = new BuiltInCaretNavigationCommand("Caret.End", NavigationType.End, isCursorStatePreserved: true);
 
     public static BuiltInCaretNavigationCommand BeginningOfBlock { get; }
       = new BuiltInCaretNavigationCommand("Caret.BeginningOfBlock", NavigationType.BeginningOfBlock);
@@ -40,17 +41,31 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
     public static BuiltInCaretNavigationCommand EndOfBlock { get; }
       = new BuiltInCaretNavigationCommand("Caret.EndOfBlock", NavigationType.EndOfBlock);
 
+    /// <summary>
+    ///  A pipeline hook that correctly sets up the CaretMovementMode for the
+    ///  DocumentContext.
+    /// </summary>
+    public static ICommandProcessorPipelineHook PipelineHook { get; }
+      = new ProcessorHook();
+
     /// <summary> Constructor. </summary>
     /// <param name="id"> The identifier. </param>
     /// <param name="mode"> The mode of the command. </param>
-    private BuiltInCaretNavigationCommand(string id, NavigationType mode)
+    /// <param name="isCursorStatePreserved"> True if the command keeps the cursor state. </param>
+    private BuiltInCaretNavigationCommand(string id, NavigationType mode, bool isCursorStatePreserved = false)
       : base(id)
     {
       Mode = mode;
+      IsResetCursorStateRequired = !isCursorStatePreserved;
     }
 
     /// <summary> The mode of the command. </summary>
     public NavigationType Mode { get; }
+
+    /// <summary>
+    ///  True if the document context's CaretMovementMode should be reset.
+    /// </summary>
+    public bool IsResetCursorStateRequired { get; set; }
 
     /// <summary> The type of built-in navigation command to handle. </summary>
     public enum NavigationType
@@ -65,6 +80,56 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
       End,
       BeginningOfBlock,
       EndOfBlock,
+    }
+
+    /// <summary> Sets up the caret state for various commands.  </summary>
+    private class ProcessorHook : ICommandProcessorPipelineHook
+    {
+      /// <inheritdoc />
+      void ICommandProcessorPipelineHook.PreProcess(EditorCommand command, DocumentEditorContext context)
+      {
+        if (command != Up && command != Down)
+          return;
+
+        if (context.CaretMovementMode.CurrentMode == CaretMovementMode.Mode.None)
+        {
+          // make sure that when we move up/down, we have a non-None mode
+          TextBlock.TextBlockCursor textBlockCursor = (TextBlock.TextBlockCursor)context.Cursor;
+          context.CaretMovementMode.SetModeToPosition(textBlockCursor.MeasureCursorPosition().Left);
+        }
+      }
+
+      /// <inheritdoc />
+      void ICommandProcessorPipelineHook.PostProcess(EditorCommand command, DocumentEditorContext context)
+      {
+        var caretNavigationCommand = command as BuiltInCaretNavigationCommand;
+        if (caretNavigationCommand == null)
+          return;
+
+        // ReSharper disable once SwitchStatementMissingSomeCases
+        switch (caretNavigationCommand.Mode)
+        {
+          case NavigationType.Up:
+          case NavigationType.Down:
+            // this is taken care of by the pre-hook
+            break;
+          case NavigationType.Home:
+            context.CaretMovementMode.SetModeToHome();
+            break;
+          case NavigationType.End:
+            context.CaretMovementMode.SetModeToEnd();
+            break;
+          default:
+            // if we move the caret and the command doesn't actually affect the cursor
+            // state, then the state should be reset.  This is what preserves up/down
+            // positioning. 
+            if (caretNavigationCommand.IsResetCursorStateRequired)
+            {
+              context.CaretMovementMode.SetModeToNone();
+            }
+            break;
+        }
+      }
     }
   }
 }

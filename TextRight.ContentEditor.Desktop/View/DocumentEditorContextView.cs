@@ -65,7 +65,7 @@ namespace TextRight.ContentEditor.Desktop.View
                  "about X & Y and those other things that extend the line length for the X-Files.  " +
                  "Isn't that great");
 
-      _editor.Execute(TextCommands.BreakBlock);
+      _editor.CommandPipeline.Execute(TextCommands.BreakBlock);
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
     }
@@ -112,7 +112,7 @@ namespace TextRight.ContentEditor.Desktop.View
       var command = _keyCommands.Lookup(Keyboard.Modifiers, key);
       if (command != null)
       {
-        _editor.Execute(command);
+        _editor.CommandPipeline.Execute(command);
         return true;
       }
 

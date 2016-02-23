@@ -110,27 +110,27 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <inheritdoc />
     private bool NavigateHome(DocumentEditorContext context)
     {
-      context.CaretMovementMode.SetModeToHome();
-      return TextBlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(context);
+      return TextBlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(context.Cursor);
     }
 
     /// <inheritdoc />
     private bool NavigateEnd(DocumentEditorContext context)
     {
-      context.CaretMovementMode.SetModeToEnd();
-      return TextBlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(context);
+      return TextBlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(context.Cursor);
     }
 
     /// <inheritdoc />
     private bool NavigateUp(DocumentEditorContext context)
     {
-      return TextBlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context);
+      return TextBlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
+                                                                                   context.CaretMovementMode);
     }
 
     /// <inheritdoc />
     private bool NavigateDown(DocumentEditorContext context)
     {
-      return TextBlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context);
+      return TextBlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
+                                                                                  context.CaretMovementMode);
     }
 
     /// <inheritdoc />

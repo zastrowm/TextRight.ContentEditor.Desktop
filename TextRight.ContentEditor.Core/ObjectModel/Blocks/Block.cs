@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.Editing.Commands;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -43,7 +44,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public abstract IBlockContentCursor GetCursor();
 
     /// <summary> Get the path down to this block in the document. </summary>
-    /// <returns> The path to the block in the hierarchy </returns>
+    /// <returns> The path to the block in the hierarchy. </returns>
     public BlockPath GetBlockPath()
     {
       var ids = new List<int>();
@@ -60,6 +61,32 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                Ids = ids.ToArray(),
              };
     }
+
+    /// <summary>
+    ///  Retrieves a caret within the block that represents the given
+    ///  CaretMovementMode as if a cursor with the given mode was arriving from
+    ///  the top of the block.
+    ///  
+    ///  For example, for a CaretMovementMode with a Mode of
+    ///  <see cref="CaretMovementMode.Mode.Position"/>
+    ///  and a textblock, the caret should represent a caret that is
+    ///  <see cref="CaretMovementMode.Position"/> units from the left-side of the
+    ///  text on the first line in the text block.
+    /// </summary>
+    /// <seealso cref="GetCaretFromTop"/>
+    /// <param name="caretMovementMode"> The caret movement mode. </param>
+    /// <returns> The given caret. </returns>
+    public abstract IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode);
+
+    /// <summary>
+    ///  Retrieves a caret within the block that represents the given
+    ///  CaretMovementMode as if a cursor with the given mode was arriving from
+    ///  the bottom of the block.
+    /// </summary>
+    /// <seealso cref="GetCaretFromTop"/>
+    /// <param name="caretMovementMode"> The caret movement mode. </param>
+    /// <returns> The given caret. </returns>
+    public abstract IBlockContentCursor GetCaretFromTop(CaretMovementMode caretMovementMode);
   }
 
   public struct BlockPath

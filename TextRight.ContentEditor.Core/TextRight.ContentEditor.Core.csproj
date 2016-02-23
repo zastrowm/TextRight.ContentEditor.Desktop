@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\CommandExecutionContext.cs" />
+    <Compile Include="Editing\CommandPipeline.cs" />
     <Compile Include="Editing\Commands\BuiltInCaretNavigationCommand.cs" />
     <Compile Include="Editing\Commands\Caret\CaretMovementMode.cs" />
     <Compile Include="Editing\Commands\Caret\CaretWordMover.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="ObjectModel\Blocks\BlockType.cs" />
     <Compile Include="ObjectModel\Blocks\IBlockContentCursor.cs" />
     <Compile Include="ObjectModel\Blocks\ICommandProcessorHook.cs" />
+    <Compile Include="ObjectModel\Blocks\ICommandProcessorPipelineHook.cs" />
     <Compile Include="ObjectModel\Blocks\IViewableObject.cs" />
     <Compile Include="ObjectModel\Blocks\StyledTextFragment.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlock.cs" />

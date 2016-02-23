@@ -40,7 +40,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         case BuiltInCaretNavigationCommand.NavigationType.Forward:
           return NavigateForward(context);
         case BuiltInCaretNavigationCommand.NavigationType.Backward:
-          return NavigateBackward(context, commandContext);
+          return NavigateBackward(context);
         case BuiltInCaretNavigationCommand.NavigationType.Up:
           return NavigateUp(context);
         case BuiltInCaretNavigationCommand.NavigationType.Down:
@@ -67,7 +67,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <summary> Navigate to the back of the next paragraph. </summary>
-    private bool NavigateBackward(DocumentEditorContext context, CommandExecutionContext commandContext)
+    private bool NavigateBackward(DocumentEditorContext context)
     {
       // TODO move to the end of the previous block
       return context.Caret.MoveBackward();
@@ -83,36 +83,41 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Navigate up between two paragraphs. </summary>
     private bool NavigateUp(DocumentEditorContext context)
     {
-      bool wasSuccessful = TextBlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context);
-      if (!wasSuccessful)
-      {
-        // move to the previous block
-        context.Caret.MoveBackward();
-        MoveToCurrentCursorPosition(context);
-      }
+      // TODO this should only look at our own blocks
+      bool wasHandled = TextBlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
+                                                                                              context.CaretMovementMode);
+
+      if (wasHandled)
+        return true;
+
+      var previousBlock = BlockTreeWalker.GetPreviousNonContainerBlock(context.Cursor.Block);
+      if (previousBlock == null)
+        return false;
+
+      var newCaret = previousBlock.GetCaretFromBottom(context.CaretMovementMode);
+      context.Caret.MoveTo(newCaret);
+
       return true;
     }
 
     /// <summary> Navigate down between two paragraphs. </summary>
     private bool NavigateDown(DocumentEditorContext context)
     {
-      bool wasSuccessful = TextBlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context);
-      if (!wasSuccessful)
-      {
-        // move to the next block
-        context.Caret.MoveForward();
-        MoveToCurrentCursorPosition(context);
-      }
-      return true;
-    }
+      // TODO this should only look at our own blocks
+      bool wasHandled = TextBlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
+                                                                                             context.CaretMovementMode);
 
-    /// <summary> Move to the given position in the current line. </summary>
-    /// <param name="context"> The context of which should be moved. </param>
-    private static void MoveToCurrentCursorPosition(DocumentEditorContext context)
-    {
-      // TODO make this more efficient
-      TextBlockCursorMover.BackwardMover.MoveToPosition(context);
-      TextBlockCursorMover.ForwardMover.MoveToPosition(context);
+      if (wasHandled)
+        return true;
+
+      var nextBlock = BlockTreeWalker.GetNextNonContainerBlock(context.Cursor.Block);
+      if (nextBlock == null)
+        return false;
+
+      var newCaret = nextBlock.GetCaretFromTop(context.CaretMovementMode);
+      context.Caret.MoveTo(newCaret);
+
+      return true;
     }
   }
 }

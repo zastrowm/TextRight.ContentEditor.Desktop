@@ -40,13 +40,13 @@ namespace TextRight.ContentEditor.Core.Editing
     public abstract bool DidReachEdge(TextBlock.TextBlockCursor cursor);
 
     /// <summary> Move the caret to the edge of the current line. </summary>
-    /// <param name="context"> The context. </param>
+    /// <param name="cursor"></param>
     /// <returns> True if the cursor moved, false otherwise. </returns>
-    public bool MoveCaretTowardsLineEdge(DocumentEditorContext context)
+    public bool MoveCaretTowardsLineEdge(IBlockContentCursor cursor)
     {
-      var cursor = (TextBlock.TextBlockCursor)context.Cursor;
+      var textCursor = (TextBlock.TextBlockCursor)cursor;
       bool didMoveToNextLine;
-      var result = MoveTowardsLineEdge(cursor, out didMoveToNextLine);
+      var result = MoveTowardsLineEdge(textCursor, out didMoveToNextLine);
 
       switch (result)
       {
@@ -54,16 +54,16 @@ namespace TextRight.ContentEditor.Core.Editing
           return DidNotMove;
         case EndMovementState.MovedWithOneMove:
           // move back onto the line
-          if (didMoveToNextLine && !DidReachEdge(cursor))
+          if (didMoveToNextLine && !DidReachEdge(textCursor))
           {
-            MoveAway(cursor);
+            MoveAway(textCursor);
           }
           return DidNotMove;
         case EndMovementState.MovedWithMoreThanOneMove:
           // move back onto the line
-          if (didMoveToNextLine && !DidReachEdge(cursor))
+          if (didMoveToNextLine && !DidReachEdge(textCursor))
           {
-            MoveAway(cursor);
+            MoveAway(textCursor);
           }
           return DidMove;
         default:
@@ -79,21 +79,23 @@ namespace TextRight.ContentEditor.Core.Editing
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more
     ///  arguments are outside the required range. </exception>
-    /// <param name="context"> The context's whose caret should be updated. </param>
+    /// <param name="cursor"></param>
+    /// <param name="caretMovementMode"></param>
     /// <returns>
     ///  True if the caret was moved to the next line, false if it was not able to
-    ///  be moved (reached edge of block.
+    ///  be moved (reached edge of block).
     /// </returns>
-    public bool MoveCaretTowardsPositionInNextLine(DocumentEditorContext context)
+    public bool MoveCaretTowardsPositionInNextLine(IBlockContentCursor cursor,
+                                                   CaretMovementMode caretMovementMode)
     {
-      var textBlockCursor = (TextBlock.TextBlockCursor)context.Cursor;
+      var textBlockCursor = (TextBlock.TextBlockCursor)cursor;
 
-      switch (context.CaretMovementMode.CurrentMode)
+      var snapshot = textBlockCursor.State;
+
+      switch (caretMovementMode.CurrentMode)
       {
         case CaretMovementMode.Mode.None:
         {
-          double left = textBlockCursor.MeasureCursorPosition().Left;
-          context.CaretMovementMode.SetModeToPosition(left);
           goto case CaretMovementMode.Mode.Position;
         }
         case CaretMovementMode.Mode.Position:
@@ -102,28 +104,39 @@ namespace TextRight.ContentEditor.Core.Editing
           MoveTowardsLineEdge(textBlockCursor, out didMove);
           if (didMove)
           {
-            MoveToPosition(textBlockCursor, context.CaretMovementMode.Position);
+            MoveToPosition(textBlockCursor, caretMovementMode.Position);
+          }
+          else
+          {
+            textBlockCursor.State = snapshot;
           }
           return didMove;
         }
         case CaretMovementMode.Mode.Home:
         {
-          bool didMoveToNextLine;
-          var state = MoveTowardsLineEdge(textBlockCursor, out didMoveToNextLine);
-          if (didMoveToNextLine)
+          bool didMove;
+          var state = MoveTowardsLineEdge(textBlockCursor, out didMove);
+          if (!didMove)
           {
-            BackwardMover.MoveCaretTowardsLineEdge(context);
+            textBlockCursor.State = snapshot;
+            return false;
           }
+
+          // move it back to the correct line
+          BackwardMover.MoveCaretTowardsLineEdge(cursor);
           return state != EndMovementState.CouldNotMoveWithinBlock;
         }
         case CaretMovementMode.Mode.End:
         {
           bool didMove;
           var state = MoveTowardsLineEdge(textBlockCursor, out didMove);
-          if (didMove)
+          if (!didMove)
           {
-            ForwardMover.MoveCaretTowardsLineEdge(context);
+            textBlockCursor.State = snapshot;
+            return false;
           }
+          // move it back to the correct line
+          ForwardMover.MoveCaretTowardsLineEdge(cursor);
           return state != EndMovementState.CouldNotMoveWithinBlock;
         }
         default:
@@ -173,12 +186,6 @@ namespace TextRight.ContentEditor.Core.Editing
       }
     }
 
-    public bool MoveToPosition(DocumentEditorContext context)
-    {
-      var cursor = (TextBlock.TextBlockCursor)context.Cursor;
-      return MoveToPosition(cursor, context.CaretMovementMode.Position);
-    }
-
     /// <summary>
     ///  Moves the caret as close to the <see cref="desiredPosition"/> in the line.
     /// </summary>
@@ -186,7 +193,7 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <param name="desiredPosition"> The desired position of the caret. </param>
     /// <returns> True if the caret moved, false otherwise. </returns>
     // ReSharper disable once UnusedMethodReturnValue.Local
-    private bool MoveToPosition(TextBlock.TextBlockCursor cursor, double desiredPosition)
+    public bool MoveToPosition(TextBlock.TextBlockCursor cursor, double desiredPosition)
     {
       var lastClosest = cursor.MeasureCursorPosition();
       double closestDistance = HorizontalDistanceTo(lastClosest, desiredPosition);

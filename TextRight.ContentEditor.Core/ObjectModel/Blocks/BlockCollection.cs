@@ -191,6 +191,18 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       throw new NotImplementedException();
     }
 
+    /// <inheritdoc />
+    public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode)
+    {
+      return LastBlock.GetCaretFromBottom(caretMovementMode);
+    }
+
+    /// <inheritdoc />
+    public override IBlockContentCursor GetCaretFromTop(CaretMovementMode caretMovementMode)
+    {
+      return LastBlock.GetCaretFromTop(caretMovementMode);
+    }
+
     /// <inheritdoc/>
     public IEnumerator<Block> GetEnumerator()
     {

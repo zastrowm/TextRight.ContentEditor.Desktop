@@ -11,7 +11,8 @@ namespace TextRight.ContentEditor.Desktop.View
   /// <summary>
   ///  Associates a WPF Run with a TextSpan and keeps them in sync.
   /// </summary>
-  public class StyledStyledTextSpanView : Run, IStyledTextSpanView
+  public class StyledStyledTextSpanView : Run,
+                                          IStyledTextSpanView
   {
     private readonly TextBlockView _textBlockView;
     private readonly StyledTextFragment _fragment;

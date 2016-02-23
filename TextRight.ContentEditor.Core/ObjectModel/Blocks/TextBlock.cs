@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using TextRight.ContentEditor.Core.Editing;
+using TextRight.ContentEditor.Core.Editing.Commands;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -26,6 +28,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       _spans = new List<StyledTextFragment>();
       AppendSpan(new StyledTextFragment(""));
     }
+
+    /// <summary> The view associated with the TextBlock. </summary>
+    public ITextBlockView Target { get; set; }
 
     /// <summary> The number of fragments contained in this block. </summary>
     public int ChildCount
@@ -190,7 +195,62 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return elements;
     }
 
-    /// <summary> The view associated with the TextBlock. </summary>
-    public ITextBlockView Target { get; set; }
+    /// <inheritdoc />
+    public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode)
+    {
+      var cursor = (TextBlockCursor)GetCursor();
+      cursor.MoveToEnd();
+
+      switch (caretMovementMode.CurrentMode)
+      {
+        case CaretMovementMode.Mode.Position:
+          MoveCursorToPosition(cursor, caretMovementMode.Position);
+          break;
+        case CaretMovementMode.Mode.End:
+          // already done
+          break;
+        case CaretMovementMode.Mode.Home:
+          TextBlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(cursor);
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
+
+      return cursor;
+    }
+
+    /// <inheritdoc />
+    public override IBlockContentCursor GetCaretFromTop(CaretMovementMode caretMovementMode)
+    {
+      var cursor = (TextBlockCursor)GetCursor();
+
+      cursor.MoveToBeginning();
+
+      switch (caretMovementMode.CurrentMode)
+      {
+        case CaretMovementMode.Mode.Position:
+          MoveCursorToPosition(cursor, caretMovementMode.Position);
+          break;
+        case CaretMovementMode.Mode.Home:
+          // already done
+          break;
+        case CaretMovementMode.Mode.End:
+          TextBlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(cursor);
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
+
+      return cursor;
+    }
+
+    private void MoveCursorToPosition(TextBlockCursor cursor, double position)
+    {
+      // TODO find better way of doing this The problem is that we don't know
+      // which way to go, so as a hack, we go both ways and rely on the
+      // implementation of MoveToPosition to ultimately choose the closest one. 
+      TextBlockCursorMover.ForwardMover.MoveToPosition(cursor, position);
+      TextBlockCursorMover.BackwardMover.MoveToPosition(cursor, position);
+    }
   }
 }
