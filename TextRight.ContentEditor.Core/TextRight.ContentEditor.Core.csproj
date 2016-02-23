@@ -49,7 +49,6 @@
     <Compile Include="Editing\CommandPipeline.cs" />
     <Compile Include="Editing\Commands\BuiltInCaretNavigationCommand.cs" />
     <Compile Include="Editing\Commands\Caret\CaretMovementMode.cs" />
-    <Compile Include="Editing\Commands\Caret\CaretWordMover.cs" />
     <Compile Include="Editing\Commands\EditorCommand.cs" />
     <Compile Include="Editing\Commands\Caret\ICaretCommand.cs" />
     <Compile Include="Editing\Commands\ICommandProcessor.cs" />
