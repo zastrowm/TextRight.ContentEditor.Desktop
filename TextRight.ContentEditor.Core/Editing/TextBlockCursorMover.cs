@@ -10,6 +10,18 @@ namespace TextRight.ContentEditor.Core.Editing
   /// <summary>
   ///  Various algorithms for moving a cursor up/down Home/End.
   /// </summary>
+  /// <remarks>
+  ///  The algorithms for moving in one direction is almost always implemented
+  ///  the same as moving in it's opposite direction.  So, in order to only have
+  ///  on copy of the algorithms, each algorithm is implemented abstractly
+  ///  moving Towards a direction (forward for example) and Away (backwards for
+  ///  example).  When moving the opposite direction the same algorithm is used
+  ///  except the meaning of Towards if flipped (so it becomes backwards) as is
+  ///  Away (it becomes forward).
+  ///  
+  ///  Thus why we have <see cref="ForwardMover"/> and
+  ///  <see cref="BackwardMover"/>.
+  /// </remarks>
   internal abstract class TextBlockCursorMover
   {
     private const bool DidNotMove = false;
@@ -40,7 +52,7 @@ namespace TextRight.ContentEditor.Core.Editing
     public abstract bool DidReachEdge(TextBlock.TextBlockCursor cursor);
 
     /// <summary> Move the caret to the edge of the current line. </summary>
-    /// <param name="cursor"></param>
+    /// <param name="cursor"> The caret to move. </param>
     /// <returns> True if the cursor moved, false otherwise. </returns>
     public bool MoveCaretTowardsLineEdge(IBlockContentCursor cursor)
     {
@@ -192,7 +204,6 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <param name="cursor"> The cursor to move. </param>
     /// <param name="desiredPosition"> The desired position of the caret. </param>
     /// <returns> True if the caret moved, false otherwise. </returns>
-    // ReSharper disable once UnusedMethodReturnValue.Local
     public bool MoveToPosition(TextBlock.TextBlockCursor cursor, double desiredPosition)
     {
       var lastClosest = cursor.MeasureCursorPosition();
@@ -266,7 +277,7 @@ namespace TextRight.ContentEditor.Core.Editing
     }
 
     /// <summary> How the cursor moved (used by methods in this class). </summary>
-    internal enum EndMovementState
+    private enum EndMovementState
     {
       CouldNotMoveWithinBlock,
       MovedWithOneMove,
