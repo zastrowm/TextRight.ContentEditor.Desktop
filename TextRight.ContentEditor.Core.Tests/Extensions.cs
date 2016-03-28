@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
@@ -8,21 +9,54 @@ namespace TextRight.ContentEditor.Core.Tests
 {
   public static class Extensions
   {
+    /// <summary>
+    ///  Allows using a collection initializer to initialize a block collection
+    ///  with blocks.
+    /// </summary>
     public static void Add(this BlockCollection collection, Block block)
     {
       collection.Append(block);
     }
 
+    /// <summary>
+    ///  Allows using a collection initializer to initialize a block with text
+    ///  fragments.
+    /// </summary>
     public static void Add(this TextBlock block, StyledTextFragment fragment)
     {
       block.AppendSpan(fragment);
+    }
+
+    /// <summary> Set the text of the TextBlock to be equal to the given text. </summary>
+    public static TextBlock WithText(this TextBlock block, string text)
+    {
+      block.RemoveSpan(block.First());
+      block.AppendSpan(new StyledTextFragment(text));
+      return block;
+    }
+
+    /// <summary>
+    ///  Convert a block into the text that is contained within the block.
+    /// </summary>
+    public static string AsText(this Block block)
+    {
+      var textBlock = (TextBlock)block;
+
+      var builder = new StringBuilder();
+
+      foreach (var fragment in textBlock)
+      {
+        builder.Append(fragment.Text);
+      }
+
+      return builder.ToString();
     }
 
     /// <summary>
     ///  By default, a BlockCollection has a single child. That interferes with
     ///  our added elements, so remove the elements that were auto-added.
     /// </summary>
-    public static void RemoveFirstChilds(this BlockCollection collection)
+    public static BlockCollection RemoveFirstChilds(this BlockCollection collection)
     {
       collection.RemoveBlock(collection.FirstBlock);
 
@@ -30,6 +64,14 @@ namespace TextRight.ContentEditor.Core.Tests
       {
         (block as BlockCollection)?.RemoveFirstChilds();
       }
+
+      return collection;
+    }
+
+    /// <summary> Get the Nth block out of the collection. </summary>
+    public static Block NthBlock(this BlockCollection collection, int index)
+    {
+      return collection.Children.Skip(index).First();
     }
 
     /// <summary>

@@ -21,11 +21,32 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       if (block == null)
         return false;
 
+      if (command == TextCommands.BreakBlock)
+      {
+        return BreakBlocks(block, context, command, commandContext);
+      }
+
       var navigationCommand = command as BuiltInCaretNavigationCommand;
       if (navigationCommand == null)
         return false;
 
       return DispatchCaretCommand(context, navigationCommand, commandContext);
+    }
+
+    /// <summary> Break the blocks at the given caret location. </summary>
+    private bool BreakBlocks(BlockCollection collection,
+                             DocumentEditorContext context,
+                             EditorCommand command,
+                             CommandExecutionContext commandContext)
+    {
+      var newBlock = collection.TryBreakBlock(context.Cursor);
+      if (newBlock == null)
+        return false;
+
+      var cursor = newBlock.GetCursor();
+      cursor.MoveToBeginning();
+      context.Caret.MoveTo(cursor);
+      return true;
     }
 
     /// <summary> Dispatch the current caret command to the correct method below. </summary>

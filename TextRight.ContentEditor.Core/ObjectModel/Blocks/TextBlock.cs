@@ -101,6 +101,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public override IBlockContentCursor GetCursor()
       => new TextBlockCursor(this);
 
+    /// <inheritdoc />
+    public override string MimeType { get; }
+      = "text/plain";
+
     /// <inheritdoc/>
     public override BlockType BlockType
       => BlockType.TextBlock;

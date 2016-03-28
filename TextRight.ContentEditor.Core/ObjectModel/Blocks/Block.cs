@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing.Commands;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -42,6 +43,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Gets a block-specific iterator. </summary>
     /// <returns> An iterate that can move through the block. </returns>
     public abstract IBlockContentCursor GetCursor();
+
+    /// <summary> The mimetype of the content within the block.  Can be null. </summary>
+    [CanBeNull]
+    public abstract string MimeType { get; }
 
     /// <summary> Get the path down to this block in the document. </summary>
     /// <returns> The path to the block in the hierarchy. </returns>

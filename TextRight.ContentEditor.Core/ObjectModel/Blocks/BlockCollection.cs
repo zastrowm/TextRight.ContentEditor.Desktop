@@ -192,6 +192,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
+    public override string MimeType { get; }
+      = null;
+
+    /// <inheritdoc />
     public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode)
     {
       return LastBlock.GetCaretFromBottom(caretMovementMode);
@@ -229,7 +233,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     ///  The block that is the next sibling of the original block that was split
     ///  into two.
     /// </returns>
-    public Block Break(IBlockContentCursor cursor)
+    public Block TryBreakBlock(IBlockContentCursor cursor)
     {
       if (!CanBreak(cursor))
         return null;

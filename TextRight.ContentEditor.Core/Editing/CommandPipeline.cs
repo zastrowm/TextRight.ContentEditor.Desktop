@@ -55,25 +55,18 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <summary> Actually attempts to execute the given commands. </summary>
     private bool ExecuteCommandDirect(EditorCommand command)
     {
-      // TODO put this somewhere better
-      if (command == TextCommands.BreakBlock)
-      {
-        _owner.BreakCurrentBlock();
-        return true;
-      }
-
       var context = new CommandExecutionContext();
       context.ConfigureFor(_owner.Cursor);
 
       // first check if the caret itself handles the command
-      if (TryHandleCommand(command, context, _owner.Cursor as ICommandProcessorHook))
+      if (TryHandleCommand(command, context, _owner.Cursor as ICommandProcessorHook, null))
         return true;
 
       // if that doesn't work, walk up the tree checking to see if any of the
       // blocks up to the top-most block can handle the command. 
       do
       {
-        if (TryHandleCommand(command, context, context.CurrentBlock as ICommandProcessorHook))
+        if (TryHandleCommand(command, context, context.CurrentBlock as ICommandProcessorHook, context.CurrentBlock))
           return true;
       } while (context.MoveUp());
 
@@ -112,12 +105,21 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <param name="processorHook"> The processor hook, which can be null
     ///   (convenient for passing in parameters using "as" cast that may or may not
     ///   implement ICommandProcessorHook). </param>
+    /// <param name="currentBlock"></param>
     /// <returns> True if the command was handled, false otherwise. </returns>
     private bool TryHandleCommand(EditorCommand command,
                                   CommandExecutionContext context,
-                                  [CanBeNull] ICommandProcessorHook processorHook)
+                                  [CanBeNull] ICommandProcessorHook processorHook,
+                                  Block currentBlock = null)
     {
-      return processorHook?.CommandProcessor?.TryProcess(_owner, command, context) == true;
+      bool wasProcessed = processorHook?.CommandProcessor?.TryProcess(_owner, command, context) == true;
+
+      if (!wasProcessed)
+      {
+        wasProcessed = true == (currentBlock as ICommandProcessor)?.TryProcess(_owner, command, context);
+      }
+
+      return wasProcessed;
     }
   }
 }

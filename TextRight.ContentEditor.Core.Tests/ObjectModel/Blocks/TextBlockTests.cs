@@ -47,7 +47,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     public void Break_AtBeginning_HasNewBlock()
     {
       Initialize("abc|123");
-      var nextBlock = (TextBlock)_collection.Break(_cursor);
+      var nextBlock = (TextBlock)_collection.TryBreakBlock(_cursor);
 
       Assert.That(nextBlock, Is.Not.Null);
 

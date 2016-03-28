@@ -38,23 +38,5 @@ namespace TextRight.ContentEditor.Core.Editing
 
     /// <summary> Movement information about the caret. </summary>
     public CaretMovementMode CaretMovementMode { get; }
-
-    /// <summary> Break the current block at the current position. </summary>
-    internal void BreakCurrentBlock()
-    {
-      var currentBlock = Cursor.Block;
-      var parentBlock = currentBlock.Parent;
-
-      if (parentBlock.CanBreak(Cursor))
-      {
-        var newBlock = parentBlock.Break(Cursor);
-        if (newBlock != null)
-        {
-          var cursor = newBlock.GetCursor();
-          cursor.MoveToBeginning();
-          Caret.MoveTo(cursor);
-        }
-      }
-    }
   }
 }
