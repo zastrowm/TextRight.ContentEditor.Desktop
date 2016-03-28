@@ -28,6 +28,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                                    ITextContentCursor,
                                    ICommandProcessorHook
     {
+      private const char NullCharacter = '\0';
+
       private readonly TextBlock _block;
 
       /// <summary> Constructor. </summary>
@@ -77,11 +79,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
       /// <summary> Get the character after the current cursor position. </summary>
       public char CharacterAfter
-        => OffsetIntoSpan != Fragment.Length ? Fragment.Text[OffsetIntoSpan] : '\0';
+        => OffsetIntoSpan != Fragment.Length ? Fragment.Text[OffsetIntoSpan] : NullCharacter;
 
       /// <summary> Get the character before the current cursor position. </summary>
       public char CharacterBefore
-        => OffsetIntoSpan != 0 ? Fragment.Text[OffsetIntoSpan - 1] : '\0';
+        => OffsetIntoSpan != 0 ? Fragment.Text[OffsetIntoSpan - 1] : NullCharacter;
 
       /// <inheritdoc />
       public void MoveToBeginning()
@@ -155,9 +157,14 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       /// <inheritdoc />
       public MeasuredRectangle MeasureCursorPosition()
       {
-        return !IsAtBeginning && CharacterBefore != ' '
-          ? MeasureBackward().FlattenRight()
-          : MeasureForward().FlattenLeft();
+        // we want to measure the next character unless the previous character was
+        // a space (as the text will most likely appear on the next line anyways) 
+        bool shouldMeasureNext = IsAtBeginning
+                                 || (!IsAtEnd && CharacterBefore == ' ');
+
+        return shouldMeasureNext
+          ? MeasureForward().FlattenLeft()
+          : MeasureBackward().FlattenRight();
       }
 
       /// <summary> Attempts to process incoming commands. </summary>
