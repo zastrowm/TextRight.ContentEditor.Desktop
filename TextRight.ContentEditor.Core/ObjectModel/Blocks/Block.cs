@@ -31,11 +31,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <summary> Get the previous block in the block collection. </summary>
     public Block GetPreviousBlock()
-      => Parent?.GetPreviousBlock(this);
+      => PreviousBlock;
 
     /// <summary> Get the next block in the block collection. </summary>
     public Block GetNextBlock()
-      => Parent?.GetNextBlock(this);
+      => NextBlock;
 
     /// <summary> The type of the block. </summary>
     public abstract BlockType BlockType { get; }
@@ -66,6 +66,16 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                Ids = ids.ToArray(),
              };
     }
+
+    /// <summary>
+    ///  Retrieves the block that comes after this block in the parent collection.
+    /// </summary>
+    internal Block NextBlock { get; set; }
+
+    /// <summary>
+    ///  Retrieves the block that comes before this block in the parent collection.
+    /// </summary>
+    internal Block PreviousBlock { get; set; }
 
     /// <summary>
     ///  Retrieves a caret within the block that represents the given

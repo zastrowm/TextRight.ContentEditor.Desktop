@@ -2,35 +2,34 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
-  /// <summary> Holds a collection of blocks. </summary>
+  /// <summary> A block that holds a collection of child blocks. </summary>
   public abstract class BlockCollection : Block
   {
-    private readonly List<Block> _childrenCollection;
+    [NotNull]
+    private readonly BlockLinkedList _blockList;
 
     /// <summary> Default constructor. </summary>
     protected BlockCollection()
     {
-      _childrenCollection = new List<Block>();
       // TODO don't append a text block?
-      Append(new TextBlock());
+      _blockList = new BlockLinkedList(this, new TextBlock());
     }
 
     /// <summary> The blocks that exist in the collection. </summary>
     public IEnumerable<Block> Children
-      => _childrenCollection;
+      => _blockList;
 
-    public void Append(Block block)
+    /// <summary> Adds a block to the end of the collection. </summary>
+    /// <param name="block"> The block to remove from the collection. </param>
+    public void Append([NotNull] Block block)
     {
       // TODO what if the existing span is empty, should it be removed?
-      block.Parent = this;
-
-      _childrenCollection.Add(block);
-      block.Index = _childrenCollection.Count - 1;
-
-      OnBlockInserted(GetPreviousBlock(block), block, null);
+      _blockList.InsertAfter(_blockList.Tail, block);
+      OnBlockInserted(block.PreviousBlock, block, null);
     }
 
     /// <summary> Inserts a block at the given position. </summary>
@@ -40,22 +39,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     ///  have unsupported or illegal values. </exception>
     /// <param name="beforeBlock"> The block the new block should be placed after. </param>
     /// <param name="newBlock"> The block that should be inserted at the given position. </param>
-    private void InsertBlockAfter(Block beforeBlock, Block newBlock)
+    private void InsertBlockAfter([NotNull] Block beforeBlock, [NotNull] Block newBlock)
     {
-      if (beforeBlock == null)
-        throw new ArgumentNullException(nameof(beforeBlock));
-      if (newBlock == null)
-        throw new ArgumentNullException(nameof(newBlock));
-      if (beforeBlock.Parent != this)
-        throw new ArgumentException(nameof(beforeBlock) + " is not a child of the given collection", nameof(newBlock));
-      if (newBlock.Parent != null)
-        throw new ArgumentException(nameof(newBlock) + " is already parented", nameof(newBlock));
-
-      newBlock.Parent = this;
-      _childrenCollection.Insert(beforeBlock.Index + 1, newBlock);
-      ReIndexChildren(beforeBlock.Index);
-
-      OnBlockInserted(beforeBlock, newBlock, GetNextBlock(newBlock));
+      _blockList.InsertAfter(beforeBlock, newBlock);
+      OnBlockInserted(beforeBlock, newBlock, newBlock.NextBlock);
     }
 
     /// <summary> Inserts a block at the given position. </summary>
@@ -65,38 +52,26 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     ///  have unsupported or illegal values. </exception>
     /// <param name="afterBlock"> The block the new block should be placed before. </param>
     /// <param name="newBlock"> The block that should be inserted at the given position. </param>
-    private void InsertBlockBefore(Block afterBlock, Block newBlock)
+    private void InsertBlockBefore([NotNull] Block afterBlock, [NotNull] Block newBlock)
     {
-      if (afterBlock == null)
-        throw new ArgumentNullException(nameof(afterBlock));
-      if (newBlock == null)
-        throw new ArgumentNullException(nameof(newBlock));
-      if (afterBlock.Parent != this)
-        throw new ArgumentException(nameof(afterBlock) + " is not a child of the given collection", nameof(newBlock));
-      if (newBlock.Parent != null)
-        throw new ArgumentException(nameof(newBlock) + " is already parented", nameof(newBlock));
-
-      newBlock.Parent = this;
-      _childrenCollection.Insert(afterBlock.Index, newBlock);
-      ReIndexChildren(afterBlock.Index);
-
-      OnBlockInserted(GetPreviousBlock(newBlock), newBlock, afterBlock);
+      _blockList.InsertBefore(afterBlock, newBlock);
+      OnBlockInserted(newBlock.PreviousBlock, newBlock, afterBlock);
     }
 
     /// <summary> Removes the given block from the collection. </summary>
     /// <param name="block"> The block to remove from the collection. </param>
     public void RemoveBlock(Block block)
     {
-      // TODO what else do we need to do?
+      if (block == null)
+        throw new ArgumentNullException(nameof(block));
 
+      // TODO what else do we need to do?
       int oldIndex = block.Index;
 
-      var previous = GetPreviousBlock(block);
-      var next = GetNextBlock(block);
+      var previous = block.PreviousBlock;
+      var next = block.NextBlock;
 
-      block.Parent = null;
-      _childrenCollection.Remove(block);
-      ReIndexChildren(oldIndex);
+      _blockList.Remove(block);
 
       OnBlockRemoved(previous, block, next, oldIndex);
     }
@@ -129,71 +104,37 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     {
     }
 
-    /// <summary> Gets the block that follows the given block. </summary>
-    /// <param name="block"> The block whose next block should be retrieved. </param>
-    /// <returns> The next block in the collection. </returns>
-    public virtual Block GetNextBlock(Block block)
-    {
-      if (block.Parent != this)
-        return null;
-      if (block.Index >= _childrenCollection.Count - 1)
-        return null;
-
-      return _childrenCollection[block.Index + 1];
-    }
-
-    /// <summary> Gets the block that precedes the given block. </summary>
-    /// <param name="block"> The block whose previous block should be retrieved. </param>
-    /// <returns> The previous block in the collection. </returns>
-    public Block GetPreviousBlock(Block block)
-    {
-      if (block.Parent != this)
-        return null;
-      if (block.Index < 1)
-        return null;
-
-      return _childrenCollection[block.Index - 1];
-    }
-
-    /// <summary> Reset the index of each child in the block collection. </summary>
-    /// <param name="startIndex"> The index at which the children should have their
-    ///  indices renumbered. </param>
-    private void ReIndexChildren(int startIndex = 0)
-    {
-      for (var i = startIndex; i < _childrenCollection.Count; i++)
-      {
-        _childrenCollection[i].Index = i;
-      }
-    }
-
     /// <inheritdoc/>
     public override BlockType BlockType
       => BlockType.ContainerBlock;
 
     /// <summary> Get the first block in the collection. </summary>
     public Block FirstBlock
-      => _childrenCollection[0];
+      => _blockList.Head;
 
     /// <summary> Get the last block in the collection. </summary>
     public Block LastBlock
-      => _childrenCollection[_childrenCollection.Count - 1];
+      => _blockList.Tail;
 
     /// <summary> The number of children in the collection. </summary>
     public int ChildCount
-      => _childrenCollection.Count;
+      => _blockList.Count;
 
     /// <summary> Get the block in the hierarchy from the given block path. </summary>
     /// <param name="path"> The path to the block to retrieve. </param>
     /// <returns> The block from path. </returns>
     public Block GetBlockFromPath(BlockPath path)
     {
+      if (path.Ids == null)
+        return null;
+
       BlockCollection collection = this;
       Block block = null;
 
       for (int i = path.Ids.Length - 1; i >= 0; i--)
       {
         Debug.Assert(collection != null);
-        block = collection._childrenCollection[i];
+        block = collection._blockList.GetAtIndex(i);
         collection = block as BlockCollection;
       }
 
@@ -226,6 +167,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// </returns>
     public Block TryBreakBlock(IBlockContentCursor cursor)
     {
+      if (cursor == null)
+        throw new ArgumentNullException(nameof(cursor));
+
       if (!CanBreak(cursor))
         return null;
 

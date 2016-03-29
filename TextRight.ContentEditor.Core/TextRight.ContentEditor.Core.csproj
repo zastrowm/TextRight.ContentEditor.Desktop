@@ -59,6 +59,7 @@
     <Compile Include="Editing\TextBlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
+    <Compile Include="ObjectModel\Blocks\BlockLinkedList.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollectionCommandProcessor.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
     <Compile Include="ObjectModel\Blocks\BlockType.cs" />

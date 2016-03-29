@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -33,6 +34,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   public interface IBlockContentCursor
   {
     /// <summary> Gets the block associated withe the cursor. </summary>
+    [NotNull]
     Block Block { get; }
 
     /// <summary> Move to the beginning of the block. </summary>
