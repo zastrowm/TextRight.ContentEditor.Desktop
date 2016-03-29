@@ -11,7 +11,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel
     /// <summary> Default constructor. </summary>
     public DocumentOwner()
     {
-      Root = new BlockCollection();
+      Root = new VerticalBlockCollection();
     }
 
     /// <summary> The top level collection of elements.  </summary>

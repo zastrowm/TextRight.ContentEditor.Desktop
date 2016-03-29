@@ -6,11 +6,11 @@ using TextRight.ContentEditor.Core.Editing.Commands;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
-  /// <summary> Handles commands for TextBlock collections. </summary>
-  internal class BlockCollectionCommandProcessor : ICommandProcessor
+  /// <summary> Handles commands for VerticalBlockCollections. </summary>
+  internal class VerticalBlockCollectionCommandProcessor : ICommandProcessor
   {
     public static ICommandProcessor Instance
-      = new BlockCollectionCommandProcessor();
+      = new VerticalBlockCollectionCommandProcessor();
 
     /// <inheritdoc />
     bool ICommandProcessor.TryProcess(DocumentEditorContext context,

@@ -29,7 +29,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
         _cursor.Move(index);
       }
 
-      _collection = new BlockCollection()
+      _collection = new AddableBlockCollection()
                     {
                       _block
                     };

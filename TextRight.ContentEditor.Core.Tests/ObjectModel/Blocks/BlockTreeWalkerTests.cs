@@ -26,22 +26,22 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     private static readonly Dictionary<Block, string> NameLookup = new Dictionary<Block, string>();
 
     private static readonly BlockCollection Collection
-      = new BlockCollection()
+      = new AddableBlockCollection()
         {
-          (a = new BlockCollection()
+          (a = new AddableBlockCollection()
                {
-                 (a1 = new BlockCollection()
+                 (a1 = new AddableBlockCollection()
                        {
                          (a11 = new TextBlock()),
                          (a12 = new TextBlock()),
                          (a13 = new TextBlock()),
                        })
                }),
-          (b = new BlockCollection()
+          (b = new AddableBlockCollection()
                {
-                 (b1 = new BlockCollection()
+                 (b1 = new AddableBlockCollection()
                        {
-                         (b11 = new BlockCollection()
+                         (b11 = new AddableBlockCollection()
                                 {
                                   (b111 = new TextBlock())
                                 }),

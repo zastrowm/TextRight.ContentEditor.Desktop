@@ -1,44 +1,26 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using TextRight.ContentEditor.Core.Editing.Commands;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
-  /// <summary> Holds the view representation of the BlockCollection. </summary>
-  public interface IBlockCollectionView
-  {
-    /// <summary> Notifies a block inserted. </summary>
-    /// <param name="previousSibling"> The before block. </param>
-    /// <param name="newBlock"> The new block. </param>
-    /// <param name="nextSibling"> The after block. </param>
-    void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling);
-  }
-
   /// <summary> Holds a collection of blocks. </summary>
-  public class BlockCollection : Block,
-                                 IEnumerable<Block>,
-                                 ICommandProcessorHook
+  public abstract class BlockCollection : Block
   {
     private readonly List<Block> _childrenCollection;
 
     /// <summary> Default constructor. </summary>
-    public BlockCollection()
+    protected BlockCollection()
     {
       _childrenCollection = new List<Block>();
+      // TODO don't append a text block?
       Append(new TextBlock());
     }
 
     /// <summary> The blocks that exist in the collection. </summary>
     public IEnumerable<Block> Children
       => _childrenCollection;
-
-    /// <summary>
-    ///  The object that receives all notifications of changes from this instance.
-    /// </summary>
-    public IBlockCollectionView Target { get; set; }
 
     public void Append(Block block)
     {
@@ -48,7 +30,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       _childrenCollection.Add(block);
       block.Index = _childrenCollection.Count - 1;
 
-      Target?.NotifyBlockInserted(GetPreviousBlock(block), block, null);
+      OnBlockInserted(GetPreviousBlock(block), block, null);
     }
 
     /// <summary> Inserts a block at the given position. </summary>
@@ -73,7 +55,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       _childrenCollection.Insert(beforeBlock.Index + 1, newBlock);
       ReIndexChildren(beforeBlock.Index);
 
-      Target?.NotifyBlockInserted(beforeBlock, newBlock, GetNextBlock(newBlock));
+      OnBlockInserted(beforeBlock, newBlock, GetNextBlock(newBlock));
     }
 
     /// <summary> Inserts a block at the given position. </summary>
@@ -98,26 +80,59 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       _childrenCollection.Insert(afterBlock.Index, newBlock);
       ReIndexChildren(afterBlock.Index);
 
-      Target?.NotifyBlockInserted(GetPreviousBlock(newBlock), newBlock, afterBlock);
+      OnBlockInserted(GetPreviousBlock(newBlock), newBlock, afterBlock);
     }
 
+    /// <summary> Removes the given block from the collection. </summary>
+    /// <param name="block"> The block to remove from the collection. </param>
     public void RemoveBlock(Block block)
     {
       // TODO what else do we need to do?
 
       int oldIndex = block.Index;
 
+      var previous = GetPreviousBlock(block);
+      var next = GetNextBlock(block);
+
       block.Parent = null;
       _childrenCollection.Remove(block);
       ReIndexChildren(oldIndex);
 
-      // TODO notify
+      OnBlockRemoved(previous, block, next, oldIndex);
+    }
+
+    /// <summary>
+    ///  Invoked after a block has been inserted into the collection.
+    /// </summary>
+    /// <param name="previousBlock"> The block before the newBlock. </param>
+    /// <param name="newBlock"> The new block that was inserted. </param>
+    /// <param name="nextBlock"> The block that is now after the new block. </param>
+    protected virtual void OnBlockInserted(Block previousBlock,
+                                           Block newBlock,
+                                           Block nextBlock)
+    {
+    }
+
+    /// <summary>
+    ///  Invoked after a block has been removed from the collection.
+    /// </summary>
+    /// <param name="previousBlock"> The block that used to come before the
+    ///  removed block. </param>
+    /// <param name="removedBlock"> The block that was removed. </param>
+    /// <param name="nextBlock"> The block that used to come after the removed
+    ///  block. </param>
+    /// <param name="indexOfRemovedBlock"> The old index of the removed block. </param>
+    protected virtual void OnBlockRemoved(Block previousBlock,
+                                          Block removedBlock,
+                                          Block nextBlock,
+                                          int indexOfRemovedBlock)
+    {
     }
 
     /// <summary> Gets the block that follows the given block. </summary>
     /// <param name="block"> The block whose next block should be retrieved. </param>
     /// <returns> The next block in the collection. </returns>
-    public Block GetNextBlock(Block block)
+    public virtual Block GetNextBlock(Block block)
     {
       if (block.Parent != this)
         return null;
@@ -195,30 +210,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public override string MimeType { get; }
       = null;
 
-    /// <inheritdoc />
-    public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode)
-    {
-      return LastBlock.GetCaretFromBottom(caretMovementMode);
-    }
-
-    /// <inheritdoc />
-    public override IBlockContentCursor GetCaretFromTop(CaretMovementMode caretMovementMode)
-    {
-      return LastBlock.GetCaretFromTop(caretMovementMode);
-    }
-
-    /// <inheritdoc/>
-    public IEnumerator<Block> GetEnumerator()
-    {
-      return _childrenCollection.GetEnumerator();
-    }
-
-    /// <inheritdoc/>
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
-
     /// <summary>
     ///  True if the block can break into two at the given position.
     /// </summary>
@@ -273,9 +264,5 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
       return secondaryBlock;
     }
-
-    /// <inheritdoc />
-    public ICommandProcessor CommandProcessor
-      => BlockCollectionCommandProcessor.Instance;
   }
 }

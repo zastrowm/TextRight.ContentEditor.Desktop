@@ -59,7 +59,7 @@
     <Compile Include="Editing\TextBlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
-    <Compile Include="ObjectModel\Blocks\BlockCollectionCommandProcessor.cs" />
+    <Compile Include="ObjectModel\Blocks\VerticalBlockCollectionCommandProcessor.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
     <Compile Include="ObjectModel\Blocks\BlockType.cs" />
     <Compile Include="ObjectModel\Blocks\IBlockContentCursor.cs" />
@@ -70,6 +70,7 @@
     <Compile Include="ObjectModel\Blocks\TextBlock.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlock.Cursor.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlockCursorCommandProcessor.cs" />
+    <Compile Include="ObjectModel\Blocks\VerticalBlockCollection.cs" />
     <Compile Include="ObjectModel\DocumentCursor.cs" />
     <Compile Include="ObjectModel\DocumentOwner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -14,7 +14,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     [SetUp]
     public void Setup()
     {
-      _collection = new BlockCollection()
+      _collection = new AddableBlockCollection()
                     {
                       new TextBlock()
                         .WithText("This is line #1"),

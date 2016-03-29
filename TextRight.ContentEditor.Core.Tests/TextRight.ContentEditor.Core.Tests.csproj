@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions.cs" />
+    <Compile Include="ObjectModel\Blocks\AddableBlockCollection.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollectionTests.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalkerTests.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlockCursorTests.cs" />
