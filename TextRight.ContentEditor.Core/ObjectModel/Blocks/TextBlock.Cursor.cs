@@ -224,7 +224,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       }
 
       /// <inheritdoc />
-      public void DeleteText(int numberOfCharacters)
+      public bool DeleteText(int numberOfCharacters)
       {
         //while (numberOfCharacters > 0)
         {
@@ -241,7 +241,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
           numberOfCharacters -= numberOfCharactersToRemove;
           // TODO what happens for multiple fragments
+          return numberOfCharactersToRemove > 0;
         }
+
       }
 
       /// <summary> The cursor's serialized data. </summary>

@@ -40,9 +40,33 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       if (command == TextCommands.DeletePreviousCharacter)
       {
         if (!cursor.MoveBackward())
-          return false;
+        {
+          var block = ((TextBlock)context.Caret.BlockCursor.Block);
+          var previous = block.PreviousBlock;
 
-        cursor.DeleteText(1);
+          if (previous == null)
+          {
+            // TODO handle parent
+            return false;
+          }
+
+          // get the end of the previous block, as that's where the caret should end up after the merge. 
+          var previousBlockCaret = previous.GetCursor();
+          previousBlockCaret.MoveToEnd();
+
+          bool wasMerged = block.Parent.MergeWithPrevious(block);
+
+          if (wasMerged)
+          {
+            context.Caret.MoveTo(previousBlockCaret);
+          }
+
+          return wasMerged;
+        }
+
+        if (cursor.DeleteText(1))
+          return true;
+
       }
       else if (command == TextCommands.DeleteNextCharacter)
       {

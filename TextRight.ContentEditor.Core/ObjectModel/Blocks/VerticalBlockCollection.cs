@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing.Commands;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -13,6 +14,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.
     /// </summary>
+    [CanBeNull]
     public IBlockCollectionView Target { get; set; }
 
     /// <inheritdoc />
@@ -27,7 +29,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                                            Block nextBlock,
                                            int indexOfRemovedBlock)
     {
-      // TODO notify
+      Target?.NotifyBlockRemoved(previousBlock, removedBlock, nextBlock, indexOfRemovedBlock);
     }
 
     /// <inheritdoc />
@@ -51,9 +53,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   public interface IBlockCollectionView
   {
     /// <summary> Notifies a block inserted. </summary>
-    /// <param name="previousSibling"> The before block. </param>
-    /// <param name="newBlock"> The new block. </param>
-    /// <param name="nextSibling"> The after block. </param>
     void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling);
+
+    /// <summary> Invoked when a block has been removed from the collection. </summary>
+    void NotifyBlockRemoved(Block oldPreviousSibling, Block blockRemoved, Block oldNextSibiling, int indexOfBlockRemoved);
   }
 }

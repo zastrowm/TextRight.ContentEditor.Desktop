@@ -147,6 +147,35 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       throw new NotImplementedException();
     }
 
+    /// <summary> Merges the given block with the previous block. </summary>
+    /// <param name="block"> The block to remove from the collection and whose content should be merged with the previous block. </param>
+    /// <returns> True if it was merged, false if it was not. </returns>
+    public virtual bool MergeWithPrevious(Block block)
+    {
+      // TODO support more than just text blocks?
+      var textBlock = block as TextBlock;
+      if (textBlock == null)
+        return false;
+
+      // TODO handle parent-blocks
+      if (textBlock.IsFirst)
+        return false;
+
+      var cursor = textBlock.GetTextCursor();
+      cursor.MoveToBeginning();
+
+      var previous = textBlock.PreviousBlock as TextBlock;
+      if (previous == null)
+        return false;
+
+      var fragments = cursor.ExtractToEnd();
+      previous.AppendAll(fragments);
+
+      RemoveBlock(textBlock);
+
+      return true;
+    }
+
     /// <inheritdoc />
     public override string MimeType { get; }
       = null;

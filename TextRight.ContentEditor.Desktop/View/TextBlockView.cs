@@ -8,7 +8,8 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Desktop.View
 {
   /// <summary> View representation of a <see cref="TextBlock"/> </summary>
-  public class TextBlockView : Paragraph, ITextBlockView
+  public class TextBlockView : Paragraph,
+                               ITextBlockView
   {
     private readonly TextBlock _block;
 
@@ -22,6 +23,30 @@ namespace TextRight.ContentEditor.Desktop.View
       foreach (var span in block)
       {
         Inlines.Add(new StyledStyledTextSpanView(this, span));
+      }
+    }
+
+    /// <inheritdoc />
+    public void NotifyBlockInserted(StyledTextFragment previousSibling,
+                                    StyledTextFragment newFragment,
+                                    StyledTextFragment nextSibling)
+    {
+      var newView = new StyledStyledTextSpanView(this, newFragment);
+
+      var previousSpanView = previousSibling?.Target as StyledStyledTextSpanView;
+      var nextSpanView = nextSibling?.Target as StyledStyledTextSpanView;
+      if (previousSpanView != null)
+
+      {
+        Inlines.InsertAfter(previousSpanView, newView);
+      }
+      else if (nextSpanView != null)
+      {
+        Inlines.InsertBefore(nextSpanView, newView);
+      }
+      else
+      {
+        Inlines.Add(newView);
       }
     }
   }

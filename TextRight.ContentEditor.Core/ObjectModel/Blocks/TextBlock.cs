@@ -11,6 +11,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// <summary> Hosts the view for the TextBlock. </summary>
   public interface ITextBlockView
   {
+    /// <summary> Notifies the view that a fragment has been inserted. </summary>
+    /// <param name="previousSibling"> The fragment that precedes the new fragment. </param>
+    /// <param name="newFragment"> The fragment that is inserted. </param>
+    /// <param name="nextSibling"> The fragment that comes after the block that is being inserted. </param>
+    void NotifyBlockInserted(StyledTextFragment previousSibling, StyledTextFragment newFragment, StyledTextFragment nextSibling);
   }
 
   /// <summary>
@@ -43,10 +48,19 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       fragment.Index = _spans.Count;
       fragment.Parent = this;
       _spans.Add(fragment);
-
       UpdateChildrenNumbering(Math.Max(fragment.Index - 1, 0));
 
-      // TODO add child to element tree
+      Target?.NotifyBlockInserted(fragment.Previous, fragment, fragment.Next);
+    }
+
+    /// <summary> Appends all fragments to the text block.  </summary>
+    /// <param name="fragments"> The fragments to add to the text block. </param>
+    public void AppendAll(StyledTextFragment[] fragments)
+    {
+      foreach (var fragment in fragments)
+      {
+        AppendSpan(fragment);
+      }
     }
 
     /// <summary> Removes the given span from the text block. </summary>
@@ -99,6 +113,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <inheritdoc/>
     public override IBlockContentCursor GetCursor()
+      => new TextBlockCursor(this);
+
+    public TextBlockCursor GetTextCursor()
       => new TextBlockCursor(this);
 
     /// <inheritdoc />
@@ -256,5 +273,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       TextBlockCursorMover.ForwardMover.MoveToPosition(cursor, position);
       TextBlockCursorMover.BackwardMover.MoveToPosition(cursor, position);
     }
+
   }
 }

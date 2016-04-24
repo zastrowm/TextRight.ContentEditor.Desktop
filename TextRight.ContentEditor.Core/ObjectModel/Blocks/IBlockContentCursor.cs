@@ -19,11 +19,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <returns> true if we can insert text, false if not. </returns>
     bool CanInsertText();
 
-    /// <summary>
-    ///  Removes the given number of characters from the text block.
-    /// </summary>
+    /// <summary> Removes the given number of characters from the text block. </summary>
     /// <param name="numberOfCharacters"> The number of characters to delete. </param>
-    void DeleteText(int numberOfCharacters);
+    /// <returns> True if at least a single character was deleted, false otherwise. </returns>
+    bool DeleteText(int numberOfCharacters);
 
     /// <summary> Determine if we can delete text. </summary>
     /// <returns> true if we can delete text, false if not. </returns>

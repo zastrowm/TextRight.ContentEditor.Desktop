@@ -48,5 +48,12 @@ namespace TextRight.ContentEditor.Desktop.View
         return;
       }
     }
+
+    /// <inheritdoc />
+    public void NotifyBlockRemoved(Block oldPreviousSibling, Block blockRemoved, Block oldNextSibiling, int indexOfBlockRemoved)
+    {
+      var view = (TextBlockView)((TextBlock)blockRemoved).Target;
+      Blocks.Remove(view);
+    }
   }
 }
