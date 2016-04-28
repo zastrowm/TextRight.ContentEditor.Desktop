@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using TextRight.ContentEditor.Core.Editing;
+using TextRight.ContentEditor.Core.Editing.Actions;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
@@ -122,7 +123,8 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public void InsertText(string text)
     {
-      new InsertTextCommand(text).Execute(_editor);
+      new InsertTextAction(new DocumentCursorHandle(_editor.Caret), text).Do(_editor);
+      //new InsertTextCommand(text).Execute(_editor);
     }
 
     public void UpdateCaretPosition()

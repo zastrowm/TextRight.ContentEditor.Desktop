@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />
+    <Compile Include="Editing\Actions\IAction.cs" />
+    <Compile Include="Editing\Actions\InsertTextAction.cs" />
     <Compile Include="Editing\CommandExecutionContext.cs" />
     <Compile Include="Editing\CommandPipeline.cs" />
     <Compile Include="Editing\Commands\BuiltInCaretNavigationCommand.cs" />
@@ -52,7 +55,6 @@
     <Compile Include="Editing\Commands\EditorCommand.cs" />
     <Compile Include="Editing\Commands\Caret\ICaretCommand.cs" />
     <Compile Include="Editing\Commands\ICommandProcessor.cs" />
-    <Compile Include="Editing\Commands\InsertTextCommand.cs" />
     <Compile Include="Editing\Commands\CaretNavigationCommand.cs" />
     <Compile Include="Editing\Commands\TextCommands.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
@@ -60,6 +62,7 @@
     <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
     <Compile Include="ObjectModel\Blocks\BlockLinkedList.cs" />
+    <Compile Include="ObjectModel\Blocks\BlockPath.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollectionCommandProcessor.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
     <Compile Include="ObjectModel\Blocks\BlockType.cs" />

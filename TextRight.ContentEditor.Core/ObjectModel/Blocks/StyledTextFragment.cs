@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Utilities;
@@ -25,6 +26,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   ///  Contains a span of single run of text that is styled or has some sort of other data
   ///  associated with it.
   /// </summary>
+  [DebuggerDisplay("StyledTextFragment(text={Text}, Index={Index})")]
   public class StyledTextFragment : IViewableObject<IStyledTextSpanView>
   {
     /// <summary> Default constructor. </summary>

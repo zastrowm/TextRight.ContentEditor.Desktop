@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.Utilities;
@@ -24,6 +25,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     ///    - At the end of the last fragment, which means that OffsetIntoSpan is
     ///      equal to Fragment.Length and we're pointing to the last fragment.
     /// </remarks>
+    [DebuggerDisplay("TextBlockCursor(FragmentIndex={Fragment.Index}, Offset={OffsetIntoSpan})")]
     public class TextBlockCursor : IBlockContentCursor,
                                    ITextContentCursor,
                                    ICommandProcessorHook
@@ -205,13 +207,13 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         => new SerializedData(this);
 
       /// <inheritdoc/>
-      bool ITextContentCursor.CanInsertText()
+      public bool CanInsertText()
       {
         return true;
       }
 
       /// <inheritdoc/>
-      void ITextContentCursor.InsertText(string text)
+      public void InsertText(string text)
       {
         Fragment.Text = Fragment.Text.Insert(OffsetIntoSpan, text);
         OffsetIntoSpan += text.Length;
@@ -243,7 +245,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
           // TODO what happens for multiple fragments
           return numberOfCharactersToRemove > 0;
         }
-
       }
 
       /// <summary> The cursor's serialized data. </summary>
@@ -262,7 +263,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
         public IBlockContentCursor Deserialize(DocumentOwner owner)
         {
-          var block = ((TextBlock)owner.Root.GetBlockFromPath(_path));
+          var block = (TextBlock)_path.Get(owner);
           return new TextBlockCursor(block)
                  {
                    OffsetIntoSpan = _offset,

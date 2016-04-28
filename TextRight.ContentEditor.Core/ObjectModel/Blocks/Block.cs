@@ -52,19 +52,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <returns> The path to the block in the hierarchy. </returns>
     public BlockPath GetBlockPath()
     {
-      var ids = new List<int>();
-      var block = this;
-
-      while (block != null)
-      {
-        ids.Add(block.Index);
-        block = block.Parent;
-      }
-
-      return new BlockPath
-             {
-               Ids = ids.ToArray(),
-             };
+      return new BlockPath(this);
     }
 
     /// <summary>
@@ -102,10 +90,5 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="caretMovementMode"> The caret movement mode. </param>
     /// <returns> The given caret. </returns>
     public abstract IBlockContentCursor GetCaretFromTop(CaretMovementMode caretMovementMode);
-  }
-
-  public struct BlockPath
-  {
-    public int[] Ids { get; set; }
   }
 }

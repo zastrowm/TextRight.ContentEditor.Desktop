@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -120,25 +119,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public int ChildCount
       => _blockList.Count;
 
-    /// <summary> Get the block in the hierarchy from the given block path. </summary>
-    /// <param name="path"> The path to the block to retrieve. </param>
-    /// <returns> The block from path. </returns>
-    public Block GetBlockFromPath(BlockPath path)
+    /// <summary> Gets the child block at the given index. </summary>
+    /// <param name="blockIndex"> Zero-based index of the block to retrieve. </param>
+    /// <returns> The block child that has the given index </returns>
+    internal Block GetNthBlock(int blockIndex)
     {
-      if (path.Ids == null)
-        return null;
-
-      BlockCollection collection = this;
-      Block block = null;
-
-      for (int i = path.Ids.Length - 1; i >= 0; i--)
-      {
-        Debug.Assert(collection != null);
-        block = collection._blockList.GetAtIndex(i);
-        collection = block as BlockCollection;
-      }
-
-      return block;
+      return _blockList.GetAtIndex(blockIndex);
     }
 
     /// <inheritdoc/>
