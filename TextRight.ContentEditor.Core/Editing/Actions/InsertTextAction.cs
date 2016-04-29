@@ -40,9 +40,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <summary> Turn the cursor handle into a text cursor. </summary>
     private TextBlock.TextBlockCursor GetTextCursor(DocumentEditorContext context)
     {
-      var cursor = _insertionPoint.Get(context);
-      var textBlockCursor = (TextBlock.TextBlockCursor)cursor.BlockCursor;
-      return textBlockCursor;
+      return (TextBlock.TextBlockCursor)_insertionPoint.Get(context);
     }
   }
 }

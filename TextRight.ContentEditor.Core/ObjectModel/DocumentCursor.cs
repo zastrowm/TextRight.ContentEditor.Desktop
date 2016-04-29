@@ -17,6 +17,13 @@ namespace TextRight.ContentEditor.Core.ObjectModel
       BlockCursor = blockCursor;
     }
 
+    /// <summary> Move to the position at the given cursor. </summary>
+    /// <param name="cursor"> The cursor. </param>
+    public void MoveTo(DocumentCursor cursor)
+    {
+      MoveTo(cursor.BlockCursor);
+    }
+
     /// <summary> Move to the position at the given block cursor. </summary>
     /// <param name="blockCursor"> The block cursor. </param>
     public void MoveTo(IBlockContentCursor blockCursor)
