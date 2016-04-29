@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Editing\Actions\ActionStack.cs" />
+    <Compile Include="Editing\Actions\BreakParagraphAction.cs" />
     <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />
     <Compile Include="Editing\Actions\IAction.cs" />
     <Compile Include="Editing\Actions\InsertTextAction.cs" />

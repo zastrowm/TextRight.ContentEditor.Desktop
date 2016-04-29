@@ -33,13 +33,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     public void Undo(DocumentEditorContext context)
     {
       var textBlockCursor = GetTextCursor(context);
-
-      // TODO delete more than one at a time
-      for (int i = 0; i < _text.Length; i++)
-      {
-        textBlockCursor.DeleteText(1);
-      }
-
+      textBlockCursor.DeleteText(_text.Length);
       context.Caret.MoveTo(textBlockCursor);
     }
 

@@ -24,9 +24,13 @@ namespace TextRight.ContentEditor.Desktop.View
     private readonly FlowDocumentScrollViewer _documentViewer;
     private readonly KeyboardShortcutCollection _keyCommands;
 
+    private readonly ActionStack _undoStack;
+
     public DocumentEditorContextView(DocumentEditorContext editor)
     {
       _editor = editor;
+
+      _undoStack = new ActionStack(editor);
 
       _caretView = new CaretView(_editor.Caret);
       Children.Add(_caretView.Element);
@@ -67,7 +71,8 @@ namespace TextRight.ContentEditor.Desktop.View
                  "about X & Y and those other things that extend the line length for the X-Files.  " +
                  "Isn't that great");
 
-      _editor.CommandPipeline.Execute(TextCommands.BreakBlock);
+      var breakAction = new BreakParagraphAction(new DocumentCursorHandle(_editor.Caret));
+      _undoStack.Do(breakAction);
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
     }
@@ -94,6 +99,9 @@ namespace TextRight.ContentEditor.Desktop.View
     {
       base.OnTextInput(e);
 
+      if (e.Text == "")
+        return;
+
       InsertText(e.Text);
       UpdateCaretPosition();
     }
@@ -106,6 +114,10 @@ namespace TextRight.ContentEditor.Desktop.View
       {
         e.Handled = true;
         UpdateCaretPosition();
+      }
+      else if (e.Key == Key.Z && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
+      {
+        _undoStack.Undo();
       }
     }
 
@@ -123,8 +135,8 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public void InsertText(string text)
     {
-      new InsertTextAction(new DocumentCursorHandle(_editor.Caret), text).Do(_editor);
-      //new InsertTextCommand(text).Execute(_editor);
+      var action = new InsertTextAction(new DocumentCursorHandle(_editor.Caret), text);
+      _undoStack.Do(action);
     }
 
     public void UpdateCaretPosition()
