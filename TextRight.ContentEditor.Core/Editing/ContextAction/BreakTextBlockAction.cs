@@ -7,22 +7,22 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Editing
 {
   /// <summary> Breaks a text-block into two. </summary>
-  public class BreakTextBlockAction : IContextAction
+  public class BreakTextBlockAction : IContextualCommand
   {
     /// <inheritdoc />
-    string IContextAction.GetName(DocumentEditorContext context)
+    string IContextualCommand.GetName(DocumentEditorContext context)
     {
       return "Split Paragraph";
     }
 
     /// <inheritdoc />
-    string IContextAction.GetDescription(DocumentEditorContext context)
+    string IContextualCommand.GetDescription(DocumentEditorContext context)
     {
       return "Split block into two";
     }
 
     /// <inheritdoc />
-    bool IContextAction.CanActivate(DocumentEditorContext context)
+    bool IContextualCommand.CanActivate(DocumentEditorContext context)
     {
       var textBlock = context.Cursor.Block as TextBlock;
       // TODO check if the parent collection allows multiple children
@@ -30,10 +30,10 @@ namespace TextRight.ContentEditor.Core.Editing
     }
 
     /// <inheritdoc />
-    void IContextAction.Activate(DocumentEditorContext context, ActionStack actionStack)
+    void IContextualCommand.Activate(DocumentEditorContext context, ActionStack actionStack)
     {
       // TODO delete any text that is selected
-      actionStack.Do(new BreakParagraphAction(context.Caret));
+      actionStack.Do(new BreakParagraphUndoableAction(context.Caret));
     }
   }
 }

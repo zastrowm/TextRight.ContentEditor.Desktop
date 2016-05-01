@@ -7,16 +7,24 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Editing.Actions
 {
   /// <summary> Breaks a paragraph at the given caret location. </summary>
-  public class BreakParagraphAction : IAction
+  public class BreakParagraphUndoableAction : IUndoableAction
   {
     private readonly DocumentCursorHandle _handle;
 
     /// <summary> Constructor. </summary>
     /// <param name="handle"> The location at which the paragraph should be broken. </param>
-    public BreakParagraphAction(DocumentCursorHandle handle)
+    public BreakParagraphUndoableAction(DocumentCursorHandle handle)
     {
       _handle = handle;
     }
+
+    /// <inheritdoc />
+    public string Name { get; }
+      = "Break Paragraph";
+
+    /// <inheritdoc />
+    public string Description { get; }
+      = "Break paragraph into two";
 
     /// <inheritdoc />
     public void Do(DocumentEditorContext context)

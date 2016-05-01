@@ -46,10 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\Actions\ActionStack.cs" />
-    <Compile Include="Editing\Actions\BreakParagraphAction.cs" />
+    <Compile Include="Editing\Actions\BreakParagraphUndoableAction.cs" />
     <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />
-    <Compile Include="Editing\Actions\IAction.cs" />
-    <Compile Include="Editing\Actions\InsertTextAction.cs" />
+    <Compile Include="Editing\Actions\IUndoableAction.cs" />
+    <Compile Include="Editing\Actions\InsertTextUndoableAction.cs" />
     <Compile Include="Editing\CommandExecutionContext.cs" />
     <Compile Include="Editing\CommandPipeline.cs" />
     <Compile Include="Editing\Commands\BuiltInCaretNavigationCommand.cs" />
@@ -60,7 +60,7 @@
     <Compile Include="Editing\Commands\CaretNavigationCommand.cs" />
     <Compile Include="Editing\Commands\TextCommands.cs" />
     <Compile Include="Editing\ContextAction\BreakTextBlockAction.cs" />
-    <Compile Include="Editing\ContextAction\IContextAction.cs" />
+    <Compile Include="Editing\ContextAction\IContextualCommand.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="Editing\TextBlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />

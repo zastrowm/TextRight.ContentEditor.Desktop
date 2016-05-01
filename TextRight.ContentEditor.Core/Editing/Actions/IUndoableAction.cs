@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 namespace TextRight.ContentEditor.Core.Editing.Actions
 {
   /// <summary> Interface for action that can be undone. </summary>
-  public interface IAction
+  public interface IUndoableAction
   {
+    /// <summary> A human-readable name of the action. </summary>
+    string Name { get; }
+
+    /// <summary> A human-readable description of the action. </summary>
+    string Description { get; }
+
     /// <summary> Performs the given operation. </summary>
     /// <param name="context"> The context in which the action should be performed. </param>
     void Do(DocumentEditorContext context);

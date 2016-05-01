@@ -8,18 +8,18 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
   public class ActionStack
   {
     private readonly DocumentEditorContext _context;
-    private readonly Stack<IAction> _actions;
+    private readonly Stack<IUndoableAction> _actions;
 
     public ActionStack(DocumentEditorContext context)
     {
       _context = context;
-      _actions = new Stack<IAction>();
+      _actions = new Stack<IUndoableAction>();
     }
 
-    public void Do(IAction action)
+    public void Do(IUndoableAction undoableAction)
     {
-      action.Do(_context);
-      _actions.Push(action);
+      undoableAction.Do(_context);
+      _actions.Push(undoableAction);
     }
 
     public void Undo()

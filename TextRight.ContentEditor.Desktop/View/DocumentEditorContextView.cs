@@ -71,7 +71,7 @@ namespace TextRight.ContentEditor.Desktop.View
                  "about X & Y and those other things that extend the line length for the X-Files.  " +
                  "Isn't that great");
 
-      var breakAction = new BreakParagraphAction(new DocumentCursorHandle(_editor.Caret));
+      var breakAction = new BreakParagraphUndoableAction(new DocumentCursorHandle(_editor.Caret));
       _undoStack.Do(breakAction);
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
@@ -147,7 +147,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public void InsertText(string text)
     {
-      var action = new InsertTextAction(new DocumentCursorHandle(_editor.Caret), text);
+      var action = new InsertTextUndoableAction(new DocumentCursorHandle(_editor.Caret), text);
       _undoStack.Do(action);
     }
 

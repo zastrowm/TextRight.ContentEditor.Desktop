@@ -6,7 +6,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Editing.Actions
 {
   /// <summary> Inserts text at the specified location. </summary>
-  public class InsertTextAction : IAction
+  public class InsertTextUndoableAction : IUndoableAction
   {
     private readonly DocumentCursorHandle _insertionPoint;
     private readonly string _text;
@@ -14,11 +14,19 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <summary> Constructor. </summary>
     /// <param name="insertionPoint"> The point at which text should be inserted. </param>
     /// <param name="text"> The text to insert. </param>
-    public InsertTextAction(DocumentCursorHandle insertionPoint, string text)
+    public InsertTextUndoableAction(DocumentCursorHandle insertionPoint, string text)
     {
       _insertionPoint = insertionPoint;
       _text = text;
     }
+
+    /// <inheritdoc />
+    public string Name
+      => "Insert Text";
+
+    /// <inheritdoc />
+    public string Description
+      => "Insert text into the paragraph";
 
     /// <inheritdoc />
     public void Do(DocumentEditorContext context)

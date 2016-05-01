@@ -13,13 +13,13 @@ namespace TextRight.ContentEditor.Desktop.View
   public class KeyboardShortcutCollection : IEnumerable<KeyboardShortcutCollection.Shortcut>
   {
     private readonly Dictionary<Key, List<Shortcut>> _keyLookup;
-    private readonly Dictionary<Key, IContextAction> _contextActions;
+    private readonly Dictionary<Key, IContextualCommand> _contextActions;
 
     /// <summary> Default constructor. </summary>
     public KeyboardShortcutCollection()
     {
       _keyLookup = new Dictionary<Key, List<Shortcut>>();
-      _contextActions = new Dictionary<Key, IContextAction>();
+      _contextActions = new Dictionary<Key, IContextualCommand>();
     }
 
     /// <summary> Adds a keyboard shortcut associated with a command. </summary>
@@ -33,7 +33,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <summary> Adds a keyboard shortcut associated with a command. </summary>
     /// <param name="key"> The key to associate with the command. </param>
     /// <param name="command"> The command. </param>
-    public void Add(Key key, IContextAction command)
+    public void Add(Key key, IContextualCommand command)
     {
       Add(0, key, command);
     }
@@ -69,11 +69,11 @@ namespace TextRight.ContentEditor.Desktop.View
     ///  If CTRL is specified and not SHIFT, the command will still be active when
     ///  SHIFT is held. </param>
     /// <param name="key"> The key to associate with the command. </param>
-    /// <param name="contextAction"> The command. </param>
-    public void Add(ModifierKeys modifier, Key key, IContextAction contextAction)
+    /// <param name="contextualCommand"> The command. </param>
+    public void Add(ModifierKeys modifier, Key key, IContextualCommand contextualCommand)
     {
       // TODO thrown an exception on duplicate
-      var newShortcut = new Shortcut(modifier, key, contextAction);
+      var newShortcut = new Shortcut(modifier, key, contextualCommand);
 
       List<Shortcut> existingValue;
 
@@ -141,7 +141,7 @@ namespace TextRight.ContentEditor.Desktop.View
     ///  be returned. </param>
     /// <param name="key"> The key to associate with the command. </param>
     /// <returns> The command associated with the modifier keys/key. </returns>
-    public IContextAction LookupContextAction(ModifierKeys modifers, Key key)
+    public IContextualCommand LookupContextAction(ModifierKeys modifers, Key key)
     {
       List<Shortcut> list;
       if (!_keyLookup.TryGetValue(key, out list))
@@ -149,9 +149,9 @@ namespace TextRight.ContentEditor.Desktop.View
 
       foreach (var item in list)
       {
-        if (item.Modifers == modifers && item.ContextAction != null)
+        if (item.Modifers == modifers && item.ContextualCommand != null)
         {
-          return item.ContextAction;
+          return item.ContextualCommand;
         }
       }
 
@@ -164,9 +164,9 @@ namespace TextRight.ContentEditor.Desktop.View
 
         foreach (var item in list)
         {
-          if (item.Modifers == modifers && item.ContextAction != null)
+          if (item.Modifers == modifers && item.ContextualCommand != null)
           {
-            return item.ContextAction;
+            return item.ContextualCommand;
           }
         }
       }
@@ -196,11 +196,11 @@ namespace TextRight.ContentEditor.Desktop.View
         Command = command;
       }
 
-      public Shortcut(ModifierKeys modifers, Key key, IContextAction contextAction)
+      public Shortcut(ModifierKeys modifers, Key key, IContextualCommand contextualCommand)
       {
         Modifers = modifers;
         Key = key;
-        ContextAction = contextAction;
+        ContextualCommand = contextualCommand;
       }
 
       public ModifierKeys Modifers { get; }
@@ -209,7 +209,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
       public EditorCommand Command { get; }
 
-      public IContextAction ContextAction { get; }
+      public IContextualCommand ContextualCommand { get; }
     }
   }
 }

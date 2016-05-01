@@ -12,7 +12,7 @@ namespace TextRight.ContentEditor.Core.Editing
   ///  into two different paragraphs; this would be an command that would only be enabled when the
   ///  caret is in the middle of a text-block.
   /// </summary>
-  public interface IContextAction
+  public interface IContextualCommand
   {
     /// <summary> True if the command can be executed for the given context. </summary>
     /// <param name="context"> The context in which the action should be executed. </param>
