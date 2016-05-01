@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using TextRight.ContentEditor.Core.Utilities;
 
@@ -16,6 +18,7 @@ namespace TextRight.ContentEditor.Desktop.View
   {
     private readonly TextBlockView _textBlockView;
     private readonly StyledTextFragment _fragment;
+    private GeneralTransform _transform;
 
     /// <summary> Constructor. </summary>
     /// <param name="textBlockView"></param>
@@ -27,6 +30,23 @@ namespace TextRight.ContentEditor.Desktop.View
       _fragment.Target = this;
 
       TextUpdated(_fragment);
+    }
+
+    /// <summary>
+    ///  The transform to convert points into the coordinate space for the control that the document
+    ///  is hosted for, lazily initialized.
+    /// </summary>
+    private GeneralTransform LazyTransform
+    {
+      get
+      {
+        if (_transform == null)
+        {
+          _transform = _textBlockView.TransformToAncestor((Visual)_textBlockView.Parent);
+        }
+
+        return _transform;
+      }
     }
 
     /// <inheritdoc/>
@@ -51,10 +71,13 @@ namespace TextRight.ContentEditor.Desktop.View
       var leftRect = position.GetCharacterRect(LogicalDirection.Forward);
       var rightRect = nextPosition.GetCharacterRect(LogicalDirection.Backward);
 
+      // TODO investigate if there's another/faster way to do this
+      var offsetToBlock = LazyTransform.Transform(default(Point));
+
       return new MeasuredRectangle()
              {
-               X = leftRect.X,
-               Y = leftRect.Y,
+               X = leftRect.X + offsetToBlock.X,
+               Y = leftRect.Y + offsetToBlock.Y,
                Width = rightRect.X - leftRect.X,
                Height = leftRect.Height
              };

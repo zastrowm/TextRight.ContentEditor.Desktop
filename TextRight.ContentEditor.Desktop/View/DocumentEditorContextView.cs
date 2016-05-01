@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.Editing.Actions;
 using TextRight.ContentEditor.Core.Editing.Commands;
@@ -18,16 +19,22 @@ namespace TextRight.ContentEditor.Desktop.View
   /// </summary>
   public class DocumentEditorContextView : Canvas
   {
-    private readonly FlowDocument _flowDocument;
+    private readonly VerticalBlockCollectionView _blockCollectionView;
     private readonly DocumentEditorContext _editor;
     private readonly CaretView _caretView;
-    private readonly FlowDocumentScrollViewer _documentViewer;
+    private readonly ScrollViewer _rootView;
     private readonly KeyboardShortcutCollection _keyCommands;
 
     private readonly ActionStack _undoStack;
 
     public DocumentEditorContextView(DocumentEditorContext editor)
     {
+      TextElement.SetFontSize(this, 16);
+      TextElement.SetFontFamily(this, new FontFamily("Times New Roman"));
+      TextOptions.SetTextFormattingMode(this, TextFormattingMode.Display);
+      TextOptions.SetTextHintingMode(this, TextHintingMode.Fixed);
+      TextOptions.SetTextRenderingMode(this, TextRenderingMode.ClearType);
+
       _editor = editor;
 
       _undoStack = new ActionStack(editor);
@@ -36,18 +43,18 @@ namespace TextRight.ContentEditor.Desktop.View
       Children.Add(_caretView.Element);
 
       // clear out the existing content
-      _flowDocument = new FlowDocumentBlockCollectionView((VerticalBlockCollection)_editor.Document.Root);
+      _blockCollectionView = new VerticalBlockCollectionView((VerticalBlockCollection)_editor.Document.Root);
 
-      _documentViewer = new FlowDocumentScrollViewer()
-                        {
-                          Document = _flowDocument,
-                        };
+      _rootView = new ScrollViewer()
+                  {
+                    Content = _blockCollectionView,
+                  };
 
-      Children.Add(_documentViewer);
+      Children.Add(_rootView);
 
-      SetTop(_documentViewer, 0);
-      SetLeft(_documentViewer, 0);
-      SetZIndex(_documentViewer, 0);
+      SetTop(_rootView, 0);
+      SetLeft(_rootView, 0);
+      SetZIndex(_rootView, 0);
 
       _keyCommands = new KeyboardShortcutCollection()
                      {
@@ -66,7 +73,7 @@ namespace TextRight.ContentEditor.Desktop.View
                        { Key.Down, BuiltInCaretNavigationCommand.Down },
                      };
 
-      InsertText("This is an example of a document within the editor.  It has many features that extend onto" +
+      InsertText("This is an example of a document within the editor.  It has many features that extend onto " +
                  "multiple lines enough that we can start to create paragraphs.  Don't also forget" +
                  "about X & Y and those other things that extend the line length for the X-Files.  " +
                  "Isn't that great");
@@ -78,7 +85,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public new void Focus()
     {
-      _flowDocument.Focus();
+      _blockCollectionView.Focus();
     }
 
     public void Initialize()
@@ -90,8 +97,8 @@ namespace TextRight.ContentEditor.Desktop.View
     {
       base.OnRenderSizeChanged(sizeInfo);
 
-      _documentViewer.Width = sizeInfo.NewSize.Width;
-      _documentViewer.Height = sizeInfo.NewSize.Height;
+      _rootView.Width = sizeInfo.NewSize.Width;
+      _rootView.Height = sizeInfo.NewSize.Height;
     }
 
     protected override void OnTextInput(TextCompositionEventArgs e)
