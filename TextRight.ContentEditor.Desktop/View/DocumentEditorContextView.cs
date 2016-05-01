@@ -53,7 +53,7 @@ namespace TextRight.ContentEditor.Desktop.View
                      {
                        // editing commands
                        { Key.Enter, new BreakTextBlockAction() },
-                       { Key.Delete, TextCommands.DeleteNextCharacter },
+                       { Key.Delete, new DeleteNextCharacterCommand() },
                        { Key.Back, TextCommands.DeletePreviousCharacter },
                        // caret commands
                        { Key.Left, BuiltInCaretNavigationCommand.Backward },

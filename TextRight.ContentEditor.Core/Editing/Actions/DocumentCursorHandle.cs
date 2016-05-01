@@ -22,6 +22,13 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       _serializedCursor = cursor.BlockCursor.Serialize();
     }
 
+    /// <summary> Constructor. </summary>
+    /// <param name="cursor"> The cursor that should be serialized for later use. </param>
+    public DocumentCursorHandle(IBlockContentCursor cursor)
+    {
+      _serializedCursor = cursor.Serialize();
+    }
+
     /// <summary>
     ///  Retrieves a live cursor which can be used to perform operations on the document.
     /// </summary>

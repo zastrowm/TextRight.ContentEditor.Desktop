@@ -14,6 +14,14 @@ namespace TextRight.ContentEditor.Core.Editing
   /// </summary>
   public interface IContextualCommand
   {
+    /// <summary> Gets the name of the command as it should be presented to the user. </summary>
+    /// <param name="context"> The context in which it's presented to the user. </param>
+    string GetName(DocumentEditorContext context);
+
+    /// <summary> Gets the description of the command as it should be presented to the user. </summary>
+    /// <param name="context"> The context in which it's presented to the user. </param>
+    string GetDescription(DocumentEditorContext context);
+
     /// <summary> True if the command can be executed for the given context. </summary>
     /// <param name="context"> The context in which the action should be executed. </param>
     /// <returns> True if the command can be executed, command otherwise. </returns>
@@ -26,13 +34,5 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <param name="context"> The context in which the command should be executed. </param>
     /// <param name="actionStack"> Stack of undo-able actions. </param>
     void Activate(DocumentEditorContext context, ActionStack actionStack);
-
-    /// <summary> Gets the name of the command as it should be presented to the user. </summary>
-    /// <param name="context"> The context in which it's presented to the user. </param>
-    string GetName(DocumentEditorContext context);
-
-    /// <summary> Gets the description of the command as it should be presented to the user. </summary>
-    /// <param name="context"> The context in which it's presented to the user. </param>
-    string GetDescription(DocumentEditorContext context);
   }
 }
