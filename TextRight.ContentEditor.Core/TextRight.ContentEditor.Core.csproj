@@ -59,6 +59,8 @@
     <Compile Include="Editing\Commands\ICommandProcessor.cs" />
     <Compile Include="Editing\Commands\CaretNavigationCommand.cs" />
     <Compile Include="Editing\Commands\TextCommands.cs" />
+    <Compile Include="Editing\ContextAction\BreakTextBlockAction.cs" />
+    <Compile Include="Editing\ContextAction\IContextAction.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="Editing\TextBlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />

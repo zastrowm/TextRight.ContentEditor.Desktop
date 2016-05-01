@@ -34,5 +34,13 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       var blockCursor = _serializedCursor.Deserialize(context.Document);
       return blockCursor;
     }
+
+    /// <summary>
+    ///  Implicit cast that converts the given DocumentCursor to a DocumentCursorHandle.
+    /// </summary>
+    public static implicit operator DocumentCursorHandle(DocumentCursor cursor)
+    {
+      return new DocumentCursorHandle(cursor);
+    }
   }
 }

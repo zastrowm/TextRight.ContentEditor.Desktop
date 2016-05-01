@@ -52,7 +52,7 @@ namespace TextRight.ContentEditor.Desktop.View
       _keyCommands = new KeyboardShortcutCollection()
                      {
                        // editing commands
-                       { Key.Enter, TextCommands.BreakBlock },
+                       { Key.Enter, new BreakTextBlockAction() },
                        { Key.Delete, TextCommands.DeleteNextCharacter },
                        { Key.Back, TextCommands.DeletePreviousCharacter },
                        // caret commands
@@ -118,11 +118,23 @@ namespace TextRight.ContentEditor.Desktop.View
       else if (e.Key == Key.Z && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
       {
         _undoStack.Undo();
+        UpdateCaretPosition();
       }
     }
 
     public bool HandleKeyDown(Key key)
     {
+      var action = _keyCommands.LookupContextAction(Keyboard.Modifiers, key);
+      if (action != null)
+      {
+        if (action.CanActivate(_editor))
+        {
+          action.Activate(_editor, _undoStack);
+          return true;
+        }
+        return false;
+      }
+
       var command = _keyCommands.Lookup(Keyboard.Modifiers, key);
       if (command != null)
       {
