@@ -61,7 +61,7 @@ namespace TextRight.ContentEditor.Desktop.View
                        // editing commands
                        { Key.Enter, new BreakTextBlockAction() },
                        { Key.Delete, new DeleteNextCharacterCommand() },
-                       { Key.Back, TextCommands.DeletePreviousCharacter },
+                       { Key.Back, new DeletePreviousCharacterCommand() },
                        // caret commands
                        { Key.Left, BuiltInCaretNavigationCommand.Backward },
                        { Key.Right, BuiltInCaretNavigationCommand.Forward },

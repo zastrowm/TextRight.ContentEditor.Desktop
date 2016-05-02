@@ -279,6 +279,16 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       {
         return _block.ExtractContentToEnd(this);
       }
+
+      /// <summary> Makes a deep copy of this instance. </summary>
+      /// <returns> A copy of this instance. </returns>
+      public TextBlockCursor Clone()
+      {
+        return new TextBlockCursor(_block)
+               {
+                 State = State
+               };
+      }
     }
   }
 }

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\Actions\ActionStack.cs" />
+    <Compile Include="Editing\ContextAction\DeletePreviousCharacterCommand.cs" />
     <Compile Include="Editing\ContextAction\DeleteNextCharacterCommand.cs" />
     <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />
     <Compile Include="Editing\Actions\IUndoableAction.cs" />
