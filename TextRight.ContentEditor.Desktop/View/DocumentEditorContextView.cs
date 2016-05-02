@@ -126,6 +126,11 @@ namespace TextRight.ContentEditor.Desktop.View
         _undoStack.Undo();
         UpdateCaretPosition();
       }
+      else if (e.Key == Key.Y && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
+      {
+        _undoStack.Redo();
+        UpdateCaretPosition();
+      }
     }
 
     public bool HandleKeyDown(Key key)
