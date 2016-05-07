@@ -28,7 +28,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     [DebuggerDisplay("TextBlockCursor(FragmentIndex={Fragment.Index}, Offset={OffsetIntoSpan})")]
     public class TextBlockCursor : IBlockContentCursor,
                                    ITextContentCursor,
-                                   ICommandProcessorHook
+                                   ICommandProcessorHook,
+                                   IEquatable<TextBlockCursor>
     {
       private const char NullCharacter = '\0';
 
@@ -247,6 +248,60 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         }
       }
 
+      /// <summary>
+      ///  Extracts the content from the current location to the end of the block.
+      /// </summary>
+      public StyledTextFragment[] ExtractToEnd()
+      {
+        return _block.ExtractContentToEnd(this);
+      }
+
+      /// <summary> Makes a deep copy of this instance. </summary>
+      /// <returns> A copy of this instance. </returns>
+      public TextBlockCursor Clone()
+      {
+        return new TextBlockCursor(_block)
+               {
+                 State = State
+               };
+      }
+
+      /// <inheritdoc />
+      public bool Equals(TextBlockCursor other)
+      {
+        if (ReferenceEquals(null, other))
+          return false;
+        if (ReferenceEquals(this, other))
+          return true;
+
+        return Equals(_block, other._block) && Equals(Fragment, other.Fragment) &&
+               OffsetIntoSpan == other.OffsetIntoSpan;
+      }
+
+      /// <inheritdoc />
+      public override bool Equals(object obj)
+      {
+        if (ReferenceEquals(null, obj))
+          return false;
+        if (ReferenceEquals(this, obj))
+          return true;
+        if (obj.GetType() != GetType())
+          return false;
+        return Equals((TextBlockCursor)obj);
+      }
+
+      /// <inheritdoc />
+      public override int GetHashCode()
+      {
+        unchecked
+        {
+          var hashCode = _block?.GetHashCode() ?? 0;
+          hashCode = (hashCode * 397) ^ (Fragment?.GetHashCode() ?? 0);
+          hashCode = (hashCode * 397) ^ OffsetIntoSpan;
+          return hashCode;
+        }
+      }
+
       /// <summary> The cursor's serialized data. </summary>
       private class SerializedData : ISerializedBlockCursor
       {
@@ -270,24 +325,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                    Fragment = block.GetSpanAtIndex(_spanId),
                  };
         }
-      }
-
-      /// <summary>
-      ///  Extracts the content from the current location to the end of the block.
-      /// </summary>
-      public StyledTextFragment[] ExtractToEnd()
-      {
-        return _block.ExtractContentToEnd(this);
-      }
-
-      /// <summary> Makes a deep copy of this instance. </summary>
-      /// <returns> A copy of this instance. </returns>
-      public TextBlockCursor Clone()
-      {
-        return new TextBlockCursor(_block)
-               {
-                 State = State
-               };
       }
     }
   }

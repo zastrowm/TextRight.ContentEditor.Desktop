@@ -27,7 +27,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   ///  associated with it.
   /// </summary>
   [DebuggerDisplay("StyledTextFragment(text={Text}, Index={Index})")]
-  public class StyledTextFragment : IViewableObject<IStyledTextSpanView>
+  public class StyledTextFragment : IViewableObject<IStyledTextSpanView>,
+                                    IEquatable<StyledTextFragment>
   {
     /// <summary> Default constructor. </summary>
     public StyledTextFragment(string text)
@@ -65,6 +66,13 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public int Length
       => Text.Length;
 
+    /// <summary> Makes a deep copy of this instance. </summary>
+    /// <returns> A copy of this instance. </returns>
+    public StyledTextFragment Clone()
+    {
+      return new StyledTextFragment(_text);
+    }
+
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.
     /// </summary>
@@ -75,6 +83,38 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public void Detach()
     {
       Target?.Detach();
+    }
+
+    /// <inheritdoc />
+    public bool Equals(StyledTextFragment other)
+    {
+      if (ReferenceEquals(null, other))
+        return false;
+      if (ReferenceEquals(this, other))
+        return true;
+
+      return string.Equals(_text, other._text) && Index == other.Index;
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != GetType())
+        return false;
+      return Equals((StyledTextFragment)obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+      unchecked
+      {
+        return (_text.GetHashCode() * 397) ^ Index;
+      }
     }
   }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing.Commands;
+using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -30,6 +31,33 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                                            int indexOfRemovedBlock)
     {
       Target?.NotifyBlockRemoved(previousBlock, removedBlock, nextBlock, indexOfRemovedBlock);
+    }
+
+    /// <inheritdoc />
+    public override Block Clone()
+    {
+      var clone = new VerticalBlockCollection();
+
+      foreach (var block in Children)
+      {
+        clone.Append(block.Clone());
+      }
+
+      // remove the original first block
+      clone.RemoveBlock(clone.FirstBlock);
+
+      return clone;
+    }
+
+    /// <inheritdoc />
+    public override SerializeNode SerializeAsNode()
+    {
+      var node = new SerializeNode(typeof(VerticalBlockCollection));
+      foreach (var child in Children)
+      {
+        node.Children.Add(child.SerializeAsNode());
+      }
+      return node;
     }
 
     /// <inheritdoc />

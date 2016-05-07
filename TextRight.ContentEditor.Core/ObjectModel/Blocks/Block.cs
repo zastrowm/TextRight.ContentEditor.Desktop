@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing.Commands;
+using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -54,6 +55,14 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     {
       return new BlockPath(this);
     }
+
+    /// <summary> Makes a deep copy of this instance. </summary>
+    /// <returns> A copy of this instance. </returns>
+    public abstract Block Clone();
+
+    /// <summary> Serializes this object into a node. </summary>
+    /// <returns> A node that serializes the block.. </returns>
+    public abstract SerializeNode SerializeAsNode();
 
     /// <summary>
     ///  Retrieves the block that comes after this block in the parent collection.

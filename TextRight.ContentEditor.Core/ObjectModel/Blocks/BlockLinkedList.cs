@@ -8,7 +8,8 @@ using JetBrains.Annotations;
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> Maintains a linked-list of blocks. </summary>
-  internal class BlockLinkedList : IEnumerable<Block>
+  internal class BlockLinkedList : IEnumerable<Block>,
+                                   IEquatable<BlockLinkedList>
   {
     [NotNull]
     private readonly BlockCollection _parentCollection;
@@ -225,6 +226,38 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       }
 
       return current;
+    }
+
+    /// <nodoc />
+    public bool Equals(BlockLinkedList other)
+    {
+      if (ReferenceEquals(null, other))
+        return false;
+      if (ReferenceEquals(this, other))
+        return true;
+
+      if (Count != other.Count)
+        return false;
+
+      return this.SequenceEqual(other);
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != GetType())
+        return false;
+      return Equals((BlockLinkedList)obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+      return _parentCollection.GetHashCode();
     }
 
     /// <inheritdoc />

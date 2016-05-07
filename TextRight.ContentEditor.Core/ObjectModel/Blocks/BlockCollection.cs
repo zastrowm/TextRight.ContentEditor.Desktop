@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> A block that holds a collection of child blocks. </summary>
-  public abstract class BlockCollection : Block
+  public abstract class BlockCollection : Block,
+                                          IEquatable<BlockCollection>
   {
     [NotNull]
     private readonly BlockLinkedList _blockList;
@@ -223,5 +225,33 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
       return secondaryBlock;
     }
+
+    /// <nodoc />
+    public bool Equals(BlockCollection other)
+    {
+      if (ReferenceEquals(null, other))
+        return false;
+      if (ReferenceEquals(this, other))
+        return true;
+      return _blockList.Equals(other._blockList);
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != this.GetType())
+        return false;
+      return Equals((BlockCollection)obj);
+    }
+
+    public override int GetHashCode()
+    {
+      return _blockList.GetHashCode();
+    }
+
   }
 }

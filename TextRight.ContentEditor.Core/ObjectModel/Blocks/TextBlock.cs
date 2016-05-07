@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.Editing.Commands;
+using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -15,7 +16,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="previousSibling"> The fragment that precedes the new fragment. </param>
     /// <param name="newFragment"> The fragment that is inserted. </param>
     /// <param name="nextSibling"> The fragment that comes after the block that is being inserted. </param>
-    void NotifyBlockInserted(StyledTextFragment previousSibling, StyledTextFragment newFragment, StyledTextFragment nextSibling);
+    void NotifyBlockInserted(StyledTextFragment previousSibling,
+                             StyledTextFragment newFragment,
+                             StyledTextFragment nextSibling);
   }
 
   /// <summary>
@@ -23,7 +26,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// </summary>
   public partial class TextBlock : Block,
                                    IViewableObject<ITextBlockView>,
-                                   IEnumerable<StyledTextFragment>
+                                   IEnumerable<StyledTextFragment>,
+                                   IEquatable<TextBlock>
   {
     private readonly List<StyledTextFragment> _spans;
 
@@ -55,7 +59,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <summary> Appends all fragments to the text block.  </summary>
     /// <param name="fragments"> The fragments to add to the text block. </param>
-    public void AppendAll(StyledTextFragment[] fragments)
+    public void AppendAll(IEnumerable<StyledTextFragment> fragments)
     {
       foreach (var fragment in fragments)
       {
@@ -121,6 +125,29 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <inheritdoc />
     public override string MimeType { get; }
       = "text/plain";
+
+    /// <inheritdoc />
+    public override Block Clone()
+    {
+      var clone = new TextBlock();
+      clone._spans.Clear();
+      clone.AppendAll(_spans.Select(s => s.Clone()));
+      return clone;
+    }
+
+    /// <inheritdoc />
+    public override SerializeNode SerializeAsNode()
+    {
+      var node = new SerializeNode(typeof(TextBlock));
+      foreach (var span in _spans)
+      {
+        var subSpanNode = new SerializeNode(typeof(StyledTextFragment));
+        subSpanNode.Data = span.Text;
+        node.Children.Add(subSpanNode);
+      }
+
+      return node;
+    }
 
     /// <inheritdoc/>
     public override BlockType BlockType
@@ -274,5 +301,33 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       TextBlockCursorMover.BackwardMover.MoveToPosition(cursor, position);
     }
 
+    /// <inheritdoc />
+    public bool Equals(TextBlock other)
+    {
+      if (ReferenceEquals(null, other))
+        return false;
+      if (ReferenceEquals(this, other))
+        return true;
+
+      return _spans.SequenceEqual(other._spans);
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != GetType())
+        return false;
+      return Equals((TextBlock)obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+      return _spans.GetHashCode();
+    }
   }
 }

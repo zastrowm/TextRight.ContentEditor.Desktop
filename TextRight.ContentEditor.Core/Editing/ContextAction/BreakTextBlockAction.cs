@@ -37,7 +37,7 @@ namespace TextRight.ContentEditor.Core.Editing
     }
 
     /// <summary> Breaks a paragraph at the given caret location. </summary>
-    private class UndoableAction : IUndoableAction
+    public class UndoableAction : IUndoableAction
     {
       private readonly DocumentCursorHandle _handle;
 
@@ -62,7 +62,7 @@ namespace TextRight.ContentEditor.Core.Editing
         var blockCursor = _handle.Get(context);
         var blockCollection = blockCursor.Block.Parent;
 
-        var newBlock = blockCollection.TryBreakBlock(context.Cursor);
+        var newBlock = blockCollection.TryBreakBlock(blockCursor);
         if (newBlock == null)
           return;
 

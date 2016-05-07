@@ -2,19 +2,71 @@
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
 namespace TextRight.ContentEditor.Core.ObjectModel
 {
   /// <summary> Represents a single TextRight document. </summary>
-  public class DocumentOwner
+  public class DocumentOwner : IEquatable<DocumentOwner>
   {
     /// <summary> Default constructor. </summary>
     public DocumentOwner()
+      : this(new VerticalBlockCollection())
     {
-      Root = new VerticalBlockCollection();
+    }
+
+    /// <summary> Constructor. </summary>
+    /// <param name="collection"> The collection that should be used as the root. </param>
+    private DocumentOwner(BlockCollection collection)
+    {
+      Root = collection;
     }
 
     /// <summary> The top level collection of elements.  </summary>
     public BlockCollection Root { get; }
+
+    /// <summary> Makes a deep copy of this instance. </summary>
+    /// <returns> A copy of this instance. </returns>
+    public DocumentOwner Clone()
+    {
+      return new DocumentOwner((BlockCollection)Root.Clone());
+    }
+
+    public SerializeNode SerializeAsNode()
+    {
+      var node = new SerializeNode(typeof(DocumentOwner));
+
+      node.Children.Add(Root.SerializeAsNode());
+
+      return node;
+    }
+
+    /// <nodoc />
+    public bool Equals(DocumentOwner other)
+    {
+      if (ReferenceEquals(null, other))
+        return false;
+      if (ReferenceEquals(this, other))
+        return true;
+      return Equals(Root, other.Root);
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+      if (ReferenceEquals(this, obj))
+        return true;
+      if (obj.GetType() != GetType())
+        return false;
+      return Equals((DocumentOwner)obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+      return Root?.GetHashCode() ?? 0;
+    }
   }
 }
