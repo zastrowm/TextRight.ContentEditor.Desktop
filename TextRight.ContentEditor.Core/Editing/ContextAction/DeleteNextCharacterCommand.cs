@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TextRight.ContentEditor.Core.Editing.Actions;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.Editing.Actions
+namespace TextRight.ContentEditor.Core.Editing
 {
   /// <summary> Deletes the next character in the document. </summary>
   public class DeleteNextCharacterCommand : IContextualCommand
