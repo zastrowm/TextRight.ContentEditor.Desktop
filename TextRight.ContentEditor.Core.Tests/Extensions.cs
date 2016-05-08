@@ -25,7 +25,7 @@ namespace TextRight.ContentEditor.Core.Tests
     /// </summary>
     public static void Add(this TextBlock block, StyledTextFragment fragment)
     {
-      block.AppendSpan(fragment);
+      block.AppendSpan(fragment, false);
     }
 
     /// <summary> Set the text of the TextBlock to be equal to the given text. </summary>

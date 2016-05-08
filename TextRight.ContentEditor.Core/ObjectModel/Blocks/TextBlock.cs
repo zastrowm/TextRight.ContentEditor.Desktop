@@ -47,8 +47,20 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <summary> Appends the given span to the TextBlock. </summary>
     /// <param name="fragment"> The span to add. </param>
-    public void AppendSpan(StyledTextFragment fragment)
+    /// <param name="autoMerge"> True to automatically merge similar fragments together. </param>
+    public void AppendSpan(StyledTextFragment fragment, bool autoMerge = true)
     {
+      // FYI early exit
+      if (autoMerge && _spans.Count > 0)
+      {
+        var lastSpan = _spans[_spans.Count - 1];
+        if (lastSpan.IsSameStyleAs(fragment))
+        {
+          lastSpan.Text += fragment.Text;
+          return;
+        }
+      }
+
       fragment.Index = _spans.Count;
       fragment.Parent = this;
       _spans.Add(fragment);
@@ -61,9 +73,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="fragments"> The fragments to add to the text block. </param>
     public void AppendAll(IEnumerable<StyledTextFragment> fragments)
     {
+      bool autoMerge = true;
+
       foreach (var fragment in fragments)
       {
-        AppendSpan(fragment);
+        AppendSpan(fragment, autoMerge);
+        autoMerge = false;
       }
     }
 

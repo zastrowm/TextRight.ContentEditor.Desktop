@@ -66,6 +66,19 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public int Length
       => Text.Length;
 
+    /// <summary>
+    ///  True if the given fragment has the same style and could be merged with this instance.
+    /// </summary>
+    /// <param name="fragment"> The fragment to compare against. </param>
+    /// <returns>
+    ///  True if the styles are the same and the fragment could be merged, false otherwise.
+    /// </returns>
+    public bool IsSameStyleAs(StyledTextFragment fragment)
+    {
+      // TODO support styles
+      return true;
+    }
+
     /// <summary> Makes a deep copy of this instance. </summary>
     /// <returns> A copy of this instance. </returns>
     public StyledTextFragment Clone()
