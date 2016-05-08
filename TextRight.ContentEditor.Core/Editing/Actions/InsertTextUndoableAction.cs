@@ -46,9 +46,9 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <summary> Turn the cursor handle into a text cursor. </summary>
-    private TextBlock.TextBlockCursor GetTextCursor(DocumentEditorContext context)
+    private TextBlockCursor GetTextCursor(DocumentEditorContext context)
     {
-      return (TextBlock.TextBlockCursor)_insertionPoint.Get(context);
+      return (TextBlockCursor)_insertionPoint.Get(context);
     }
   }
 }

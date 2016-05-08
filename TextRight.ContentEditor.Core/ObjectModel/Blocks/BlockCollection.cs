@@ -206,7 +206,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       }
       else
       {
-        var textBlockCursor = (TextBlock.TextBlockCursor)cursor;
+        var textBlockCursor = (TextBlockCursor)cursor;
         var fragments = textBlockCursor.ExtractToEnd();
 
         var newTextBlock = new TextBlock();

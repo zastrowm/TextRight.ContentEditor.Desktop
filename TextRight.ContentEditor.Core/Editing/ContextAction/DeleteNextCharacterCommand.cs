@@ -20,14 +20,14 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <inheritdoc />
     public bool CanActivate(DocumentEditorContext context)
     {
-      var textCursor = context.Cursor as TextBlock.TextBlockCursor;
+      var textCursor = context.Cursor as TextBlockCursor;
       return textCursor?.IsAtEnd == false;
     }
 
     /// <inheritdoc />
     public void Activate(DocumentEditorContext context, ActionStack actionStack)
     {
-      var textCursor = (TextBlock.TextBlockCursor)context.Cursor;
+      var textCursor = (TextBlockCursor)context.Cursor;
       actionStack.Do(new UndableAction(textCursor));
     }
 
@@ -37,7 +37,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       private readonly string _originalText;
       private readonly DocumentCursorHandle _cursorHandle;
 
-      public UndableAction(TextBlock.TextBlockCursor cursor)
+      public UndableAction(TextBlockCursor cursor)
       {
         _cursorHandle = new DocumentCursorHandle(cursor);
         _originalText = cursor.CharacterAfter.ToString();
@@ -54,14 +54,14 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       /// <inheritdoc />
       public void Do(DocumentEditorContext context)
       {
-        var cursor = (TextBlock.TextBlockCursor)_cursorHandle.Get(context);
+        var cursor = (TextBlockCursor)_cursorHandle.Get(context);
         cursor.DeleteText(1);
       }
 
       /// <inheritdoc />
       public void Undo(DocumentEditorContext context)
       {
-        var cursor = (TextBlock.TextBlockCursor)_cursorHandle.Get(context);
+        var cursor = (TextBlockCursor)_cursorHandle.Get(context);
         cursor.InsertText(_originalText);
       }
     }

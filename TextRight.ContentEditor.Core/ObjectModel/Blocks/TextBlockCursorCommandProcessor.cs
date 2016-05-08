@@ -27,7 +27,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                                       CommandExecutionContext unused)
     {
       // we only work on text block cursors.
-      var cursor = context.Cursor as TextBlock.TextBlockCursor;
+      var cursor = context.Cursor as TextBlockCursor;
       if (cursor == null)
         return false;
 
@@ -145,7 +145,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         return false;
       }
 
-      var textCursor = (TextBlock.TextBlockCursor)blockCaret;
+      var textCursor = (TextBlockCursor)blockCaret;
 
       CharacterType characterType = Characterize(textCursor.CharacterAfter);
       CharacterType lastCharacterType;
@@ -179,7 +179,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       if (blockCaret.IsAtBeginning)
         return false;
 
-      var textCursor = (TextBlock.TextBlockCursor)blockCaret;
+      var textCursor = (TextBlockCursor)blockCaret;
 
       CharacterType characterType;
       CharacterType lastCharacterType;

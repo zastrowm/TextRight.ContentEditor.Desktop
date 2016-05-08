@@ -99,7 +99,7 @@ namespace TextRight.ContentEditor.Core.Editing.Commands
             if (context.CaretMovementMode.CurrentMode == CaretMovementMode.Mode.None)
             {
               // make sure that when we move up/down, we have a non-None mode
-              TextBlock.TextBlockCursor textBlockCursor = (TextBlock.TextBlockCursor)context.Cursor;
+              TextBlockCursor textBlockCursor = (TextBlockCursor)context.Cursor;
               context.CaretMovementMode.SetModeToPosition(textBlockCursor.MeasureCursorPosition().Left);
             }
             break;

@@ -11,7 +11,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
   {
     private TextBlock _block;
     private BlockCollection _collection;
-    private TextBlock.TextBlockCursor _cursor;
+    private TextBlockCursor _cursor;
 
     private void Initialize(string content)
     {
@@ -19,7 +19,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       content = content.Replace("|", "");
 
       _block = new TextBlock();
-      _cursor = (TextBlock.TextBlockCursor)_block.GetCursor();
+      _cursor = (TextBlockCursor)_block.GetCursor();
       _cursor.MoveToBeginning();
       ((ITextContentCursor)_cursor).InsertText(content);
       _cursor.MoveToBeginning();

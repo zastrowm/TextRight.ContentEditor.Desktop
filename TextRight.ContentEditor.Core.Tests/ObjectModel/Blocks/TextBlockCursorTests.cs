@@ -30,7 +30,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     [Test]
     public void BeginningPointsToBeginning()
     {
-      var cursor = (TextBlock.TextBlockCursor)Block.GetCursor();
+      var cursor = (TextBlockCursor)Block.GetCursor();
       cursor.MoveToBeginning();
 
       Assert.That(cursor.CharacterBefore, Is.EqualTo('\0'));
@@ -49,7 +49,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     [TestCase(9, '9', '\0', Description = "End of third span")]
     public void MoveForwardWorks(int amountToMove, char beforeChar, char afterChar)
     {
-      var cursor = (TextBlock.TextBlockCursor)Block.GetCursor();
+      var cursor = (TextBlockCursor)Block.GetCursor();
       cursor.MoveToBeginning();
 
       for (int i = 0; i < amountToMove; i++)
@@ -73,7 +73,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     [TestCase(0, '9', '\0', Description = "End of third span")]
     public void MoveBackwardWorks(int amountToMove, char beforeChar, char afterChar)
     {
-      var cursor = (TextBlock.TextBlockCursor)Block.GetCursor();
+      var cursor = (TextBlockCursor)Block.GetCursor();
       cursor.MoveToEnd();
 
       for (int i = 0; i < amountToMove; i++)
@@ -85,9 +85,9 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       Assert.That(cursor.CharacterAfter, Is.EqualTo(afterChar));
     }
 
-    private TextBlock.TextBlockCursor GetCursor(int amount)
+    private TextBlockCursor GetCursor(int amount)
     {
-      var cursor = (TextBlock.TextBlockCursor)Block.GetCursor();
+      var cursor = (TextBlockCursor)Block.GetCursor();
       cursor.MoveToBeginning();
 
       while (amount > 0)
