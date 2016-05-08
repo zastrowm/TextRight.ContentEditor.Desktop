@@ -59,18 +59,26 @@ namespace TextRight.ContentEditor.Desktop.View
       _keyCommands = new KeyboardShortcutCollection()
                      {
                        // editing commands
-                       { Key.Enter, new BreakTextBlockAction() },
-                       { Key.Delete, new DeleteNextCharacterCommand() },
-                       { Key.Back, new DeletePreviousCharacterCommand() },
-                       // caret commands
-                       { Key.Left, BuiltInCaretNavigationCommand.Backward },
-                       { Key.Right, BuiltInCaretNavigationCommand.Forward },
-                       { ModifierKeys.Control, Key.Left, BuiltInCaretNavigationCommand.PreviousWord },
-                       { ModifierKeys.Control, Key.Right, BuiltInCaretNavigationCommand.NextWord },
-                       { Key.Home, BuiltInCaretNavigationCommand.Home },
-                       { Key.End, BuiltInCaretNavigationCommand.End },
-                       { Key.Up, BuiltInCaretNavigationCommand.Up },
-                       { Key.Down, BuiltInCaretNavigationCommand.Down },
+                       {
+                         Key.Enter, new IContextualCommand[]
+                                    {
+                                      new BreakTextBlockAction()
+                                    }
+                       },
+                       {
+                         Key.Delete, new IContextualCommand[]
+                                     {
+                                       new DeleteNextCharacterCommand(),
+                                       new MergeTextBlocksCommand()
+                                     }
+                       },
+                       {
+                         Key.Back, new IContextualCommand[]
+                                   {
+                                     new DeletePreviousCharacterCommand(),
+                                     new MergeTextBlocksCommand()
+                                   }
+                       },
                      };
 
       InsertText("This is an example of a document within the editor.  It has many features that extend onto " +
@@ -135,18 +143,14 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public bool HandleKeyDown(Key key)
     {
-      var action = _keyCommands.LookupContextAction(Keyboard.Modifiers, key);
+      var action = _keyCommands.LookupContextAction(Keyboard.Modifiers, key, _editor);
       if (action != null)
       {
-        if (action.CanActivate(_editor))
-        {
-          action.Activate(_editor, _undoStack);
-          return true;
-        }
-        return false;
+        action.Activate(_editor, _undoStack);
+        return true;
       }
 
-      var command = _keyCommands.Lookup(Keyboard.Modifiers, key);
+      var command = GetEditorCommand(Keyboard.Modifiers, key);
       if (command != null)
       {
         _editor.CommandPipeline.Execute(command);
@@ -154,6 +158,31 @@ namespace TextRight.ContentEditor.Desktop.View
       }
 
       return false;
+    }
+
+    private EditorCommand GetEditorCommand(ModifierKeys modifiers, Key key)
+    {
+      switch (key)
+      {
+        case Key.Left:
+          return modifiers.HasFlag(ModifierKeys.Control)
+            ? BuiltInCaretNavigationCommand.PreviousWord
+            : BuiltInCaretNavigationCommand.Backward;
+        case Key.Right:
+          return modifiers.HasFlag(ModifierKeys.Control)
+            ? BuiltInCaretNavigationCommand.NextWord
+            : BuiltInCaretNavigationCommand.Forward;
+        case Key.Home:
+          return BuiltInCaretNavigationCommand.Home;
+        case Key.End:
+          return BuiltInCaretNavigationCommand.End;
+        case Key.Up:
+          return BuiltInCaretNavigationCommand.Up;
+        case Key.Down:
+          return BuiltInCaretNavigationCommand.Down;
+      }
+
+      return null;
     }
 
     public void InsertText(string text)
