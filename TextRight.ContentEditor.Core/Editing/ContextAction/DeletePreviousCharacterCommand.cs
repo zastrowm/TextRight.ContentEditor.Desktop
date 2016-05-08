@@ -21,16 +21,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     public bool CanActivate(DocumentEditorContext context)
     {
       var textCursor = context.Cursor as TextBlock.TextBlockCursor;
-      if (textCursor == null)
-        return false;
-
-      var state = textCursor.State;
-      if (!textCursor.MoveBackward())
-        return false;
-
-      textCursor.State = state;
-
-      return true;
+      return textCursor?.IsAtBeginning == false;
     }
 
     /// <inheritdoc />
@@ -41,7 +32,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <summary> Deletes text from the document. </summary>
-    internal class UndableAction : IUndoableAction
+    public class UndableAction : IUndoableAction
     {
       private readonly string _originalText;
       private readonly DocumentCursorHandle _cursorHandle;
