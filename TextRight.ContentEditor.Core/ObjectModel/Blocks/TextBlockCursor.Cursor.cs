@@ -24,7 +24,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// </remarks>
   [DebuggerDisplay("TextBlockCursor(FragmentIndex={Fragment.Index}, Offset={OffsetIntoSpan})")]
   public class TextBlockCursor : IBlockContentCursor,
-                                 ITextContentCursor,
                                  ICommandProcessorHook,
                                  IEquatable<TextBlockCursor>
   {

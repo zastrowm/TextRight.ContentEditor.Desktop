@@ -6,29 +6,6 @@ using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
-  /// <summary>
-  ///  A <see cref="IBlockContentCursor"/> that allows the user to insert text.
-  /// </summary>
-  public interface ITextContentCursor
-  {
-    /// <summary> Inserts a text described by text. </summary>
-    /// <param name="text"> The text. </param>
-    void InsertText(string text);
-
-    /// <summary> True if the user can currently insert text. </summary>
-    /// <returns> true if we can insert text, false if not. </returns>
-    bool CanInsertText();
-
-    /// <summary> Removes the given number of characters from the text block. </summary>
-    /// <param name="numberOfCharacters"> The number of characters to delete. </param>
-    /// <returns> True if at least a single character was deleted, false otherwise. </returns>
-    bool DeleteText(int numberOfCharacters);
-
-    /// <summary> Determine if we can delete text. </summary>
-    /// <returns> true if we can delete text, false if not. </returns>
-    bool CanDeleteText();
-  }
-
   /// <summary> A cursor that can move through a specific type of block. </summary>
   public interface IBlockContentCursor
   {

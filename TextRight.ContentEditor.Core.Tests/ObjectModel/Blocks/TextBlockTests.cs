@@ -21,7 +21,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       _block = new TextBlock();
       _cursor = (TextBlockCursor)_block.GetCursor();
       _cursor.MoveToBeginning();
-      ((ITextContentCursor)_cursor).InsertText(content);
+      ((TextBlockCursor)_cursor).InsertText(content);
       _cursor.MoveToBeginning();
 
       if (index > 0)

@@ -78,7 +78,7 @@
     <Compile Include="ObjectModel\Blocks\IViewableObject.cs" />
     <Compile Include="ObjectModel\Blocks\StyledTextFragment.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlock.cs" />
-    <Compile Include="ObjectModel\Blocks\TextBlock.Cursor.cs" />
+    <Compile Include="ObjectModel\Blocks\TextBlockCursor.Cursor.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlockCursorCommandProcessor.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollection.cs" />
     <Compile Include="ObjectModel\DocumentCursor.cs" />
