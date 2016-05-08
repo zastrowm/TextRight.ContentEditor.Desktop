@@ -91,6 +91,12 @@ namespace TextRight.ContentEditor.Core.Tests
       return cursor;
     }
 
+    /// <summary> Cast the given cursor to a TextBlockCursor. </summary>
+    public static TextBlock.TextBlockCursor AsTextCursor(this IBlockContentCursor cursor)
+    {
+      return (TextBlock.TextBlockCursor)cursor;
+    }
+
     /// <summary> Creates a cursor handle from the given content cursor. </summary>
     public static DocumentCursorHandle ToHandle(this IBlockContentCursor cursor)
       => new DocumentCursorHandle(cursor);
