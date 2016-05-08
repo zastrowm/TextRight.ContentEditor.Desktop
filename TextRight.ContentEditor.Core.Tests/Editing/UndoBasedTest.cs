@@ -26,7 +26,30 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [SetUp]
     public void BaseSetup()
     {
+      Reinitialize();
+    }
+
+    /// <summary> Prepares the document for performing actions. </summary>
+    private void Reinitialize()
+    {
       Context = new DocumentEditorContext();
+
+      var toExecute = InitializeDocument();
+      if (toExecute != null)
+      {
+        foreach (var item in toExecute)
+        {
+          item.Invoke().Do(Context);
+        }
+      }
+    }
+
+    /// <summary>
+    ///  Takes a serious of actions that should be performed before any of the tests.
+    /// </summary>
+    public virtual IReadOnlyList<Func<IUndoableAction>> InitializeDocument()
+    {
+      return null;
     }
 
     /// <summary> Gets the block at the specified index. </summary>
@@ -59,7 +82,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     /// </summary>
     private void PerformStepByStep(IReadOnlyList<Func<IUndoableAction>> actions)
     {
-      Context = new DocumentEditorContext();
+      Reinitialize();
 
       for (int i = 1; i < actions.Count + 1; i++)
       {

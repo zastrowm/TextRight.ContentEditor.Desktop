@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\BreakTextBlockActionUndoableActionTests.cs" />
+    <Compile Include="Editing\MergeTextBlockActionUndoableActionTests.cs" />
     <Compile Include="Editing\DeleteNextCharacterCommandUndoableActionTests.cs" />
     <Compile Include="Editing\DeletePreviousCharacterCommandUndoableActionTests.cs" />
     <Compile Include="Editing\InsertTextUndoableActionTests.cs" />

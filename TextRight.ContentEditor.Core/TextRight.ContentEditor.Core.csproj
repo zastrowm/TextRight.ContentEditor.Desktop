@@ -62,6 +62,7 @@
     <Compile Include="Editing\Commands\TextCommands.cs" />
     <Compile Include="Editing\ContextAction\BreakTextBlockAction.cs" />
     <Compile Include="Editing\ContextAction\IContextualCommand.cs" />
+    <Compile Include="Editing\ContextAction\MergeTextBlocksCommand.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="Editing\TextBlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
