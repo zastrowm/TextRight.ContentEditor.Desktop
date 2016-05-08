@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextRight.ContentEditor.Core.Editing.Actions;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Core.Tests
@@ -73,6 +74,26 @@ namespace TextRight.ContentEditor.Core.Tests
     {
       return collection.Children.Skip(index).First();
     }
+
+    /// <summary> Gets a cursor to the end of the block. </summary>
+    public static IBlockContentCursor EndCursor(this Block block, int offset = 0)
+    {
+      var cursor = block.GetCursor().ToEnd();
+      cursor.Move(offset);
+      return cursor;
+    }
+
+    /// <summary> Gets a cursor to the beginning of the block. </summary>
+    public static IBlockContentCursor BeginCursor(this Block block, int offset = 0)
+    {
+      var cursor = block.GetCursor().ToBeginning();
+      cursor.Move(offset);
+      return cursor;
+    }
+
+    /// <summary> Creates a cursor handle from the given content cursor. </summary>
+    public static DocumentCursorHandle ToHandle(this IBlockContentCursor cursor)
+      => new DocumentCursorHandle(cursor);
 
     /// <summary>
     ///  Move the block cursor the correct number of units forward or backward.
