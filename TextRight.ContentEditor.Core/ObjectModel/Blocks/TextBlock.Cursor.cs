@@ -91,14 +91,14 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       /// <inheritdoc />
       public void MoveToBeginning()
       {
-        Fragment = _block._spans[0];
+        Fragment = _block.FirstFragment;
         OffsetIntoSpan = 0;
       }
 
       /// <inheritdoc />
       public void MoveToEnd()
       {
-        Fragment = _block._spans[_block._spans.Count - 1];
+        Fragment = _block.LastFragment;
         OffsetIntoSpan = Fragment.Length;
       }
 
@@ -108,7 +108,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         get
         {
           return OffsetIntoSpan >= Fragment.Length
-                 && Fragment.Index + 1 >= _block._spans.Count;
+                 && Fragment.Next == null;
         }
       }
 
@@ -124,9 +124,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
         // we're at the end of the span and as long as we can move to the next span,
         // do so. 
-        if (Fragment.Index + 1 < _block._spans.Count)
+        if (Fragment.Next != null)
         {
-          Fragment = _block._spans[Fragment.Index + 1];
+          Fragment = Fragment.Next;
           // we're never at offset=0 unless we're at the beginning of the first span.
           OffsetIntoSpan = 1;
           return true;
@@ -197,7 +197,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
         // we're at the beginning of the current span, so go ahead and move onto
         // previous span. 
-        Fragment = _block._spans[Fragment.Index - 1];
+        Fragment = Fragment.Previous;
         OffsetIntoSpan = Fragment.Length;
 
         return true;

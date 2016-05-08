@@ -45,6 +45,14 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public int ChildCount
       => _spans.Count;
 
+    /// <summary> The first fragment in the block. </summary>
+    public StyledTextFragment FirstFragment
+      => _spans[0];
+
+    /// <summary> The last fragment in the block. </summary>
+    public StyledTextFragment LastFragment
+      => _spans[_spans.Count - 1];
+
     /// <summary> Appends the given span to the TextBlock. </summary>
     /// <param name="fragment"> The span to add. </param>
     /// <param name="autoMerge"> True to automatically merge similar fragments together. </param>
@@ -179,7 +187,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Retrieves the span at the given index. </summary>
     /// <param name="spanIndex"> The zero-based index of the span to retrieve. </param>
     /// <returns> The span at the given index. </returns>
-    private StyledTextFragment GetSpanAtIndex(int spanIndex)
+    public StyledTextFragment GetSpanAtIndex(int spanIndex)
     {
       if (spanIndex < 0 || spanIndex >= _spans.Count)
         throw new ArgumentOutOfRangeException(nameof(spanIndex), spanIndex, $"Number of spans: {_spans.Count}");
@@ -190,7 +198,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Extracts the content starting at the cursor and continuing to the end of the block. </summary>
     /// <param name="cursor"> The position at which extraction should start. </param>
     /// <returns> The fragments that have been extracted. </returns>
-    private StyledTextFragment[] ExtractContentToEnd(TextBlockCursor cursor)
+    public StyledTextFragment[] ExtractContentToEnd(TextBlockCursor cursor)
     {
       if (cursor.IsAtEnd)
         return Array.Empty<StyledTextFragment>();
