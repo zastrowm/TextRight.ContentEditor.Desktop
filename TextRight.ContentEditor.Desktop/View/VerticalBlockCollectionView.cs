@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Controls;
+using System.Windows.Documents;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextBlock = TextRight.ContentEditor.Core.ObjectModel.Blocks.TextBlock;
+using Block = TextRight.ContentEditor.Core.ObjectModel.Blocks.Block;
 
 namespace TextRight.ContentEditor.Desktop.View
 {
   /// <summary> Implements the functionality for hosting the view of a ChildCollection </summary>
-  public class VerticalBlockCollectionView : StackPanel,
+  public class VerticalBlockCollectionView : FlowDocument,
                                              IBlockCollectionView
   {
     private readonly VerticalBlockCollection _blockCollection;
@@ -22,7 +22,7 @@ namespace TextRight.ContentEditor.Desktop.View
       // TODO make this not just for TextBlocks
       foreach (var block in _blockCollection.Children)
       {
-        Children.Add(new TextBlockView((TextBlock)block));
+        Blocks.Add(new TextBlockView((TextBlock)block));
       }
     }
 
@@ -30,7 +30,20 @@ namespace TextRight.ContentEditor.Desktop.View
     public void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling)
     {
       var newBlockView = new TextBlockView((TextBlock)newBlock);
-      Children.Insert(newBlock.Index, newBlockView);
+
+      if (previousSibling != null)
+      {
+        var textBlockView = (TextBlockView)((TextBlock)previousSibling).Target;
+        Blocks.InsertAfter(textBlockView, newBlockView);
+        return;
+      }
+
+      if (nextSibling != null)
+      {
+        var textBlockView = (TextBlockView)((TextBlock)nextSibling).Target;
+        Blocks.InsertBefore(textBlockView, newBlockView);
+        return;
+      }
     }
 
     /// <inheritdoc />
@@ -40,7 +53,7 @@ namespace TextRight.ContentEditor.Desktop.View
                                    int indexOfBlockRemoved)
     {
       var view = (TextBlockView)((TextBlock)blockRemoved).Target;
-      Children.Remove(view);
+      Blocks.Remove(view);
     }
   }
 }

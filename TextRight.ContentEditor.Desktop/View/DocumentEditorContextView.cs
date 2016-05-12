@@ -22,7 +22,7 @@ namespace TextRight.ContentEditor.Desktop.View
     private readonly VerticalBlockCollectionView _blockCollectionView;
     private readonly DocumentEditorContext _editor;
     private readonly CaretView _caretView;
-    private readonly ScrollViewer _rootView;
+    private readonly FlowDocumentScrollViewer _rootView;
     private readonly KeyboardShortcutCollection _keyCommands;
 
     private readonly ActionStack _undoStack;
@@ -45,9 +45,9 @@ namespace TextRight.ContentEditor.Desktop.View
       // clear out the existing content
       _blockCollectionView = new VerticalBlockCollectionView((VerticalBlockCollection)_editor.Document.Root);
 
-      _rootView = new ScrollViewer()
+      _rootView = new FlowDocumentScrollViewer()
                   {
-                    Content = _blockCollectionView,
+                    Document = _blockCollectionView,
                   };
 
       Children.Add(_rootView);
@@ -126,7 +126,6 @@ namespace TextRight.ContentEditor.Desktop.View
 
       if (HandleKeyDown(e.Key))
       {
-        e.Handled = true;
         UpdateCaretPosition();
       }
       else if (e.Key == Key.Z && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
@@ -139,6 +138,16 @@ namespace TextRight.ContentEditor.Desktop.View
         _undoStack.Redo();
         UpdateCaretPosition();
       }
+
+      e.Handled = true;
+    }
+
+    protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+    {
+      base.OnPreviewMouseDown(e);
+
+      // TODO, do something with mouse events
+      e.Handled = true;
     }
 
     public bool HandleKeyDown(Key key)

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Desktop.View
 {
   /// <summary> View representation of a <see cref="TextBlock"/> </summary>
-  public class TextBlockView : System.Windows.Controls.TextBlock,
+  public class TextBlockView : Paragraph,
                                ITextBlockView
   {
     private readonly TextBlock _block;
@@ -17,7 +18,6 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <param name="block"> The block that this view is for. </param>
     public TextBlockView(TextBlock block)
     {
-      TextWrapping = TextWrapping.Wrap;
       Margin = new Thickness(10);
 
       _block = block;
