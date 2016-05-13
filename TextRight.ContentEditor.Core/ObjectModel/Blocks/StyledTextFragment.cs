@@ -8,7 +8,7 @@ using TextRight.ContentEditor.Core.Utilities;
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> Hosts the view for the TextSpan. </summary>
-  public interface IStyledTextSpanView
+  public interface IStyledTextSpanView : IDocumentItemView
   {
     /// <summary> Invoked when the TextSpan's text changes. </summary>
     /// <param name="fragment"> The span whose text has changed. </param>
@@ -28,7 +28,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// </summary>
   [DebuggerDisplay("StyledTextFragment(text={Text}, Index={Index})")]
   public class StyledTextFragment : IViewableObject<IStyledTextSpanView>,
-                                    IEquatable<StyledTextFragment>
+                                    IEquatable<StyledTextFragment>,
+                                    IDocumentItem<IStyledTextSpanView>
   {
     /// <summary> Default constructor. </summary>
     public StyledTextFragment(string text)

@@ -10,7 +10,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> Hosts the view for the TextBlock. </summary>
-  public interface ITextBlockView
+  public interface ITextBlockView : IDocumentItemView
   {
     /// <summary> Notifies the view that a fragment has been inserted. </summary>
     /// <param name="previousSibling"> The fragment that precedes the new fragment. </param>
@@ -24,10 +24,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
   /// </summary>
-  public partial class TextBlock : Block,
-                                   IViewableObject<ITextBlockView>,
-                                   IEnumerable<StyledTextFragment>,
-                                   IEquatable<TextBlock>
+  public class TextBlock : Block,
+                           IViewableObject<ITextBlockView>,
+                           IEnumerable<StyledTextFragment>,
+                           IEquatable<TextBlock>,
+                           IDocumentItem<ITextBlockView>
   {
     private readonly List<StyledTextFragment> _spans;
 

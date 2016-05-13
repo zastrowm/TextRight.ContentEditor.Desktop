@@ -7,8 +7,12 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Core.Editing
 {
+  public interface IDocumentEditorView : IDocumentItemView
+  {
+  }
+
   /// <summary> Represents a TextRight document that is being edited. </summary>
-  public class DocumentEditorContext
+  public class DocumentEditorContext : IDocumentItem<IDocumentEditorView>
   {
     /// <summary> Default constructor. </summary>
     public DocumentEditorContext()
@@ -38,5 +42,8 @@ namespace TextRight.ContentEditor.Core.Editing
 
     /// <summary> Movement information about the caret. </summary>
     public CaretMovementMode CaretMovementMode { get; }
+
+    /// <summary> The View that is currently attached to the item. </summary>
+    public IDocumentEditorView Target { get; set; }
   }
 }

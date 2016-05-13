@@ -70,6 +70,8 @@
     <Compile Include="ObjectModel\Blocks\BlockContentCursorExtensions.cs" />
     <Compile Include="ObjectModel\Blocks\BlockLinkedList.cs" />
     <Compile Include="ObjectModel\Blocks\BlockPath.cs" />
+    <Compile Include="ObjectModel\IDocumentItem.cs" />
+    <Compile Include="ObjectModel\IDocumentItemView.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollectionCommandProcessor.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
     <Compile Include="ObjectModel\Blocks\BlockType.cs" />

@@ -10,7 +10,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> A BlockCollection where the blocks are stacked vertically. </summary>
   public class VerticalBlockCollection : BlockCollection,
-                                         ICommandProcessorHook
+                                         ICommandProcessorHook,
+                                         IDocumentItem<IBlockCollectionView>
   {
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.
@@ -78,7 +79,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   }
 
   /// <summary> Holds the view representation of the BlockCollection. </summary>
-  public interface IBlockCollectionView
+  public interface IBlockCollectionView : IDocumentItemView
   {
     /// <summary> Notifies a block inserted. </summary>
     void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling);
