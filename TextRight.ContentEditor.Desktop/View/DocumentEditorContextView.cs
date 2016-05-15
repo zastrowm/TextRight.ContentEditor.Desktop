@@ -156,6 +156,9 @@ namespace TextRight.ContentEditor.Desktop.View
     {
       base.OnPreviewMouseDown(e);
 
+      var position = e.GetPosition(this);
+      _editor.HandleMouseDown(new DocumentPoint(position.X, position.Y));
+
       // TODO, do something with mouse events
       e.Handled = true;
     }
@@ -213,6 +216,11 @@ namespace TextRight.ContentEditor.Desktop.View
     public void UpdateCaretPosition()
     {
       _caretView.SyncPosition();
+    }
+
+    public Block GetBlockFor(DocumentPoint point)
+    {
+      return null;
     }
   }
 }

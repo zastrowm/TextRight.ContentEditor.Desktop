@@ -10,6 +10,11 @@ namespace TextRight.ContentEditor.Core.Editing
 {
   public interface IDocumentEditorView : IDocumentItemView
   {
+    /// <summary> Gets the block closest to the given point. </summary>
+    /// <param name="point"> The point at which the block should be queried. </param>
+    /// <returns> The closes block to the given point. </returns>
+    [NotNull]
+    Block GetBlockFor(DocumentPoint point);
   }
 
   /// <summary> Represents a TextRight document that is being edited. </summary>
@@ -46,5 +51,18 @@ namespace TextRight.ContentEditor.Core.Editing
 
     /// <summary> The View that is currently attached to the item. </summary>
     public IDocumentEditorView Target { get; set; }
+
+    public void HandleMouseDown(DocumentPoint point)
+    {
+      if (Target == null)
+        return;
+
+      var block = Target.GetBlockFor(point);
+      if (block != null)
+      {
+        var newCursor = block.GetCursor().ToBeginning();
+        Caret.MoveTo(newCursor);
+      }
+    }
   }
 }
