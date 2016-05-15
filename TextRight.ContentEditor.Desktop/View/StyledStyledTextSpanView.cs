@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Windows;
 using System.Windows.Documents;
-using System.Windows.Media;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using TextRight.ContentEditor.Core.Utilities;
@@ -36,45 +33,30 @@ namespace TextRight.ContentEditor.Desktop.View
     public IDocumentItem DocumentItem
       => _fragment;
 
+    /// <summary>
+    ///  This should only be set by <see cref="TextBlockView"/>.  Represents the offset into the view
+    ///  that this span represents.
+    /// </summary>
+    internal int CharacterOffsetIntoTextView { get; set; }
+
     /// <inheritdoc/>
     public void TextUpdated(StyledTextFragment fragment)
     {
       Text = _fragment.Text;
+      _textBlockView.MarkTextChanged(fragment);
     }
 
     /// <inheritdoc/>
     public MeasuredRectangle Measure(int offset)
     {
-      // TODO Debug/Assert not null
-
-      // GetPositionAtOffset always returns zero width, so to get the width of the full character, 
-      // we need to measure the left side and then measure the right
-      var position = ContentStart.GetPositionAtOffset(offset);
-      Debug.Assert(position != null);
-
-      var nextPosition = position.GetPositionAtOffset(1);
-      Debug.Assert(nextPosition != null);
-
-      var leftRect = position.GetCharacterRect(LogicalDirection.Forward);
-      var rightRect = nextPosition.GetCharacterRect(LogicalDirection.Backward);
-
-      // TODO investigate if there's another/faster way to do this
-      var offsetToBlock = _textBlockView.TransformToAncestor((Visual)_textBlockView.Parent).Transform(default(Point));
-
-      return new MeasuredRectangle()
-             {
-               X = leftRect.X + offsetToBlock.X,
-               Y = leftRect.Y + offsetToBlock.Y,
-               Width = rightRect.X - leftRect.X,
-               Height = leftRect.Height
-             };
+      return _textBlockView.MeasureCharacter(this, offset);
     }
 
     public void Detach()
     {
+      _textBlockView.MarkRemoved(this);
       // TODO we should recycle this view (pool it)?
       _fragment.Target = null;
-      _textBlockView.Inlines.Remove(this);
     }
   }
 }
