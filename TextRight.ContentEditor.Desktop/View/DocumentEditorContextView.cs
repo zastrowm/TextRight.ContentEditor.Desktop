@@ -138,19 +138,20 @@ namespace TextRight.ContentEditor.Desktop.View
       if (HandleKeyDown(e.Key))
       {
         UpdateCaretPosition();
+        e.Handled = true;
       }
       else if (e.Key == Key.Z && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
       {
         _undoStack.Undo();
         UpdateCaretPosition();
+        e.Handled = true;
       }
       else if (e.Key == Key.Y && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
       {
         _undoStack.Redo();
         UpdateCaretPosition();
+        e.Handled = true;
       }
-
-      e.Handled = true;
     }
 
     protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
