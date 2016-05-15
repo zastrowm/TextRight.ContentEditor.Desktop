@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using Block = TextRight.ContentEditor.Core.ObjectModel.Blocks.Block;
 
@@ -25,6 +26,10 @@ namespace TextRight.ContentEditor.Desktop.View
         Blocks.Add(new TextBlockView((TextBlock)block));
       }
     }
+
+    /// <inheritdoc />
+    public IDocumentItem DocumentItem
+      => _blockCollection;
 
     /// <inheritdoc />
     public void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling)

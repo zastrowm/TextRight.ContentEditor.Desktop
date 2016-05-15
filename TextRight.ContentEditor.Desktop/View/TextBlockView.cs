@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Desktop.View
@@ -28,6 +29,10 @@ namespace TextRight.ContentEditor.Desktop.View
         Inlines.Add(new StyledStyledTextSpanView(this, span));
       }
     }
+
+    /// <inheritdoc />
+    public IDocumentItem DocumentItem
+      => _block;
 
     /// <inheritdoc />
     public void NotifyBlockInserted(StyledTextFragment previousSibling,

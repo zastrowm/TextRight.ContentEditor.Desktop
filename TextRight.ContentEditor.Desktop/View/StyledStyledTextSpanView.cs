@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Documents;
+using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using TextRight.ContentEditor.Core.Utilities;
 
@@ -28,6 +29,11 @@ namespace TextRight.ContentEditor.Desktop.View
 
       TextUpdated(_fragment);
     }
+
+
+    /// <inheritdoc />
+    public IDocumentItem DocumentItem
+      => _fragment;
 
     /// <inheritdoc/>
     public void TextUpdated(StyledTextFragment fragment)

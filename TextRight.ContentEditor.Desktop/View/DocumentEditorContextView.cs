@@ -7,17 +7,21 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using TextRight.ContentEditor.Core;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.Editing.Actions;
 using TextRight.ContentEditor.Core.Editing.Commands;
+using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using Block = TextRight.ContentEditor.Core.ObjectModel.Blocks.Block;
 
 namespace TextRight.ContentEditor.Desktop.View
 {
   /// <summary>
   ///  Creates an editor from a FlowDocument and associated TextRight Document.
   /// </summary>
-  public class DocumentEditorContextView : Canvas
+  public class DocumentEditorContextView : Canvas,
+                                           IDocumentEditorView
   {
     private readonly VerticalBlockCollectionView _blockCollectionView;
     private readonly DocumentEditorContext _editor;
@@ -29,6 +33,8 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public DocumentEditorContextView(DocumentEditorContext editor)
     {
+      editor.Target = this;
+
       TextElement.SetFontSize(this, 16);
       TextElement.SetFontFamily(this, new FontFamily("Times New Roman"));
       TextOptions.SetTextFormattingMode(this, TextFormattingMode.Display);
@@ -90,6 +96,10 @@ namespace TextRight.ContentEditor.Desktop.View
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
     }
+
+    /// <inheritdoc />
+    public IDocumentItem DocumentItem
+      => _editor;
 
     public new void Focus()
     {
