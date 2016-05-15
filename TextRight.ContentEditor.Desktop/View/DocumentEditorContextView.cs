@@ -26,7 +26,7 @@ namespace TextRight.ContentEditor.Desktop.View
     private readonly VerticalBlockCollectionView _blockCollectionView;
     private readonly DocumentEditorContext _editor;
     private readonly CaretView _caretView;
-    private readonly FlowDocumentScrollViewer _rootView;
+    private readonly ScrollViewer _rootView;
     private readonly KeyboardShortcutCollection _keyCommands;
 
     private readonly ActionStack _undoStack;
@@ -34,6 +34,7 @@ namespace TextRight.ContentEditor.Desktop.View
     public DocumentEditorContextView(DocumentEditorContext editor)
     {
       editor.Target = this;
+      Focusable = true;
 
       TextElement.SetFontSize(this, 16);
       TextElement.SetFontFamily(this, new FontFamily("Times New Roman"));
@@ -51,9 +52,9 @@ namespace TextRight.ContentEditor.Desktop.View
       // clear out the existing content
       _blockCollectionView = new VerticalBlockCollectionView((VerticalBlockCollection)_editor.Document.Root);
 
-      _rootView = new FlowDocumentScrollViewer()
+      _rootView = new ScrollViewer()
                   {
-                    Document = _blockCollectionView,
+                    Content = _blockCollectionView,
                   };
 
       Children.Add(_rootView);
@@ -103,7 +104,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public new void Focus()
     {
-      _blockCollectionView.Focus();
+      base.Focus();
     }
 
     public void Initialize()

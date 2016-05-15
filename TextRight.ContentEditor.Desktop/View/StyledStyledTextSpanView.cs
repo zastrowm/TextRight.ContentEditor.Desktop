@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using TextRight.ContentEditor.Core.Utilities;
@@ -30,7 +32,6 @@ namespace TextRight.ContentEditor.Desktop.View
       TextUpdated(_fragment);
     }
 
-
     /// <inheritdoc />
     public IDocumentItem DocumentItem
       => _fragment;
@@ -57,10 +58,13 @@ namespace TextRight.ContentEditor.Desktop.View
       var leftRect = position.GetCharacterRect(LogicalDirection.Forward);
       var rightRect = nextPosition.GetCharacterRect(LogicalDirection.Backward);
 
+      // TODO investigate if there's another/faster way to do this
+      var offsetToBlock = _textBlockView.TransformToAncestor((Visual)_textBlockView.Parent).Transform(default(Point));
+
       return new MeasuredRectangle()
              {
-               X = leftRect.X,
-               Y = leftRect.Y,
+               X = leftRect.X + offsetToBlock.X,
+               Y = leftRect.Y + offsetToBlock.Y,
                Width = rightRect.X - leftRect.X,
                Height = leftRect.Height
              };
