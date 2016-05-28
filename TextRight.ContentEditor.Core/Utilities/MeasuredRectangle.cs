@@ -40,6 +40,10 @@ namespace TextRight.ContentEditor.Core.Utilities
     public bool IsValid
       => Width > 0 && Height > 0;
 
+    /// <summary> Gets a point that represents the center of the given point. </summary>
+    public DocumentPoint Center
+      => new DocumentPoint(X + Width / 2, Y + Height / 2);
+
     /// <summary>
     ///  Flattens the rectangle into a line representing the right side of the
     ///  rectangle.

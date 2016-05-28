@@ -64,6 +64,42 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <returns> A node that serializes the block.. </returns>
     public abstract SerializeNode SerializeAsNode();
 
+    /// <summary> Retrieves a cursor closest to the given point in the block. </summary>
+    /// <param name="point"> The point . </param>
+    /// <returns> The cursor for. </returns>
+    public virtual IBlockContentCursor GetCursorFor(DocumentPoint point)
+    {
+      return null;
+#if TODO
+      var startCursor = GetCursor().ToBeginning();
+      var startPosition = startCursor.MeasureCursorPosition().Center;
+      var distance = Math.Abs(DocumentPoint.MeasureDistanceSquared(startPosition, point));
+
+      // TODO should we recycle?
+      var endCursor = GetCursor().ToEnd();
+      var endPosition = endCursor.MeasureCursorPosition().Center;
+
+      var endDistance = Math.Abs(DocumentPoint.MeasureDistanceSquared(endPosition, point));
+
+      BlockCursorMover mover;
+      IBlockContentCursor closest;
+
+      if (endDistance < distance)
+      {
+        closest = endCursor;
+        mover = BlockCursorMover.BackwardMover;
+      }
+      else
+      {
+        closest = startCursor;
+        mover = BlockCursorMover.ForwardMover;
+      }
+
+      IBlockContentCursor lastSnapshot = closest.Clone();
+
+#endif
+    }
+
     /// <summary>
     ///  Retrieves the block that comes after this block in the parent collection.
     /// </summary>

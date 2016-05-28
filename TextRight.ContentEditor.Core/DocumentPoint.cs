@@ -21,5 +21,16 @@ namespace TextRight.ContentEditor.Core
 
     /// <summary> The Y coordinate of the point. </summary>
     public double Y { get; set; }
+
+    /// <summary>
+    ///  Measures the distance between two points, squared, which is useful when determining which
+    ///  points are closer to each other.
+    /// </summary>
+    public static double MeasureDistanceSquared(DocumentPoint left, DocumentPoint right)
+    {
+      var dX = (left.X - right.X);
+      var dY = (left.Y - right.Y);
+      return dX * dX + dY * dY;
+    }
   }
 }
