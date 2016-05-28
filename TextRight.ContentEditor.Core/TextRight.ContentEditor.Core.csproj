@@ -65,7 +65,7 @@
     <Compile Include="Editing\ContextAction\MergeTextBlocksCommand.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="DocumentPoint.cs" />
-    <Compile Include="Editing\TextBlockCursorMover.cs" />
+    <Compile Include="Editing\BlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
     <Compile Include="ObjectModel\Blocks\BlockContentCursorExtensions.cs" />

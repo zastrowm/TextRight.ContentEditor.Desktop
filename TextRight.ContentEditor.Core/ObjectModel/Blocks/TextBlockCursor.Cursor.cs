@@ -254,12 +254,24 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <summary> Makes a deep copy of this instance. </summary>
     /// <returns> A copy of this instance. </returns>
-    public TextBlockCursor Clone()
+    public new TextBlockCursor Clone()
     {
       return new TextBlockCursor(_block)
              {
                State = State
              };
+    }
+
+    /// <inheritdoc />
+    IBlockContentCursor IBlockContentCursor.Clone()
+    {
+      return Clone();
+    }
+
+    /// <inheritdoc />
+    void IBlockContentCursor.MoveTo(IBlockContentCursor cursor)
+    {
+      State = ((TextBlockCursor)cursor).State;
     }
 
     /// <inheritdoc />

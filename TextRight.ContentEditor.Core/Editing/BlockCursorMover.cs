@@ -22,41 +22,41 @@ namespace TextRight.ContentEditor.Core.Editing
   ///  Thus why we have <see cref="ForwardMover"/> and
   ///  <see cref="BackwardMover"/>.
   /// </remarks>
-  internal abstract class TextBlockCursorMover
+  internal abstract class BlockCursorMover
   {
     private const bool DidNotMove = false;
 
     private const bool DidMove = true;
 
     /// <summary> A cursor mover whose direction is forward by default. </summary>
-    public static readonly TextBlockCursorMover ForwardMover
+    public static readonly BlockCursorMover ForwardMover
       = new MoveForwardMover();
 
     /// <summary> A cursor mover whose direction is backward by default. </summary>
-    public static readonly TextBlockCursorMover BackwardMover
+    public static readonly BlockCursorMover BackwardMover
       = new MoveBackwardMover();
 
     /// <summary> Moves in the default direction of the cursor mover. </summary>
     /// <param name="cursor"> The cursor to move. </param>
     /// <returns> True if the cursor was able to move, false otherwise. </returns>
-    public abstract bool MoveTowards(TextBlockCursor cursor);
+    public abstract bool MoveTowards(IBlockContentCursor cursor);
 
     /// <summary> Moves in the opposite direction of the cursor mover. </summary>
     /// <param name="cursor"> The cursor to move. </param>
     /// <returns> True if the cursor was able to move, false otherwise. </returns>
-    public abstract bool MoveAway(TextBlockCursor cursor);
+    public abstract bool MoveAway(IBlockContentCursor cursor);
 
     /// <summary> True if the edge of the block was reached.  </summary>
     /// <param name="cursor"> The cursor to move. </param>
     /// <returns> True if the edge is reached, false otherwise. </returns>
-    public abstract bool DidReachEdge(TextBlockCursor cursor);
+    public abstract bool DidReachEdge(IBlockContentCursor cursor);
 
     /// <summary> Move the caret to the edge of the current line. </summary>
     /// <param name="cursor"> The caret to move. </param>
     /// <returns> True if the cursor moved, false otherwise. </returns>
     public bool MoveCaretTowardsLineEdge(IBlockContentCursor cursor)
     {
-      var textCursor = (TextBlockCursor)cursor;
+      var textCursor = (IBlockContentCursor)cursor;
       bool didMoveToNextLine;
       var result = MoveTowardsLineEdge(textCursor, out didMoveToNextLine);
 
@@ -100,9 +100,10 @@ namespace TextRight.ContentEditor.Core.Editing
     public bool MoveCaretTowardsPositionInNextLine(IBlockContentCursor cursor,
                                                    CaretMovementMode caretMovementMode)
     {
-      var textBlockCursor = (TextBlockCursor)cursor;
+      var textBlockCursor = (IBlockContentCursor)cursor;
 
-      var snapshot = textBlockCursor.State;
+      // TODO can we pool this?
+      var snapshot = textBlockCursor.Clone();
 
       switch (caretMovementMode.CurrentMode)
       {
@@ -120,7 +121,7 @@ namespace TextRight.ContentEditor.Core.Editing
           }
           else
           {
-            textBlockCursor.State = snapshot;
+            textBlockCursor.MoveTo(snapshot);
           }
           return didMove;
         }
@@ -130,7 +131,7 @@ namespace TextRight.ContentEditor.Core.Editing
           var state = MoveTowardsLineEdge(textBlockCursor, out didMove);
           if (!didMove)
           {
-            textBlockCursor.State = snapshot;
+            textBlockCursor.MoveTo(snapshot);
             return false;
           }
 
@@ -144,7 +145,7 @@ namespace TextRight.ContentEditor.Core.Editing
           var state = MoveTowardsLineEdge(textBlockCursor, out didMove);
           if (!didMove)
           {
-            textBlockCursor.State = snapshot;
+            textBlockCursor.MoveTo(snapshot);
             return false;
           }
           // move it back to the correct line
@@ -172,7 +173,7 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <param name="didMoveToNextLine"> [out] True if the caret overshot and was
     ///  moved to the next line. </param>
     /// <returns> An EndMovementState representing how the caret was moved. </returns>
-    private EndMovementState MoveTowardsLineEdge(TextBlockCursor cursor,
+    private EndMovementState MoveTowardsLineEdge(IBlockContentCursor cursor,
                                                  out bool didMoveToNextLine)
     {
       var originalPosition = cursor.MeasureCursorPosition();
@@ -199,12 +200,13 @@ namespace TextRight.ContentEditor.Core.Editing
     }
 
     /// <summary>
-    ///  Moves the caret as close to the <see cref="desiredPosition"/> in the line.
+    ///  Moves the caret as close to the <see cref="desiredPosition"/> while staying on the current
+    ///  line.
     /// </summary>
     /// <param name="cursor"> The cursor to move. </param>
     /// <param name="desiredPosition"> The desired position of the caret. </param>
     /// <returns> True if the caret moved, false otherwise. </returns>
-    public bool MoveToPosition(TextBlockCursor cursor, double desiredPosition)
+    public bool MoveToPosition(IBlockContentCursor cursor, double desiredPosition)
     {
       var lastClosest = cursor.MeasureCursorPosition();
       double closestDistance = HorizontalDistanceTo(lastClosest, desiredPosition);
@@ -251,28 +253,28 @@ namespace TextRight.ContentEditor.Core.Editing
     }
 
     /// <summary> A cursor mover whose direction is backward by default. </summary>
-    private class MoveBackwardMover : TextBlockCursorMover
+    private class MoveBackwardMover : BlockCursorMover
     {
-      public override bool MoveTowards(TextBlockCursor cursor)
+      public override bool MoveTowards(IBlockContentCursor cursor)
         => cursor.MoveBackward();
 
-      public override bool MoveAway(TextBlockCursor cursor)
+      public override bool MoveAway(IBlockContentCursor cursor)
         => cursor.MoveForward();
 
-      public override bool DidReachEdge(TextBlockCursor cursor)
+      public override bool DidReachEdge(IBlockContentCursor cursor)
         => cursor.IsAtBeginning;
     }
 
     /// <summary> A cursor mover whose direction is forward by default. </summary>
-    private class MoveForwardMover : TextBlockCursorMover
+    private class MoveForwardMover : BlockCursorMover
     {
-      public override bool MoveTowards(TextBlockCursor cursor)
+      public override bool MoveTowards(IBlockContentCursor cursor)
         => cursor.MoveForward();
 
-      public override bool MoveAway(TextBlockCursor cursor)
+      public override bool MoveAway(IBlockContentCursor cursor)
         => cursor.MoveBackward();
 
-      public override bool DidReachEdge(TextBlockCursor cursor)
+      public override bool DidReachEdge(IBlockContentCursor cursor)
         => cursor.IsAtEnd;
     }
 

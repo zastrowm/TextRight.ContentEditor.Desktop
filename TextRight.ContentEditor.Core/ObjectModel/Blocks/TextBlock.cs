@@ -282,7 +282,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
           // already done
           break;
         case CaretMovementMode.Mode.Home:
-          TextBlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(cursor);
+          BlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(cursor);
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -307,7 +307,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
           // already done
           break;
         case CaretMovementMode.Mode.End:
-          TextBlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(cursor);
+          BlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(cursor);
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -321,8 +321,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       // TODO find better way of doing this The problem is that we don't know
       // which way to go, so as a hack, we go both ways and rely on the
       // implementation of MoveToPosition to ultimately choose the closest one. 
-      TextBlockCursorMover.ForwardMover.MoveToPosition(cursor, position);
-      TextBlockCursorMover.BackwardMover.MoveToPosition(cursor, position);
+      BlockCursorMover.ForwardMover.MoveToPosition(cursor, position);
+      BlockCursorMover.BackwardMover.MoveToPosition(cursor, position);
     }
 
     /// <inheritdoc />

@@ -66,7 +66,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
         if (cursor.DeleteText(1))
           return true;
-
       }
       else if (command == TextCommands.DeleteNextCharacter)
       {
@@ -100,22 +99,22 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         }
         case BuiltInCaretNavigationCommand.NavigationType.Up:
         {
-          return TextBlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
-                                                                                       context.CaretMovementMode);
+          return BlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
+                                                                                   context.CaretMovementMode);
         }
         case BuiltInCaretNavigationCommand.NavigationType.Down:
         {
-          return TextBlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
-                                                                                      context.CaretMovementMode);
+          return BlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
+                                                                                  context.CaretMovementMode);
         }
 
         case BuiltInCaretNavigationCommand.NavigationType.Home:
         {
-          return TextBlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(context.Cursor);
+          return BlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(context.Cursor);
         }
         case BuiltInCaretNavigationCommand.NavigationType.End:
         {
-          return TextBlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(context.Cursor);
+          return BlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(context.Cursor);
         }
         case BuiltInCaretNavigationCommand.NavigationType.BeginningOfBlock:
         {
