@@ -23,19 +23,17 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   ///      equal to Fragment.Length and we're pointing to the last fragment.
   /// </remarks>
   [DebuggerDisplay("TextBlockCursor(FragmentIndex={Fragment.Index}, Offset={OffsetIntoSpan})")]
-  public class TextBlockCursor : IBlockContentCursor,
-                                 ICommandProcessorHook,
-                                 IEquatable<TextBlockCursor>
+  public sealed class TextBlockCursor : BaseBlockContentCursor<TextBlockCursor, TextBlock>,
+                                        ICommandProcessorHook,
+                                        IEquatable<TextBlockCursor>
   {
     private const char NullCharacter = '\0';
-
-    private readonly TextBlock _block;
 
     /// <summary> Constructor. </summary>
     /// <param name="block"> The block for which the cursor is valid. </param>
     public TextBlockCursor(TextBlock block)
+      : base(block)
     {
-      _block = block;
     }
 
     /// <summary>
@@ -47,10 +45,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     ///  The offset into <see cref="Fragment"/> where this cursor is pointing.
     /// </summary>
     public int OffsetIntoSpan { get; private set; }
-
-    /// <inheritdoc />
-    public Block Block
-      => _block;
 
     internal SnapshotState State
     {
@@ -85,21 +79,21 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       => OffsetIntoSpan != 0 ? Fragment.Text[OffsetIntoSpan - 1] : NullCharacter;
 
     /// <inheritdoc />
-    public void MoveToBeginning()
+    public override void MoveToBeginning()
     {
-      Fragment = _block.FirstFragment;
+      Fragment = Block.FirstFragment;
       OffsetIntoSpan = 0;
     }
 
     /// <inheritdoc />
-    public void MoveToEnd()
+    public override void MoveToEnd()
     {
-      Fragment = _block.LastFragment;
+      Fragment = Block.LastFragment;
       OffsetIntoSpan = Fragment.Length;
     }
 
     /// <inheritdoc />
-    public bool IsAtEnd
+    public override bool IsAtEnd
     {
       get
       {
@@ -109,7 +103,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    public bool MoveForward()
+    public override bool MoveForward()
     {
       // we move right to end of the span
       if (OffsetIntoSpan < Fragment.Length)
@@ -132,7 +126,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    public bool IsAtBeginning
+    public override bool IsAtBeginning
     {
       get { return OffsetIntoSpan == 0; }
     }
@@ -154,7 +148,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    public MeasuredRectangle MeasureCursorPosition()
+    public override MeasuredRectangle MeasureCursorPosition()
     {
       // we want to measure the next character unless the previous character was
       // a space (as the text will most likely appear on the next line anyways) 
@@ -171,7 +165,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       => TextBlockCursorCommandProcessor.Instance;
 
     /// <inheritdoc />
-    public bool MoveBackward()
+    public override bool MoveBackward()
     {
       // we're at the beginning of the first span
       if (OffsetIntoSpan == 0)
@@ -200,7 +194,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc/>
-    public ISerializedBlockCursor Serialize()
+    public override ISerializedBlockCursor Serialize()
       => new SerializedData(this);
 
     /// <inheritdoc/>
@@ -249,29 +243,19 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// </summary>
     public StyledTextFragment[] ExtractToEnd()
     {
-      return _block.ExtractContentToEnd(this);
-    }
-
-    /// <summary> Makes a deep copy of this instance. </summary>
-    /// <returns> A copy of this instance. </returns>
-    public new TextBlockCursor Clone()
-    {
-      return new TextBlockCursor(_block)
-             {
-               State = State
-             };
+      return Block.ExtractContentToEnd(this);
     }
 
     /// <inheritdoc />
-    IBlockContentCursor IBlockContentCursor.Clone()
+    protected override TextBlockCursor CreateInstance(TextBlock block)
     {
-      return Clone();
+      return new TextBlockCursor(block);
     }
 
     /// <inheritdoc />
-    void IBlockContentCursor.MoveTo(IBlockContentCursor cursor)
+    protected override void MoveToOverride(TextBlockCursor cursor)
     {
-      State = ((TextBlockCursor)cursor).State;
+      State = cursor.State;
     }
 
     /// <inheritdoc />
@@ -282,7 +266,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       if (ReferenceEquals(this, other))
         return true;
 
-      return Equals(_block, other._block) && Equals(Fragment, other.Fragment) &&
+      return Equals(Block, other.Block) && Equals(Fragment, other.Fragment) &&
              OffsetIntoSpan == other.OffsetIntoSpan;
     }
 
@@ -303,7 +287,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     {
       unchecked
       {
-        var hashCode = _block?.GetHashCode() ?? 0;
+        var hashCode = Block?.GetHashCode() ?? 0;
         hashCode = (hashCode * 397) ^ (Fragment?.GetHashCode() ?? 0);
         hashCode = (hashCode * 397) ^ OffsetIntoSpan;
         return hashCode;

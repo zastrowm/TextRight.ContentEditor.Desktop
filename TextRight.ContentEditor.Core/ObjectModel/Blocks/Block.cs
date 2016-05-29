@@ -41,9 +41,25 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> The type of the block. </summary>
     public abstract BlockType BlockType { get; }
 
+    /// <summary> The cursor pool for cursors of this block. </summary>
+    public abstract ICursorPool CursorPool { get; }
+
     /// <summary> Gets a block-specific iterator. </summary>
     /// <returns> An iterate that can move through the block. </returns>
-    public abstract IBlockContentCursor GetCursor();
+    public IBlockContentCursor GetCursor()
+    {
+      return CursorPool.Borrow(this);
+    }
+
+    /// <summary> Gets a block-specific iterator. </summary>
+    /// <returns> An iterate that can move through the block. </returns>
+    protected abstract IBlockContentCursor CreateCursorOverride();
+
+    /// <summary> Internal method for creating cursors. </summary>
+    internal IBlockContentCursor CreateCursor()
+    {
+      return CreateCursorOverride();
+    }
 
     /// <summary> The mimetype of the content within the block.  Can be null. </summary>
     [CanBeNull]

@@ -54,6 +54,16 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public StyledTextFragment LastFragment
       => _spans[_spans.Count - 1];
 
+    /// <inheritdoc />
+    public override ICursorPool CursorPool
+      => TextBlockCursor.CursorPool;
+
+    /// <inheritdoc />
+    protected override IBlockContentCursor CreateCursorOverride()
+    {
+      return new TextBlockCursor(this);
+    }
+
     /// <summary> Appends the given span to the TextBlock. </summary>
     /// <param name="fragment"> The span to add. </param>
     /// <param name="autoMerge"> True to automatically merge similar fragments together. </param>
@@ -138,10 +148,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
           : null;
       }
     }
-
-    /// <inheritdoc/>
-    public override IBlockContentCursor GetCursor()
-      => new TextBlockCursor(this);
 
     public TextBlockCursor GetTextCursor()
       => new TextBlockCursor(this);

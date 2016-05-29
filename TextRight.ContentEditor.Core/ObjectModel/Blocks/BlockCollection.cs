@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -129,12 +128,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return _blockList.GetAtIndex(blockIndex);
     }
 
-    /// <inheritdoc/>
-    public override IBlockContentCursor GetCursor()
-    {
-      throw new NotImplementedException();
-    }
-
     /// <summary> Merges the given block with the previous block. </summary>
     /// <param name="block"> The block to remove from the collection and whose content should be merged with the previous block. </param>
     /// <returns> True if it was merged, false if it was not. </returns>
@@ -243,7 +236,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         return false;
       if (ReferenceEquals(this, obj))
         return true;
-      if (obj.GetType() != this.GetType())
+      if (obj.GetType() != GetType())
         return false;
       return Equals((BlockCollection)obj);
     }
@@ -252,6 +245,5 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     {
       return _blockList.GetHashCode();
     }
-
   }
 }

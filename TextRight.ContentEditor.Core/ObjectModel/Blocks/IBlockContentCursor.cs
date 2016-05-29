@@ -41,6 +41,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> True if the cursor is at the end of the block. </summary>
     bool IsAtBeginning { get; }
 
+    /// <summary> A pool of similar cursors. </summary>
+    ICursorPool CursorPool { get; }
+
     /// <summary> Returns a measurement of where a cursor should appear </summary>
     /// <returns> A MeasuredRectangle representing where the cursor should appear. </returns>
     MeasuredRectangle MeasureCursorPosition();
