@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CursorSnapshotTests.cs" />
     <Compile Include="Editing\BreakTextBlockActionUndoableActionTests.cs" />
     <Compile Include="Editing\MergeTextBlockActionUndoableActionTests.cs" />
     <Compile Include="Editing\DeleteNextCharacterCommandUndoableActionTests.cs" />

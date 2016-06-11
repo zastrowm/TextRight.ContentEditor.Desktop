@@ -10,7 +10,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary>
     ///  Fluent Api: Move the cursor to the end of the block.
     /// </summary>
-    public static IBlockContentCursor ToEnd(this IBlockContentCursor cursor)
+    public static TCursor ToEnd<TCursor>(this TCursor cursor)
+      where TCursor : IBlockContentCursor
     {
       cursor.MoveToEnd();
       return cursor;
@@ -19,7 +20,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary>
     ///  Fluent Api: Move the cursor to the beginning of the block.
     /// </summary>
-    public static IBlockContentCursor ToBeginning(this IBlockContentCursor cursor)
+    public static TCursor ToBeginning<TCursor>(this TCursor cursor)
+      where TCursor : IBlockContentCursor
     {
       cursor.MoveToBeginning();
       return cursor;

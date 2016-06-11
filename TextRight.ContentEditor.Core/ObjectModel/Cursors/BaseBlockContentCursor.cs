@@ -75,7 +75,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     /// <returns> A copy of this instance. </returns>
     public TCursor Clone()
     {
-      var newCursor = CreateInstance(Block);
+      var newCursor = CursorPool.Borrow(Block);
       newCursor.MoveToOverride((TCursor)this);
       return newCursor;
     }

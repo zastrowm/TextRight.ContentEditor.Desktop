@@ -74,6 +74,7 @@
     <Compile Include="ObjectModel\Blocks\BlockPath.cs" />
     <Compile Include="ObjectModel\Blocks\ICursorPool.cs" />
     <Compile Include="ObjectModel\Cursors\CursorPool.cs" />
+    <Compile Include="ObjectModel\Cursors\CursorSnapshot.cs" />
     <Compile Include="ObjectModel\IDocumentItem.cs" />
     <Compile Include="ObjectModel\IDocumentItemView.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollectionCommandProcessor.cs" />
