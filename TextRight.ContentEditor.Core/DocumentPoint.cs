@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace TextRight.ContentEditor.Core
 {
   /// <summary> A simple X,Y value.  Not named Point, because everyone uses that. </summary>
+  [DebuggerDisplay("X: {X}, Y: {Y}")]
   public struct DocumentPoint
   {
     /// <summary> Constructor. </summary>

@@ -57,9 +57,8 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <returns> True if the cursor moved, false otherwise. </returns>
     public bool MoveCaretTowardsLineEdge(IBlockContentCursor cursor)
     {
-      var textCursor = (IBlockContentCursor)cursor;
       bool didMoveToNextLine;
-      var result = MoveTowardsLineEdge(textCursor, out didMoveToNextLine);
+      var result = MoveTowardsLineEdge(cursor, out didMoveToNextLine);
 
       switch (result)
       {
@@ -67,16 +66,16 @@ namespace TextRight.ContentEditor.Core.Editing
           return DidNotMove;
         case EndMovementState.MovedWithOneMove:
           // move back onto the line
-          if (didMoveToNextLine && !DidReachEdge(textCursor))
+          if (didMoveToNextLine && !DidReachEdge(cursor))
           {
-            MoveAway(textCursor);
+            MoveAway(cursor);
           }
           return DidNotMove;
         case EndMovementState.MovedWithMoreThanOneMove:
           // move back onto the line
-          if (didMoveToNextLine && !DidReachEdge(textCursor))
+          if (didMoveToNextLine && !DidReachEdge(cursor))
           {
-            MoveAway(textCursor);
+            MoveAway(cursor);
           }
           return DidMove;
         default:
