@@ -52,10 +52,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <returns> A MeasuredRectangle representing where the cursor should appear. </returns>
     MeasuredRectangle MeasureCursorPosition();
 
-    /// <summary> Makes a deep copy of this instance. </summary>
-    /// <returns> A copy of this instance. </returns>
-    IBlockContentCursor Clone();
-
     /// <summary> Moves the given cursor to the location indicated by the parameter. </summary>
     /// <param name="cursor"> The cursor to move to. </param>
     void MoveTo(IBlockContentCursor cursor);

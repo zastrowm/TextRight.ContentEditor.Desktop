@@ -66,24 +66,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
       => CursorPool;
 
     /// <inheritdoc />
-    IBlockContentCursor IBlockContentCursor.Clone()
-    {
-      return Clone();
-    }
-
-    /// <inheritdoc />
     void IBlockContentCursor.MoveTo(IBlockContentCursor cursor)
     {
       MoveTo((TCursor)cursor);
-    }
-
-    /// <summary> Makes a deep copy of this instance. </summary>
-    /// <returns> A copy of this instance. </returns>
-    public TCursor Clone()
-    {
-      var newCursor = CursorPool.Borrow(Block);
-      newCursor.MoveToOverride((TCursor)this);
-      return newCursor;
     }
 
     /// <summary> Sets this instance to be equal to the given cursor. </summary>

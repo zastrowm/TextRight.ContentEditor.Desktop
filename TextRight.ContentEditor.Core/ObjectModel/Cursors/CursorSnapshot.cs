@@ -29,7 +29,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
         throw new ArgumentNullException(nameof(cursor));
 
       ReturnExistingCursor();
-      _cursor = cursor.Clone();
+
+      var newCursor = cursor.CursorPool.Borrow(cursor.Block);
+      newCursor.MoveTo(cursor);
+      _cursor = newCursor;
     }
 
     /// <summary> Sets the given cursor to the state represented by this cursor snapshot. </summary>
