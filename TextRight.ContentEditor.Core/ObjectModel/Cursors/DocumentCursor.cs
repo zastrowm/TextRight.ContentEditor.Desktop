@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.ObjectModel
+namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
 {
   /// <summary> Holds a specific spot in the document. </summary>
   public class DocumentCursor

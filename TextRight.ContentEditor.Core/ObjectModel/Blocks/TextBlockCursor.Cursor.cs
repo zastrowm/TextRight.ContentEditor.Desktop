@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using TextRight.ContentEditor.Core.Editing.Commands;
+using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -252,7 +253,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return new TextBlockCursor(block);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc c/>
     protected override void MoveToOverride(TextBlockCursor cursor)
     {
       State = cursor.State;

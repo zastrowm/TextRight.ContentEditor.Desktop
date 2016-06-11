@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
 {
   /// <summary> Base class for the most common implementation of ICursor bool. </summary>
   public sealed class CursorPool<TCursor, TBlock> : ICursorPool

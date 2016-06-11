@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 
 namespace TextRight.ContentEditor.Core.Editing
 {

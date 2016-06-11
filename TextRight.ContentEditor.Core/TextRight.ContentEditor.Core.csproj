@@ -66,14 +66,14 @@
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="DocumentPoint.cs" />
     <Compile Include="Editing\BlockCursorMover.cs" />
-    <Compile Include="ObjectModel\Blocks\BaseBlockContentCursor.cs" />
-    <Compile Include="ObjectModel\Blocks\CursorPool.cs" />
+    <Compile Include="ObjectModel\Cursors\BaseBlockContentCursor.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
     <Compile Include="ObjectModel\Blocks\BlockContentCursorExtensions.cs" />
     <Compile Include="ObjectModel\Blocks\BlockLinkedList.cs" />
     <Compile Include="ObjectModel\Blocks\BlockPath.cs" />
     <Compile Include="ObjectModel\Blocks\ICursorPool.cs" />
+    <Compile Include="ObjectModel\Cursors\CursorPool.cs" />
     <Compile Include="ObjectModel\IDocumentItem.cs" />
     <Compile Include="ObjectModel\IDocumentItemView.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollectionCommandProcessor.cs" />
@@ -88,7 +88,7 @@
     <Compile Include="ObjectModel\Blocks\TextBlockCursor.Cursor.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlockCursorCommandProcessor.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollection.cs" />
-    <Compile Include="ObjectModel\DocumentCursor.cs" />
+    <Compile Include="ObjectModel\Cursors\DocumentCursor.cs" />
     <Compile Include="ObjectModel\DocumentOwner.cs" />
     <Compile Include="ObjectModel\Serialization\SerializeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
