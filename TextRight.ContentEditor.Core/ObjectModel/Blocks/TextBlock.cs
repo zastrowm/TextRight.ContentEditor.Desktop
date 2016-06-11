@@ -327,8 +327,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       // TODO find better way of doing this The problem is that we don't know
       // which way to go, so as a hack, we go both ways and rely on the
       // implementation of MoveToPosition to ultimately choose the closest one. 
-      BlockCursorMover.ForwardMover.MoveToPosition(cursor, position);
-      BlockCursorMover.BackwardMover.MoveToPosition(cursor, position);
+      BlockCursorMover.ForwardMover.MoveTowardsLineOffset(cursor, position);
+      BlockCursorMover.BackwardMover.MoveTowardsLineOffset(cursor, position);
     }
 
     /// <inheritdoc />

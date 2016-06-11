@@ -114,7 +114,7 @@ namespace TextRight.ContentEditor.Core.Editing
             MoveTowardsLineEdge(cursor, out didMove);
             if (didMove)
             {
-              MoveToPosition(cursor, caretMovementMode.Position);
+              MoveTowardsLineOffset(cursor, caretMovementMode.Position);
             }
             else
             {
@@ -202,10 +202,10 @@ namespace TextRight.ContentEditor.Core.Editing
     /// </summary>
     /// <param name="cursor"> The cursor to move. </param>
     /// <param name="point"> The point to move towards. </param>
-    public void MoveToPosition(IBlockContentCursor cursor, DocumentPoint point)
+    public void MoveTowardsPoint(IBlockContentCursor cursor, DocumentPoint point)
     {
-      MoveToLine(cursor, point.Y);
-      MoveToPosition(cursor, point.X);
+      MoveTowardsLine(cursor, point.Y);
+      MoveTowardsLineOffset(cursor, point.X);
     }
 
     /// <summary>
@@ -213,7 +213,7 @@ namespace TextRight.ContentEditor.Core.Editing
     /// </summary>
     /// <param name="cursor"> The cursor to move. </param>
     /// <param name="y"> The y coordinate whose line we would like to be on. </param>
-    public void MoveToLine(IBlockContentCursor cursor, double y)
+    public void MoveTowardsLine(IBlockContentCursor cursor, double y)
     {
       using (var closestLine = CursorSnapshot.From(cursor))
       {
@@ -255,9 +255,9 @@ namespace TextRight.ContentEditor.Core.Editing
     ///  line.
     /// </summary>
     /// <param name="cursor"> The cursor to move. </param>
-    /// <param name="desiredPosition"> The desired position of the caret. </param>
+    /// <param name="desiredPosition"> The desired horizontal position of the caret. </param>
     /// <returns> True if the caret moved, false otherwise. </returns>
-    public bool MoveToPosition(IBlockContentCursor cursor, double desiredPosition)
+    public bool MoveTowardsLineOffset(IBlockContentCursor cursor, double desiredPosition)
     {
       var lastClosest = cursor.MeasureCursorPosition();
       double closestDistance = HorizontalDistanceTo(lastClosest, desiredPosition);

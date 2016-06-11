@@ -87,7 +87,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public virtual IBlockContentCursor GetCursorFor(DocumentPoint point)
     {
       var start = GetCursor().ToBeginning();
-      BlockCursorMover.ForwardMover.MoveToPosition(start, point);
+      BlockCursorMover.ForwardMover.MoveTowardsPoint(start, point);
       return start;
     }
 
