@@ -44,6 +44,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     public abstract bool MoveBackward();
 
     /// <inheritdoc />
+    void IBlockContentCursor.Reset(Block block)
+    {
+      Block = (TBlock)block;
+    }
+
+    /// <inheritdoc />
     public abstract ISerializedBlockCursor Serialize();
 
     /// <inheritdoc />

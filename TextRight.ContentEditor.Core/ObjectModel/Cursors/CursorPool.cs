@@ -29,6 +29,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
       if (_cursors.Count > 0)
       {
         var pooledCursor = _cursors.Pop();
+        pooledCursor.Reset(block);
         return pooledCursor;
       }
       else

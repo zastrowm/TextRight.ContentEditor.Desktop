@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.Editing
@@ -100,60 +101,58 @@ namespace TextRight.ContentEditor.Core.Editing
     public bool MoveCaretTowardsPositionInNextLine(IBlockContentCursor cursor,
                                                    CaretMovementMode caretMovementMode)
     {
-      var textBlockCursor = (IBlockContentCursor)cursor;
-
-      // TODO can we pool this?
-      var snapshot = textBlockCursor.Clone();
-
-      switch (caretMovementMode.CurrentMode)
+      using (var snapshot = CursorSnapshot.From(cursor))
       {
-        case CaretMovementMode.Mode.None:
+        switch (caretMovementMode.CurrentMode)
         {
-          goto case CaretMovementMode.Mode.Position;
-        }
-        case CaretMovementMode.Mode.Position:
-        {
-          bool didMove;
-          MoveTowardsLineEdge(textBlockCursor, out didMove);
-          if (didMove)
+          case CaretMovementMode.Mode.None:
           {
-            MoveToPosition(textBlockCursor, caretMovementMode.Position);
+            goto case CaretMovementMode.Mode.Position;
           }
-          else
+          case CaretMovementMode.Mode.Position:
           {
-            textBlockCursor.MoveTo(snapshot);
+            bool didMove;
+            MoveTowardsLineEdge(cursor, out didMove);
+            if (didMove)
+            {
+              MoveToPosition(cursor, caretMovementMode.Position);
+            }
+            else
+            {
+              snapshot.Restore(cursor);
+            }
+            return didMove;
           }
-          return didMove;
-        }
-        case CaretMovementMode.Mode.Home:
-        {
-          bool didMove;
-          var state = MoveTowardsLineEdge(textBlockCursor, out didMove);
-          if (!didMove)
+          case CaretMovementMode.Mode.Home:
           {
-            textBlockCursor.MoveTo(snapshot);
-            return false;
-          }
+            bool didMove;
+            var state = MoveTowardsLineEdge(cursor, out didMove);
+            if (!didMove)
+            {
+              snapshot.Restore(cursor);
+              return false;
+            }
 
-          // move it back to the correct line
-          BackwardMover.MoveCaretTowardsLineEdge(cursor);
-          return state != EndMovementState.CouldNotMoveWithinBlock;
-        }
-        case CaretMovementMode.Mode.End:
-        {
-          bool didMove;
-          var state = MoveTowardsLineEdge(textBlockCursor, out didMove);
-          if (!didMove)
-          {
-            textBlockCursor.MoveTo(snapshot);
-            return false;
+            // move it back to the correct line
+            BackwardMover.MoveCaretTowardsLineEdge(cursor);
+            return state != EndMovementState.CouldNotMoveWithinBlock;
           }
-          // move it back to the correct line
-          ForwardMover.MoveCaretTowardsLineEdge(cursor);
-          return state != EndMovementState.CouldNotMoveWithinBlock;
+          case CaretMovementMode.Mode.End:
+          {
+            bool didMove;
+            var state = MoveTowardsLineEdge(cursor, out didMove);
+            if (!didMove)
+            {
+              snapshot.Restore(cursor);
+              return false;
+            }
+            // move it back to the correct line
+            ForwardMover.MoveCaretTowardsLineEdge(cursor);
+            return state != EndMovementState.CouldNotMoveWithinBlock;
+          }
+          default:
+            throw new ArgumentOutOfRangeException();
         }
-        default:
-          throw new ArgumentOutOfRangeException();
       }
     }
 

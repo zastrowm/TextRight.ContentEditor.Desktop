@@ -27,6 +27,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <returns> True if the cursor was able to be moved backward, false otherwise. </returns>
     bool MoveBackward();
 
+    /// <summary> Sets the block that this cursor is associated with. </summary>
+    /// <param name="block"> The block associated withe the cursor. </param>
+    void Reset(Block block);
+
     /// <summary>
     ///  Save the cursor information so that it can be restored at a later time.
     /// </summary>
