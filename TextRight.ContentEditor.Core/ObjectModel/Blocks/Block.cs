@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
@@ -85,35 +86,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <returns> The cursor for. </returns>
     public virtual IBlockContentCursor GetCursorFor(DocumentPoint point)
     {
-      return null;
-#if TODO
-      var startCursor = GetCursor().ToBeginning();
-      var startPosition = startCursor.MeasureCursorPosition().Center;
-      var distance = Math.Abs(DocumentPoint.MeasureDistanceSquared(startPosition, point));
-
-      // TODO should we recycle?
-      var endCursor = GetCursor().ToEnd();
-      var endPosition = endCursor.MeasureCursorPosition().Center;
-
-      var endDistance = Math.Abs(DocumentPoint.MeasureDistanceSquared(endPosition, point));
-
-      BlockCursorMover mover;
-      IBlockContentCursor closest;
-
-      if (endDistance < distance)
-      {
-        closest = endCursor;
-        mover = BlockCursorMover.BackwardMover;
-      }
-      else
-      {
-        closest = startCursor;
-        mover = BlockCursorMover.ForwardMover;
-      }
-
-      IBlockContentCursor lastSnapshot = closest.Clone();
-
-#endif
+      var start = GetCursor().ToBeginning();
+      BlockCursorMover.ForwardMover.MoveToPosition(start, point);
+      return start;
     }
 
     /// <summary>

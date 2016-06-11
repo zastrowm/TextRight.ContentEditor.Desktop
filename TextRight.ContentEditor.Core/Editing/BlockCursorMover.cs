@@ -198,6 +198,59 @@ namespace TextRight.ContentEditor.Core.Editing
     }
 
     /// <summary>
+    ///  Moves the caret forward as close to the <paramref name="point"/> while staying in the block.
+    /// </summary>
+    /// <param name="cursor"> The cursor to move. </param>
+    /// <param name="point"> The point to move towards. </param>
+    public void MoveToPosition(IBlockContentCursor cursor, DocumentPoint point)
+    {
+      MoveToLine(cursor, point.Y);
+      MoveToPosition(cursor, point.X);
+    }
+
+    /// <summary>
+    ///  Moves the cursor forward to the line closest to the given <paramref name="y"/> value.
+    /// </summary>
+    /// <param name="cursor"> The cursor to move. </param>
+    /// <param name="y"> The y coordinate whose line we would like to be on. </param>
+    public void MoveToLine(IBlockContentCursor cursor, double y)
+    {
+      using (var closestLine = CursorSnapshot.From(cursor))
+      {
+        closestLine.Snapshot(cursor);
+
+        var lastPosition = cursor.MeasureCursorPosition();
+
+        while (MoveTowards(cursor))
+        {
+          var newPosition = cursor.MeasureCursorPosition();
+
+          if (AreInline(newPosition, lastPosition))
+          {
+            // widen the last position so that it will be the full height of all of the characters
+            lastPosition.Y = Math.Min(newPosition.Y, lastPosition.Y);
+            lastPosition.Height = Math.Max(newPosition.Height, lastPosition.Height);
+          }
+          else if (VerticalDistanceTo(lastPosition, y) <= VerticalDistanceTo(newPosition, y))
+          {
+            // we're not inline, and the point we're trying to get to is now going to get further away, so
+            // break out. 
+            break;
+          }
+          else
+          {
+            // save the beginning of the line
+            closestLine.Snapshot(cursor);
+            lastPosition = newPosition;
+          }
+        }
+
+        // always restore the beginning of the line
+        closestLine.Restore(cursor);
+      }
+    }
+
+    /// <summary>
     ///  Moves the caret as close to the <see cref="desiredPosition"/> while staying on the current
     ///  line.
     /// </summary>
@@ -314,6 +367,12 @@ namespace TextRight.ContentEditor.Core.Editing
     private static double HorizontalDistanceTo(MeasuredRectangle rect, double left)
     {
       return Math.Abs(rect.Left - left);
+    }
+
+    /// <summary> Get the distance to the given position </summary>
+    private static double VerticalDistanceTo(MeasuredRectangle rect, double bottom)
+    {
+      return Math.Abs(rect.Bottom - bottom);
     }
   }
 }

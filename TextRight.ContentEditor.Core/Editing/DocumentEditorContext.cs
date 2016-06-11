@@ -61,7 +61,7 @@ namespace TextRight.ContentEditor.Core.Editing
       var block = Target.GetBlockFor(point);
       if (block != null)
       {
-        var newCursor = block.GetCursor().ToBeginning();
+        var newCursor = block.GetCursorFor(point);
         Caret.MoveTo(newCursor);
       }
     }
