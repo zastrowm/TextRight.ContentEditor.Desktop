@@ -84,18 +84,18 @@ namespace TextRight.ContentEditor.Core.Editing
     }
 
     /// <summary>
-    ///  Moves the caret to the next/previous line and attempts to move the caret
-    ///  as close to the caret as possible.  Updates the context to indicate that
-    ///  if the caret is subsequently moved "up" or "down", the caret should
-    ///  attempt to stay at the given position in the line.
+    ///  Moves the caret to the next/previous line and attempts to move the caret as close to the
+    ///  desired position as possible.  Updates the context to indicate that if the caret is
+    ///  subsequently moved "up" or "down", the caret should attempt to stay at the given position in
+    ///  the line.
     /// </summary>
-    /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more
-    ///  arguments are outside the required range. </exception>
-    /// <param name="cursor"></param>
-    /// <param name="caretMovementMode"></param>
+    /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside
+    ///  the required range. </exception>
+    /// <param name="cursor"> The cursor to move. </param>
+    /// <param name="caretMovementMode"> How the caret should move. </param>
     /// <returns>
-    ///  True if the caret was moved to the next line, false if it was not able to
-    ///  be moved (reached edge of block).
+    ///  True if the caret was moved to the next line, false if it was not able to be moved (reached
+    ///  edge of block).
     /// </returns>
     public bool MoveCaretTowardsPositionInNextLine(IBlockContentCursor cursor,
                                                    CaretMovementMode caretMovementMode)
@@ -156,20 +156,19 @@ namespace TextRight.ContentEditor.Core.Editing
     }
 
     /// <summary>
-    ///  Moves the given cursor towards the line's edge (right or left) usually
-    ///  continuing onto the next line if <paramref name="didMoveToNextLine"/> is
-    ///  true.
+    ///  Moves the given cursor forward towards the line's edge usually continuing onto the next line
+    ///  if <paramref name="didMoveToNextLine"/> is true.
     /// </summary>
     /// <remarks>
-    ///  It should be expected that this method overshoots and continues onto the
-    ///  next line, indicated by <paramref name="didMoveToNextLine"/> being true.
-    ///  If this is not desired, the caller should check
+    ///  It should be expected that this method overshoots and continues onto the next line, indicated
+    ///  by <paramref name="didMoveToNextLine"/> being true. If this is not desired, the caller should
+    ///  check
     ///  <paramref name="didMoveToNextLine"/> and call <see cref="MoveAway"/> if
     ///  it is true.
     /// </remarks>
     /// <param name="cursor"> The cursor to move. </param>
-    /// <param name="didMoveToNextLine"> [out] True if the caret overshot and was
-    ///  moved to the next line. </param>
+    /// <param name="didMoveToNextLine"> [out] True if the caret overshot and was moved to the next
+    ///  line. </param>
     /// <returns> An EndMovementState representing how the caret was moved. </returns>
     private EndMovementState MoveTowardsLineEdge(IBlockContentCursor cursor,
                                                  out bool didMoveToNextLine)
