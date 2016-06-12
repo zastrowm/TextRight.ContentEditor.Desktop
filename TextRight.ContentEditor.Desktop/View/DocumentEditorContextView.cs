@@ -54,7 +54,7 @@ namespace TextRight.ContentEditor.Desktop.View
       Children.Add(_caretView.Element);
 
       // clear out the existing content
-      _blockCollectionView = new VerticalBlockCollectionView((VerticalBlockCollection)_editor.Document.Root);
+      _blockCollectionView = new VerticalBlockCollectionView(this, (VerticalBlockCollection)_editor.Document.Root);
 
       _rootView = new ScrollViewer()
                   {

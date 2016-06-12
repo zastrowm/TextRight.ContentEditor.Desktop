@@ -14,16 +14,18 @@ namespace TextRight.ContentEditor.Desktop.View
                                              IBlockCollectionView
   {
     private readonly VerticalBlockCollection _blockCollection;
+    private readonly DocumentEditorContextView _root;
 
-    public VerticalBlockCollectionView(VerticalBlockCollection blockCollection)
+    public VerticalBlockCollectionView(DocumentEditorContextView root, VerticalBlockCollection blockCollection)
     {
+      _root = root;
       _blockCollection = blockCollection;
       _blockCollection.Target = this;
 
       // TODO make this not just for TextBlocks
       foreach (var block in _blockCollection.Children)
       {
-        Children.Add(new TextBlockView((TextBlock)block));
+        Children.Add(new TextBlockView(_root, (TextBlock)block));
       }
     }
 
@@ -34,7 +36,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc />
     public void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling)
     {
-      var newBlockView = new TextBlockView((TextBlock)newBlock);
+      var newBlockView = new TextBlockView(_root, (TextBlock)newBlock);
       Children.Insert(newBlock.Index, newBlockView);
     }
 

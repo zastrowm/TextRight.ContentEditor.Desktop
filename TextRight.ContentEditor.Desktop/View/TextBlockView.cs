@@ -17,6 +17,7 @@ namespace TextRight.ContentEditor.Desktop.View
   public class TextBlockView : FrameworkElement,
                                ITextBlockView
   {
+    private readonly DocumentEditorContextView _root;
     private readonly TextBlock _block;
     private readonly List<StyledStyledTextSpanView> _spans;
 
@@ -24,11 +25,13 @@ namespace TextRight.ContentEditor.Desktop.View
     private Size _lastMeasureSize;
 
     /// <summary> Constructor. </summary>
+    /// <param name="root"> The root view that this TextBox is ultimately a part of. </param>
     /// <param name="block"> The block that this view is for. </param>
-    public TextBlockView(TextBlock block)
+    public TextBlockView(DocumentEditorContextView root, TextBlock block)
     {
       Margin = new Thickness(10);
 
+      _root = root;
       _block = block;
       _block.Target = this;
 
@@ -102,7 +105,7 @@ namespace TextRight.ContentEditor.Desktop.View
       Debug.Assert(geometry != null);
 
       // TODO see if there is a faster way of doing this
-      var absoluteOffset = TransformToAncestor((Visual)Parent).Transform(new Point(0, 0));
+      var absoluteOffset = TransformToAncestor(_root).Transform(new Point(0, 0));
 
       return new MeasuredRectangle()
              {

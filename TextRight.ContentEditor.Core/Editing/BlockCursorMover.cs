@@ -366,13 +366,13 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <summary> Get the distance to the given position </summary>
     private static double HorizontalDistanceTo(MeasuredRectangle rect, double left)
     {
-      return Math.Abs(rect.Left - left);
+      return Math.Abs(rect.Center.X - left);
     }
 
     /// <summary> Get the distance to the given position </summary>
     private static double VerticalDistanceTo(MeasuredRectangle rect, double bottom)
     {
-      return Math.Abs(rect.Bottom - bottom);
+      return Math.Abs(rect.Center.Y - bottom);
     }
   }
 }
