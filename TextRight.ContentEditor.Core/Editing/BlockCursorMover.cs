@@ -182,7 +182,7 @@ namespace TextRight.ContentEditor.Core.Editing
       while (!didMoveToNextLine && MoveTowards(cursor))
       {
         numTurns++;
-        didMoveToNextLine = !AreInline(cursor.MeasureCursorPosition(), originalPosition);
+        didMoveToNextLine = !MeasuredRectangle.AreInline(cursor.MeasureCursorPosition(), originalPosition);
       }
 
       switch (numTurns)
@@ -224,7 +224,7 @@ namespace TextRight.ContentEditor.Core.Editing
         {
           var newPosition = cursor.MeasureCursorPosition();
 
-          if (AreInline(newPosition, lastPosition))
+          if (MeasuredRectangle.AreInline(newPosition, lastPosition))
           {
             // widen the last position so that it will be the full height of all of the characters
             lastPosition.Y = Math.Min(newPosition.Y, lastPosition.Y);
@@ -269,7 +269,7 @@ namespace TextRight.ContentEditor.Core.Editing
         var currentPosition = cursor.MeasureCursorPosition();
 
         // we may have gone too far, so exit out
-        if (!AreInline(currentPosition, lastClosest))
+        if (!MeasuredRectangle.AreInline(currentPosition, lastClosest))
         {
           didGoTooFar = true;
           break;
@@ -334,32 +334,6 @@ namespace TextRight.ContentEditor.Core.Editing
       CouldNotMoveWithinBlock,
       MovedWithOneMove,
       MovedWithMoreThanOneMove,
-    }
-
-    /// <summary>
-    ///  Check if one rectangle is considered on the same "line" as another.
-    /// </summary>
-    private static bool AreInline(MeasuredRectangle original, MeasuredRectangle comparedTo)
-    {
-      MeasuredRectangle first,
-                        second;
-
-      if (original.Top <= comparedTo.Top)
-      {
-        first = original;
-        second = comparedTo;
-      }
-      else
-      {
-        first = comparedTo;
-        second = original;
-      }
-
-      // if the second point has its top between the top of the first
-      // point and the first points bottom, the second point is considered
-      // inline with the other
-      // TODO do we need some sort of buffer (perhaps subtracting a small number from top?
-      return second.Top < first.Bottom;
     }
 
     /// <summary> Get the distance to the given position </summary>

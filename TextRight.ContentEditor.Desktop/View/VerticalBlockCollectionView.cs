@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.ContentEditor.Core.Utilities;
 using TextBlock = TextRight.ContentEditor.Core.ObjectModel.Blocks.TextBlock;
 
 namespace TextRight.ContentEditor.Desktop.View
@@ -48,6 +50,20 @@ namespace TextRight.ContentEditor.Desktop.View
     {
       var view = (TextBlockView)((TextBlock)blockRemoved).Target;
       Children.Remove(view);
+    }
+
+    /// <inheritdoc />
+    public MeasuredRectangle MeasureBounds()
+    {
+      var offset = TransformToAncestor(_root).Transform(new Point(0, 0));
+
+      return new MeasuredRectangle()
+             {
+               X = offset.X,
+               Y = offset.Y,
+               Width = ActualWidth,
+               Height = ActualHeight
+             };
     }
   }
 }

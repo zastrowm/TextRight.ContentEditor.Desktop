@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -74,6 +75,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
+    public override MeasuredRectangle GetBounds()
+    {
+      return Target?.MeasureBounds() ?? MeasuredRectangle.Invalid;
+    }
+
+    /// <inheritdoc />
     public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode)
     {
       return LastBlock.GetCaretFromBottom(caretMovementMode);
@@ -98,5 +105,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <summary> Invoked when a block has been removed from the collection. </summary>
     void NotifyBlockRemoved(Block oldPreviousSibling, Block blockRemoved, Block oldNextSibiling, int indexOfBlockRemoved);
+
+    /// <summary> Returns the area consumed by the block. </summary>
+    /// <returns> A MeasuredRectangle representing the area required to display the block. </returns>
+    MeasuredRectangle MeasureBounds();
   }
 }

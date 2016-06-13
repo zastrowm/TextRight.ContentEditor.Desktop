@@ -156,6 +156,20 @@ namespace TextRight.ContentEditor.Desktop.View
       RecreateText();
     }
 
+    /// <inheritdoc />
+    public MeasuredRectangle MeasureBounds()
+    {
+      var offset = TransformToAncestor(_root).Transform(new Point(0, 0));
+
+      return new MeasuredRectangle()
+             {
+               X = offset.X,
+               Y = offset.Y,
+               Width = ActualWidth,
+               Height = ActualHeight
+             };
+    }
+
     /// <summary> Synchronizes the properties of FormattedText with the last measure size. </summary>
     private void UpdateFormattedTextWithConstraints()
     {

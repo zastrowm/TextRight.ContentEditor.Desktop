@@ -33,6 +33,8 @@ namespace TextRight.ContentEditor.Core.Editing
       CaretMovementMode = new CaretMovementMode();
 
       CommandPipeline = new CommandPipeline(this);
+
+      Selection = new DocumentSelection(this);
     }
 
     /// <summary> The document that is being edited. </summary>
@@ -50,6 +52,9 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <summary> Movement information about the caret. </summary>
     public CaretMovementMode CaretMovementMode { get; }
 
+    /// <summary> The currently selected fragments of the document. </summary>
+    public DocumentSelection Selection { get; }
+
     /// <summary> The View that is currently attached to the item. </summary>
     public IDocumentEditorView Target { get; set; }
 
@@ -63,6 +68,9 @@ namespace TextRight.ContentEditor.Core.Editing
       {
         var newCursor = block.GetCursorFor(point);
         Caret.MoveTo(newCursor);
+
+        Selection.End.MoveTo(newCursor);
+        Selection.Target?.NotifyChanged();
       }
     }
   }

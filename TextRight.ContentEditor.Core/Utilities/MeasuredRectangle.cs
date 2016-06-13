@@ -70,5 +70,31 @@ namespace TextRight.ContentEditor.Core.Utilities
 
       return this;
     }
+
+    /// <summary>
+    ///  Check if one rectangle is considered on the same "line" as another.
+    /// </summary>
+    public static bool AreInline(MeasuredRectangle original, MeasuredRectangle comparedTo)
+    {
+      MeasuredRectangle first,
+                        second;
+
+      if (original.Top <= comparedTo.Top)
+      {
+        first = original;
+        second = comparedTo;
+      }
+      else
+      {
+        first = comparedTo;
+        second = original;
+      }
+
+      // if the second point has its top between the top of the first
+      // point and the first points bottom, the second point is considered
+      // inline with the other
+      // TODO do we need some sort of buffer (perhaps subtracting a small number from top?
+      return second.Top < first.Bottom;
+    }
   }
 }

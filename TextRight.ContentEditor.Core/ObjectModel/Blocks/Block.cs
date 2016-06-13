@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -100,6 +101,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     ///  Retrieves the block that comes before this block in the parent collection.
     /// </summary>
     internal Block PreviousBlock { get; set; }
+
+    /// <summary> Gets the bounds of the block. </summary>
+    /// <returns> The bounds that encompass the area consumed by the block. </returns>
+    public abstract MeasuredRectangle GetBounds();
 
     /// <summary>
     ///  Retrieves a caret within the block that represents the given

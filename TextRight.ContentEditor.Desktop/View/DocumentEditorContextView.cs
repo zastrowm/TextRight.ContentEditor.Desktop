@@ -28,6 +28,7 @@ namespace TextRight.ContentEditor.Desktop.View
     private readonly DocumentEditorContext _editor;
     private readonly CaretView _caretView;
     private readonly ScrollViewer _rootView;
+    private readonly SelectionView _selectionView;
     private readonly KeyboardShortcutCollection _keyCommands;
 
     private readonly ActionStack _undoStack;
@@ -46,11 +47,16 @@ namespace TextRight.ContentEditor.Desktop.View
       TextOptions.SetTextHintingMode(this, TextHintingMode.Fixed);
       TextOptions.SetTextRenderingMode(this, TextRenderingMode.ClearType);
 
+      Cursor = Cursors.IBeam;
+
       _editor = editor;
 
       _undoStack = new ActionStack(editor);
 
+      _selectionView = new SelectionView(_editor.Selection);
       _caretView = new CaretView(_editor.Caret);
+
+      _selectionView.Attach(this);
       Children.Add(_caretView.Element);
 
       // clear out the existing content

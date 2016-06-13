@@ -6,6 +6,7 @@ using System.Linq;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -19,6 +20,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     void NotifyBlockInserted(StyledTextFragment previousSibling,
                              StyledTextFragment newFragment,
                              StyledTextFragment nextSibling);
+
+    /// <summary> Returns the area consumed by the block. </summary>
+    /// <returns> A MeasuredRectangle representing the area required to display the block. </returns>
+    MeasuredRectangle MeasureBounds();
   }
 
   /// <summary>
@@ -271,6 +276,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       Debug.Assert(index == elements.Length);
 
       return elements;
+    }
+
+    /// <inheritdoc />
+    public override MeasuredRectangle GetBounds()
+    {
+      return Target?.MeasureBounds() ?? MeasuredRectangle.Invalid;
     }
 
     /// <inheritdoc />

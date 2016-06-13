@@ -6,7 +6,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
 {
   /// <summary> Holds a specific spot in the document. </summary>
-  public class DocumentCursor
+  public sealed class DocumentCursor
   {
     /// <summary> Constructor. </summary>
     /// <param name="owner"> The Document that owns the given cursor. </param>
