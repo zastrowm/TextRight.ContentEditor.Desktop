@@ -9,7 +9,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
   /// <summary> Maintains the state of a cursor so that it can be restored later. </summary>
   public struct CursorSnapshot : IDisposable
   {
-    private IBlockContentCursor _cursor;
+    private PooledBlockContentCursor _cursor;
 
     /// <summary> Creates a new snapshot that stores the state of the given cursor </summary>
     /// <param name="cursor"> The cursor whose state should be remembered. </param>
@@ -28,11 +28,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
       if (cursor == null)
         throw new ArgumentNullException(nameof(cursor));
 
-      ReturnExistingCursor();
-
-      var newCursor = cursor.CursorPool.Borrow(cursor.Block);
-      newCursor.MoveTo(cursor);
-      _cursor = newCursor;
+      _cursor.Set(cursor);
     }
 
     /// <summary> Sets the given cursor to the state represented by this cursor snapshot. </summary>
@@ -40,10 +36,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     /// <param name="cursor"> The cursor whose state should be set equal to the state in this snapshot. </param>
     public void Restore(IBlockContentCursor cursor)
     {
-      if (_cursor == null)
+      if (_cursor.Cursor == null)
         throw new InvalidOperationException("No cursor is currently remembered in the snapshot");
 
-      cursor.MoveTo(_cursor);
+      cursor.MoveTo(_cursor.Cursor);
     }
 
     /// <summary>
@@ -51,19 +47,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     /// </summary>
     public void Dispose()
     {
-      ReturnExistingCursor();
-    }
-
-    /// <summary>
-    ///  Returns any cursor currently held back to the cursor pool that the cursor was created
-    /// </summary>
-    private void ReturnExistingCursor()
-    {
-      if (_cursor == null)
-        return;
-
-      _cursor.CursorPool.Recycle(_cursor);
-      _cursor = null;
+      _cursor.ReturnToPool();
     }
   }
 }

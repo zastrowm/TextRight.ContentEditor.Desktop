@@ -66,6 +66,7 @@
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="DocumentPoint.cs" />
     <Compile Include="Editing\BlockCursorMover.cs" />
+    <Compile Include="ObjectModel\Blocks\ReadonlyCursor.cs" />
     <Compile Include="ObjectModel\Cursors\BaseBlockContentCursor.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
@@ -76,6 +77,8 @@
     <Compile Include="ObjectModel\Cursors\CursorPool.cs" />
     <Compile Include="ObjectModel\Cursors\CursorSnapshot.cs" />
     <Compile Include="ObjectModel\Cursors\DocumentSelection.cs" />
+    <Compile Include="ObjectModel\Cursors\PooledBlockContentCursor.cs" />
+    <Compile Include="ObjectModel\Cursors\CursorCopy.cs" />
     <Compile Include="ObjectModel\IDocumentItem.cs" />
     <Compile Include="ObjectModel\IDocumentItemView.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollectionCommandProcessor.cs" />

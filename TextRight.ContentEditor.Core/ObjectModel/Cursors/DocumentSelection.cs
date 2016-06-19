@@ -26,8 +26,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     {
       _context = context;
 
-      Start = new DocumentCursor(context.Document, context.Cursor);
-      _end = new DocumentCursor(context.Document, context.Cursor);
+      Start = new DocumentCursor(context.Document, context.Document.Root.FirstBlock.CreateCursor().ToBeginning());
+      _end = new DocumentCursor(context.Document, context.Document.Root.FirstBlock.CreateCursor().ToBeginning());
 
       IsActive = true;
     }
