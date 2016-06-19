@@ -29,16 +29,16 @@ namespace TextRight.ContentEditor.Core.Editing
     public void Activate(DocumentEditorContext context, ActionStack actionStack)
     {
       var textCursor = (TextBlockCursor)context.Cursor;
-      actionStack.Do(new UndableAction(textCursor));
+      actionStack.Do(new UndoableAction(textCursor));
     }
 
     /// <summary> Deletes text from the document. </summary>
-    public class UndableAction : IUndoableAction
+    public class UndoableAction : IUndoableAction
     {
       private readonly string _originalText;
       private readonly DocumentCursorHandle _cursorHandle;
 
-      public UndableAction(TextBlockCursor cursor)
+      public UndoableAction(TextBlockCursor cursor)
       {
         _cursorHandle = new DocumentCursorHandle(cursor);
         _originalText = cursor.CharacterBefore.ToString();
