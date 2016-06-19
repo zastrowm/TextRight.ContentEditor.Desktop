@@ -44,8 +44,11 @@ namespace TextRight.ContentEditor.Core.Editing
     public DocumentCursor Caret { get; }
 
     /// <summary> TODO </summary>
-    public IBlockContentCursor Cursor
+    public IBlockContentCursor BlockCursor
       => Caret.BlockCursor;
+
+    public ReadonlyCursor Cursor
+      => Caret.Cursor;
 
     public CommandPipeline CommandPipeline { get; }
 

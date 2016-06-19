@@ -50,5 +50,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <returns> A MeasuredRectangle representing where the cursor should appear. </returns>
     public MeasuredRectangle MeasureCursorPosition()
       => _cursor.MeasureCursorPosition();
+
+    /// <summary> Check if the underlying cursor is of type T. </summary>
+    public bool Is<T>()
+      where T : IBlockContentCursor
+      => _cursor is T;
   }
 }

@@ -21,14 +21,14 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <inheritdoc />
     public bool CanActivate(DocumentEditorContext context)
     {
-      var textCursor = context.Cursor as TextBlockCursor;
-      return textCursor?.IsAtBeginning == false;
+      var cursor = context.Cursor;
+      return cursor.Is<TextBlockCursor>() && !cursor.IsAtBeginning;
     }
 
     /// <inheritdoc />
     public void Activate(DocumentEditorContext context, ActionStack actionStack)
     {
-      var textCursor = (TextBlockCursor)context.Cursor;
+      var textCursor = (TextBlockCursor)context.BlockCursor;
       actionStack.Do(new UndoableAction(textCursor));
     }
 

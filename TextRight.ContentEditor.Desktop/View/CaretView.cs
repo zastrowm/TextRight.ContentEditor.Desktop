@@ -6,9 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
-using TextBlock = TextRight.ContentEditor.Core.ObjectModel.Blocks.TextBlock;
 
 namespace TextRight.ContentEditor.Desktop.View
 {
@@ -46,12 +44,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <summary> Synchronized the view's representation with the underlying cursor. </summary>
     public void SyncPosition()
     {
-      // TODO do we need to cast it as a text cursor?  Should the block cursor
-      // know how to measure itself? 
-      var textCursor = (TextBlockCursor)_cursor.BlockCursor;
-
-      var block = (TextBlock)_cursor.BlockCursor.Block;
-      var measure = textCursor.MeasureCursorPosition();
+      var measure = _cursor.Cursor.MeasureCursorPosition();
 
       // TODO should core being doing this?
       UpdatePosition(measure.X, measure.Y, measure.Height);

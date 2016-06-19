@@ -31,6 +31,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
       BlockCursor = blockCursor;
     }
 
+    /// <summary> The cursor. </summary>
+    public ReadonlyCursor Cursor
+      => new ReadonlyCursor(BlockCursor);
+
     /// <summary> The Document that owns the given cursor. </summary>
     public DocumentOwner Owner { get; }
 

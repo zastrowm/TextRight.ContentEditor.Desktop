@@ -39,7 +39,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                              EditorCommand command,
                              CommandExecutionContext commandContext)
     {
-      var newBlock = collection.TryBreakBlock(context.Cursor);
+      var newBlock = collection.TryBreakBlock(context.BlockCursor);
       if (newBlock == null)
         return false;
 
@@ -54,7 +54,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                                       BuiltInCaretNavigationCommand builtIn,
                                       CommandExecutionContext commandContext)
     {
-      BlockTreeWalker.GetNextNonContainerBlock(context.Cursor.Block);
+      BlockTreeWalker.GetNextNonContainerBlock(context.BlockCursor.Block);
 
       switch (builtIn.Mode)
       {

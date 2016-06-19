@@ -27,7 +27,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                                       CommandExecutionContext unused)
     {
       // we only work on text block cursors.
-      var cursor = context.Cursor as TextBlockCursor;
+      var cursor = context.BlockCursor as TextBlockCursor;
       if (cursor == null)
         return false;
 
@@ -41,7 +41,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       {
         if (!cursor.MoveBackward())
         {
-          var block = ((TextBlock)context.Caret.BlockCursor.Block);
+          var block = ((TextBlock)context.Caret.Cursor.Block);
           var previous = block.PreviousBlock;
 
           if (previous == null)
@@ -83,11 +83,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       {
         case BuiltInCaretNavigationCommand.NavigationType.Forward:
         {
-          return context.Cursor.MoveForward();
+          return context.BlockCursor.MoveForward();
         }
         case BuiltInCaretNavigationCommand.NavigationType.Backward:
         {
-          return context.Cursor.MoveBackward();
+          return context.BlockCursor.MoveBackward();
         }
         case BuiltInCaretNavigationCommand.NavigationType.NextWord:
         {
@@ -99,31 +99,31 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         }
         case BuiltInCaretNavigationCommand.NavigationType.Up:
         {
-          return BlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
+          return BlockCursorMover.BackwardMover.MoveCaretTowardsPositionInNextLine(context.BlockCursor,
                                                                                    context.CaretMovementMode);
         }
         case BuiltInCaretNavigationCommand.NavigationType.Down:
         {
-          return BlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context.Cursor,
+          return BlockCursorMover.ForwardMover.MoveCaretTowardsPositionInNextLine(context.BlockCursor,
                                                                                   context.CaretMovementMode);
         }
 
         case BuiltInCaretNavigationCommand.NavigationType.Home:
         {
-          return BlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(context.Cursor);
+          return BlockCursorMover.BackwardMover.MoveCaretTowardsLineEdge(context.BlockCursor);
         }
         case BuiltInCaretNavigationCommand.NavigationType.End:
         {
-          return BlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(context.Cursor);
+          return BlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(context.BlockCursor);
         }
         case BuiltInCaretNavigationCommand.NavigationType.BeginningOfBlock:
         {
-          context.Cursor.MoveToBeginning();
+          context.BlockCursor.MoveToBeginning();
           return true;
         }
         case BuiltInCaretNavigationCommand.NavigationType.EndOfBlock:
         {
-          context.Cursor.MoveToEnd();
+          context.BlockCursor.MoveToEnd();
           return true;
         }
         default:
@@ -135,7 +135,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="context"> The context's whose caret should be moved. </param>
     private static bool MoveCaretToBeginningOfNextWord(DocumentEditorContext context)
     {
-      var blockCaret = context.Cursor;
+      var blockCaret = context.BlockCursor;
 
       // we either don't know what kind of block cursor it is, or we want to move
       // to the next block anyways. 
@@ -171,7 +171,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="context"> The context's whose caret should be moved. </param>
     private static bool MoveCaretToEndOfPreviousWord(DocumentEditorContext context)
     {
-      var blockCaret = context.Cursor;
+      var blockCaret = context.BlockCursor;
 
       // we either don't know what kind of block cursor it is, or we want to move
       // to the next block anyways. 

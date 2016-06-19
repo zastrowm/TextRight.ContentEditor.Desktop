@@ -56,8 +56,8 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc />
     public void NotifyChanged()
     {
-      var start = _documentSelection.Start.BlockCursor.MeasureCursorPosition();
-      var end = _documentSelection.End.BlockCursor.MeasureCursorPosition();
+      var start = _documentSelection.Start.Cursor.MeasureCursorPosition();
+      var end = _documentSelection.End.Cursor.MeasureCursorPosition();
 
       if (MeasuredRectangle.AreInline(start, end))
       {
@@ -118,8 +118,8 @@ namespace TextRight.ContentEditor.Desktop.View
     private void DrawSpanningSelection(MeasuredRectangle start, MeasuredRectangle end)
     {
       // TODO we really should go line-by-line or block-by-block as needed
-      var startBlockRect = _documentSelection.Start.BlockCursor.Block.GetBounds();
-      var endBlockRect = _documentSelection.End.BlockCursor.Block.GetBounds();
+      var startBlockRect = _documentSelection.Start.Cursor.Block.GetBounds();
+      var endBlockRect = _documentSelection.End.Cursor.Block.GetBounds();
 
       double maxRight = Math.Max(startBlockRect.Right, endBlockRect.Right);
       double maxLeft = Math.Max(startBlockRect.Left, endBlockRect.Left);

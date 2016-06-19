@@ -19,7 +19,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <param name="cursor"> The cursor that should be serialized for later use. </param>
     public DocumentCursorHandle(DocumentCursor cursor)
     {
-      _serializedCursor = cursor.BlockCursor.Serialize();
+      _serializedCursor = cursor.Cursor.Serialize();
     }
 
     /// <summary> Constructor. </summary>

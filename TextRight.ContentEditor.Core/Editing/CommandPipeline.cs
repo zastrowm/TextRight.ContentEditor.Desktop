@@ -56,10 +56,10 @@ namespace TextRight.ContentEditor.Core.Editing
     private bool ExecuteCommandDirect(EditorCommand command)
     {
       var context = new CommandExecutionContext();
-      context.ConfigureFor(_owner.Cursor);
+      context.ConfigureFor(_owner.BlockCursor);
 
       // first check if the caret itself handles the command
-      if (TryHandleCommand(command, context, _owner.Cursor as ICommandProcessorHook, null))
+      if (TryHandleCommand(command, context, _owner.BlockCursor as ICommandProcessorHook, null))
         return true;
 
       // if that doesn't work, walk up the tree checking to see if any of the

@@ -13,8 +13,7 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <inheritdoc />
     public string GetName(DocumentEditorContext context)
     {
-      var currentPosition = context.Cursor;
-      if (currentPosition.IsAtBeginning)
+      if (context.Cursor.IsAtBeginning)
         return "Merge paragraph backwards";
       else
         return "Merge paragraph forwards";
@@ -54,7 +53,7 @@ namespace TextRight.ContentEditor.Core.Editing
     /// </summary>
     private bool TryGetTextBlocks(DocumentEditorContext context, out TextBlock previous, out TextBlock next)
     {
-      var cursor = context.Cursor;
+      var cursor = context.BlockCursor;
 
       if (cursor.IsAtBeginning && cursor.Block.PreviousBlock != null)
       {
