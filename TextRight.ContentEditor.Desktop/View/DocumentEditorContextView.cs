@@ -33,6 +33,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
     private readonly ActionStack _undoStack;
     private readonly BlockSearchHitTester _blockSearchHitTester;
+    private ChangeIndex _layoutChangeIndex;
 
     public DocumentEditorContextView(DocumentEditorContext editor)
     {
@@ -106,6 +107,19 @@ namespace TextRight.ContentEditor.Desktop.View
       ((IContextualCommand)new BreakTextBlockAction()).Activate(_editor, _undoStack);
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
+    }
+
+    /// <summary> A ChangeIndex which marks when changes to the document layout has occurred. </summary>
+    public ChangeIndex LayoutChangeIndex
+      => _layoutChangeIndex;
+
+    /// <summary>
+    ///  Changes <see cref="LayoutChangeIndex"/> to indicate that a change to the layout of the document has
+    ///  been made.
+    /// </summary>
+    public void MarkChanged()
+    {
+      _layoutChangeIndex = _layoutChangeIndex.Next();
     }
 
     /// <inheritdoc />

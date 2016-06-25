@@ -67,6 +67,7 @@
     <Compile Include="DocumentPoint.cs" />
     <Compile Include="Editing\BlockCursorMover.cs" />
     <Compile Include="ObjectModel\Blocks\ReadonlyCursor.cs" />
+    <Compile Include="ObjectModel\ChangeIndex.cs" />
     <Compile Include="ObjectModel\Cursors\BaseBlockContentCursor.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
