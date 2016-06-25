@@ -96,5 +96,29 @@ namespace TextRight.ContentEditor.Core.Utilities
       // TODO do we need some sort of buffer (perhaps subtracting a small number from top?
       return second.Top < first.Bottom;
     }
+
+    /// <summary> Add the given x and y values to create a new point. </summary>
+    public MeasuredRectangle OffsetBy(double x, double y)
+    {
+      return new MeasuredRectangle()
+             {
+               X = x + X,
+               Y = y + Y,
+               Height = Height,
+               Width = Width,
+             };
+    }
+
+    /// <summary> Trims the point to be within the current rectangle. </summary>
+    /// <param name="point"> The point to trim. </param>
+    /// <returns>
+    ///  A DocumentPoint with the X/Y values that now exist within the current rectangle.
+    /// </returns>
+    public DocumentPoint Trim(DocumentPoint point)
+    {
+      point.X = Math.Max(Left, Math.Min(Right, point.X));
+      point.Y = Math.Max(Top, Math.Min(Bottom, point.Y));
+      return point;
+    }
   }
 }
