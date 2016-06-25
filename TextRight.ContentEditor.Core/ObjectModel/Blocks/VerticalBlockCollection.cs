@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 using TextRight.ContentEditor.Core.Utilities;
@@ -17,8 +16,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.
     /// </summary>
-    [CanBeNull]
     public IBlockCollectionView Target { get; set; }
+
+    /// <inheritdoc />
+    protected override IDocumentItemView DocumentItemView
+      => Target;
 
     /// <inheritdoc />
     protected override void OnBlockInserted(Block previousBlock, Block newBlock, Block nextBlock)

@@ -188,6 +188,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public override BlockType BlockType
       => BlockType.TextBlock;
 
+    /// <inheritdoc />
+    protected override IDocumentItemView DocumentItemView
+      => Target;
+
     /// <inheritdoc/>
     public IEnumerator<StyledTextFragment> GetEnumerator()
       => _spans.GetEnumerator();

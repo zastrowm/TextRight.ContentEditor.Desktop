@@ -87,6 +87,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <returns> The cursor for. </returns>
     public virtual IBlockContentCursor GetCursorFor(DocumentPoint point)
     {
+      // slow, inefficient mode
       var start = GetCursor().ToBeginning();
       BlockCursorMover.ForwardMover.MoveTowardsPoint(start, point);
       return start;
@@ -101,6 +102,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     ///  Retrieves the block that comes before this block in the parent collection.
     /// </summary>
     internal Block PreviousBlock { get; set; }
+
+    /// <summary> Gets the view associated with the block. </summary>
+    /// <value> The view associated with the item. </value>
+    protected abstract IDocumentItemView DocumentItemView { get; }
 
     /// <summary> Gets the bounds of the block. </summary>
     /// <returns> The bounds that encompass the area consumed by the block. </returns>
