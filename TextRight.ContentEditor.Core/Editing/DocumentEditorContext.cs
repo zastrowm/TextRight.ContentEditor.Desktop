@@ -32,8 +32,6 @@ namespace TextRight.ContentEditor.Core.Editing
       Caret = new DocumentCursor(Document, cursor);
       CaretMovementMode = new CaretMovementMode();
 
-      new DocumentSelection(this);
-
       UndoStack = new ActionStack(this);
     }
 

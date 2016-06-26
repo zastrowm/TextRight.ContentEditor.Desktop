@@ -15,12 +15,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Serialization
     /// <param name="type"> The type of object being serialized.. </param>
     public SerializeNode(Type type)
     {
-      Type = type;
+      Type = type.Name;
       Children = new List<SerializeNode>();
     }
 
     /// <summary> The type of object serialized. </summary>
-    public Type Type { get; }
+    public string Type { get; }
 
     /// <summary> The children of the serialized node. </summary>
     public List<SerializeNode> Children { get; }

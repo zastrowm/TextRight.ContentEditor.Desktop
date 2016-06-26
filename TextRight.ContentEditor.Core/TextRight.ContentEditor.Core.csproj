@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\Actions\ActionStack.cs" />
-    <Compile Include="Editing\Actions\MergableUndoableAction.cs" />
     <Compile Include="Editing\Actions\Text\BreakTextBlockAction.cs" />
     <Compile Include="Editing\Actions\Text\DeleteNextCharacterAction.cs" />
     <Compile Include="Editing\Commands\Text\DeletePreviousCharacterCommand.cs" />

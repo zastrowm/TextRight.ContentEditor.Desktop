@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -26,5 +27,18 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       cursor.MoveToBeginning();
       return cursor;
     }
+
+    /// <summary>
+    ///  Creates a copy of the cursor that can be modified independently from the original.
+    /// </summary>
+    /// <param name="cursor"> The cursor to act on. </param>
+    /// <returns> A copy of the given cursor. </returns>
+    public static CursorCopy Copy(this IBlockContentCursor cursor)
+    {
+      var copied = cursor.CursorPool.GetCursorCopy(cursor.Block);
+      copied.Cursor.MoveTo(cursor);
+      return copied;
+    }
+
   }
 }

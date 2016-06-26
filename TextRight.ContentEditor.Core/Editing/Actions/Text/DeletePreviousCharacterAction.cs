@@ -8,14 +8,17 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
   /// <summary> Deletes text from the document. </summary>
   public class DeletePreviousCharacterAction : UndoableAction
   {
-    private readonly string _originalText;
-    private readonly DocumentCursorHandle _cursorHandle;
-
     public DeletePreviousCharacterAction(TextBlockCursor cursor)
     {
-      _cursorHandle = new DocumentCursorHandle(cursor);
-      _originalText = cursor.CharacterBefore.ToString();
+      CursorHandle = new DocumentCursorHandle(cursor);
+      OriginalText = cursor.CharacterBefore.ToString();
     }
+
+    /// <summary> The location at which the character was deleted. </summary>
+    public DocumentCursorHandle CursorHandle { get; }
+
+    /// <summary> The text that was removed. </summary>
+    public string OriginalText { get; }
 
     /// <inheritdoc />
     public override string Name
@@ -28,7 +31,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <inheritdoc />
     public override void Do(DocumentEditorContext context)
     {
-      var cursor = (TextBlockCursor)_cursorHandle.Get(context);
+      var cursor = (TextBlockCursor)CursorHandle.Get(context);
       cursor.MoveBackward();
       cursor.DeleteText(1);
       context.Caret.MoveTo(cursor);
@@ -37,9 +40,9 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <inheritdoc />
     public override void Undo(DocumentEditorContext context)
     {
-      var cursor = (TextBlockCursor)_cursorHandle.Get(context);
+      var cursor = (TextBlockCursor)CursorHandle.Get(context);
       cursor.MoveBackward();
-      cursor.InsertText(_originalText);
+      cursor.InsertText(OriginalText);
       cursor.MoveForward();
       context.Caret.MoveTo(cursor);
     }

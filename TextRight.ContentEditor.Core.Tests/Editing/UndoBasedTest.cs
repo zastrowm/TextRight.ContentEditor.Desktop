@@ -56,6 +56,11 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     public Block BlockAt(int index)
       => Context.Document.Root.NthBlock(index);
 
+    /// <summary> Gets the block at the specified index. </summary>
+    public Block BlockAt<T>(int index)
+      where T : Block
+      => (T)Context.Document.Root.NthBlock(index);
+
     /// <summary>
     ///  Performs all of the actions given, returning an <see cref="UndoTester"/> that can be used to
     ///  test the undo of the actions performed.
@@ -71,27 +76,27 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     }
 
     /// <summary> Executes all and then verifies that undoing them is successful. </summary>
-    public void DoAllAndThenUndo(IReadOnlyList<Func<UndoableAction>> actions)
+    public void DoAllAndThenUndo(IReadOnlyList<Func<UndoableAction>> actions, bool withMerge = false)
     {
-      DoAll(actions).VerifyUndo();
+      DoAll(actions).VerifyUndo(withMerge);
     }
 
     /// <summary>
     ///  Run through all of the actions in a loop from 1 to N, verifying that when N actions are
     ///  performed, and then undone, that the state of the document becomes what it was originally.
     /// </summary>
-    private void PerformStepByStep(IReadOnlyList<Func<UndoableAction>> actions)
+    private void PerformStepByStep(IReadOnlyList<Func<UndoableAction>> actions, bool withMerge)
     {
       Reinitialize();
 
       for (int i = 1; i < actions.Count + 1; i++)
       {
-        PerformSingleIteration(actions, i);
+        PerformSingleIteration(actions, i, withMerge);
       }
     }
 
     /// <summary> Helper method for <see cref="PerformStepByStep"/>. </summary>
-    private void PerformSingleIteration(IReadOnlyList<Func<UndoableAction>> actions, int count)
+    private void PerformSingleIteration(IReadOnlyList<Func<UndoableAction>> actions, int count, bool withMerge)
     {
       Console.WriteLine("Performing {0} actions", count);
 
@@ -100,8 +105,17 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
 
       for (int i = 0; i < count; i++)
       {
+        int originalCount = undoStack.UndoStackSize;
+
         documentStates.Push(Document.Clone());
-        undoStack.Do(actions[i].Invoke());
+        undoStack.Do(actions[i].Invoke(), withMerge);
+
+        if (originalCount == undoStack.UndoStackSize)
+        {
+          // the document state shouldn't have been added as a merge occurred.  Thus it's like this last 
+          // action was never applied in the first place
+          documentStates.Pop();
+        }
       }
 
       while (documentStates.Count > 0)
@@ -138,7 +152,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     {
       Assert.That(currentState.Type, Is.EqualTo(originalState.Type), path + ".Type");
 
-      var type = currentState.Type.Name;
+      var type = currentState.Type;
       path += "<" + type + ">";
       Assert.That(currentState.Data, Is.EqualTo(originalState.Data), path + ".Data");
 
@@ -166,9 +180,9 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
         _actions = actions;
       }
 
-      public void VerifyUndo()
+      public void VerifyUndo(bool withMerge = false)
       {
-        _undoBasedTest.PerformStepByStep(_actions);
+        _undoBasedTest.PerformStepByStep(_actions, withMerge);
       }
     }
   }

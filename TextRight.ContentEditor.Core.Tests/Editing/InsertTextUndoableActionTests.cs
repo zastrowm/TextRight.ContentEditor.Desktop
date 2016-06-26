@@ -80,7 +80,9 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     }
 
     [Test]
-    public void Undo_RestoresInitialState()
+    [TestCase(true)]
+    [TestCase(false)]
+    public void Undo_RestoresInitialState(bool withMerge)
     {
       DoAllAndThenUndo(new Func<UndoableAction>[]
                        {
@@ -92,7 +94,8 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
                          () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "More text"),
                          () => new InsertTextUndoableAction(BlockAt(0).EndCursor(-1).ToHandle(), "More text"),
                          () => new InsertTextUndoableAction(BlockAt(0).BeginCursor(10).ToHandle(), "More text"),
-                       }
+                       },
+                       withMerge: withMerge
         );
     }
 
@@ -111,6 +114,31 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
                          }
           );
       }
+    }
+
+    [Test]
+    public void VerifyMergeWith_ModifiesOriginalAction()
+    {
+      var originalAction = new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
+      originalAction.Do(Context);
+
+      var mergeWithAction = new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
+
+      Assert.That(originalAction.TryMerge(Context, mergeWithAction), Is.True);
+      Assert.That(originalAction.Text, Is.EqualTo("The textAnd More"));
+    }
+
+    [Test]
+    public void VerifyMergeWith_DoesNotActsOnDocument()
+    {
+      var originalAction = new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
+      originalAction.Do(Context);
+
+      var mergeWithAction = new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
+      originalAction.TryMerge(Context, mergeWithAction);
+
+      // the document should not be modified
+      Assert.That(BlockAt<TextBlock>(0).AsText(), Is.EqualTo("The text"));
     }
   }
 }

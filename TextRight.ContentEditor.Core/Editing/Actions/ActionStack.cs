@@ -22,12 +22,32 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       _toUndoStack = new Stack<UndoableAction>();
     }
 
+    /// <summary> The number of items that can be undone. </summary>
+    public int UndoStackSize
+      => _toUndoStack.Count;
+
     /// <summary> Performs the given action and adds it to the undoable stack. </summary>
-    /// <param name="undableAction"> The undoable action. </param>
-    public void Do(UndoableAction undableAction)
+    /// <param name="undoableAction"> The undoable action. </param>
+    /// <param name="allowMerging"> (Optional) True if the action is allowed to be merged into the
+    ///  previous action, false otherwise. </param>
+    public void Do(UndoableAction undoableAction, bool allowMerging = false)
     {
-      undableAction.Do(_context);
-      _toUndoStack.Push(undableAction);
+      bool wasMerged = false;
+
+      if (allowMerging && _toUndoStack.Count > 0)
+      {
+        var last = _toUndoStack.Peek();
+        wasMerged = last.TryMerge(_context, undoableAction);
+      }
+
+      undoableAction.Do(_context);
+
+      if (!wasMerged)
+      {
+        // it was merged into the previous command, so no need to add it to the stack
+        _toUndoStack.Push(undoableAction);
+      }
+
       _toRedoStack.Clear();
     }
 

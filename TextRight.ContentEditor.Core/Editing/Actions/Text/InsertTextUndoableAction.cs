@@ -8,17 +8,20 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
   /// <summary> Inserts text at the specified location. </summary>
   public class InsertTextUndoableAction : UndoableAction
   {
-    private readonly DocumentCursorHandle _insertionPoint;
-    private readonly string _text;
-
     /// <summary> Constructor. </summary>
     /// <param name="insertionPoint"> The point at which text should be inserted. </param>
     /// <param name="text"> The text to insert. </param>
     public InsertTextUndoableAction(DocumentCursorHandle insertionPoint, string text)
     {
       _insertionPoint = insertionPoint;
-      _text = text;
+      Text = text;
     }
+
+    /// <summary> The text that is inserted into the document. </summary>
+    public string Text { get; private set; }
+
+    /// <summary> The insertion point where the text is inserted. </summary>
+    private readonly DocumentCursorHandle _insertionPoint;
 
     /// <inheritdoc />
     public override string Name
@@ -32,7 +35,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     public override void Do(DocumentEditorContext context)
     {
       var textBlockCursor = GetTextCursor(context);
-      textBlockCursor.InsertText(_text);
+      textBlockCursor.InsertText(Text);
 
       context.Caret.MoveTo(textBlockCursor);
     }
@@ -41,7 +44,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     public override void Undo(DocumentEditorContext context)
     {
       var textBlockCursor = GetTextCursor(context);
-      textBlockCursor.DeleteText(_text.Length);
+      textBlockCursor.DeleteText(Text.Length);
       context.Caret.MoveTo(textBlockCursor);
     }
 
@@ -49,6 +52,54 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     private TextBlockCursor GetTextCursor(DocumentEditorContext context)
     {
       return (TextBlockCursor)_insertionPoint.Get(context);
+    }
+
+    /// <inheritdoc/>
+    public override bool TryMerge(DocumentEditorContext context, UndoableAction action)
+    {
+      if (action is InsertTextUndoableAction)
+      {
+        return TryMergeWith(context, (InsertTextUndoableAction)action);
+      }
+      else if (action is DeleteNextCharacterAction)
+      {
+        return TryMergeWith(context, (DeleteNextCharacterAction)action);
+      }
+      else if (action is DeletePreviousCharacterAction)
+      {
+        return TryMergeWith(context, (DeletePreviousCharacterAction)action);
+      }
+
+      return false;
+    }
+
+    private bool TryMergeWith(DocumentEditorContext context, InsertTextUndoableAction action)
+    {
+      var myCursor = (TextBlockCursor)_insertionPoint.Get(context);
+      var otherCursor = (TextBlockCursor)action._insertionPoint.Get(context);
+
+      if (myCursor.Block != otherCursor.Block)
+        return false;
+
+      if (myCursor.Fragment != otherCursor.Fragment)
+        return false;
+
+      if (myCursor.OffsetIntoSpan + Text.Length != otherCursor.OffsetIntoSpan)
+        return false;
+
+      Text += action.Text;
+
+      return true;
+    }
+
+    private bool TryMergeWith(DocumentEditorContext context, DeletePreviousCharacterAction action)
+    {
+      return false;
+    }
+
+    private bool TryMergeWith(DocumentEditorContext context, DeleteNextCharacterAction action)
+    {
+      return false;
     }
   }
 }
