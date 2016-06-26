@@ -40,10 +40,7 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <summary> The Caret's current position. </summary>
     public DocumentCursor Caret { get; }
 
-    /// <summary> TODO </summary>
-    public IBlockContentCursor BlockCursor
-      => Caret.BlockCursor;
-
+    /// <summary> A readonly representation of a block cursor. </summary>
     public ReadonlyCursor Cursor
       => Caret.Cursor;
 

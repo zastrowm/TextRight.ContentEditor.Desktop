@@ -28,8 +28,11 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <inheritdoc />
     public void Activate(DocumentEditorContext context, ActionStack actionStack)
     {
-      var textCursor = (TextBlockCursor)context.BlockCursor;
-      actionStack.Do(new UndoableAction(textCursor));
+      using (var copy = context.Cursor.Copy())
+      {
+        var textCursor = (TextBlockCursor)copy.Cursor;
+        actionStack.Do(new UndoableAction(textCursor));
+      }
     }
 
     /// <summary> Deletes text from the document. </summary>

@@ -53,7 +53,7 @@ namespace TextRight.ContentEditor.Core.Editing
     /// </summary>
     private bool TryGetTextBlocks(DocumentEditorContext context, out TextBlock previous, out TextBlock next)
     {
-      var cursor = context.BlockCursor;
+      var cursor = context.Cursor;
 
       if (cursor.IsAtBeginning && cursor.Block.PreviousBlock != null)
       {
