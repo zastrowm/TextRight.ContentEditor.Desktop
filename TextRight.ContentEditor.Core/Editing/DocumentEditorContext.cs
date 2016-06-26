@@ -32,7 +32,7 @@ namespace TextRight.ContentEditor.Core.Editing
       Caret = new DocumentCursor(Document, cursor);
       CaretMovementMode = new CaretMovementMode();
 
-      Selection = new DocumentSelection(this);
+      new DocumentSelection(this);
 
       UndoStack = new ActionStack(this);
     }
@@ -49,9 +49,6 @@ namespace TextRight.ContentEditor.Core.Editing
 
     /// <summary> Movement information about the caret. </summary>
     public CaretMovementMode CaretMovementMode { get; }
-
-    /// <summary> The currently selected fragments of the document. </summary>
-    public DocumentSelection Selection { get; }
 
     /// <summary> The View that is currently attached to the item. </summary>
     public IDocumentEditorView Target { get; set; }
@@ -76,9 +73,6 @@ namespace TextRight.ContentEditor.Core.Editing
       {
         var newCursor = block.GetCursorFor(point);
         Caret.MoveTo(newCursor);
-
-        Selection.End.MoveTo(newCursor);
-        Selection.Target?.NotifyChanged();
       }
     }
   }

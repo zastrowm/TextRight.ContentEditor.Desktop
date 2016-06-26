@@ -25,9 +25,8 @@ namespace TextRight.ContentEditor.Desktop.View
   {
     private readonly VerticalBlockCollectionView _blockCollectionView;
     private readonly DocumentEditorContext _editor;
-    private readonly CaretView _caretView;
     private readonly ScrollViewer _rootView;
-    private readonly SelectionView _selectionView;
+    private readonly DocumentCursorView _cursorView;
     private readonly KeyboardShortcutCollection _keyCommands;
 
     private readonly BlockSearchHitTester _blockSearchHitTester;
@@ -50,11 +49,8 @@ namespace TextRight.ContentEditor.Desktop.View
 
       _editor = editor;
 
-      _selectionView = new SelectionView(_editor.Selection, _editor.Caret);
-      _caretView = new CaretView(_editor.Caret);
-
-      _selectionView.Attach(this);
-      Children.Add(_caretView.Element);
+      _cursorView = new DocumentCursorView(_editor.Caret);
+      _cursorView.Attach(this);
 
       // clear out the existing content
       _blockCollectionView = new VerticalBlockCollectionView(this, (VerticalBlockCollection)_editor.Document.Root);
@@ -238,8 +234,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public void UpdateCaretPosition()
     {
-      _caretView.SyncPosition();
-      _selectionView.NotifyChanged();
+      _cursorView.NotifyChanged();
     }
 
     public Block GetBlockFor(DocumentPoint point)

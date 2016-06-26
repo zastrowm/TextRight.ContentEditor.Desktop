@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
@@ -9,20 +10,26 @@ using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Desktop.View
 {
-  /// <summary> The visual representation of the selected document content. </summary>
-  public class SelectionView : IDocumentSelectionView
+  /// <summary> The visual representation of a DocumentCursor. </summary>
+  public class DocumentCursorView : IDocumentSelectionView
   {
-    private readonly DocumentSelection _documentSelection;
     private readonly DocumentCursor _cursor;
     private readonly PointCollection _pointCollection;
     private readonly Polygon _polygon;
+    private readonly Rectangle _rectangle;
 
     /// <summary> Default constructor. </summary>
-    public SelectionView(DocumentSelection documentSelection, DocumentCursor cursor)
+    public DocumentCursorView(DocumentCursor cursor)
     {
-      _documentSelection = documentSelection;
-      _documentSelection.Target = this;
       _cursor = cursor;
+
+      _rectangle = new Rectangle()
+                   {
+                     Height = 20,
+                     Width = 1,
+                     Fill = Brushes.Black,
+                   };
+      Panel.SetZIndex(_rectangle, 10);
 
       _polygon = new Polygon
                  {
@@ -53,12 +60,40 @@ namespace TextRight.ContentEditor.Desktop.View
     public void Attach(DocumentEditorContextView editor)
     {
       editor.Children.Add(_polygon);
+      editor.Children.Add(_rectangle);
     }
 
     /// <inheritdoc />
     public void NotifyChanged()
     {
       var start = _cursor.Cursor.MeasureCursorPosition();
+
+      if (_cursor.HasSelection)
+      {
+        _polygon.Visibility = Visibility.Visible;
+        UpdateSelectionPolygon(start);
+      }
+      else
+      {
+        _polygon.Visibility = Visibility.Hidden;
+      }
+
+      UpdateCaretRectangle(start);
+    }
+
+    /// <summary> Updates the rectangle for displaying the caret. </summary>
+    private void UpdateCaretRectangle(MeasuredRectangle caretPosition)
+    {
+      // always update the caret position
+      Canvas.SetLeft(_rectangle, caretPosition.X);
+      Canvas.SetTop(_rectangle, caretPosition.Y);
+      _rectangle.Height = caretPosition.Height;
+    }
+
+    /// <summary> Updates the rectangle that shows the current selection. </summary>
+    private void UpdateSelectionPolygon(MeasuredRectangle caretPosition)
+    {
+      MeasuredRectangle start = caretPosition;
       var end = _cursor.SelectionStart.MeasureCursorPosition();
 
       if (MeasuredRectangle.AreInline(start, end))

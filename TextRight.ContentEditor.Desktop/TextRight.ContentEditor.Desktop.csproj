@@ -55,12 +55,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="View\CaretView.cs" />
     <Compile Include="App\DocumentEditor.xaml.cs">
       <DependentUpon>DocumentEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DocumentEditorContextView.cs" />
-    <Compile Include="View\SelectionView.cs" />
+    <Compile Include="View\DocumentCursorView.cs" />
     <Compile Include="View\VerticalBlockCollectionView.cs" />
     <Compile Include="View\KeyboardShortcutCollection.cs" />
     <Compile Include="View\TextBlockView.cs" />
