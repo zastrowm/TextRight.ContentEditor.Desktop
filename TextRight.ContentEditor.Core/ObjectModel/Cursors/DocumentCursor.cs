@@ -8,7 +8,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
   /// <summary> Holds a specific spot in the document. </summary>
   public sealed class DocumentCursor
   {
-    private PooledBlockContentCursor _pooledCursor;
+    private PooledBlockContentCursor _pooledEndSelection;
+    private PooledBlockContentCursor _pooledStartSelection;
 
     /// <summary> Constructor. </summary>
     /// <param name="owner"> The Document that owns the given cursor. </param>
@@ -16,8 +17,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     public DocumentCursor(DocumentOwner owner, IBlockContentCursor blockCursor)
     {
       Owner = owner;
-      _pooledCursor = new PooledBlockContentCursor();
-      _pooledCursor.Set(blockCursor);
+      _pooledEndSelection = new PooledBlockContentCursor();
+      _pooledEndSelection.Set(blockCursor);
     }
 
     /// <summary> The Document that owns the given cursor. </summary>
@@ -27,14 +28,19 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     /// <param name="blockCursor"> The block cursor. </param>
     public void MoveTo(IBlockContentCursor blockCursor)
     {
-      _pooledCursor.Set(blockCursor);
+      _pooledEndSelection.Set(blockCursor);
+
+      if (!ShouldExtendSelection)
+      {
+        _pooledStartSelection.Set(blockCursor);
+      }
     }
 
     /// <summary> Move to the position at the given cursor. </summary>
     /// <param name="cursor"> The cursor. </param>
     public void MoveTo(DocumentCursor cursor)
     {
-      MoveTo(cursor._pooledCursor.Cursor);
+      MoveTo(cursor._pooledEndSelection.Cursor);
     }
 
     /// <summary> Move to the position at the given cursor. </summary>
@@ -44,8 +50,14 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
       MoveTo(cursorCopy.Cursor);
     }
 
+    public bool ShouldExtendSelection { get; set; }
+
     /// <summary> A readonly cursor which allows positional information to be read. </summary>
     public ReadonlyCursor Cursor
-      => new ReadonlyCursor(_pooledCursor.Cursor);
+      => new ReadonlyCursor(_pooledEndSelection.Cursor);
+
+    /// <summary> The start of the current selection. </summary>
+    public ReadonlyCursor SelectionStart
+      => new ReadonlyCursor(_pooledStartSelection.Cursor);
   }
 }

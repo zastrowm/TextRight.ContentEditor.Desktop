@@ -50,7 +50,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
       _editor = editor;
 
-      _selectionView = new SelectionView(_editor.Selection);
+      _selectionView = new SelectionView(_editor.Selection, _editor.Caret);
       _caretView = new CaretView(_editor.Caret);
 
       _selectionView.Attach(this);
@@ -212,6 +212,15 @@ namespace TextRight.ContentEditor.Desktop.View
     public bool HandleKeyDown(Key key)
     {
       var action = _keyCommands.LookupContextAction(Keyboard.Modifiers, key, _editor);
+
+      // if we didn't find a command, but we had SHIFT, check if we have a Caret command that matches
+      // without SHIFT as SHIFT could indicate that we want to extend selection. 
+      if (action == null && (Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+      {
+        action =
+          _keyCommands.LookupContextAction(Keyboard.Modifiers & ~ModifierKeys.Shift, key, _editor) as CaretCommand;
+      }
+
       if (action != null)
       {
         action.Activate(_editor, _editor.UndoStack);
@@ -230,6 +239,7 @@ namespace TextRight.ContentEditor.Desktop.View
     public void UpdateCaretPosition()
     {
       _caretView.SyncPosition();
+      _selectionView.NotifyChanged();
     }
 
     public Block GetBlockFor(DocumentPoint point)

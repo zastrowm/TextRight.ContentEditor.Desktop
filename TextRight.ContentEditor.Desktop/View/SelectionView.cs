@@ -13,14 +13,16 @@ namespace TextRight.ContentEditor.Desktop.View
   public class SelectionView : IDocumentSelectionView
   {
     private readonly DocumentSelection _documentSelection;
+    private readonly DocumentCursor _cursor;
     private readonly PointCollection _pointCollection;
     private readonly Polygon _polygon;
 
     /// <summary> Default constructor. </summary>
-    public SelectionView(DocumentSelection documentSelection)
+    public SelectionView(DocumentSelection documentSelection, DocumentCursor cursor)
     {
       _documentSelection = documentSelection;
       _documentSelection.Target = this;
+      _cursor = cursor;
 
       _polygon = new Polygon
                  {
@@ -56,8 +58,8 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc />
     public void NotifyChanged()
     {
-      var start = _documentSelection.Start.Cursor.MeasureCursorPosition();
-      var end = _documentSelection.End.Cursor.MeasureCursorPosition();
+      var start = _cursor.Cursor.MeasureCursorPosition();
+      var end = _cursor.SelectionStart.MeasureCursorPosition();
 
       if (MeasuredRectangle.AreInline(start, end))
       {
@@ -118,8 +120,8 @@ namespace TextRight.ContentEditor.Desktop.View
     private void DrawSpanningSelection(MeasuredRectangle start, MeasuredRectangle end)
     {
       // TODO we really should go line-by-line or block-by-block as needed
-      var startBlockRect = _documentSelection.Start.Cursor.Block.GetBounds();
-      var endBlockRect = _documentSelection.End.Cursor.Block.GetBounds();
+      var startBlockRect = _cursor.Cursor.Block.GetBounds();
+      var endBlockRect = _cursor.SelectionStart.Block.GetBounds();
 
       double maxRight = Math.Max(startBlockRect.Right, endBlockRect.Right);
       double maxLeft = Math.Max(startBlockRect.Left, endBlockRect.Left);
@@ -154,6 +156,7 @@ namespace TextRight.ContentEditor.Desktop.View
          *  |           |
          *  6-----------5
          */
+
       _pointCollection[0] = new Point(upperRect.Left, upperRect.Bottom);
       _pointCollection[1] = new Point(upperRect.Left, upperRect.Top);
 

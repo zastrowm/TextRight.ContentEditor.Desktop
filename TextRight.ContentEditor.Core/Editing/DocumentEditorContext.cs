@@ -57,7 +57,11 @@ namespace TextRight.ContentEditor.Core.Editing
     public IDocumentEditorView Target { get; set; }
 
     /// <summary> True if the current selection should be extended. </summary>
-    public bool IsSelectionExtendActive { get; set; }
+    public bool IsSelectionExtendActive
+    {
+      get { return Caret.ShouldExtendSelection; }
+      set { Caret.ShouldExtendSelection = value; }
+    }
 
     /// <summary> The stack of actions that can be undone. </summary>
     public ActionStack UndoStack { get; }

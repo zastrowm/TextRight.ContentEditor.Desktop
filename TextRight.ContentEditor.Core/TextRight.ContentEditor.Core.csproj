@@ -51,7 +51,6 @@
     <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />
     <Compile Include="Editing\Actions\IUndoableAction.cs" />
     <Compile Include="Editing\Actions\InsertTextUndoableAction.cs" />
-    <Compile Include="Editing\CommandExecutionContext.cs" />
     <Compile Include="Editing\Commands\RedoCommand.cs" />
     <Compile Include="Editing\Commands\UndoCommand.cs" />
     <Compile Include="ObjectModel\Cursors\CaretMovementMode.cs" />

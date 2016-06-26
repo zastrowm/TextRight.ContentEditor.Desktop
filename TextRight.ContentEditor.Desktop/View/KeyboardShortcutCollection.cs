@@ -93,23 +93,7 @@ namespace TextRight.ContentEditor.Desktop.View
       if (!_keyLookup.TryGetValue(key, out list))
         return null;
 
-      var lookupContextAction = FindMatchOnModifierKeys(list, modifers, context);
-      if (lookupContextAction != null)
-        return lookupContextAction;
-
-      // if it's a shortcut based on Control, then try the search without the SHIFT (this
-      // allows navigation shortcuts without explicitly needing duplicate commands
-      // for extending selection
-      if (modifers.HasFlag(ModifierKeys.Control) && modifers.HasFlag(ModifierKeys.Shift))
-      {
-        modifers &= ~ModifierKeys.Shift;
-
-        lookupContextAction = FindMatchOnModifierKeys(list, modifers, context);
-        if (lookupContextAction != null)
-          return lookupContextAction;
-      }
-
-      return null;
+      return FindMatchOnModifierKeys(list, modifers, context);
     }
 
     /// <summary>
