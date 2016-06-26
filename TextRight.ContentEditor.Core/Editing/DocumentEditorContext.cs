@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using TextRight.ContentEditor.Core.Editing.Actions;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
@@ -32,6 +33,8 @@ namespace TextRight.ContentEditor.Core.Editing
       CaretMovementMode = new CaretMovementMode();
 
       Selection = new DocumentSelection(this);
+
+      UndoStack = new ActionStack(this);
     }
 
     /// <summary> The document that is being edited. </summary>
@@ -55,6 +58,9 @@ namespace TextRight.ContentEditor.Core.Editing
 
     /// <summary> True if the current selection should be extended. </summary>
     public bool IsSelectionExtendActive { get; set; }
+
+    /// <summary> The stack of actions that can be undone. </summary>
+    public ActionStack UndoStack { get; }
 
     public void HandleMouseDown(DocumentPoint point)
     {

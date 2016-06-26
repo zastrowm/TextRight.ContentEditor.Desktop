@@ -30,7 +30,6 @@ namespace TextRight.ContentEditor.Desktop.View
     private readonly SelectionView _selectionView;
     private readonly KeyboardShortcutCollection _keyCommands;
 
-    private readonly ActionStack _undoStack;
     private readonly BlockSearchHitTester _blockSearchHitTester;
     private ChangeIndex _layoutChangeIndex;
 
@@ -50,8 +49,6 @@ namespace TextRight.ContentEditor.Desktop.View
       Cursor = Cursors.IBeam;
 
       _editor = editor;
-
-      _undoStack = new ActionStack(editor);
 
       _selectionView = new SelectionView(_editor.Selection);
       _caretView = new CaretView(_editor.Caret);
@@ -110,11 +107,10 @@ namespace TextRight.ContentEditor.Desktop.View
                                                          }
                        },
                        {
-                         ModifierKeys.Control, Key.Right, new IContextualCommand[]
-                                                          {
-                                                            new MoveCaretNextWordCommand(),
-                                                            new MoveCaretForwardCommand(),
-                                                          }
+                         ModifierKeys.Control, Key.Z, new UndoCommand()
+                       },
+                       {
+                         ModifierKeys.Control, Key.Y, new RedoCommand()
                        },
                      };
 
@@ -123,7 +119,7 @@ namespace TextRight.ContentEditor.Desktop.View
                  "about X & Y and those other things that extend the line length for the X-Files.  " +
                  "Isn't that great");
 
-      ((IContextualCommand)new BreakTextBlockAction()).Activate(_editor, _undoStack);
+      ((IContextualCommand)new BreakTextBlockAction()).Activate(_editor, _editor.UndoStack);
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
     }
@@ -178,27 +174,15 @@ namespace TextRight.ContentEditor.Desktop.View
     {
       base.OnPreviewKeyDown(e);
 
+      if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+      {
+        _editor.IsSelectionExtendActive = (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
+      }
+
       if (HandleKeyDown(e.Key))
       {
         UpdateCaretPosition();
         e.Handled = true;
-      }
-      else if (e.Key == Key.Z && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
-      {
-        _undoStack.Undo();
-        UpdateCaretPosition();
-        e.Handled = true;
-      }
-      else if (e.Key == Key.Y && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
-      {
-        _undoStack.Redo();
-        UpdateCaretPosition();
-        e.Handled = true;
-      }
-
-      if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
-      {
-        _editor.IsSelectionExtendActive = (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
       }
     }
 
@@ -230,7 +214,7 @@ namespace TextRight.ContentEditor.Desktop.View
       var action = _keyCommands.LookupContextAction(Keyboard.Modifiers, key, _editor);
       if (action != null)
       {
-        action.Activate(_editor, _undoStack);
+        action.Activate(_editor, _editor.UndoStack);
         return true;
       }
 
@@ -240,7 +224,7 @@ namespace TextRight.ContentEditor.Desktop.View
     public void InsertText(string text)
     {
       var action = new InsertTextUndoableAction(new DocumentCursorHandle(_editor.Caret), text);
-      _undoStack.Do(action);
+      _editor.UndoStack.Do(action);
     }
 
     public void UpdateCaretPosition()
