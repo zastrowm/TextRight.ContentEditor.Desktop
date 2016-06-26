@@ -8,8 +8,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
   /// <summary> Holds a specific spot in the document. </summary>
   public sealed class DocumentCursor
   {
-    /// <summary> The cursor that points to the content within the block. </summary>
-    private IBlockContentCursor _blockCursor;
+    private PooledBlockContentCursor _pooledCursor;
 
     /// <summary> Constructor. </summary>
     /// <param name="owner"> The Document that owns the given cursor. </param>
@@ -17,21 +16,25 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     public DocumentCursor(DocumentOwner owner, IBlockContentCursor blockCursor)
     {
       Owner = owner;
-      _blockCursor = blockCursor;
+      _pooledCursor = new PooledBlockContentCursor();
+      _pooledCursor.Set(blockCursor);
+    }
+
+    /// <summary> The Document that owns the given cursor. </summary>
+    public DocumentOwner Owner { get; }
+
+    /// <summary> Move to the position at the given block cursor. </summary>
+    /// <param name="blockCursor"> The block cursor. </param>
+    public void MoveTo(IBlockContentCursor blockCursor)
+    {
+      _pooledCursor.Set(blockCursor);
     }
 
     /// <summary> Move to the position at the given cursor. </summary>
     /// <param name="cursor"> The cursor. </param>
     public void MoveTo(DocumentCursor cursor)
     {
-      MoveTo(cursor._blockCursor);
-    }
-
-    /// <summary> Move to the position at the given block cursor. </summary>
-    /// <param name="blockCursor"> The block cursor. </param>
-    public void MoveTo(IBlockContentCursor blockCursor)
-    {
-      _blockCursor = blockCursor;
+      MoveTo(cursor._pooledCursor.Cursor);
     }
 
     /// <summary> Move to the position at the given cursor. </summary>
@@ -43,9 +46,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
 
     /// <summary> A readonly cursor which allows positional information to be read. </summary>
     public ReadonlyCursor Cursor
-      => new ReadonlyCursor(_blockCursor);
-
-    /// <summary> The Document that owns the given cursor. </summary>
-    public DocumentOwner Owner { get; }
+      => new ReadonlyCursor(_pooledCursor.Cursor);
   }
 }
