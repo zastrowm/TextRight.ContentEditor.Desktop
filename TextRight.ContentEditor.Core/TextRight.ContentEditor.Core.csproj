@@ -46,18 +46,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\Actions\ActionStack.cs" />
-    <Compile Include="Editing\Commands\DeletePreviousCharacterCommand.cs" />
-    <Compile Include="Editing\Commands\DeleteNextCharacterCommand.cs" />
+    <Compile Include="Editing\Actions\Text\BreakTextBlockAction.cs" />
+    <Compile Include="Editing\Actions\Text\DeleteNextCharacterAction.cs" />
+    <Compile Include="Editing\Commands\Text\DeletePreviousCharacterCommand.cs" />
+    <Compile Include="Editing\Commands\Text\DeleteNextCharacterCommand.cs" />
     <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />
     <Compile Include="Editing\Actions\IUndoableAction.cs" />
-    <Compile Include="Editing\Actions\InsertTextUndoableAction.cs" />
+    <Compile Include="Editing\Actions\Text\InsertTextUndoableAction.cs" />
     <Compile Include="Editing\Commands\RedoCommand.cs" />
+    <Compile Include="Editing\Actions\Text\DeletePreviousCharacterAction.cs" />
+    <Compile Include="Editing\Actions\Text\MergeTextBlockAction.cs" />
     <Compile Include="Editing\Commands\UndoCommand.cs" />
     <Compile Include="ObjectModel\Cursors\CaretMovementMode.cs" />
-    <Compile Include="Editing\Commands\BreakTextBlockAction.cs" />
+    <Compile Include="Editing\Commands\Text\BreakTextBlockCommand.cs" />
     <Compile Include="Editing\Commands\Caret\CaretCommand.cs" />
     <Compile Include="Editing\Commands\IContextualCommand.cs" />
-    <Compile Include="Editing\Commands\MergeTextBlocksCommand.cs" />
+    <Compile Include="Editing\Commands\Text\MergeTextBlocksCommand.cs" />
     <Compile Include="Editing\Commands\Caret\MoveCaretBackwardsCommand.cs" />
     <Compile Include="Editing\Commands\Caret\MoveCaretDownCommand.cs" />
     <Compile Include="Editing\Commands\Caret\MoveCaretEndCommand.cs" />

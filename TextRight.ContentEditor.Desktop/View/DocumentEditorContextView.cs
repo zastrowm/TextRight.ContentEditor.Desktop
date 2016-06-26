@@ -72,7 +72,7 @@ namespace TextRight.ContentEditor.Desktop.View
                        {
                          Key.Enter, new IContextualCommand[]
                                     {
-                                      new BreakTextBlockAction()
+                                      new BreakTextBlockCommand()
                                     }
                        },
                        {
@@ -115,7 +115,7 @@ namespace TextRight.ContentEditor.Desktop.View
                  "about X & Y and those other things that extend the line length for the X-Files.  " +
                  "Isn't that great");
 
-      ((IContextualCommand)new BreakTextBlockAction()).Activate(_editor, _editor.UndoStack);
+      ((IContextualCommand)new BreakTextBlockCommand()).Activate(_editor, _editor.UndoStack);
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
     }

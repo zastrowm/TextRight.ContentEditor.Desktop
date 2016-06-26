@@ -17,7 +17,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
       return new Func<IUndoableAction>[]
              {
                () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Paragraph 1"),
-               () => new BreakTextBlockAction.UndoableAction(BlockAt(0).EndCursor().ToHandle()),
+               () => new BreakTextBlockAction(BlockAt(0).EndCursor().ToHandle()),
                () => new InsertTextUndoableAction(BlockAt(1).EndCursor().ToHandle(), "Paragraph 2"),
              };
     }
@@ -27,7 +27,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     {
       var it = DoAll(new Func<IUndoableAction>[]
                      {
-                       () => new MergeTextBlocksCommand.UndableAction(
+                       () => new MergeTextBlockAction(
                          BlockAt(0).As<TextBlock>(),
                          BlockAt(1).As<TextBlock>(),
                          BlockAt(1).BeginCursor().ToHandle()),
@@ -47,7 +47,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     {
       var it = DoAll(new Func<IUndoableAction>[]
                      {
-                       () => new MergeTextBlocksCommand.UndableAction(
+                       () => new MergeTextBlockAction(
                          BlockAt(0).As<TextBlock>(),
                          BlockAt(1).As<TextBlock>(),
                          BlockAt(0).EndCursor().ToHandle()),

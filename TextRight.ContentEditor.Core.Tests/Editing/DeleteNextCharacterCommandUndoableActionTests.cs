@@ -17,7 +17,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
         new Func<IUndoableAction>[]
         {
           () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "TheWord"),
-          () => new DeleteNextCharacterCommand.UndableAction(BlockAt(0).BeginCursor(3).AsTextCursor()),
+          () => new DeleteNextCharacterAction(BlockAt(0).BeginCursor(3).AsTextCursor()),
         });
 
       Assert.That(BlockAt(0).AsText(), Is.EqualTo("Theord"));
@@ -37,7 +37,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
           new Func<IUndoableAction>[]
           {
             () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), text),
-            () => new DeleteNextCharacterCommand.UndableAction(BlockAt(0).BeginCursor(i).AsTextCursor()),
+            () => new DeleteNextCharacterAction(BlockAt(0).BeginCursor(i).AsTextCursor()),
           });
 
         var expected = text.Remove(i, 1);
