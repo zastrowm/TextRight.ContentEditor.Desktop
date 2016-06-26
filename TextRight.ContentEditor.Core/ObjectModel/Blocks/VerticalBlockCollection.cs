@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Core.Editing.Commands;
+using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 using TextRight.ContentEditor.Core.Utilities;
 
@@ -10,7 +10,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> A BlockCollection where the blocks are stacked vertically. </summary>
   public class VerticalBlockCollection : BlockCollection,
-                                         ICommandProcessorHook,
                                          IDocumentItem<IBlockCollectionView>
   {
     /// <summary>
@@ -35,6 +34,22 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                                            int indexOfRemovedBlock)
     {
       Target?.NotifyBlockRemoved(previousBlock, removedBlock, nextBlock, indexOfRemovedBlock);
+    }
+
+    /// <inheritdoc />
+    public override Block GetBlockTo(BlockDirection direction, Block block)
+    {
+      switch (direction)
+      {
+        case BlockDirection.Backward:
+        case BlockDirection.Top:
+          return block.PreviousBlock;
+        case BlockDirection.Forward:
+        case BlockDirection.Bottom:
+          return block.NextBlock;
+        default:
+          throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+      }
     }
 
     /// <inheritdoc />
@@ -93,10 +108,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     {
       return LastBlock.GetCaretFromTop(caretMovementMode);
     }
-
-    /// <inheritdoc />
-    public ICommandProcessor CommandProcessor
-      => VerticalBlockCollectionCommandProcessor.Instance;
   }
 
   /// <summary> Holds the view representation of the BlockCollection. </summary>

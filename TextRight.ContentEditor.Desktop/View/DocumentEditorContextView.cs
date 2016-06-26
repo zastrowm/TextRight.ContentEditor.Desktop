@@ -10,7 +10,6 @@ using System.Windows.Media;
 using TextRight.ContentEditor.Core;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.Editing.Actions;
-using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using Block = TextRight.ContentEditor.Core.ObjectModel.Blocks.Block;
@@ -97,6 +96,26 @@ namespace TextRight.ContentEditor.Desktop.View
                                      new MergeTextBlocksCommand()
                                    }
                        },
+                       { Key.Left, new MoveCaretBackwardCommand() },
+                       { Key.Right, new MoveCaretForwardCommand() },
+                       { Key.Up, new MoveCaretUpCommand() },
+                       { Key.Down, new MoveCaretDownCommand() },
+                       { Key.Home, new MoveCaretHomeCommand() },
+                       { Key.End, new MoveCaretEndCommand() },
+                       {
+                         ModifierKeys.Control, Key.Left, new IContextualCommand[]
+                                                         {
+                                                           new MoveCaretPreviousWordCommand(),
+                                                           new MoveCaretBackwardCommand(),
+                                                         }
+                       },
+                       {
+                         ModifierKeys.Control, Key.Right, new IContextualCommand[]
+                                                          {
+                                                            new MoveCaretNextWordCommand(),
+                                                            new MoveCaretForwardCommand(),
+                                                          }
+                       },
                      };
 
       InsertText("This is an example of a document within the editor.  It has many features that extend onto " +
@@ -176,6 +195,21 @@ namespace TextRight.ContentEditor.Desktop.View
         UpdateCaretPosition();
         e.Handled = true;
       }
+
+      if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+      {
+        _editor.IsSelectionExtendActive = (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
+      }
+    }
+
+    protected override void OnPreviewKeyUp(KeyEventArgs e)
+    {
+      base.OnPreviewKeyUp(e);
+
+      if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+      {
+        _editor.IsSelectionExtendActive = (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
+      }
     }
 
     protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
@@ -200,39 +234,7 @@ namespace TextRight.ContentEditor.Desktop.View
         return true;
       }
 
-      var command = GetEditorCommand(Keyboard.Modifiers, key);
-      if (command != null)
-      {
-        _editor.CommandPipeline.Execute(command);
-        return true;
-      }
-
       return false;
-    }
-
-    private EditorCommand GetEditorCommand(ModifierKeys modifiers, Key key)
-    {
-      switch (key)
-      {
-        case Key.Left:
-          return modifiers.HasFlag(ModifierKeys.Control)
-            ? BuiltInCaretNavigationCommand.PreviousWord
-            : BuiltInCaretNavigationCommand.Backward;
-        case Key.Right:
-          return modifiers.HasFlag(ModifierKeys.Control)
-            ? BuiltInCaretNavigationCommand.NextWord
-            : BuiltInCaretNavigationCommand.Forward;
-        case Key.Home:
-          return BuiltInCaretNavigationCommand.Home;
-        case Key.End:
-          return BuiltInCaretNavigationCommand.End;
-        case Key.Up:
-          return BuiltInCaretNavigationCommand.Up;
-        case Key.Down:
-          return BuiltInCaretNavigationCommand.Down;
-      }
-
-      return null;
     }
 
     public void InsertText(string text)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.Utilities;
 
@@ -25,7 +24,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// </remarks>
   [DebuggerDisplay("TextBlockCursor(FragmentIndex={Fragment.Index}, Offset={OffsetIntoSpan})")]
   public sealed class TextBlockCursor : BaseBlockContentCursor<TextBlockCursor, TextBlock>,
-                                        ICommandProcessorHook,
                                         IEquatable<TextBlockCursor>
   {
     private const char NullCharacter = '\0';
@@ -160,10 +158,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         ? MeasureForward().FlattenLeft()
         : MeasureBackward().FlattenRight();
     }
-
-    /// <summary> Attempts to process incoming commands. </summary>
-    public ICommandProcessor CommandProcessor
-      => TextBlockCursorCommandProcessor.Instance;
 
     /// <inheritdoc />
     public override bool MoveBackward()

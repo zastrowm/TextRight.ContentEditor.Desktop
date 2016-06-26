@@ -52,21 +52,26 @@
     <Compile Include="Editing\Actions\IUndoableAction.cs" />
     <Compile Include="Editing\Actions\InsertTextUndoableAction.cs" />
     <Compile Include="Editing\CommandExecutionContext.cs" />
-    <Compile Include="Editing\CommandPipeline.cs" />
-    <Compile Include="Editing\Commands\BuiltInCaretNavigationCommand.cs" />
-    <Compile Include="Editing\Commands\Caret\CaretMovementMode.cs" />
-    <Compile Include="Editing\Commands\EditorCommand.cs" />
-    <Compile Include="Editing\Commands\Caret\ICaretCommand.cs" />
-    <Compile Include="Editing\Commands\ICommandProcessor.cs" />
-    <Compile Include="Editing\Commands\CaretNavigationCommand.cs" />
-    <Compile Include="Editing\Commands\TextCommands.cs" />
+    <Compile Include="ObjectModel\Cursors\CaretMovementMode.cs" />
     <Compile Include="Editing\ContextAction\BreakTextBlockAction.cs" />
+    <Compile Include="Editing\ContextAction\Caret\CaretCommand.cs" />
     <Compile Include="Editing\ContextAction\IContextualCommand.cs" />
     <Compile Include="Editing\ContextAction\MergeTextBlocksCommand.cs" />
+    <Compile Include="Editing\ContextAction\Caret\MoveCaretBackwardsCommand.cs" />
+    <Compile Include="Editing\ContextAction\Caret\MoveCaretDownCommand.cs" />
+    <Compile Include="Editing\ContextAction\Caret\MoveCaretEndCommand.cs" />
+    <Compile Include="Editing\ContextAction\Caret\MoveCaretForwardCommand.cs" />
+    <Compile Include="Editing\ContextAction\Caret\MoveCaretHomeCommand.cs" />
+    <Compile Include="Editing\ContextAction\Caret\MoveCaretNextWordCommand.cs" />
+    <Compile Include="Editing\ContextAction\Caret\MoveCaretPreviousWordCommand.cs" />
+    <Compile Include="Editing\ContextAction\Caret\MoveCaretUpCommand.cs" />
     <Compile Include="Editing\DocumentEditorContext.cs" />
     <Compile Include="DocumentPoint.cs" />
     <Compile Include="Editing\BlockCursorMover.cs" />
+    <Compile Include="ObjectModel\Blocks\BlockDirection.cs" />
+    <Compile Include="ObjectModel\Blocks\IReadonlyCursor.cs" />
     <Compile Include="ObjectModel\Blocks\ReadonlyCursor.cs" />
+    <Compile Include="Editing\ContextAction\Caret\TextCharacterizer.cs" />
     <Compile Include="ObjectModel\ChangeIndex.cs" />
     <Compile Include="ObjectModel\Cursors\BaseBlockContentCursor.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
@@ -82,17 +87,13 @@
     <Compile Include="ObjectModel\Cursors\CursorCopy.cs" />
     <Compile Include="ObjectModel\IDocumentItem.cs" />
     <Compile Include="ObjectModel\IDocumentItemView.cs" />
-    <Compile Include="ObjectModel\Blocks\VerticalBlockCollectionCommandProcessor.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalker.cs" />
     <Compile Include="ObjectModel\Blocks\BlockType.cs" />
     <Compile Include="ObjectModel\Blocks\IBlockContentCursor.cs" />
-    <Compile Include="ObjectModel\Blocks\ICommandProcessorHook.cs" />
-    <Compile Include="ObjectModel\Blocks\ICommandProcessorPipelineHook.cs" />
     <Compile Include="ObjectModel\Blocks\IViewableObject.cs" />
     <Compile Include="ObjectModel\Blocks\StyledTextFragment.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlock.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlockCursor.Cursor.cs" />
-    <Compile Include="ObjectModel\Blocks\TextBlockCursorCommandProcessor.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollection.cs" />
     <Compile Include="ObjectModel\Cursors\DocumentCursor.cs" />
     <Compile Include="ObjectModel\DocumentOwner.cs" />
@@ -103,6 +104,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -38,6 +38,20 @@ namespace TextRight.ContentEditor.Desktop.View
       }
     }
 
+    /// <summary> Adds a keyboard shortcut associated with a set of commands. </summary>
+    /// <param name="modifier"> The modifiers that must be present for the command.
+    ///  If CTRL is specified and not SHIFT, the command will still be active when
+    ///  SHIFT is held. </param>
+    /// <param name="key"> The key to associate with the command. </param>
+    /// <param name="commands"> The commands to add. </param>
+    public void Add(ModifierKeys modifier, Key key, IContextualCommand[] commands)
+    {
+      foreach (var command in commands)
+      {
+        Add(modifier, key, command);
+      }
+    }
+
     /// <summary> Adds a keyboard shortcut associated with a command. </summary>
     /// <param name="modifier"> The modifiers that must be present for the command.
     ///  If CTRL is specified and not SHIFT, the command will still be active when

@@ -31,7 +31,14 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
       BlockCursor = blockCursor;
     }
 
-    /// <summary> The cursor. </summary>
+    /// <summary> Move to the position at the given cursor. </summary>
+    /// <param name="cursorCopy"> The cursor copy. </param>
+    public void MoveTo(CursorCopy cursorCopy)
+    {
+      MoveTo(cursorCopy.Cursor);
+    }
+
+    /// <summary> A readonly cursor which allows positional information to be read. </summary>
     public ReadonlyCursor Cursor
       => new ReadonlyCursor(BlockCursor);
 

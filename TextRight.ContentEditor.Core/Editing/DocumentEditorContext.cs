@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
@@ -32,8 +31,6 @@ namespace TextRight.ContentEditor.Core.Editing
       Caret = new DocumentCursor(Document, cursor);
       CaretMovementMode = new CaretMovementMode();
 
-      CommandPipeline = new CommandPipeline(this);
-
       Selection = new DocumentSelection(this);
     }
 
@@ -50,8 +47,6 @@ namespace TextRight.ContentEditor.Core.Editing
     public ReadonlyCursor Cursor
       => Caret.Cursor;
 
-    public CommandPipeline CommandPipeline { get; }
-
     /// <summary> Movement information about the caret. </summary>
     public CaretMovementMode CaretMovementMode { get; }
 
@@ -60,6 +55,9 @@ namespace TextRight.ContentEditor.Core.Editing
 
     /// <summary> The View that is currently attached to the item. </summary>
     public IDocumentEditorView Target { get; set; }
+
+    /// <summary> True if the current selection should be extended. </summary>
+    public bool IsSelectionExtendActive { get; set; }
 
     public void HandleMouseDown(DocumentPoint point)
     {

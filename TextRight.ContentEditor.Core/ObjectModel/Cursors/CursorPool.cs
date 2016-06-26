@@ -49,6 +49,15 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     }
 
     /// <inheritdoc />
+    public CursorCopy GetCursorCopy(TBlock block)
+    {
+      var fake = Borrow(block);
+      var copy = new CursorCopy(fake);
+      Recycle(fake);
+      return copy;
+    }
+
+    /// <inheritdoc />
     IBlockContentCursor ICursorPool.Borrow(Block block)
     {
       return Borrow((TBlock)block);
@@ -58,6 +67,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     void ICursorPool.Recycle(IBlockContentCursor cursor)
     {
       Recycle((TCursor)cursor);
+    }
+
+    /// <inheritdoc />
+    CursorCopy ICursorPool.GetCursorCopy(Block block)
+    {
+      return GetCursorCopy((TBlock)block);
     }
   }
 }

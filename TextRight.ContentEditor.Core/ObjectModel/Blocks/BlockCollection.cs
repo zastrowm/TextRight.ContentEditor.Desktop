@@ -219,6 +219,17 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return secondaryBlock;
     }
 
+    /// <summary>
+    ///  Determines the block that would be encountered if a cursor was navigating in
+    ///  <paramref name="direction"/> from <paramref name="block"/>.
+    /// </summary>
+    /// <param name="direction"> The theoretical direction a cursor is moving. </param>
+    /// <param name="block"> The block from which the cursor is moving. </param>
+    /// <returns>
+    ///  The block that is closest in the given direct from <paramref name="block"/>
+    /// </returns>
+    public abstract Block GetBlockTo(BlockDirection direction, Block block);
+
     /// <nodoc />
     public bool Equals(BlockCollection other)
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -17,5 +18,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Puts a cursor back into the pool. </summary>
     /// <param name="cursor"> The cursor to put into the pool. </param>
     void Recycle(IBlockContentCursor cursor);
+
+    /// <summary> Gets a cursor copy that can be disposed to recycle the cursor. </summary>
+    /// <param name="block"> The block for which the cursor is valid. </param>
+    CursorCopy GetCursorCopy(Block block);
   }
 }
