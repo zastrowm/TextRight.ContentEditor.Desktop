@@ -167,7 +167,7 @@ namespace TextRight.ContentEditor.Desktop.View
       _pointCollection[5] = new Point(lowerRect.Right, lowerRect.Bottom);
 
       _pointCollection[6] = new Point(maxLeft, lowerRect.Bottom);
-      _pointCollection[7] = new Point(maxLeft, upperRect.Left);
+      _pointCollection[7] = new Point(maxLeft, upperRect.Bottom);
     }
   }
 }
