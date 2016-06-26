@@ -14,7 +14,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void BreakAtEndOfBlock_BreaksIntoTwo()
     {
-      var it = DoAll(new Func<IUndoableAction>[]
+      var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Start of text"),
                        () => new BreakTextBlockAction(BlockAt(0).EndCursor().ToHandle()),
@@ -34,7 +34,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void BreakAtBeginning_BreaksIntoTwo()
     {
-      var it = DoAll(new Func<IUndoableAction>[]
+      var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Start of text"),
                        () => new BreakTextBlockAction(BlockAt(0).BeginCursor().ToHandle()),
@@ -53,7 +53,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void BreakInMiddle_BreaksIntoTwo()
     {
-      var it = DoAll(new Func<IUndoableAction>[]
+      var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Start of text"),
                        () => new BreakTextBlockAction(BlockAt(0).BeginCursor(5).ToHandle()),
@@ -72,7 +72,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void Undo_RestoresInitialState()
     {
-      DoAllAndThenUndo(new Func<IUndoableAction>[]
+      DoAllAndThenUndo(new Func<UndoableAction>[]
                        {
                          // Block 1
                          () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text"),

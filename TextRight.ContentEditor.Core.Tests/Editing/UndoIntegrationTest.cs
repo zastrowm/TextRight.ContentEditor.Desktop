@@ -15,7 +15,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
       for (int i = 0; i < 10; i++)
       {
         Console.WriteLine("Increment: {0}", i);
-        DoAllAndThenUndo(new Func<IUndoableAction>[]
+        DoAllAndThenUndo(new Func<UndoableAction>[]
                          {
                            // Block 1
                            () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "012345679"),

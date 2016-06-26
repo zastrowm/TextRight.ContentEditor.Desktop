@@ -13,7 +13,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     public void VerifyItWorks()
     {
       var it = DoAll(
-        new Func<IUndoableAction>[]
+        new Func<UndoableAction>[]
         {
           () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "TheWord"),
           () => new DeletePreviousCharacterAction(BlockAt(0).BeginCursor(3).AsTextCursor()),
@@ -32,7 +32,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
       for (int i = 1; i < text.Length + 1; i++)
       {
         var it = DoAll(
-          new Func<IUndoableAction>[]
+          new Func<UndoableAction>[]
           {
             () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), text),
             () => new DeletePreviousCharacterAction(BlockAt(0).BeginCursor(i).AsTextCursor()),

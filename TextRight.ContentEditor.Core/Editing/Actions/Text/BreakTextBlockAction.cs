@@ -6,7 +6,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Editing.Actions
 {
   /// <summary> Breaks a paragraph at the given caret location. </summary>
-  public class BreakTextBlockAction : IUndoableAction
+  public class BreakTextBlockAction : UndoableAction
   {
     private readonly DocumentCursorHandle _handle;
 
@@ -18,15 +18,15 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <inheritdoc />
-    public string Name { get; }
+    public override string Name { get; }
       = "Break Paragraph";
 
     /// <inheritdoc />
-    public string Description { get; }
+    public override string Description { get; }
       = "Break paragraph into two";
 
     /// <inheritdoc />
-    public void Do(DocumentEditorContext context)
+    public override void Do(DocumentEditorContext context)
     {
       var blockCursor = _handle.Get(context);
       var blockCollection = blockCursor.Block.Parent;
@@ -39,7 +39,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <inheritdoc />
-    public void Undo(DocumentEditorContext context)
+    public override void Undo(DocumentEditorContext context)
     {
       var blockCursor = _handle.Get(context);
       var previousBlock = blockCursor.Block;

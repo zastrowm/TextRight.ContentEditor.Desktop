@@ -7,7 +7,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Editing.Actions
 {
   /// <summary> Deletes text from the document. </summary>
-  public class MergeTextBlockAction : IUndoableAction
+  public class MergeTextBlockAction : UndoableAction
   {
     private readonly DocumentCursorHandle _originalCaretPosition;
     private readonly BlockPath _previousPath;
@@ -32,15 +32,15 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <inheritdoc />
-    public string Name
+    public override string Name
       => "Merge blocks";
 
     /// <inheritdoc />
-    public string Description
+    public override string Description
       => "Merges paragraphs together";
 
     /// <inheritdoc />
-    public void Do(DocumentEditorContext context)
+    public override void Do(DocumentEditorContext context)
     {
       var next = _nextPath.Get(context.Document);
 
@@ -49,7 +49,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <inheritdoc />
-    public void Undo(DocumentEditorContext context)
+    public override void Undo(DocumentEditorContext context)
     {
       var breakSpot = _endOfPreviousBlockHandle.Get(context);
 

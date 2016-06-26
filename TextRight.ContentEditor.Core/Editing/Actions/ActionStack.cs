@@ -9,8 +9,8 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
   public sealed class ActionStack
   {
     private readonly DocumentEditorContext _context;
-    private readonly Stack<IUndoableAction> _toUndoStack;
-    private readonly Stack<IUndoableAction> _toRedoStack;
+    private readonly Stack<UndoableAction> _toUndoStack;
+    private readonly Stack<UndoableAction> _toRedoStack;
 
     /// <summary> Constructor. </summary>
     /// <param name="context"> The editor context for which this stack was created. </param>
@@ -18,13 +18,13 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     {
       _context = context;
 
-      _toRedoStack = new Stack<IUndoableAction>();
-      _toUndoStack = new Stack<IUndoableAction>();
+      _toRedoStack = new Stack<UndoableAction>();
+      _toUndoStack = new Stack<UndoableAction>();
     }
 
     /// <summary> Performs the given action and adds it to the undoable stack. </summary>
     /// <param name="undableAction"> The undoable action. </param>
-    public void Do(IUndoableAction undableAction)
+    public void Do(UndoableAction undableAction)
     {
       undableAction.Do(_context);
       _toUndoStack.Push(undableAction);

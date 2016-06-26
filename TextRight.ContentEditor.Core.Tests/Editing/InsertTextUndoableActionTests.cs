@@ -13,7 +13,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void VerifyItWorks()
     {
-      var it = DoAll(new Func<IUndoableAction>[]
+      var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new InsertTextUndoableAction(Context.Caret, "The text"),
                      });
@@ -31,7 +31,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void InsertAtBeginning_InsertsTextAtBeginning()
     {
-      var it = DoAll(new Func<IUndoableAction>[]
+      var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "Word"),
                        () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "Prefix"),
@@ -48,7 +48,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void InsertAtEnd_InsertsTextToEnd()
     {
-      var it = DoAll(new Func<IUndoableAction>[]
+      var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "Word"),
                        () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Suffix"),
@@ -65,7 +65,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void InsertAtMiddle_InsertsTextInMiddle()
     {
-      var it = DoAll(new Func<IUndoableAction>[]
+      var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "Word"),
                        () => new InsertTextUndoableAction(BlockAt(0).BeginCursor(2).ToHandle(), "Mid"),
@@ -82,7 +82,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void Undo_RestoresInitialState()
     {
-      DoAllAndThenUndo(new Func<IUndoableAction>[]
+      DoAllAndThenUndo(new Func<UndoableAction>[]
                        {
                          () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text"),
                          () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "More text"),
@@ -102,7 +102,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
       for (int offset = 0; offset < 10; offset++)
       {
         var frozenOffset = offset;
-        DoAllAndThenUndo(new Func<IUndoableAction>[]
+        DoAllAndThenUndo(new Func<UndoableAction>[]
                          {
                            // Block 1
                            () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "012345679"),

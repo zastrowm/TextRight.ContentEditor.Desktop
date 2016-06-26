@@ -12,9 +12,9 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
   public class MergeTextBlockActionUndoableActionTests : UndoBasedTest
   {
     /// <inheritdoc />
-    public override IReadOnlyList<Func<IUndoableAction>> InitializeDocument()
+    public override IReadOnlyList<Func<UndoableAction>> InitializeDocument()
     {
-      return new Func<IUndoableAction>[]
+      return new Func<UndoableAction>[]
              {
                () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Paragraph 1"),
                () => new BreakTextBlockAction(BlockAt(0).EndCursor().ToHandle()),
@@ -25,7 +25,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void MergeAt_BeginningOfSecondBlock_MergesIntoOne()
     {
-      var it = DoAll(new Func<IUndoableAction>[]
+      var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new MergeTextBlockAction(
                          BlockAt(0).As<TextBlock>(),
@@ -45,7 +45,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     [Test]
     public void MergeAt_EndOfFirstBlock_MergesIntoOne()
     {
-      var it = DoAll(new Func<IUndoableAction>[]
+      var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new MergeTextBlockAction(
                          BlockAt(0).As<TextBlock>(),

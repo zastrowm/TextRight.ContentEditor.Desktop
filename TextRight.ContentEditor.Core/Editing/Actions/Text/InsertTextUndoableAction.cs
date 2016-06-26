@@ -6,7 +6,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Editing.Actions
 {
   /// <summary> Inserts text at the specified location. </summary>
-  public class InsertTextUndoableAction : IUndoableAction
+  public class InsertTextUndoableAction : UndoableAction
   {
     private readonly DocumentCursorHandle _insertionPoint;
     private readonly string _text;
@@ -21,15 +21,15 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <inheritdoc />
-    public string Name
+    public override string Name
       => "Insert Text";
 
     /// <inheritdoc />
-    public string Description
+    public override string Description
       => "Insert text into the paragraph";
 
     /// <inheritdoc />
-    public void Do(DocumentEditorContext context)
+    public override void Do(DocumentEditorContext context)
     {
       var textBlockCursor = GetTextCursor(context);
       textBlockCursor.InsertText(_text);
@@ -38,7 +38,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <inheritdoc />
-    public void Undo(DocumentEditorContext context)
+    public override void Undo(DocumentEditorContext context)
     {
       var textBlockCursor = GetTextCursor(context);
       textBlockCursor.DeleteText(_text.Length);

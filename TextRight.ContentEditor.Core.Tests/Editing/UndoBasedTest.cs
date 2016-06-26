@@ -47,7 +47,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     /// <summary>
     ///  Takes a serious of actions that should be performed before any of the tests.
     /// </summary>
-    public virtual IReadOnlyList<Func<IUndoableAction>> InitializeDocument()
+    public virtual IReadOnlyList<Func<UndoableAction>> InitializeDocument()
     {
       return null;
     }
@@ -60,7 +60,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     ///  Performs all of the actions given, returning an <see cref="UndoTester"/> that can be used to
     ///  test the undo of the actions performed.
     /// </summary>
-    public UndoTester DoAll(IReadOnlyList<Func<IUndoableAction>> actions)
+    public UndoTester DoAll(IReadOnlyList<Func<UndoableAction>> actions)
     {
       foreach (var action in actions)
       {
@@ -71,7 +71,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     }
 
     /// <summary> Executes all and then verifies that undoing them is successful. </summary>
-    public void DoAllAndThenUndo(IReadOnlyList<Func<IUndoableAction>> actions)
+    public void DoAllAndThenUndo(IReadOnlyList<Func<UndoableAction>> actions)
     {
       DoAll(actions).VerifyUndo();
     }
@@ -80,7 +80,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     ///  Run through all of the actions in a loop from 1 to N, verifying that when N actions are
     ///  performed, and then undone, that the state of the document becomes what it was originally.
     /// </summary>
-    private void PerformStepByStep(IReadOnlyList<Func<IUndoableAction>> actions)
+    private void PerformStepByStep(IReadOnlyList<Func<UndoableAction>> actions)
     {
       Reinitialize();
 
@@ -91,7 +91,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     }
 
     /// <summary> Helper method for <see cref="PerformStepByStep"/>. </summary>
-    private void PerformSingleIteration(IReadOnlyList<Func<IUndoableAction>> actions, int count)
+    private void PerformSingleIteration(IReadOnlyList<Func<UndoableAction>> actions, int count)
     {
       Console.WriteLine("Performing {0} actions", count);
 
@@ -158,9 +158,9 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     public class UndoTester
     {
       private readonly UndoBasedTest _undoBasedTest;
-      private readonly IReadOnlyList<Func<IUndoableAction>> _actions;
+      private readonly IReadOnlyList<Func<UndoableAction>> _actions;
 
-      public UndoTester(UndoBasedTest undoBasedTest, IReadOnlyList<Func<IUndoableAction>> actions)
+      public UndoTester(UndoBasedTest undoBasedTest, IReadOnlyList<Func<UndoableAction>> actions)
       {
         _undoBasedTest = undoBasedTest;
         _actions = actions;

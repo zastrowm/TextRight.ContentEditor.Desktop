@@ -6,7 +6,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Editing.Actions
 {
   /// <summary> Deletes text from the document. </summary>
-  public class DeletePreviousCharacterAction : IUndoableAction
+  public class DeletePreviousCharacterAction : UndoableAction
   {
     private readonly string _originalText;
     private readonly DocumentCursorHandle _cursorHandle;
@@ -18,15 +18,15 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <inheritdoc />
-    public string Name
+    public override string Name
       => "Delete Text";
 
     /// <inheritdoc />
-    public string Description
+    public override string Description
       => "Delete text from the document";
 
     /// <inheritdoc />
-    public void Do(DocumentEditorContext context)
+    public override void Do(DocumentEditorContext context)
     {
       var cursor = (TextBlockCursor)_cursorHandle.Get(context);
       cursor.MoveBackward();
@@ -35,7 +35,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     }
 
     /// <inheritdoc />
-    public void Undo(DocumentEditorContext context)
+    public override void Undo(DocumentEditorContext context)
     {
       var cursor = (TextBlockCursor)_cursorHandle.Get(context);
       cursor.MoveBackward();

@@ -46,12 +46,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\Actions\ActionStack.cs" />
+    <Compile Include="Editing\Actions\MergableUndoableAction.cs" />
     <Compile Include="Editing\Actions\Text\BreakTextBlockAction.cs" />
     <Compile Include="Editing\Actions\Text\DeleteNextCharacterAction.cs" />
     <Compile Include="Editing\Commands\Text\DeletePreviousCharacterCommand.cs" />
     <Compile Include="Editing\Commands\Text\DeleteNextCharacterCommand.cs" />
     <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />
-    <Compile Include="Editing\Actions\IUndoableAction.cs" />
+    <Compile Include="Editing\Actions\UndoableAction.cs" />
     <Compile Include="Editing\Actions\Text\InsertTextUndoableAction.cs" />
     <Compile Include="Editing\Commands\RedoCommand.cs" />
     <Compile Include="Editing\Actions\Text\DeletePreviousCharacterAction.cs" />
