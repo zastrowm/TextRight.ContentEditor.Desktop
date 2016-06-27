@@ -140,5 +140,55 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
       // the document should not be modified
       Assert.That(BlockAt<TextBlock>(0).AsText(), Is.EqualTo("The text"));
     }
+
+    [Test]
+    public void VerifyMerge_DoesntWork_WhenDifferentFragments()
+    {
+      // TODO when we have the ability to add text to the NEXT span, test that
+
+      //// setup
+      //var firstBlock = BlockAt<TextBlock>(0);
+
+      //// two fragments
+      //((TextBlockCursor)BlockAt<TextBlock>(0).GetCursor().ToBeginning()).InsertText("01234");
+      //firstBlock.Add(new StyledTextFragment("2nd Fragment"));
+
+      //var first = new InsertTextUndoableAction(firstBlock.GetCursor().ToBeginning().ToHandle(), "");
+      //var last = new InsertTextUndoableAction(firstBlock.GetCursor().ToEnd().ToHandle(), "");
+    }
+
+    [Test]
+    public void TryMerge_DoesNotMergeWhenNotNextToEachother()
+    {
+      BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
+
+      var first = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
+      var second = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(2).ToHandle(), "Two");
+
+      Assert.That(first.TryMerge(Context, second), Is.False);
+    }
+
+    [Test]
+    public void TryMerge_WithSelf_Fails()
+    {
+      BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
+
+      var self = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
+
+      Assert.That(self.TryMerge(Context, self), Is.False);
+    }
+
+    [Test]
+    public void TryMerge_WorksOnLargerStrings()
+    {
+      BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
+
+      var first = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "This is a long string");
+      first.Do(Context);
+      var second = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(first.Text.Length).ToHandle(),
+                                                "This is also long");
+
+      Assert.That(first.TryMerge(Context, second), Is.True);
+    }
   }
 }

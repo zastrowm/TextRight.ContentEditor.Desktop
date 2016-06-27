@@ -57,7 +57,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
       => Context.Document.Root.NthBlock(index);
 
     /// <summary> Gets the block at the specified index. </summary>
-    public Block BlockAt<T>(int index)
+    public T BlockAt<T>(int index)
       where T : Block
       => (T)Context.Document.Root.NthBlock(index);
 
