@@ -94,7 +94,29 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
 
     private bool TryMergeWith(DocumentEditorContext context, DeletePreviousCharacterAction action)
     {
-      return false;
+      var myCursor = (TextBlockCursor)_insertionPoint.Get(context);
+      var otherCursor = (TextBlockCursor)action.CursorHandle.Get(context);
+
+      if (Text.Length == 0)
+        return false;
+
+      if (!Text.EndsWith(action.OriginalText))
+        return false;
+
+      if (myCursor.Block != otherCursor.Block)
+        return false;
+
+      if (myCursor.Fragment != otherCursor.Fragment)
+        return false;
+
+      var insertionPointAfterInsert = myCursor.OffsetIntoSpan + Text.Length;
+      var insertionPointAtDeletion = otherCursor.OffsetIntoSpan;
+
+      if (insertionPointAfterInsert != insertionPointAtDeletion)
+        return false;
+
+      Text = Text.Remove(Text.Length - action.OriginalText.Length, action.OriginalText.Length);
+      return true;
     }
 
     private bool TryMergeWith(DocumentEditorContext context, DeleteNextCharacterAction action)

@@ -190,5 +190,30 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
 
       Assert.That(first.TryMerge(Context, second), Is.True);
     }
+
+    [Test]
+    public void TryMerge_WithBackspaceAction_Works()
+    {
+      BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
+
+      var insertion = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "Inserted String");
+      insertion.Do(Context);
+      var second =
+        new DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
+
+      Assert.That(insertion.TryMerge(Context, second), Is.True);
+      Assert.That(insertion.Text, Is.EqualTo("Inserted Strin"));
+    }
+
+    [Test]
+    public void TryMerge_WithBackspace_DoesNotWorkWhenInsertionIsEmpty()
+    {
+      var insertion = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "");
+      insertion.Do(Context);
+      var second =
+        new DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
+
+      Assert.That(insertion.TryMerge(Context, second), Is.False);
+    }
   }
 }

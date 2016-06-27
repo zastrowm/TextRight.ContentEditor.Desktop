@@ -30,7 +30,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <param name="undoableAction"> The undoable action. </param>
     /// <param name="allowMerging"> (Optional) True if the action is allowed to be merged into the
     ///  previous action, false otherwise. </param>
-    public void Do(UndoableAction undoableAction, bool allowMerging = false)
+    public void Do(UndoableAction undoableAction, bool allowMerging = true)
     {
       bool wasMerged = false;
 
