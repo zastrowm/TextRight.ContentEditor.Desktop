@@ -96,9 +96,9 @@
     <Compile Include="ObjectModel\Blocks\BlockType.cs" />
     <Compile Include="ObjectModel\Blocks\IBlockContentCursor.cs" />
     <Compile Include="ObjectModel\Blocks\IViewableObject.cs" />
-    <Compile Include="ObjectModel\Blocks\StyledTextFragment.cs" />
-    <Compile Include="ObjectModel\Blocks\TextBlock.cs" />
-    <Compile Include="ObjectModel\Blocks\TextBlockCursor.Cursor.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\StyledTextFragment.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\TextBlock.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\TextBlockCursor.Cursor.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollection.cs" />
     <Compile Include="ObjectModel\Cursors\DocumentCursor.cs" />
     <Compile Include="ObjectModel\DocumentOwner.cs" />
