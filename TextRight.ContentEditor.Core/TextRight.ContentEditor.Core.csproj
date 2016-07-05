@@ -57,6 +57,10 @@
     <Compile Include="Editing\Actions\Text\DeletePreviousCharacterAction.cs" />
     <Compile Include="Editing\Actions\Text\MergeTextBlockAction.cs" />
     <Compile Include="Editing\Commands\UndoCommand.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\SubFragmentMarkupCollection.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\SubFragmentMarkupType.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\TextModification.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\TextRange.cs" />
     <Compile Include="ObjectModel\Cursors\CaretMovementMode.cs" />
     <Compile Include="Editing\Commands\Text\BreakTextBlockCommand.cs" />
     <Compile Include="Editing\Commands\Caret\CaretCommand.cs" />
