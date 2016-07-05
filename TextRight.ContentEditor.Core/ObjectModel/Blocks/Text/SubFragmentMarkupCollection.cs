@@ -2,26 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
-  public struct SubFragmentMarkupObjectSnapshot
-  {
-    private readonly int _absoluteIndex;
-    private readonly SubFragmentMarkupCollection.SubFragmentNode _node;
-
-    internal SubFragmentMarkupObjectSnapshot(int absoluteIndex, SubFragmentMarkupCollection.SubFragmentNode node)
-    {
-      _absoluteIndex = absoluteIndex;
-      _node = node;
-    }
-
-    public TextRange Range
-      => new TextRange(_absoluteIndex, _absoluteIndex + _node.Length);
-  }
-
   /// <summary> Contains a collection of SubFragmentMarkups for a specific <see cref="StyledTextFragment"/>. </summary>
-  public class SubFragmentMarkupCollection : IEnumerable<SubFragmentMarkupObjectSnapshot>
+  public class SubFragmentMarkupCollection : IEnumerable<FragmentMarkup>
   {
     // at some point we may want to consider using some form of an Interval Tree but for now our
     // current architecture is acceptable. (http:// en.wikipedia.org/wiki/Interval_tree) 
@@ -35,26 +21,30 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       _subFragments = new LinkedList<SubFragmentNode>();
     }
 
+    /// <summary> Gets the index that can be used to determine when the markups have changed. </summary>
+    internal ChangeIndex ChangeIndex { get; private set; }
+
     /// <summary> Marks the given range to have the given markup and data. </summary>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside
     ///  the required range. </exception>
     /// <param name="range"> The range of text to mark. </param>
     /// <param name="type"> The type of markup to apply to the range. </param>
     /// <param name="additionalData"> Any additional data to store with the markup. </param>
-    public void MarkRange(TextRange range, SubFragmentMarkupType type, object additionalData)
+    public FragmentMarkup MarkRange(TextRange range, SubFragmentMarkupType type, object additionalData)
     {
       if (range.StartIndex < 0)
         throw new ArgumentOutOfRangeException(nameof(range));
       if (range.EndIndex > _owner.Length)
         throw new ArgumentOutOfRangeException(nameof(range));
 
-      var newFragment = new SubFragmentNode(type, additionalData)
+      var newFragment = new SubFragmentNode(this, type, additionalData)
                         {
                           Length = range.Length
                         };
 
       int previousNodeAbsoluteIndex;
       var previousNode = GetClosestNodeBefore(range.StartIndex, out previousNodeAbsoluteIndex);
+      LinkedListNode<SubFragmentNode> node;
 
       if (previousNode == null)
       {
@@ -67,7 +57,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
           nextNode.Value.RelativeOffsetSinceLastNode -= range.StartIndex;
         }
 
-        _subFragments.AddFirst(newFragment);
+        node = _subFragments.AddFirst(newFragment);
         newFragment.RelativeOffsetSinceLastNode = range.StartIndex;
       }
       else
@@ -85,8 +75,13 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
         newFragment.RelativeOffsetSinceLastNode = range.StartIndex - previousNodeAbsoluteIndex;
 
-        _subFragments.AddAfter(previousNode, newFragment);
+        node = _subFragments.AddAfter(previousNode, newFragment);
       }
+
+      newFragment.Node = node;
+      ChangeIndex = ChangeIndex.Next();
+
+      return newFragment.Markup;
     }
 
     /// <summary> Updates the collection based on the given text-changed event. </summary>
@@ -101,6 +96,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       {
         UpdateFromDelete(changeEvent);
       }
+
+      // todo update dirty things
+
+      ChangeIndex = ChangeIndex.Next();
     }
 
     /// <summary> Gets the node closest to the given index. </summary>
@@ -275,14 +274,16 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       }
     }
 
-    public IEnumerator<SubFragmentMarkupObjectSnapshot> GetEnumerator()
+    public IEnumerator<FragmentMarkup> GetEnumerator()
     {
       int absoluteIndex = 0;
 
       foreach (var item in _subFragments)
       {
         absoluteIndex += item.RelativeOffsetSinceLastNode;
-        yield return new SubFragmentMarkupObjectSnapshot(absoluteIndex, item);
+        var instance = item.Markup;
+        instance.SetAbsoluteIndex(absoluteIndex);
+        yield return instance;
       }
     }
 
@@ -293,11 +294,17 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     internal class SubFragmentNode
     {
-      public SubFragmentNode(SubFragmentMarkupType type, object associatedData)
+      public SubFragmentNode(SubFragmentMarkupCollection owner, SubFragmentMarkupType type, object associatedData)
       {
+        Owner = owner;
         Type = type;
         AssociatedData = associatedData;
+
+        Markup = new FragmentMarkup(this);
       }
+
+      /// <summary> The collection that owns this node. </summary>
+      public SubFragmentMarkupCollection Owner { get; }
 
       public int RelativeOffsetSinceLastNode { get; set; }
 
@@ -310,6 +317,33 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
       /// <summary> Any additional data associated with the markup. </summary>
       public object AssociatedData { get; private set; }
+
+      public FragmentMarkup Markup { get; }
+
+      /// <summary> The linked list node associated with the SubFragmentNode. </summary>
+      [NotNull]
+      public LinkedListNode<SubFragmentNode> Node { get; set; }
+
+      /// <summary>
+      ///  Calculates the AbsoluteIndex for this node, by iterating through all nodes until we get to
+      ///  ourselves.
+      /// </summary>
+      /// <returns> The calculated absolute index. </returns>
+      public int CalculateAbsoluteIndex()
+      {
+        int offset = 0;
+
+        foreach (var node in Owner._subFragments)
+        {
+          offset += node.RelativeOffsetSinceLastNode;
+          if (node == this)
+          {
+            break;
+          }
+        }
+
+        return offset;
+      }
     }
 
     /// <summary>

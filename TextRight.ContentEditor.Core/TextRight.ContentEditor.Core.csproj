@@ -58,6 +58,7 @@
     <Compile Include="Editing\Actions\Text\MergeTextBlockAction.cs" />
     <Compile Include="Editing\Commands\UndoCommand.cs" />
     <Compile Include="ObjectModel\Blocks\Text\SubFragmentMarkupCollection.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\FragmentMarkup.cs" />
     <Compile Include="ObjectModel\Blocks\Text\SubFragmentMarkupType.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextModification.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextRange.cs" />

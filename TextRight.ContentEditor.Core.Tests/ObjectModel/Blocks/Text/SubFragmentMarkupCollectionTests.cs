@@ -15,7 +15,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
     private readonly SubFragmentMarkupType _fakeMarkupType = default(SubFragmentMarkupType);
 
     public TextRange[] Ranges
-      => _collection.Select(s => s.Range).ToArray();
+      => _collection.Select(s => s.GetRange()).ToArray();
 
     [SetUp]
     public void Setup()
@@ -41,7 +41,9 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
     [Test]
     public void MarkRange_Works()
     {
-      _collection.MarkRange(new TextRange(0, 3), _fakeMarkupType, null);
+      var markup = _collection.MarkRange(new TextRange(0, 3), _fakeMarkupType, null);
+
+      markup.Should().NotBeNull();
     }
 
     [Test]
@@ -50,7 +52,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
       _collection.MarkRange(new TextRange(0, 3), _fakeMarkupType, null);
 
       var first = _collection.First();
-      Assert.That(first.Range, Is.EqualTo(new TextRange(0, 3)));
+      Assert.That(first.GetRange(), Is.EqualTo(new TextRange(0, 3)));
     }
 
     [Test]
@@ -62,9 +64,9 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
 
       _collection.Should().HaveCount(3);
 
-      _collection.Should().Contain(it => it.Range.Equals(new TextRange(0, 3)));
-      _collection.Should().Contain(it => it.Range.Equals(new TextRange(0, 5)));
-      _collection.Should().Contain(it => it.Range.Equals(new TextRange(0, 7)));
+      _collection.Should().Contain(it => it.GetRange().Equals(new TextRange(0, 3)));
+      _collection.Should().Contain(it => it.GetRange().Equals(new TextRange(0, 5)));
+      _collection.Should().Contain(it => it.GetRange().Equals(new TextRange(0, 7)));
     }
 
     [Test]
@@ -122,6 +124,15 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
       {
         Ranges.Should().HaveElementAt(i, originalRanges[i]);
       }
+    }
+
+    [Test]
+    public void MarkRange_ReturnsInstance_ThatsValidAfterOperation()
+    {
+      var instance = _collection.MarkRange(new TextRange(0, 10), _fakeMarkupType, null);
+      _collection.UpdateFromEvent(new TextModification(4, 4, true));
+
+      _collection.First().Should().BeSameAs(instance);
     }
 
     [Test]
@@ -421,8 +432,19 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
         // single range, easy
         Setup();
         _collection.MarkRange(original, _fakeMarkupType, null);
+
+        /* Extra Check */
+        var originalMarkup = _collection.First();
+        originalMarkup.GetRange().ShouldBeEquivalentTo(original);
+        /* /Extra Check */
+
         _collection.UpdateFromEvent(modification);
         Ranges.Should().HaveElementAt(0, expected);
+
+        /* Extra Check */
+        var latestMarkup = _collection.First();
+        latestMarkup.Should().BeSameAs(originalMarkup);
+        /* /Extra Check */
       }
 
       {

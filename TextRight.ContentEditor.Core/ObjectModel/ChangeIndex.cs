@@ -19,10 +19,15 @@ namespace TextRight.ContentEditor.Core.ObjectModel
     }
 
     /// <summary> Gets a ChangeIndex that represents the fact that a new change has occurred. </summary>
-    /// <returns> A ChangeIndex. </returns>
     public ChangeIndex Next()
     {
       return new ChangeIndex(_index + 1);
+    }
+
+    /// <summary> Gets a ChangeIndex that indicates that the change is out of date already. </summary>
+    public ChangeIndex Previous()
+    {
+      return new ChangeIndex(_index - 1);
     }
 
     /// <summary> Returns true if the given instance is different from this instance. </summary>
