@@ -175,7 +175,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     ///  The block that is the next sibling of the original block that was split
     ///  into two.
     /// </returns>
-    public Block TryBreakBlock(IBlockContentCursor cursor)
+    public ContentBlock TryBreakBlock(IBlockContentCursor cursor)
     {
       if (cursor == null)
         throw new ArgumentNullException(nameof(cursor));
@@ -185,7 +185,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
       var targetBlock = cursor.Block;
 
-      Block secondaryBlock = null;
+      ContentBlock secondaryBlock = null;
 
       if (cursor.IsAtEnd)
       {

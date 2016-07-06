@@ -53,18 +53,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    public override ICursorPool CursorPool
-    {
-      get { throw new NotImplementedException(); }
-    }
-
-    /// <inheritdoc />
-    protected override IBlockContentCursor CreateCursorOverride()
-    {
-      throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
     public override Block Clone()
     {
       var clone = new VerticalBlockCollection();

@@ -26,7 +26,7 @@ namespace TextRight.ContentEditor.Core.Editing
     {
       Document = new DocumentOwner();
 
-      var cursor = Document.Root.FirstBlock.GetCursor();
+      var cursor = ((ContentBlock)Document.Root.FirstBlock).GetCursor();
       cursor.MoveToBeginning();
 
       Caret = new DocumentCursor(Document, cursor);
@@ -66,7 +66,7 @@ namespace TextRight.ContentEditor.Core.Editing
       if (Target == null)
         return;
 
-      var block = Target.GetBlockFor(point);
+      var block = Target.GetBlockFor(point) as ContentBlock;
       if (block != null)
       {
         var newCursor = block.GetCursorFor(point);

@@ -29,7 +29,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
   /// </summary>
-  public class TextBlock : Block,
+  public class TextBlock : ContentBlock,
                            IViewableObject<ITextBlockView>,
                            IEnumerable<StyledTextFragment>,
                            IEquatable<TextBlock>,

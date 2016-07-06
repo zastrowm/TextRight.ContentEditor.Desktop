@@ -23,7 +23,7 @@ namespace TextRight.ContentEditor.Core.Editing
         }
 
         // try get the block backward to get a cursor that looks at the beginning of that block
-        var block = blockCursor.Block?.Parent.GetBlockTo(BlockDirection.Forward, blockCursor.Block);
+        var block = blockCursor.Block?.Parent.GetBlockTo(BlockDirection.Forward, blockCursor.Block) as ContentBlock;
         if (block != null)
         {
           using (var newCursor = block.CursorPool.GetCursorCopy(block))

@@ -29,7 +29,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     [Test]
     public void VerifyBreakInMiddleOfParagraph_SplitsIntoTwo()
     {
-      var cursor = _collection.FirstBlock.GetCursor();
+      var cursor = _collection.NthBlock(0).GetCursor();
       cursor.MoveToBeginning();
       cursor.Move(7); // should be after "is"
 
@@ -46,7 +46,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     [Test]
     public void BreakInBeginning_MakesNewPreviousEmptyBlock()
     {
-      var cursor = _collection.FirstBlock.GetCursor();
+      var cursor = _collection.NthBlock(0).GetCursor();
       cursor.MoveToBeginning();
 
       var newBlock = _collection.TryBreakBlock(cursor);
@@ -62,7 +62,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     [Test]
     public void BreakAtEnd_MakesNewNextEmptyBlock()
     {
-      var cursor = _collection.FirstBlock.GetCursor();
+      var cursor = _collection.NthBlock(0).GetCursor();
       cursor.MoveToEnd();
 
       var newBlock = _collection.TryBreakBlock(cursor);

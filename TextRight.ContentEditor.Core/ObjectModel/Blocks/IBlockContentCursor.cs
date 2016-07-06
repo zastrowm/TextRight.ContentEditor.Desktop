@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -12,7 +11,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   {
     /// <summary> Gets the block associated withe the cursor. </summary>
     [NotNull]
-    Block Block { get; }
+    ContentBlock Block { get; }
 
     /// <summary> Move to the beginning of the block. </summary>
     void MoveToBeginning();
@@ -30,7 +29,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <summary> Sets the block that this cursor is associated with. </summary>
     /// <param name="block"> The block associated withe the cursor. </param>
-    void Reset(Block block);
+    void Reset(ContentBlock block);
 
     /// <summary>
     ///  Save the cursor information so that it can be restored at a later time.

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 using TextRight.ContentEditor.Core.Utilities;
@@ -10,10 +9,16 @@ using TextRight.ContentEditor.Core.Utilities;
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary>
-  ///   Represents a top-level block.
+  ///  Represents the base class for both <see cref="BlockCollection"/> and
+  ///  <see cref="ContentBlock"/>.
   /// </summary>
   public abstract class Block
   {
+    /// <summary> Default constructor. </summary>
+    internal Block()
+    {
+    }
+
     /// <summary>
     ///   The index of the block within the parent's collection.
     /// </summary>
@@ -43,26 +48,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> The type of the block. </summary>
     public abstract BlockType BlockType { get; }
 
-    /// <summary> The cursor pool for cursors of this block. </summary>
-    public abstract ICursorPool CursorPool { get; }
-
-    /// <summary> Gets a block-specific iterator. </summary>
-    /// <returns> An iterate that can move through the block. </returns>
-    public IBlockContentCursor GetCursor()
-    {
-      return CursorPool.Borrow(this);
-    }
-
-    /// <summary> Gets a block-specific iterator. </summary>
-    /// <returns> An iterate that can move through the block. </returns>
-    protected abstract IBlockContentCursor CreateCursorOverride();
-
-    /// <summary> Internal method for creating cursors. </summary>
-    internal IBlockContentCursor CreateCursor()
-    {
-      return CreateCursorOverride();
-    }
-
     /// <summary> The mimetype of the content within the block.  Can be null. </summary>
     [CanBeNull]
     public abstract string MimeType { get; }
@@ -81,17 +66,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Serializes this object into a node. </summary>
     /// <returns> A node that serializes the block.. </returns>
     public abstract SerializeNode SerializeAsNode();
-
-    /// <summary> Retrieves a cursor closest to the given point in the block. </summary>
-    /// <param name="point"> The point . </param>
-    /// <returns> The cursor for. </returns>
-    public virtual IBlockContentCursor GetCursorFor(DocumentPoint point)
-    {
-      // slow, inefficient mode
-      var start = GetCursor().ToBeginning();
-      BlockCursorMover.ForwardMover.MoveTowardsPoint(start, point);
-      return start;
-    }
 
     /// <summary>
     ///  Retrieves the block that comes after this block in the parent collection.

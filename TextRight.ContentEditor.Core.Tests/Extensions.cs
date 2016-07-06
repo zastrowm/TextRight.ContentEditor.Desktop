@@ -70,13 +70,13 @@ namespace TextRight.ContentEditor.Core.Tests
     }
 
     /// <summary> Get the Nth block out of the collection. </summary>
-    public static Block NthBlock(this BlockCollection collection, int index)
+    public static ContentBlock NthBlock(this BlockCollection collection, int index)
     {
-      return collection.Children.Skip(index).First();
+      return (ContentBlock)collection.Children.Skip(index).First();
     }
 
     /// <summary> Gets a cursor to the end of the block. </summary>
-    public static IBlockContentCursor EndCursor(this Block block, int offset = 0)
+    public static IBlockContentCursor EndCursor(this ContentBlock block, int offset = 0)
     {
       var cursor = block.GetCursor().ToEnd();
       cursor.Move(offset);
@@ -84,7 +84,7 @@ namespace TextRight.ContentEditor.Core.Tests
     }
 
     /// <summary> Gets a cursor to the beginning of the block. </summary>
-    public static IBlockContentCursor BeginCursor(this Block block, int offset = 0)
+    public static IBlockContentCursor BeginCursor(this ContentBlock block, int offset = 0)
     {
       var cursor = block.GetCursor().ToBeginning();
       cursor.Move(offset);

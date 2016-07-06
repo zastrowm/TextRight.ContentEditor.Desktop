@@ -5,10 +5,10 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
 {
-  /// <summary> Base class for the most common implementation of ICursor bool. </summary>
+  /// <summary> Base class for the most common implementation of ICursorPool. </summary>
   public sealed class CursorPool<TCursor, TBlock> : ICursorPool
     where TCursor : class, IBlockContentCursor
-    where TBlock : Block
+    where TBlock : ContentBlock
   {
     private readonly Stack<TCursor> _cursors;
 

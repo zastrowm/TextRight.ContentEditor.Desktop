@@ -57,6 +57,7 @@
     <Compile Include="Editing\Actions\Text\DeletePreviousCharacterAction.cs" />
     <Compile Include="Editing\Actions\Text\MergeTextBlockAction.cs" />
     <Compile Include="Editing\Commands\UndoCommand.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\ContentBlock.cs" />
     <Compile Include="ObjectModel\Blocks\Text\IMarkupCollectionOwner.cs" />
     <Compile Include="ObjectModel\Blocks\Text\MarkupCollection.cs" />
     <Compile Include="ObjectModel\Blocks\Text\Markup.cs" />

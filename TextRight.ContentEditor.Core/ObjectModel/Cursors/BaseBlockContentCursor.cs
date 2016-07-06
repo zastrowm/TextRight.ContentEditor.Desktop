@@ -11,7 +11,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
   /// <typeparam name="TBlock"> The type of block for which the cursor is valid. </typeparam>
   public abstract class BaseBlockContentCursor<TCursor, TBlock> : IBlockContentCursor
     where TCursor : BaseBlockContentCursor<TCursor, TBlock>
-    where TBlock : Block
+    where TBlock : ContentBlock
   {
     /// <summary> Pool of cursors for this content-cursor type. </summary>
     public static CursorPool<TCursor, TBlock> CursorPool { get; }
@@ -28,7 +28,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     public TBlock Block { get; private set; }
 
     /// <inheritdoc />
-    Block IBlockContentCursor.Block
+    ContentBlock IBlockContentCursor.Block
       => Block;
 
     /// <inheritdoc />
@@ -44,7 +44,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     public abstract bool MoveBackward();
 
     /// <inheritdoc />
-    void IBlockContentCursor.Reset(Block block)
+    void IBlockContentCursor.Reset(ContentBlock block)
     {
       Block = (TBlock)block;
     }
