@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
 using NUnit.Framework;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 
 namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
 {
-  internal class SubFragmentMarkupCollectionTests
+  internal class MarkupCollectionTests
   {
-    private SubFragmentMarkupCollection _collection;
-    private StyledTextFragment _fragment;
-    private readonly SubFragmentMarkupType _fakeMarkupType = default(SubFragmentMarkupType);
+    private MarkupCollection _collection;
+    private readonly MarkupType _fakeMarkupType = default(MarkupType);
 
     public TextRange[] Ranges
       => _collection.Select(s => s.GetRange()).ToArray();
@@ -20,8 +20,8 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
     [SetUp]
     public void Setup()
     {
-      _fragment = new StyledTextFragment("012345678901234");
-      _collection = new SubFragmentMarkupCollection(_fragment);
+      _collectionOwner = Mock.Of<IMarkupCollectionOwner>(c => c.Length == 15);
+      _collection = new MarkupCollection(_collectionOwner);
 
       _allValidTextRanges = new Lazy<List<TextRange>>(() => GetAllTextRanges().ToList());
     }
@@ -29,9 +29,9 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
     /// <summary> All the valid text ranges for the current fragment. </summary>
     private IEnumerable<TextRange> GetAllTextRanges()
     {
-      for (int startIndex = 0; startIndex < _fragment.Text.Length; startIndex++)
+      for (int startIndex = 0; startIndex < _collectionOwner.Length; startIndex++)
       {
-        for (int endIndex = startIndex; endIndex < _fragment.Text.Length; endIndex++)
+        for (int endIndex = startIndex; endIndex < _collectionOwner.Length; endIndex++)
         {
           yield return new TextRange(startIndex, endIndex);
         }
@@ -44,6 +44,24 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
       var markup = _collection.MarkRange(new TextRange(0, 3), _fakeMarkupType, null);
 
       markup.Should().NotBeNull();
+    }
+
+    [Test]
+    public void MarkRange_ThrowsWhenOutOfRange()
+    {
+      CreateActionFor(new TextRange(-1, 3)).ShouldThrow<ArgumentOutOfRangeException>();
+      CreateActionFor(new TextRange(3, _collectionOwner.Length + 1)).ShouldThrow<ArgumentOutOfRangeException>();
+    }
+
+    [Test]
+    public void MarkRange_DoesNotThrowForFullRange()
+    {
+      CreateActionFor(new TextRange(0, _collectionOwner.Length)).ShouldNotThrow();
+    }
+
+    private Action CreateActionFor(TextRange r)
+    {
+      return () => _collection.MarkRange(r, _fakeMarkupType, null);
     }
 
     [Test]
@@ -222,6 +240,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
     }
 
     private Lazy<List<TextRange>> _allValidTextRanges;
+    private IMarkupCollectionOwner _collectionOwner;
 
     [Test]
     public void InsertText_Iterations()
@@ -233,9 +252,9 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
       // combination of range and modification and verify that we get what we expect.  That's what
       // this function does. 
 
-      for (int insertPoint = 0; insertPoint <= _fragment.Text.Length; insertPoint++)
+      for (int insertPoint = 0; insertPoint <= _collectionOwner.Length; insertPoint++)
       {
-        for (int endInsertPoint = insertPoint; endInsertPoint <= _fragment.Text.Length; endInsertPoint++)
+        for (int endInsertPoint = insertPoint; endInsertPoint <= _collectionOwner.Length; endInsertPoint++)
         {
           int length = endInsertPoint - insertPoint;
           var modification = new TextModification(insertPoint, length, true);
@@ -384,9 +403,9 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
       // combination of range and modification and verify that we get what we expect.  That's what
       // this function does. 
 
-      for (int insertPoint = 0; insertPoint <= _fragment.Text.Length; insertPoint++)
+      for (int insertPoint = 0; insertPoint <= _collectionOwner.Length; insertPoint++)
       {
-        for (int endInsertPoint = insertPoint; endInsertPoint <= _fragment.Text.Length; endInsertPoint++)
+        for (int endInsertPoint = insertPoint; endInsertPoint <= _collectionOwner.Length; endInsertPoint++)
         {
           int length = endInsertPoint - insertPoint;
           var modification = new TextModification(insertPoint, length, false);

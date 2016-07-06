@@ -1,24 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> Contains a collection of SubFragmentMarkups for a specific <see cref="StyledTextFragment"/>. </summary>
-  public class SubFragmentMarkupCollection : IEnumerable<FragmentMarkup>
+  public class MarkupCollection : IEnumerable<Markup>
   {
     // at some point we may want to consider using some form of an Interval Tree but for now our
     // current architecture is acceptable. (http:// en.wikipedia.org/wiki/Interval_tree) 
 
-    private readonly StyledTextFragment _owner;
-    private readonly LinkedList<SubFragmentNode> _subFragments;
+    private readonly IMarkupCollectionOwner _owner;
+    private readonly LinkedList<MarkupNodeReference> _subFragments;
 
-    public SubFragmentMarkupCollection(StyledTextFragment owner)
+    internal MarkupCollection(IMarkupCollectionOwner owner)
     {
       _owner = owner;
-      _subFragments = new LinkedList<SubFragmentNode>();
+      _subFragments = new LinkedList<MarkupNodeReference>();
     }
 
     /// <summary> Gets the index that can be used to determine when the markups have changed. </summary>
@@ -30,21 +31,21 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="range"> The range of text to mark. </param>
     /// <param name="type"> The type of markup to apply to the range. </param>
     /// <param name="additionalData"> Any additional data to store with the markup. </param>
-    public FragmentMarkup MarkRange(TextRange range, SubFragmentMarkupType type, object additionalData)
+    public Markup MarkRange(TextRange range, MarkupType type, object additionalData)
     {
       if (range.StartIndex < 0)
         throw new ArgumentOutOfRangeException(nameof(range));
       if (range.EndIndex > _owner.Length)
         throw new ArgumentOutOfRangeException(nameof(range));
 
-      var newFragment = new SubFragmentNode(this, type, additionalData)
+      var newFragment = new MarkupNodeReference(this, type, additionalData)
                         {
                           Length = range.Length
                         };
 
       int previousNodeAbsoluteIndex;
       var previousNode = GetClosestNodeBefore(range.StartIndex, out previousNodeAbsoluteIndex);
-      LinkedListNode<SubFragmentNode> node;
+      LinkedListNode<MarkupNodeReference> node;
 
       if (previousNode == null)
       {
@@ -107,11 +108,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="absoluteIndexOfPreviousNode"> [out] The absolute index of the node that was found
     ///  (if one was found). </param>
     /// <returns> The closest node that does not surpass the given index. </returns>
-    private LinkedListNode<SubFragmentNode> GetClosestNodeBefore(int index, out int absoluteIndexOfPreviousNode)
+    private LinkedListNode<MarkupNodeReference> GetClosestNodeBefore(int index, out int absoluteIndexOfPreviousNode)
     {
       absoluteIndexOfPreviousNode = 0;
-      LinkedListNode<SubFragmentNode> currentNode = _subFragments.First;
-      LinkedListNode<SubFragmentNode> lastNode = null;
+      LinkedListNode<MarkupNodeReference> currentNode = _subFragments.First;
+      LinkedListNode<MarkupNodeReference> lastNode = null;
 
       while (currentNode != null)
       {
@@ -130,7 +131,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return lastNode;
     }
 
-    private void Invalidate(SubFragmentNode value)
+    private void Invalidate(MarkupNodeReference value)
     {
       // TODO notify callers that this fragment needs to be updated
       value.IsValid = false;
@@ -139,16 +140,16 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Finds a series of nodes that are affected by a change at the given index. </summary>
     /// <param name="indexOfChange"> The index at which a change is being applied </param>
     /// <returns> The nodes that are affected by the change. </returns>
-    private FoundNode FindAffectedNodes(TextRange range)
+    private FoundNode GetAffectedNodes(TextRange range)
     {
-      LinkedListNode<SubFragmentNode> listNode = _subFragments.First;
+      LinkedListNode<MarkupNodeReference> listNode = _subFragments.First;
       int absoluteIndexOfLastSubFragment = 0;
 
       FoundNode foundNode = new FoundNode();
 
       while (listNode != null)
       {
-        SubFragmentNode subFragment = listNode.Value;
+        MarkupNodeReference subFragment = listNode.Value;
 
         var subFragmentAbsoluteStart = absoluteIndexOfLastSubFragment + subFragment.RelativeOffsetSinceLastNode;
         var nodeRange = new TextRange(subFragmentAbsoluteStart, subFragmentAbsoluteStart + subFragment.Length);
@@ -175,7 +176,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Updates the ranges as a result of a insert text modification. </summary>
     private void UpdateFromInsert(TextModification changeEvent)
     {
-      var findings = FindAffectedNodes(new TextRange(changeEvent.Index, changeEvent.Index));
+      var findings = GetAffectedNodes(new TextRange(changeEvent.Index, changeEvent.Index));
 
       bool didAdjustedOffset = false;
 
@@ -211,7 +212,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       // $Simpler?$: NOTE deletion is so much more complicated that insert.  It's possible that this
       // implementation is just overly complicated, so we may want to revisit this at some point. 
       var deletionRange = new TextRange(changeEvent.Index, changeEvent.Index + changeEvent.NumberOfCharacters);
-      var findings = FindAffectedNodes(deletionRange);
+      var findings = GetAffectedNodes(deletionRange);
 
       bool didAdjustedOffset = false;
       int adjustmentsThusFar = 0;
@@ -274,7 +275,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       }
     }
 
-    public IEnumerator<FragmentMarkup> GetEnumerator()
+    public IEnumerator<Markup> GetEnumerator()
     {
       int absoluteIndex = 0;
 
@@ -292,37 +293,52 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return GetEnumerator();
     }
 
-    internal class SubFragmentNode
+    /// <summary>
+    ///  Internal data-structure for holding the relevent data for a <see cref="Markup"/>.
+    /// </summary>
+    internal class MarkupNodeReference
     {
-      public SubFragmentNode(SubFragmentMarkupCollection owner, SubFragmentMarkupType type, object associatedData)
+      // ReSharper disable once NotNullMemberIsNotInitialized
+      public MarkupNodeReference(MarkupCollection owner, MarkupType type, object associatedData)
       {
         Owner = owner;
         Type = type;
         AssociatedData = associatedData;
 
-        Markup = new FragmentMarkup(this);
+        Markup = new Markup(this);
       }
 
       /// <summary> The collection that owns this node. </summary>
-      public SubFragmentMarkupCollection Owner { get; }
+      public MarkupCollection Owner { get; }
 
-      public int RelativeOffsetSinceLastNode { get; set; }
-
-      public int Length { get; set; }
-
-      public bool IsValid { get; set; }
+      /// <summary> The actual Markup instance associated with this node. </summary>
+      public Markup Markup { get; }
 
       /// <summary> The type of markup that this span represents. </summary>
-      public SubFragmentMarkupType Type { get; private set; }
+      public MarkupType Type { get; }
 
       /// <summary> Any additional data associated with the markup. </summary>
-      public object AssociatedData { get; private set; }
+      public object AssociatedData { get; }
 
-      public FragmentMarkup Markup { get; }
+      #region Externally modified
 
       /// <summary> The linked list node associated with the SubFragmentNode. </summary>
       [NotNull]
-      public LinkedListNode<SubFragmentNode> Node { get; set; }
+      public LinkedListNode<MarkupNodeReference> Node { get; set; }
+
+      /// <summary> The gap between this node and the previous node. </summary>
+      public int RelativeOffsetSinceLastNode { get; set; }
+
+      /// <summary> The number of elements that this markup node covers. </summary>
+      public int Length { get; set; }
+
+      /// <summary>
+      ///  True if this node has been processed by the associated <see cref="MarkupType"/>
+      ///  since the last update to its range.
+      /// </summary>
+      public bool IsValid { get; set; }
+
+      #endregion
 
       /// <summary>
       ///  Calculates the AbsoluteIndex for this node, by iterating through all nodes until we get to
@@ -347,23 +363,22 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <summary>
-    ///  Return value of <see cref="FindAffectedNodes"/> containing the first node that changed and
+    ///  Return value of <see cref="MarkupCollection.GetAffectedNodes"/> containing the first node that changed and
     ///  the last node that changed.
     /// </summary>
     private struct FoundNode
     {
       private int _absoluteIndexOfFirstFoundNode;
 
-      private LinkedListNode<SubFragmentNode> _firstFoundNode;
+      private LinkedListNode<MarkupNodeReference> _firstFoundNode;
+      private LinkedListNode<MarkupNodeReference> _lastFoundNode;
 
-      private LinkedListNode<SubFragmentNode> _lastFoundNode;
-
-      public LinkedListNode<SubFragmentNode> RemainingNode { get; private set; }
+      public LinkedListNode<MarkupNodeReference> RemainingNode { get; private set; }
 
       /// <summary> Remembers the given node as the first changed node (of no-others have been found) and the last changed node. </summary>
       /// <param name="absoluteIndex"> The absolute offset of the node. </param>
       /// <param name="node"> The node to remember. </param>
-      public void RememberFirstAndLast(int absoluteIndex, LinkedListNode<SubFragmentNode> node)
+      public void RememberFirstAndLast(int absoluteIndex, LinkedListNode<MarkupNodeReference> node)
       {
         if (_firstFoundNode == null)
         {
@@ -377,50 +392,72 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       ///  Marks the node as the first node that is not directly affected by the change, but rather is
       ///  after the change.
       /// </summary>
-      public void MarkRemaining(LinkedListNode<SubFragmentNode> theNode)
+      public void MarkRemaining(LinkedListNode<MarkupNodeReference> theNode)
       {
         RemainingNode = theNode;
       }
 
       /// <summary> Gets an iterator that goes through all of the affected fragments. </summary>
+      /// <returns>
+      ///  An enumerator that allows foreach to be used to process the affected fragments in this
+      ///  collection.
+      /// </returns>
       public IEnumerable<FragmentAndOffset> GetAffectedFragments()
       {
         var current = _firstFoundNode;
 
-        if (current != null)
+        // NOTE: we bail out early if we have zero nodes
+        if (current == null)
+          yield break;
+
+        int totalAbsoluteOffset = _absoluteIndexOfFirstFoundNode - current.Value.RelativeOffsetSinceLastNode;
+
+        while (current != _lastFoundNode)
         {
-          int currentOffset = _absoluteIndexOfFirstFoundNode - current.Value.RelativeOffsetSinceLastNode;
+          Debug.Assert(current != null,
+                       "Between _firstFoundNode & _lastFoundNode was a null node somehow.  This is bad");
 
-          while (current != _lastFoundNode)
+          int offsetSnapshot = current.Value.RelativeOffsetSinceLastNode;
+          totalAbsoluteOffset += offsetSnapshot;
+          yield return new FragmentAndOffset(current.Value, totalAbsoluteOffset);
+
+          // it's possible that the caller changed the relative offset by the time we return.  We always
+          // provide the "current" absolute index as it is when we yield it, therefore we need to include
+          // any changes that the caller changed.
+          // 
+          // Note that if the caller changes the offset of an earlier node (e.g. not the node that was
+          // just yielded) then we unfortunately do not track that (and we couldn't unless we wanted to
+          // re-iterate the entire collection) 
+          if (offsetSnapshot != current.Value.RelativeOffsetSinceLastNode)
           {
-            int offset = current.Value.RelativeOffsetSinceLastNode;
-            currentOffset += offset;
-            yield return new FragmentAndOffset(current.Value, currentOffset);
-
-            if (offset != current.Value.RelativeOffsetSinceLastNode)
-            {
-              currentOffset -= (offset - current.Value.RelativeOffsetSinceLastNode);
-            }
-
-            current = current.Next;
+            var offsetDifference = offsetSnapshot - current.Value.RelativeOffsetSinceLastNode;
+            totalAbsoluteOffset -= offsetDifference;
           }
 
-          currentOffset += current.Value.RelativeOffsetSinceLastNode;
-          yield return new FragmentAndOffset(current.Value, currentOffset);
+          current = current.Next;
         }
+
+        Debug.Assert(current != null,
+                     "This doesn't even make sense");
+
+        totalAbsoluteOffset += current.Value.RelativeOffsetSinceLastNode;
+        yield return new FragmentAndOffset(current.Value, totalAbsoluteOffset);
       }
     }
 
-    /// <summary> Contains a single SubFragmentNode and its absolute offset. </summary>
+    /// <summary>
+    ///  Contains a single SubFragmentNode and its absolute offset. Used by
+    ///  <see cref="GetAffectedNodes"/>
+    /// </summary>
     private struct FragmentAndOffset
     {
-      public FragmentAndOffset(SubFragmentNode node, int absoluteOffset)
+      public FragmentAndOffset(MarkupNodeReference node, int absoluteOffset)
       {
         Node = node;
         Range = new TextRange(absoluteOffset, absoluteOffset + Node.Length);
       }
 
-      public readonly SubFragmentNode Node;
+      public readonly MarkupNodeReference Node;
       public readonly TextRange Range;
     }
   }

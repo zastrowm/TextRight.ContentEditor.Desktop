@@ -4,8 +4,11 @@ using System.Linq;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
-  /// <summary> A sub fragment markup type. </summary>
-  public struct SubFragmentMarkupType
+  /// <summary>
+  ///  A type designator for <see cref="Markup"/> instances so that the original owner of the markup
+  ///  can be identified.
+  /// </summary>
+  public struct MarkupType
   {
     private readonly long _internalIndex;
 
@@ -16,7 +19,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="fullName"> The full name of the markup type. </param>
     /// <param name="keepOnInvalidation"> (Optional) True if the markup is kept even if the underlying
     ///  text changes. </param>
-    internal SubFragmentMarkupType(long internalIndex, string fullName, bool keepOnInvalidation = false)
+    internal MarkupType(long internalIndex, string fullName, bool keepOnInvalidation = false)
     {
       _internalIndex = internalIndex;
       _fullName = fullName;
@@ -28,7 +31,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     private bool KeepOnInvalidation { get; }
 
     /// <summary />
-    public bool Equals(SubFragmentMarkupType other)
+    public bool Equals(MarkupType other)
     {
       return _internalIndex == other._internalIndex &&
              string.Equals(_fullName, other._fullName, StringComparison.InvariantCultureIgnoreCase);
@@ -39,7 +42,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     {
       if (ReferenceEquals(null, obj))
         return false;
-      return obj is SubFragmentMarkupType && Equals((SubFragmentMarkupType)obj);
+      return obj is MarkupType && Equals((MarkupType)obj);
     }
 
     /// <inheritdoc/>

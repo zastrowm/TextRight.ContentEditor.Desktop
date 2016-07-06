@@ -4,16 +4,19 @@ using System.Linq;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
-  /// <summary> Contains a single range of markup for a fragment. </summary>
-  public class FragmentMarkup
+  /// <summary>
+  ///  Contains data that is tied to a specific range of data within a buffer, usually a
+  ///  <see cref="TextBlock"/> or <see cref="StyledTextFragment"/>.
+  /// </summary>
+  public class Markup
   {
     private int _absoluteIndex;
-    private readonly SubFragmentMarkupCollection.SubFragmentNode _node;
+    private readonly MarkupCollection.MarkupNodeReference _node;
     private ChangeIndex _changeIndex;
 
     /// <summary> Constructor. </summary>
     /// <param name="node"> The node for which this instance wraps. </param>
-    internal FragmentMarkup(SubFragmentMarkupCollection.SubFragmentNode node)
+    internal Markup(MarkupCollection.MarkupNodeReference node)
     {
       _node = node;
       // force the absolute index to be recalculated on demand
@@ -43,7 +46,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <summary> The type of the markup. </summary>
-    public SubFragmentMarkupType Type
+    public MarkupType Type
       => _node.Type;
 
     /// <summary> Any additional data that was added when the markup was created. </summary>
