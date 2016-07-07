@@ -16,7 +16,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     [SetUp]
     public void Setup()
     {
-      Block = new TextBlock()
+      Block = new ParagraphBlock()
               {
                 (a = new StyledTextFragment("123")),
                 (b = new StyledTextFragment("456")),

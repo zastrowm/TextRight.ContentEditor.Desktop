@@ -27,7 +27,7 @@ namespace TextRight.ContentEditor.Desktop.View
       // TODO make this not just for TextBlocks
       foreach (var block in _blockCollection.Children)
       {
-        Children.Add(new TextBlockView(_root, (TextBlock)block));
+        Children.Add(new ParagraphView(_root, (ParagraphBlock)block));
       }
     }
 
@@ -38,7 +38,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc />
     public void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling)
     {
-      var newBlockView = new TextBlockView(_root, (TextBlock)newBlock);
+      var newBlockView = new ParagraphView(_root, (ParagraphBlock)newBlock);
       Children.Insert(newBlock.Index, newBlockView);
     }
 
@@ -48,7 +48,7 @@ namespace TextRight.ContentEditor.Desktop.View
                                    Block oldNextSibiling,
                                    int indexOfBlockRemoved)
     {
-      var view = (TextBlockView)((TextBlock)blockRemoved).Target;
+      var view = (ParagraphView)((ParagraphBlock)blockRemoved).Target;
       Children.Remove(view);
     }
 

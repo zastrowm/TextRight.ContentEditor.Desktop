@@ -14,11 +14,11 @@ using TextRight.ContentEditor.Core.Utilities;
 namespace TextRight.ContentEditor.Desktop.View
 {
   /// <summary> View representation of a <see cref="Core.ObjectModel.Blocks.TextBlock"/> </summary>
-  public class TextBlockView : FrameworkElement,
+  public class ParagraphView : FrameworkElement,
                                ITextBlockView
   {
     private readonly DocumentEditorContextView _root;
-    private readonly TextBlock _block;
+    private readonly ParagraphBlock _block;
     private readonly List<StyledStyledTextSpanView> _spans;
 
     private FormattedText _formattedText;
@@ -31,7 +31,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <summary> Constructor. </summary>
     /// <param name="root"> The root view that this TextBox is ultimately a part of. </param>
     /// <param name="block"> The block that this view is for. </param>
-    public TextBlockView(DocumentEditorContextView root, TextBlock block)
+    public ParagraphView(DocumentEditorContextView root, ParagraphBlock block)
     {
       Margin = new Thickness(10);
 

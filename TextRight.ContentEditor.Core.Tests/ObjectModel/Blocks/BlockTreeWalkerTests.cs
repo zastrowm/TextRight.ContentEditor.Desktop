@@ -32,9 +32,9 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
                {
                  (a1 = new AddableBlockCollection()
                        {
-                         (a11 = new TextBlock()),
-                         (a12 = new TextBlock()),
-                         (a13 = new TextBlock()),
+                         (a11 = new ParagraphBlock()),
+                         (a12 = new ParagraphBlock()),
+                         (a13 = new ParagraphBlock()),
                        })
                }),
           (b = new AddableBlockCollection()
@@ -43,12 +43,12 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
                        {
                          (b11 = new AddableBlockCollection()
                                 {
-                                  (b111 = new TextBlock())
+                                  (b111 = new ParagraphBlock())
                                 }),
-                         (b12 = new TextBlock()),
+                         (b12 = new ParagraphBlock()),
                        })
                }),
-          (c = new TextBlock()),
+          (c = new ParagraphBlock()),
         };
 
     static BlockTreeWalkerTests()

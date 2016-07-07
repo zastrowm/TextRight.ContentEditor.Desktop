@@ -16,7 +16,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     protected BlockCollection()
     {
       // TODO don't append a text block?
-      _blockList = new BlockLinkedList(this, new TextBlock());
+      _blockList = new BlockLinkedList(this, new ParagraphBlock());
     }
 
     /// <summary> The blocks that exist in the collection. </summary>
@@ -189,20 +189,20 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
       if (cursor.IsAtEnd)
       {
-        secondaryBlock = new TextBlock();
+        secondaryBlock = new ParagraphBlock();
         InsertBlockAfter(targetBlock, secondaryBlock);
       }
       else if (cursor.IsAtBeginning)
       {
         secondaryBlock = targetBlock;
-        InsertBlockBefore(targetBlock, new TextBlock());
+        InsertBlockBefore(targetBlock, new ParagraphBlock());
       }
       else
       {
         var textBlockCursor = (TextBlockCursor)cursor;
         var fragments = textBlockCursor.ExtractToEnd();
 
-        var newTextBlock = new TextBlock();
+        var newTextBlock = new ParagraphBlock();
         secondaryBlock = newTextBlock;
 
         // TODO should this be done by AppendSpan automatically?

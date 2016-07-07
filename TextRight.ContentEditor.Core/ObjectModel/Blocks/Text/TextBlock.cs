@@ -6,46 +6,24 @@ using System.Linq;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
-using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
-  /// <summary> Hosts the view for the TextBlock. </summary>
-  public interface ITextBlockView : IDocumentItemView
-  {
-    /// <summary> Notifies the view that a fragment has been inserted. </summary>
-    /// <param name="previousSibling"> The fragment that precedes the new fragment. </param>
-    /// <param name="newFragment"> The fragment that is inserted. </param>
-    /// <param name="nextSibling"> The fragment that comes after the block that is being inserted. </param>
-    void NotifyBlockInserted(StyledTextFragment previousSibling,
-                             StyledTextFragment newFragment,
-                             StyledTextFragment nextSibling);
-
-    /// <summary> Returns the area consumed by the block. </summary>
-    /// <returns> A MeasuredRectangle representing the area required to display the block. </returns>
-    MeasuredRectangle MeasureBounds();
-  }
-
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
   /// </summary>
-  public class TextBlock : ContentBlock,
-                           IViewableObject<ITextBlockView>,
-                           IEnumerable<StyledTextFragment>,
-                           IEquatable<TextBlock>,
-                           IDocumentItem<ITextBlockView>
+  public abstract class TextBlock : ContentBlock,
+                                    IEnumerable<StyledTextFragment>,
+                                    IEquatable<TextBlock>
   {
     private readonly List<StyledTextFragment> _spans;
 
     /// <summary> Default constructor. </summary>
-    public TextBlock()
+    internal TextBlock()
     {
       _spans = new List<StyledTextFragment>();
       AppendSpan(new StyledTextFragment(""));
     }
-
-    /// <summary> The view associated with the TextBlock. </summary>
-    public ITextBlockView Target { get; set; }
 
     /// <summary> The number of fragments contained in this block. </summary>
     public int ChildCount
@@ -90,8 +68,16 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       _spans.Add(fragment);
       UpdateChildrenNumbering(Math.Max(fragment.Index - 1, 0));
 
-      Target?.NotifyBlockInserted(fragment.Previous, fragment, fragment.Next);
+      OnFragmentInserted(fragment.Previous, fragment, fragment.Next);
     }
+
+    /// <summary> Invoked when a new fragment is inserted into the textblock. </summary>
+    /// <param name="previous"> The fragment that precedes the inserted fragment, can be null. </param>
+    /// <param name="fragment"> The fragment that was inserted. </param>
+    /// <param name="next"> The fragment that follows the inserted fragment, can be null. </param>
+    protected abstract void OnFragmentInserted(StyledTextFragment previous,
+                                               StyledTextFragment fragment,
+                                               StyledTextFragment next);
 
     /// <summary> Appends all fragments to the text block.  </summary>
     /// <param name="fragments"> The fragments to add to the text block. </param>
@@ -157,18 +143,21 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public TextBlockCursor GetTextCursor()
       => new TextBlockCursor(this);
 
-    /// <inheritdoc />
-    public override string MimeType { get; }
-      = "text/plain";
-
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override Block Clone()
     {
-      var clone = new TextBlock();
+      var clone = SuperClone();
       clone._spans.Clear();
       clone.AppendAll(_spans.Select(s => s.Clone()));
       return clone;
     }
+
+    /// <summary>
+    ///  Clones the block, returning a copy of the block so that <see cref="TextBlock"/> can add the
+    ///  text to the block.
+    /// </summary>
+    /// <returns> A TextBlock. </returns>
+    protected abstract TextBlock SuperClone();
 
     /// <inheritdoc />
     public override SerializeNode SerializeAsNode()
@@ -188,9 +177,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public override BlockType BlockType
       => BlockType.TextBlock;
 
-    /// <inheritdoc />
-    protected override IDocumentItemView DocumentItemView
-      => Target;
+    ///// <summary> The view for the block. </summary>
+    //internal abstract ITextBlockView TargetTextBlockView { get; }
 
     /// <inheritdoc/>
     public IEnumerator<StyledTextFragment> GetEnumerator()
@@ -280,12 +268,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       Debug.Assert(index == elements.Length);
 
       return elements;
-    }
-
-    /// <inheritdoc />
-    public override MeasuredRectangle GetBounds()
-    {
-      return Target?.MeasureBounds() ?? MeasuredRectangle.Invalid;
     }
 
     /// <inheritdoc />

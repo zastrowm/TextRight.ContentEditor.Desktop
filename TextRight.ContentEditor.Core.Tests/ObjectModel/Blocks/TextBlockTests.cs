@@ -18,7 +18,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       var index = content.IndexOf("|");
       content = content.Replace("|", "");
 
-      _block = new TextBlock();
+      _block = new ParagraphBlock();
       _cursor = (TextBlockCursor)_block.GetCursor();
       _cursor.MoveToBeginning();
       ((TextBlockCursor)_cursor).InsertText(content);
@@ -38,7 +38,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     [Test]
     public void ByDefault_HasSingleSpan()
     {
-      var block = new TextBlock();
+      var block = new ParagraphBlock();
 
       Assert.That(block.Count(), Is.EqualTo(1));
     }

@@ -15,7 +15,7 @@ namespace TextRight.ContentEditor.Core.Tests
     [SetUp]
     public void Setup()
     {
-      _textBlock = new TextBlock();
+      _textBlock = new ParagraphBlock();
       var cursor = _textBlock.GetTextCursor().ToBeginning();
       cursor.InsertText("This is the beginning of the paragraph");
     }

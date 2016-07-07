@@ -16,9 +16,9 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     {
       _collection = new AddableBlockCollection()
                     {
-                      new TextBlock()
+                      new ParagraphBlock()
                         .WithText("This is line #1"),
-                      new TextBlock()
+                      new ParagraphBlock()
                         .WithText("This is line #2")
                     }
         .RemoveFirstChilds();

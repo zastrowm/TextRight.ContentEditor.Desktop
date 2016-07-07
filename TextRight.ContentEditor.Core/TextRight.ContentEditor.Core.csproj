@@ -59,9 +59,12 @@
     <Compile Include="Editing\Commands\UndoCommand.cs" />
     <Compile Include="ObjectModel\Blocks\Text\ContentBlock.cs" />
     <Compile Include="ObjectModel\Blocks\Text\IMarkupCollectionOwner.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\ITextBlockView.cs" />
     <Compile Include="ObjectModel\Blocks\Text\MarkupCollection.cs" />
     <Compile Include="ObjectModel\Blocks\Text\Markup.cs" />
     <Compile Include="ObjectModel\Blocks\Text\MarkupType.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\ParagraphBlock.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\TextBlockBase.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextModification.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextRange.cs" />
     <Compile Include="ObjectModel\Cursors\CaretMovementMode.cs" />

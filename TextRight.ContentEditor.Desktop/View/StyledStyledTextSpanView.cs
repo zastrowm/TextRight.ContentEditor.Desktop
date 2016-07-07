@@ -14,15 +14,15 @@ namespace TextRight.ContentEditor.Desktop.View
   public class StyledStyledTextSpanView : Run,
                                           IStyledTextSpanView
   {
-    private readonly TextBlockView _textBlockView;
+    private readonly ParagraphView _paragraphView;
     private readonly StyledTextFragment _fragment;
 
     /// <summary> Constructor. </summary>
-    /// <param name="textBlockView"></param>
+    /// <param name="paragraphView"></param>
     /// <param name="fragment"> The span to keep synchronized. </param>
-    public StyledStyledTextSpanView(TextBlockView textBlockView, StyledTextFragment fragment)
+    public StyledStyledTextSpanView(ParagraphView paragraphView, StyledTextFragment fragment)
     {
-      _textBlockView = textBlockView;
+      _paragraphView = paragraphView;
       _fragment = fragment;
       _fragment.Target = this;
 
@@ -34,7 +34,7 @@ namespace TextRight.ContentEditor.Desktop.View
       => _fragment;
 
     /// <summary>
-    ///  This should only be set by <see cref="TextBlockView"/>.  Represents the offset into the view
+    ///  This should only be set by <see cref="ParagraphView"/>.  Represents the offset into the view
     ///  that this span represents.
     /// </summary>
     internal int CharacterOffsetIntoTextView { get; set; }
@@ -43,18 +43,18 @@ namespace TextRight.ContentEditor.Desktop.View
     public void TextUpdated(StyledTextFragment fragment)
     {
       Text = _fragment.Text;
-      _textBlockView.MarkTextChanged(fragment);
+      _paragraphView.MarkTextChanged(fragment);
     }
 
     /// <inheritdoc/>
     public MeasuredRectangle Measure(int offset)
     {
-      return _textBlockView.MeasureCharacter(this, offset);
+      return _paragraphView.MeasureCharacter(this, offset);
     }
 
     public void Detach()
     {
-      _textBlockView.MarkRemoved(this);
+      _paragraphView.MarkRemoved(this);
       // TODO we should recycle this view (pool it)?
       _fragment.Target = null;
     }
