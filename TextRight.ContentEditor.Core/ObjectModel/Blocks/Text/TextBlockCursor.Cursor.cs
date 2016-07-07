@@ -247,7 +247,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return new TextBlockCursor(block);
     }
 
-    /// <inheritdoc c/>
+    /// <inheritdoc />
     protected override void MoveToOverride(TextBlockCursor cursor)
     {
       State = cursor.State;

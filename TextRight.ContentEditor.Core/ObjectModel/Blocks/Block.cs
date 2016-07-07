@@ -77,10 +77,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// </summary>
     internal Block PreviousBlock { get; set; }
 
-    /// <summary> Gets the view associated with the block. </summary>
-    /// <value> The view associated with the item. </value>
-    protected abstract IDocumentItemView DocumentItemView { get; }
-
     /// <summary> Gets the bounds of the block. </summary>
     /// <returns> The bounds that encompass the area consumed by the block. </returns>
     public abstract MeasuredRectangle GetBounds();

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -90,8 +89,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.
     /// </summary>
-    [CanBeNull]
     public IStyledTextSpanView Target { get; set; }
+
+    /// <inheritdoc />
+    IDocumentItemView IDocumentItem.DocumentItemView
+      => Target;
 
     /// <summary> Detach the fragment from any views. </summary>
     public void Detach()

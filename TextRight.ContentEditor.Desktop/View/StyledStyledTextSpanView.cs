@@ -14,13 +14,13 @@ namespace TextRight.ContentEditor.Desktop.View
   public class StyledStyledTextSpanView : Run,
                                           IStyledTextSpanView
   {
-    private readonly ParagraphView _paragraphView;
+    private readonly BaseTextBlockView _paragraphView;
     private readonly StyledTextFragment _fragment;
 
     /// <summary> Constructor. </summary>
     /// <param name="paragraphView"></param>
     /// <param name="fragment"> The span to keep synchronized. </param>
-    public StyledStyledTextSpanView(ParagraphView paragraphView, StyledTextFragment fragment)
+    public StyledStyledTextSpanView(BaseTextBlockView paragraphView, StyledTextFragment fragment)
     {
       _paragraphView = paragraphView;
       _fragment = fragment;
@@ -49,6 +49,9 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc/>
     public MeasuredRectangle Measure(int offset)
     {
+      if (!_paragraphView.IsMeasureValid)
+        return MeasuredRectangle.Invalid;
+
       return _paragraphView.MeasureCharacter(this, offset);
     }
 

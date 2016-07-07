@@ -10,6 +10,7 @@ using System.Windows.Media;
 using TextRight.ContentEditor.Core;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.Editing.Actions;
+using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using Block = TextRight.ContentEditor.Core.ObjectModel.Blocks.Block;
@@ -68,6 +69,11 @@ namespace TextRight.ContentEditor.Desktop.View
 
       _keyCommands = new KeyboardShortcutCollection()
                      {
+                       // paragraph commands
+                       {
+                         ModifierKeys.Control, Key.D1, new ConvertToHeadingCommand()
+                       },
+
                        // editing commands
                        {
                          Key.Enter, new IContextualCommand[]
@@ -123,6 +129,10 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <summary> A ChangeIndex which marks when changes to the document layout has occurred. </summary>
     public ChangeIndex LayoutChangeIndex
       => _layoutChangeIndex;
+
+    /// <summary> The view-factory for this instance. </summary>
+    public ViewFactory ViewFactory
+      = new ViewFactory();
 
     /// <summary>
     ///  Changes <see cref="LayoutChangeIndex"/> to indicate that a change to the layout of the document has
@@ -201,7 +211,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
       // TODO, do something with mouse events
       e.Handled = true;
-
+      
       UpdateCaretPosition();
     }
 

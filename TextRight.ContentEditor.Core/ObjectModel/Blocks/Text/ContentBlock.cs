@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.ContentEditor.Core.Editing;
+using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -19,6 +20,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public IBlockContentCursor GetCursor()
     {
       return CursorPool.Borrow(this);
+    }
+
+    /// <summary> Shorthand for block.CursorPool.GetCursorCopy(block); </summary>
+    public CursorCopy GetCursorCopy()
+    {
+      return CursorPool.GetCursorCopy(this);
     }
 
     /// <summary> Gets a block-specific iterator. </summary>

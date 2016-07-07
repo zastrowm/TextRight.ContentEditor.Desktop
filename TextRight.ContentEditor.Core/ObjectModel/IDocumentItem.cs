@@ -8,7 +8,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel
   /// <summary> An item that exists in the Document ObjectModel. </summary>
   public interface IDocumentItem
   {
-    
+    /// <summary> Gets the raw target. </summary>
+    IDocumentItemView DocumentItemView { get; }
   }
 
   /// <summary> An item that exists in the Document ObjectModel. </summary>

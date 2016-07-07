@@ -58,6 +58,26 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       OnBlockInserted(newBlock.PreviousBlock, newBlock, afterBlock);
     }
 
+    /// <summary> Replaces an existing block with the new block. </summary>
+    /// <param name="targetBlock"> The block that is being replaced. </param>
+    /// <param name="newBlock"> The new block that is replacing the original block. </param>
+    public void Replace(Block targetBlock, Block newBlock)
+    {
+      // TODO this isn't safe for all collections
+      var next = targetBlock.NextBlock;
+
+      RemoveBlock(targetBlock);
+
+      if (next == null)
+      {
+        Append(newBlock);
+      }
+      else
+      {
+        InsertBlockBefore(next, newBlock);
+      }
+    }
+
     /// <summary> Removes the given block from the collection. </summary>
     /// <param name="block"> The block to remove from the collection. </param>
     public void RemoveBlock(Block block)

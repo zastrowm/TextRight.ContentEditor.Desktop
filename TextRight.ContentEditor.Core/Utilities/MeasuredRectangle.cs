@@ -40,7 +40,7 @@ namespace TextRight.ContentEditor.Core.Utilities
 
     /// <summary> True if the rectangle has a valid width and height. </summary>
     public bool IsValid
-      => Width > 0 && Height > 0;
+      => Width > 0 || Height > 0;
 
     /// <summary> Gets a point that represents the center of the given point. </summary>
     public DocumentPoint Center

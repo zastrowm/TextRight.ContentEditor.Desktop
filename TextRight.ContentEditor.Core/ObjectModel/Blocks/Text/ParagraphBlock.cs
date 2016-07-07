@@ -15,6 +15,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <inheritdoc />
     public override string MimeType { get; }
-      = "text/plain";
+      = "text/plain+paragraph";
   }
 }

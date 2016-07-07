@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using TextRight.ContentEditor.Core.Utilities;
-using TextBlock = TextRight.ContentEditor.Core.ObjectModel.Blocks.TextBlock;
 
 namespace TextRight.ContentEditor.Desktop.View
 {
@@ -38,7 +37,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc />
     public void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling)
     {
-      var newBlockView = new ParagraphView(_root, (ParagraphBlock)newBlock);
+      var newBlockView = _root.ViewFactory.GetViewFor(_root, newBlock);
       Children.Insert(newBlock.Index, newBlockView);
     }
 
@@ -48,7 +47,7 @@ namespace TextRight.ContentEditor.Desktop.View
                                    Block oldNextSibiling,
                                    int indexOfBlockRemoved)
     {
-      var view = (ParagraphView)((ParagraphBlock)blockRemoved).Target;
+      var view = (FrameworkElement)((IDocumentItem)blockRemoved).DocumentItemView;
       Children.Remove(view);
     }
 

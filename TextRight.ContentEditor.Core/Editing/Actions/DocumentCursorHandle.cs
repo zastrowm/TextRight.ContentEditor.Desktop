@@ -17,6 +17,13 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
 
     /// <summary> Constructor. </summary>
     /// <param name="cursor"> The cursor that should be serialized for later use. </param>
+    public DocumentCursorHandle(ReadonlyCursor cursor)
+    {
+      _serializedCursor = cursor.Serialize();
+    }
+
+    /// <summary> Constructor. </summary>
+    /// <param name="cursor"> The cursor that should be serialized for later use. </param>
     public DocumentCursorHandle(DocumentCursor cursor)
     {
       _serializedCursor = cursor.Cursor.Serialize();
@@ -46,6 +53,14 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     ///  Implicit cast that converts the given DocumentCursor to a DocumentCursorHandle.
     /// </summary>
     public static implicit operator DocumentCursorHandle(DocumentCursor cursor)
+    {
+      return new DocumentCursorHandle(cursor);
+    }
+
+    /// <summary>
+    ///  Implicit cast that converts the given DocumentCursor to a DocumentCursorHandle.
+    /// </summary>
+    public static implicit operator DocumentCursorHandle(ReadonlyCursor cursor)
     {
       return new DocumentCursorHandle(cursor);
     }

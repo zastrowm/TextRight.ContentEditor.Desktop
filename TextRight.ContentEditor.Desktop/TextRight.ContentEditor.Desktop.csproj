@@ -58,12 +58,15 @@
     <Compile Include="App\DocumentEditor.xaml.cs">
       <DependentUpon>DocumentEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\BaseTextBlockView.cs" />
     <Compile Include="View\DocumentEditorContextView.cs" />
     <Compile Include="View\DocumentCursorView.cs" />
+    <Compile Include="View\HeadingBlockView.cs" />
     <Compile Include="View\VerticalBlockCollectionView.cs" />
     <Compile Include="View\KeyboardShortcutCollection.cs" />
     <Compile Include="View\ParagraphView.cs" />
     <Compile Include="View\StyledStyledTextSpanView.cs" />
+    <Compile Include="View\ViewFactory.cs" />
     <Page Include="App\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

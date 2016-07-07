@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -67,6 +68,11 @@ namespace TextRight.ContentEditor.Desktop.View
     public void NotifyChanged()
     {
       var start = _cursor.Cursor.MeasureCursorPosition();
+      if (!start.IsValid)
+      {
+        // TODO
+        return;
+      }
 
       if (_cursor.HasSelection)
       {

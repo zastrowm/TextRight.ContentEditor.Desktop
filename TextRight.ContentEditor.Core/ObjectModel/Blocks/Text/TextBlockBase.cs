@@ -16,7 +16,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public TBlockView Target { get; set; }
 
     /// <inheritdoc />
-    protected override IDocumentItemView DocumentItemView
+    IDocumentItemView IDocumentItem.DocumentItemView
       => Target;
 
     /// <inheritdoc />

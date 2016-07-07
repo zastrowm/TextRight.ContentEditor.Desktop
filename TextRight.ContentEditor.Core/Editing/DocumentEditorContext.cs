@@ -51,6 +51,10 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <summary> The View that is currently attached to the item. </summary>
     public IDocumentEditorView Target { get; set; }
 
+    /// <inheritdoc />
+    IDocumentItemView IDocumentItem.DocumentItemView
+      => Target;
+
     /// <summary> True if the current selection should be extended. </summary>
     public bool IsSelectionExtendActive
     {
