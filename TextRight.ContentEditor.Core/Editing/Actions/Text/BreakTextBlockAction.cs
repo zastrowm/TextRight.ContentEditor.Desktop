@@ -28,28 +28,35 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <inheritdoc />
     public override void Do(DocumentEditorContext context)
     {
-      var blockCursor = _handle.Get(context);
-      var blockCollection = blockCursor.Block.Parent;
+      using (var copy = _handle.Get(context))
+      {
+        var blockCursor = copy.Cursor;
+        var blockCollection = blockCursor.Block.Parent;
 
-      var newBlock = blockCollection.TryBreakBlock(blockCursor);
-      if (newBlock == null)
-        return;
+        var newBlock = blockCollection.TryBreakBlock(blockCursor);
+        if (newBlock == null)
+          return;
 
-      context.Caret.MoveTo(newBlock.GetCursor().ToBeginning());
+        context.Caret.MoveTo(newBlock.GetCursor().ToBeginning());
+      }
+      
     }
 
     /// <inheritdoc />
     public override void Undo(DocumentEditorContext context)
     {
-      var blockCursor = _handle.Get(context);
-      var previousBlock = blockCursor.Block;
-      var nextBlock = previousBlock.NextBlock;
+      using (var copy = _handle.Get(context))
+      {
+        var blockCursor = copy.Cursor;
+        var previousBlock = blockCursor.Block;
+        var nextBlock = previousBlock.NextBlock;
 
-      nextBlock.Parent.MergeWithPrevious(nextBlock);
+        nextBlock.Parent.MergeWithPrevious(nextBlock);
 
-      // move it to where it was when we wanted to break the paragraph.  It's safer to deserialize
-      // again, as the cursor above is not guaranteed to be valid. 
-      context.Caret.MoveTo(_handle.Get(context));
+        // move it to where it was when we wanted to break the paragraph.  It's safer to deserialize
+        // again, as the cursor above is not guaranteed to be valid. 
+        context.Caret.MoveTo(_handle.Get(context));
+      }
     }
   }
 }

@@ -34,24 +34,24 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <inheritdoc />
     public override void Do(DocumentEditorContext context)
     {
-      var textBlockCursor = GetTextCursor(context);
-      textBlockCursor.InsertText(Text);
+      using (var copy = _insertionPoint.Get(context))
+      {
+        var textBlockCursor = (TextBlockCursor)copy.Cursor;
+        textBlockCursor.InsertText(Text);
 
-      context.Caret.MoveTo(textBlockCursor);
+        context.Caret.MoveTo(textBlockCursor);
+      }
     }
 
     /// <inheritdoc />
     public override void Undo(DocumentEditorContext context)
     {
-      var textBlockCursor = GetTextCursor(context);
-      textBlockCursor.DeleteText(Text.Length);
-      context.Caret.MoveTo(textBlockCursor);
-    }
-
-    /// <summary> Turn the cursor handle into a text cursor. </summary>
-    private TextBlockCursor GetTextCursor(DocumentEditorContext context)
-    {
-      return (TextBlockCursor)_insertionPoint.Get(context);
+      using (var copy = _insertionPoint.Get(context))
+      {
+        var textBlockCursor = (TextBlockCursor)copy.Cursor;
+        textBlockCursor.DeleteText(Text.Length);
+        context.Caret.MoveTo(textBlockCursor);
+      }
     }
 
     /// <inheritdoc/>
@@ -75,48 +75,56 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
 
     private bool TryMergeWith(DocumentEditorContext context, InsertTextUndoableAction action)
     {
-      var myCursor = (TextBlockCursor)_insertionPoint.Get(context);
-      var otherCursor = (TextBlockCursor)action._insertionPoint.Get(context);
+      using (var myCopy = _insertionPoint.Get(context))
+      using (var otherCopy = action._insertionPoint.Get(context))
+      {
+        var myCursor = (TextBlockCursor)myCopy.Cursor;
+        var otherCursor = (TextBlockCursor)otherCopy.Cursor;
 
-      if (myCursor.Block != otherCursor.Block)
-        return false;
+        if (myCursor.Block != otherCursor.Block)
+          return false;
 
-      if (myCursor.Fragment != otherCursor.Fragment)
-        return false;
+        if (myCursor.Fragment != otherCursor.Fragment)
+          return false;
 
-      if (myCursor.OffsetIntoSpan + Text.Length != otherCursor.OffsetIntoSpan)
-        return false;
+        if (myCursor.OffsetIntoSpan + Text.Length != otherCursor.OffsetIntoSpan)
+          return false;
 
-      Text += action.Text;
+        Text += action.Text;
 
-      return true;
+        return true;
+      }
     }
 
     private bool TryMergeWith(DocumentEditorContext context, DeletePreviousCharacterAction action)
     {
-      var myCursor = (TextBlockCursor)_insertionPoint.Get(context);
-      var otherCursor = (TextBlockCursor)action.CursorHandle.Get(context);
+      using (var myCopy = _insertionPoint.Get(context))
+      using (var otherCopy = action.CursorHandle.Get(context))
+      {
+        var myCursor = (TextBlockCursor)myCopy.Cursor;
+        var otherCursor = (TextBlockCursor)otherCopy.Cursor;
 
-      if (Text.Length == 0)
-        return false;
+        if (Text.Length == 0)
+          return false;
 
-      if (!Text.EndsWith(action.OriginalText))
-        return false;
+        if (!Text.EndsWith(action.OriginalText))
+          return false;
 
-      if (myCursor.Block != otherCursor.Block)
-        return false;
+        if (myCursor.Block != otherCursor.Block)
+          return false;
 
-      if (myCursor.Fragment != otherCursor.Fragment)
-        return false;
+        if (myCursor.Fragment != otherCursor.Fragment)
+          return false;
 
-      var insertionPointAfterInsert = myCursor.OffsetIntoSpan + Text.Length;
-      var insertionPointAtDeletion = otherCursor.OffsetIntoSpan;
+        var insertionPointAfterInsert = myCursor.OffsetIntoSpan + Text.Length;
+        var insertionPointAtDeletion = otherCursor.OffsetIntoSpan;
 
-      if (insertionPointAfterInsert != insertionPointAtDeletion)
-        return false;
+        if (insertionPointAfterInsert != insertionPointAtDeletion)
+          return false;
 
-      Text = Text.Remove(Text.Length - action.OriginalText.Length, action.OriginalText.Length);
-      return true;
+        Text = Text.Remove(Text.Length - action.OriginalText.Length, action.OriginalText.Length);
+        return true;
+      }
     }
 
     private bool TryMergeWith(DocumentEditorContext context, DeleteNextCharacterAction action)

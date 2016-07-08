@@ -41,7 +41,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// </summary>
     /// <param name="context"> The context for which the cursor is valid. </param>
     /// <returns> A DocumentCursor. </returns>
-    public IBlockContentCursor Get(DocumentEditorContext context)
+    public CursorCopy Get(DocumentEditorContext context)
     {
       // TODO if we're at the same revision # as when we created the cursor, we don't have to
       // deserialize we can use the original cursor. 

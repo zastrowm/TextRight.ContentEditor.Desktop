@@ -28,15 +28,22 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <inheritdoc />
     public override void Do(DocumentEditorContext context)
     {
-      var cursor = (TextBlockCursor)_cursorHandle.Get(context);
-      cursor.DeleteText(1);
+      using (var copy = _cursorHandle.Get(context))
+      {
+        var cursor = (TextBlockCursor)copy.Cursor;
+        cursor.DeleteText(1);
+      }
+     
     }
 
     /// <inheritdoc />
     public override void Undo(DocumentEditorContext context)
     {
-      var cursor = (TextBlockCursor)_cursorHandle.Get(context);
-      cursor.InsertText(_originalText);
+      using (var copy = _cursorHandle.Get(context))
+      {
+        var cursor = (TextBlockCursor)copy.Cursor;
+        cursor.InsertText(_originalText);
+      }
     }
   }
 }

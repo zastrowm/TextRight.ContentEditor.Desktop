@@ -190,7 +190,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <inheritdoc/>
     public override ISerializedBlockCursor Serialize()
-      => new SerializedData(this);
+      => new SerializedCursor(this);
 
     /// <inheritdoc/>
     public bool CanInsertText()
@@ -290,27 +290,22 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <summary> The cursor's serialized data. </summary>
-    private class SerializedData : ISerializedBlockCursor
+    private class SerializedCursor : BaseSerializedCursor<TextBlockCursor>
     {
       private readonly int _spanId;
       private readonly int _offset;
-      private readonly BlockPath _path;
 
-      public SerializedData(TextBlockCursor cursor)
+      public SerializedCursor(TextBlockCursor cursor)
+        : base(cursor)
       {
         _spanId = cursor.Fragment.Index;
         _offset = cursor.OffsetIntoSpan;
-        _path = cursor.Block.GetBlockPath();
       }
 
-      public IBlockContentCursor Deserialize(DocumentOwner owner)
+      public override void Deserialize(TextBlockCursor cursor)
       {
-        var block = (TextBlock)_path.Get(owner);
-        return new TextBlockCursor(block)
-               {
-                 OffsetIntoSpan = _offset,
-                 Fragment = block.GetSpanAtIndex(_spanId),
-               };
+        cursor.OffsetIntoSpan = _offset;
+        cursor.Fragment = cursor.Block.GetSpanAtIndex(_spanId);
       }
     }
   }

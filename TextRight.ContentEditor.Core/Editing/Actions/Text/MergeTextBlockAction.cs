@@ -51,12 +51,15 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     /// <inheritdoc />
     public override void Undo(DocumentEditorContext context)
     {
-      var breakSpot = _endOfPreviousBlockHandle.Get(context);
+      using (var breakSpotCopy = _endOfPreviousBlockHandle.Get(context))
+      {
+        var breakSpot = breakSpotCopy.Cursor;
 
-      var previousBlock = _previousPath.Get(context.Document);
-      previousBlock.Parent.TryBreakBlock(breakSpot);
+        var previousBlock = _previousPath.Get(context.Document);
+        previousBlock.Parent.TryBreakBlock(breakSpot);
 
-      context.Caret.MoveTo(_originalCaretPosition.Get(context));
+        context.Caret.MoveTo(_originalCaretPosition.Get(context));
+      }
     }
   }
 }

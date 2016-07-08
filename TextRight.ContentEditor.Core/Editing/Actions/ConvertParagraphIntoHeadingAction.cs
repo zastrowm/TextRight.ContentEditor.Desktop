@@ -39,15 +39,19 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
 
     private void ReplaceCurrentTextBlockWith(DocumentEditorContext context, TextBlock newBlock)
     {
-      // we really only need the block to extract the contents
-      var cursor = (TextBlockCursor)_handle.Get(context);
-      var targetBlock = (TextBlock)cursor.Block;
+      using (var copy = _handle.Get(context))
+      {
+        // we really only need the block to extract the contents
+        var cursor = (TextBlockCursor)copy.Cursor;
+        var targetBlock = cursor.Block;
 
-      targetBlock.MoveTextInto(newBlock);
+        targetBlock.MoveTextInto(newBlock);
 
-      targetBlock.Parent.Replace(targetBlock, newBlock);
+        targetBlock.Parent.Replace(targetBlock, newBlock);
 
-      context.Caret.MoveTo(_handle.Get(context));
+        context.Caret.MoveTo(_handle.Get(context));
+      }
+      
     }
   }
 }
