@@ -41,11 +41,9 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     {
       // we really only need the block to extract the contents
       var cursor = (TextBlockCursor)_handle.Get(context);
-      var targetBlock = cursor.Block;
-      cursor.MoveToBeginning();
+      var targetBlock = (TextBlock)cursor.Block;
 
-      var contents = cursor.ExtractToEnd();
-      newBlock.AppendAll(contents);
+      targetBlock.MoveTextInto(newBlock);
 
       targetBlock.Parent.Replace(targetBlock, newBlock);
 
