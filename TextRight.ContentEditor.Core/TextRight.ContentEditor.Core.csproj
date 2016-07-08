@@ -48,8 +48,8 @@
     <Compile Include="Editing\Actions\ActionStack.cs" />
     <Compile Include="Editing\Actions\Text\BreakTextBlockAction.cs" />
     <Compile Include="Editing\Actions\Text\DeleteNextCharacterAction.cs" />
-    <Compile Include="Editing\Actions\ConvertParagraphIntoHeadingAction.cs" />
-    <Compile Include="Editing\Commands\ConvertToHeadingCommand.cs" />
+    <Compile Include="Editing\Actions\ConvertTextBlockIntoHeadingAction.cs" />
+    <Compile Include="Editing\Commands\ConvertToLevel1HeadingCommand.cs" />
     <Compile Include="Editing\Commands\Text\DeletePreviousCharacterCommand.cs" />
     <Compile Include="Editing\Commands\Text\DeleteNextCharacterCommand.cs" />
     <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />
@@ -68,6 +68,7 @@
     <Compile Include="ObjectModel\Blocks\Text\MarkupType.cs" />
     <Compile Include="ObjectModel\Blocks\Text\ParagraphBlock.cs" />
     <Compile Include="ObjectModel\Blocks\Text\BaseSerializedCursor.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\TextBlockAttributes.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextBlockBase.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextModification.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextRange.cs" />

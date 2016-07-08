@@ -17,6 +17,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Serialization
     {
       Type = type.Name;
       Children = new List<SerializeNode>();
+      Attributes = new Dictionary<string, string>();
     }
 
     /// <summary> The type of object serialized. </summary>
@@ -27,5 +28,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Serialization
 
     /// <summary> Any data that needs to be associated with the node. </summary>
     public string Data { get; set; }
+
+    /// <summary> Any attributes to associated with the node. </summary>
+    public Dictionary<string, string> Attributes { get; set; }
   }
 }

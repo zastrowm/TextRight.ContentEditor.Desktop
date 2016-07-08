@@ -47,6 +47,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return new TextBlockCursor(this);
     }
 
+    /// <summary> Gets the unique values of the given TextBlock class. </summary>
+    /// <returns> The attributes unique to the TextBlock type/instance. </returns>
+    public abstract TextBlockAttributes GetAttributes();
+
     /// <summary> Appends the given span to the TextBlock. </summary>
     /// <param name="fragment"> The span to add. </param>
     /// <param name="autoMerge"> True to automatically merge similar fragments together. </param>
@@ -170,15 +174,18 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         node.Children.Add(subSpanNode);
       }
 
+      SerializeToNode(node);
+
       return node;
     }
+
+    /// <summary> Serializes any extra data that needs to be serialized. </summary>
+    /// <param name="node"> The node to which the data should be serialized. </param>
+    protected abstract void SerializeToNode(SerializeNode node);
 
     /// <inheritdoc/>
     public override BlockType BlockType
       => BlockType.TextBlock;
-
-    ///// <summary> The view for the block. </summary>
-    //internal abstract ITextBlockView TargetTextBlockView { get; }
 
     /// <inheritdoc/>
     public IEnumerator<StyledTextFragment> GetEnumerator()

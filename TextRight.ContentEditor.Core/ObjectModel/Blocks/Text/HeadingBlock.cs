@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -24,6 +25,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return new HeadingBlock();
     }
 
+    /// <inheritdoc/>
+    protected override void SerializeToNode(SerializeNode node)
+    {
+      node.Attributes.Add("HeadingLevel", HeadingLevel.ToString());
+    }
+
     /// <inheritdoc />
     public override string MimeType { get; }
       = "text/plain+heading";
@@ -36,6 +43,31 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       {
         _headingLevel = value;
         Target?.NotifyLevelChanged();
+      }
+    }
+
+    /// <inheritdoc />
+    public override TextBlockAttributes GetAttributes()
+    {
+      return new Attributes(this);
+    }
+
+    /// <summary />
+    private class Attributes : TextBlockAttributes
+    {
+      private readonly int _level;
+
+      public Attributes(HeadingBlock block)
+      {
+        _level = block.HeadingLevel;
+      }
+
+      public override TextBlock CreateInstance()
+      {
+        return new HeadingBlock()
+               {
+                 HeadingLevel = _level
+               };
       }
     }
   }

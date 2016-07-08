@@ -9,7 +9,7 @@ namespace TextRight.ContentEditor.Desktop.View
 {
   /// <summary />
   public class HeadingBlockView : BaseTextBlockView,
-                             IHeadingBlockView
+                                  IHeadingBlockView
   {
     private readonly HeadingBlock _block;
 
@@ -19,7 +19,13 @@ namespace TextRight.ContentEditor.Desktop.View
       _block = block;
       _block.Target = this;
 
-      TextFont = new Typeface("Calibre");
+      SyncTextSize();
+      TextFont = new Typeface("Segoe UI Semibold");
+    }
+
+    private void SyncTextSize()
+    {
+      TextFontSize = 20 - _block.HeadingLevel;
     }
 
     /// <inheritdoc />
@@ -29,7 +35,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc/>
     public void NotifyLevelChanged()
     {
-      // TODO
+      SyncTextSize();
     }
   }
 }

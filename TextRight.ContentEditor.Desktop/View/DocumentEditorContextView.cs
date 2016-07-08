@@ -10,7 +10,6 @@ using System.Windows.Media;
 using TextRight.ContentEditor.Core;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.Editing.Actions;
-using TextRight.ContentEditor.Core.Editing.Commands;
 using TextRight.ContentEditor.Core.ObjectModel;
 using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 using Block = TextRight.ContentEditor.Core.ObjectModel.Blocks.Block;
@@ -71,7 +70,19 @@ namespace TextRight.ContentEditor.Desktop.View
                      {
                        // paragraph commands
                        {
-                         ModifierKeys.Control, Key.D1, new ConvertToHeadingCommand()
+                         ModifierKeys.Control, Key.D1, new ConvertToLevelHeadingCommand(1)
+                       },
+                       {
+                         ModifierKeys.Control, Key.D2, new ConvertToLevelHeadingCommand(2)
+                       },
+                       {
+                         ModifierKeys.Control, Key.D3, new ConvertToLevelHeadingCommand(3)
+                       },
+                       {
+                         ModifierKeys.Control, Key.D4, new ConvertToLevelHeadingCommand(4)
+                       },
+                       {
+                         ModifierKeys.Control, Key.D5, new ConvertToLevelHeadingCommand(5)
                        },
 
                        // editing commands

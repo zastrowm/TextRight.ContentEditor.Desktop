@@ -26,6 +26,7 @@ namespace TextRight.ContentEditor.Desktop.View
     private Point _cachedOffset;
     private MeasuredRectangle[] _cachedSizes;
     private Typeface _textFont;
+    private int _textFontSize;
 
     /// <summary> Constructor. </summary>
     /// <param name="root"> The root view that this TextBox is ultimately a part of. </param>
@@ -35,6 +36,7 @@ namespace TextRight.ContentEditor.Desktop.View
       _root = root;
       _spans = new List<StyledStyledTextSpanView>();
       _textFont = new Typeface("Times New Roman");
+      _textFontSize = 16;
 
       foreach (var span in block)
       {
@@ -50,6 +52,16 @@ namespace TextRight.ContentEditor.Desktop.View
       set
       {
         _textFont = value;
+        RecreateText();
+      }
+    }
+
+    protected int TextFontSize
+    {
+      get { return _textFontSize; }
+      set
+      {
+        _textFontSize = value;
         RecreateText();
       }
     }
@@ -179,7 +191,7 @@ namespace TextRight.ContentEditor.Desktop.View
                                          CultureInfo.CurrentCulture,
                                          FlowDirection.LeftToRight,
                                          TextFont,
-                                         16,
+                                         _textFontSize,
                                          Brushes.Black,
                                          null,
                                          TextFormattingMode.Display)

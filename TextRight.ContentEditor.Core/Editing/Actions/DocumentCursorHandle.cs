@@ -65,4 +65,19 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       return new DocumentCursorHandle(cursor);
     }
   }
+
+  /// <summary> Extension methods related to <see cref="DocumentCursorHandle"/> </summary>
+  public static class DocumentCursorHandleExtensions
+  {
+    /// <summary>
+    ///  Moves to he cursor to point to the location given by <paramref name="handle"/>.
+    /// </summary>
+    public static void MoveTo(this DocumentCursor cursor, DocumentCursorHandle handle, DocumentEditorContext context)
+    {
+      using (var copy = handle.Get(context))
+      {
+        cursor.MoveTo(copy);
+      }
+    }
+  }
 }

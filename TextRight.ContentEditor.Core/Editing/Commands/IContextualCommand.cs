@@ -12,6 +12,10 @@ namespace TextRight.ContentEditor.Core.Editing
   ///  into two different paragraphs; this would be an command that would only be enabled when the
   ///  caret is in the middle of a text-block.
   /// </summary>
+  /// <remarks>
+  ///  Most <see cref="IContextualCommand"/>s result in one or more <see cref="UndoableAction"/>
+  ///  being executed on a document.
+  /// </remarks>
   public interface IContextualCommand
   {
     /// <summary> Gets the name of the command as it should be presented to the user. </summary>

@@ -64,18 +64,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public void Replace(Block targetBlock, Block newBlock)
     {
       // TODO this isn't safe for all collections
-      var next = targetBlock.NextBlock;
-
+      InsertBlockAfter(targetBlock, newBlock);
       RemoveBlock(targetBlock);
-
-      if (next == null)
-      {
-        Append(newBlock);
-      }
-      else
-      {
-        InsertBlockBefore(next, newBlock);
-      }
     }
 
     /// <summary> Removes the given block from the collection. </summary>

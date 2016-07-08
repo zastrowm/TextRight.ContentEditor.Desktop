@@ -5,7 +5,15 @@ using System.Threading.Tasks;
 
 namespace TextRight.ContentEditor.Core.Editing.Actions
 {
-  /// <summary> Interface for action that can be undone. </summary>
+  /// <summary>
+  ///  An action that can be executed and then undone if required. Acts on a snapshot of a document
+  ///  at a specific point in time.
+  /// </summary>
+  /// <remarks>
+  ///  <see cref="IContextualCommand"/> is something that can be executed on many parts of a
+  ///  document while <see cref="UndoableAction"/> is tied to the specific part of the document at
+  ///  the time of it's creation.
+  /// </remarks>
   public abstract class UndoableAction
   {
     /// <summary> A human-readable name of the action. </summary>

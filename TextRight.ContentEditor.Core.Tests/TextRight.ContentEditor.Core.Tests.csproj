@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="CursorSnapshotTests.cs" />
     <Compile Include="Editing\BreakTextBlockActionUndoableActionTests.cs" />
+    <Compile Include="Editing\ConvertParagraphIntoHeadingActionTests.cs" />
     <Compile Include="Editing\MergeTextBlockActionUndoableActionTests.cs" />
     <Compile Include="Editing\DeleteNextCharacterCommandUndoableActionTests.cs" />
     <Compile Include="Editing\DeletePreviousCharacterCommandUndoableActionTests.cs" />
