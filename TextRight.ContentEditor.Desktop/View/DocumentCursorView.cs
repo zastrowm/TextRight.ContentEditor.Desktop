@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.Utilities;
 
@@ -70,7 +71,10 @@ namespace TextRight.ContentEditor.Desktop.View
       var start = _cursor.Cursor.MeasureCursorPosition();
       if (!start.IsValid)
       {
-        // TODO
+        // it's possible that we haven't had a new-layout yet, in which case we need to wait until the next tick
+
+        // TODO OPTIMIZE by having some sort of queue of future actions
+        Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(NotifyChanged));
         return;
       }
 

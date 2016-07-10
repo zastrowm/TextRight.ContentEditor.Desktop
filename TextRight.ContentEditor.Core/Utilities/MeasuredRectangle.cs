@@ -12,7 +12,20 @@ namespace TextRight.ContentEditor.Core.Utilities
   {
     /// <summary> An invalid rectangle. </summary>
     public static readonly MeasuredRectangle Invalid
-      = new MeasuredRectangle();
+      = new MeasuredRectangle(double.MinValue, double.MinValue, 0, 0);
+
+    /// <summary> Constructor. </summary>
+    /// <param name="x"> The X coordinate of the rectangle. </param>
+    /// <param name="y"> The Y coordinate of the rectangle. </param>
+    /// <param name="width"> The width of the rectangle. </param>
+    /// <param name="height"> The height of the rectangle. </param>
+    public MeasuredRectangle(double x, double y, double width, double height)
+    {
+      X = x;
+      Y = y;
+      Width = width;
+      Height = height;
+    }
 
     /// <summary> The X coordinate of the rectangle. </summary>
     public double X { get; set; }
@@ -40,7 +53,14 @@ namespace TextRight.ContentEditor.Core.Utilities
 
     /// <summary> True if the rectangle has a valid width and height. </summary>
     public bool IsValid
-      => Width > 0 || Height > 0;
+    {
+      get
+      {
+        // ReSharper disable CompareOfFloatsByEqualityOperator
+        return X != double.MinValue && Y != double.MinValue;
+        // ReSharper restore CompareOfFloatsByEqualityOperator
+      }
+    }
 
     /// <summary> Gets a point that represents the center of the given point. </summary>
     public DocumentPoint Center

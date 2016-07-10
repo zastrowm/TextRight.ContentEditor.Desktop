@@ -49,7 +49,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc/>
     public MeasuredRectangle Measure(int offset)
     {
-      if (!_paragraphView.IsMeasureValid)
+      if (!_paragraphView.IsArrangeValid)
         return MeasuredRectangle.Invalid;
 
       return _paragraphView.MeasureCharacter(this, offset);
