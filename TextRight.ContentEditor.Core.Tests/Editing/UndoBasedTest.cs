@@ -100,7 +100,8 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     {
       Console.WriteLine("Performing {0} actions", count);
 
-      var undoStack = new ActionStack(Context);
+      var policy = new FakeMergePolicy(withMerge);
+      var undoStack = new ActionStack(Context, policy);
       var documentStates = new Stack<DocumentOwner>();
 
       for (int i = 0; i < count; i++)
@@ -108,7 +109,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
         int originalCount = undoStack.UndoStackSize;
 
         documentStates.Push(Document.Clone());
-        undoStack.Do(actions[i].Invoke(), withMerge);
+        undoStack.Do(actions[i].Invoke());
 
         if (originalCount == undoStack.UndoStackSize)
         {
@@ -183,6 +184,21 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
       public void VerifyUndo(bool withMerge = false)
       {
         _undoBasedTest.PerformStepByStep(_actions, withMerge);
+      }
+    }
+
+    private class FakeMergePolicy : IActionStackMergePolicy
+    {
+      public FakeMergePolicy(bool allowMerge)
+      {
+        AllowMerge = allowMerge;
+      }
+
+      public bool AllowMerge { get; }
+
+      public bool ShouldTryMerge(ActionStack.UndoStackEntry originalEntry, ActionStack.UndoStackEntry newEntry)
+      {
+        return AllowMerge;
       }
     }
   }

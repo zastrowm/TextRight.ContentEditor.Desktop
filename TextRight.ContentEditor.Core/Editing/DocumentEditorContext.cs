@@ -32,7 +32,7 @@ namespace TextRight.ContentEditor.Core.Editing
       Caret = new DocumentCursor(Document, cursor);
       CaretMovementMode = new CaretMovementMode();
 
-      UndoStack = new ActionStack(this);
+      UndoStack = new ActionStack(this, new StandardMergePolicy());
     }
 
     /// <summary> The document that is being edited. </summary>

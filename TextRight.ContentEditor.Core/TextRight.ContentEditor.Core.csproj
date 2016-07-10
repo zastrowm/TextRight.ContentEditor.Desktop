@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\Actions\ActionStack.cs" />
+    <Compile Include="Editing\Actions\IActionStackMergePolicy.cs" />
     <Compile Include="Editing\Actions\Text\BreakTextBlockAction.cs" />
     <Compile Include="Editing\Actions\Text\DeleteNextCharacterAction.cs" />
     <Compile Include="Editing\Actions\ConvertTextBlockIntoHeadingAction.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Editing\Actions\Text\DeletePreviousCharacterAction.cs" />
     <Compile Include="Editing\Actions\Text\MergeTextBlockAction.cs" />
     <Compile Include="Editing\Commands\UndoCommand.cs" />
+    <Compile Include="Editing\Actions\StandardMergePolicy.cs" />
     <Compile Include="ObjectModel\Blocks\Text\ContentBlock.cs" />
     <Compile Include="ObjectModel\Blocks\Text\HeadingBlock.cs" />
     <Compile Include="ObjectModel\Blocks\Text\IMarkupCollectionOwner.cs" />

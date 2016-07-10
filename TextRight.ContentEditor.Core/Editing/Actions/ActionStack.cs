@@ -9,17 +9,20 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
   public sealed class ActionStack
   {
     private readonly DocumentEditorContext _context;
-    private readonly Stack<UndoableAction> _toUndoStack;
-    private readonly Stack<UndoableAction> _toRedoStack;
+    private readonly IActionStackMergePolicy _mergePolicy;
+    private readonly Stack<UndoStackEntry> _toUndoStack;
+    private readonly Stack<UndoStackEntry> _toRedoStack;
 
     /// <summary> Constructor. </summary>
     /// <param name="context"> The editor context for which this stack was created. </param>
-    public ActionStack(DocumentEditorContext context)
+    /// <param name="mergePolicy"> Strategy class for determining when actions should be merged </param>
+    public ActionStack(DocumentEditorContext context, IActionStackMergePolicy mergePolicy)
     {
       _context = context;
+      _mergePolicy = mergePolicy;
 
-      _toRedoStack = new Stack<UndoableAction>();
-      _toUndoStack = new Stack<UndoableAction>();
+      _toRedoStack = new Stack<UndoStackEntry>();
+      _toUndoStack = new Stack<UndoStackEntry>();
     }
 
     /// <summary> The number of items that can be undone. </summary>
@@ -28,16 +31,20 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
 
     /// <summary> Performs the given action and adds it to the undoable stack. </summary>
     /// <param name="undoableAction"> The undoable action. </param>
-    /// <param name="allowMerging"> (Optional) True if the action is allowed to be merged into the
-    ///  previous action, false otherwise. </param>
-    public void Do(UndoableAction undoableAction, bool allowMerging = true)
+    public void Do(UndoableAction undoableAction)
     {
       bool wasMerged = false;
 
-      if (allowMerging && _toUndoStack.Count > 0)
+      var newestEntry = new UndoStackEntry(undoableAction, DateTimeOffset.UtcNow);
+
+      if (_toUndoStack.Count > 0)
       {
-        var last = _toUndoStack.Peek();
-        wasMerged = last.TryMerge(_context, undoableAction);
+        var lastEntry = _toUndoStack.Peek();
+
+        if (_mergePolicy.ShouldTryMerge(lastEntry, newestEntry))
+        {
+          wasMerged = lastEntry.Action.TryMerge(_context, undoableAction);
+        }
       }
 
       undoableAction.Do(_context);
@@ -45,7 +52,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       if (!wasMerged)
       {
         // it was merged into the previous command, so no need to add it to the stack
-        _toUndoStack.Push(undoableAction);
+        _toUndoStack.Push(newestEntry);
       }
 
       _toRedoStack.Clear();
@@ -57,9 +64,9 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       if (_toUndoStack.Count == 0)
         return;
 
-      var action = _toUndoStack.Pop();
-      action.Undo(_context);
-      _toRedoStack.Push(action);
+      var lastEntry = _toUndoStack.Pop();
+      lastEntry.Action.Undo(_context);
+      _toRedoStack.Push(lastEntry);
     }
 
     /// <summary> Re-executes the last undoable action that was undone. </summary>
@@ -68,9 +75,9 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       if (_toRedoStack.Count == 0)
         return;
 
-      var action = _toRedoStack.Pop();
-      action.Do(_context);
-      _toUndoStack.Push(action);
+      var lastUndoneEntry = _toRedoStack.Pop();
+      lastUndoneEntry.Action.Do(_context);
+      _toUndoStack.Push(lastUndoneEntry);
     }
 
     /// <summary> Clears the undo stack, disallowing undo/redo of past actions. </summary>
@@ -79,5 +86,19 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       _toUndoStack.Clear();
       _toRedoStack.Clear();
     }
+
+    /// <summary>  </summary>
+    public struct UndoStackEntry
+    {
+      public UndoStackEntry(UndoableAction action, DateTimeOffset insertTime)
+      {
+        Action = action;
+        InsertTime = insertTime;
+      }
+
+      public UndoableAction Action { get; }
+      public DateTimeOffset InsertTime { get; }
+    }
+
   }
 }
