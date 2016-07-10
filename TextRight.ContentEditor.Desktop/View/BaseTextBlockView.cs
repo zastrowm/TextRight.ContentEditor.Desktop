@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using TextRight.ContentEditor.Core.ObjectModel;
@@ -19,14 +17,8 @@ namespace TextRight.ContentEditor.Desktop.View
     private readonly DocumentEditorContextView _root;
     private readonly List<StyledStyledTextSpanView> _spans;
 
-    private FormattedText _formattedText;
-    private Size _lastMeasureSize;
-
     private ChangeIndex _cachedIndex;
     private Point _cachedOffset;
-    private MeasuredRectangle[] _cachedSizes;
-    private Typeface _textFont;
-    private int _textFontSize;
 
     /// <summary> Constructor. </summary>
     /// <param name="root"> The root view that this TextBox is ultimately a part of. </param>
@@ -35,8 +27,11 @@ namespace TextRight.ContentEditor.Desktop.View
     {
       _root = root;
       _spans = new List<StyledStyledTextSpanView>();
-      _textFont = new Typeface("Times New Roman");
-      _textFontSize = 16;
+      Text = new FormattedTextHelper(_spans)
+             {
+               TextFont = new Typeface("Times New Roman"),
+               TextFontSize = 16
+             };
 
       foreach (var span in block)
       {
@@ -46,39 +41,32 @@ namespace TextRight.ContentEditor.Desktop.View
       RecreateText();
     }
 
-    protected Typeface TextFont
-    {
-      get { return _textFont; }
-      set
-      {
-        _textFont = value;
-        RecreateText();
-      }
-    }
+    /// <summary> The formatted text for this view.. </summary>
+    protected FormattedTextHelper Text { get; }
 
-    protected int TextFontSize
-    {
-      get { return _textFontSize; }
-      set
-      {
-        _textFontSize = value;
-        RecreateText();
-      }
-    }
+    /// <summary> The document item for the view. </summary>
+    public abstract IDocumentItem DocumentItem { get; }
 
+    /// <inheritdoc/>
     protected override Size MeasureOverride(Size constraint)
     {
-      _lastMeasureSize = constraint;
-      UpdateFormattedTextWithConstraints();
+      var formattedText = Text.GetFormattedText();
 
-      return new Size(_formattedText.Width, _formattedText.Height);
+      if (Text.SetSizeConstraint(constraint.Width))
+      {
+        _root.MarkChanged();
+      }
+
+      return new Size(formattedText.Width, formattedText.Height);
     }
 
     /// <inheritdoc />
     protected override void OnRender(DrawingContext drawingContext)
     {
       base.OnRender(drawingContext);
-      drawingContext.DrawText(_formattedText, new Point(0, 0));
+
+      var formattedText = Text.GetFormattedText();
+      drawingContext.DrawText(formattedText, new Point(0, 0));
     }
 
     /// <summary>
@@ -99,8 +87,10 @@ namespace TextRight.ContentEditor.Desktop.View
       if (!IsArrangeValid)
         return MeasuredRectangle.Invalid;
 
+      var formattedText = Text.GetFormattedText();
+
       int offset = fragment.CharacterOffsetIntoTextView + characterIndex;
-      var geometry = _formattedText.BuildHighlightGeometry(default(Point), offset, 1);
+      var geometry = formattedText.BuildHighlightGeometry(default(Point), offset, 1);
       Debug.Assert(geometry != null);
 
       var absoluteOffset = _cachedOffset;
@@ -181,65 +171,20 @@ namespace TextRight.ContentEditor.Desktop.View
         return;
 
       // TODO see if there is a faster way of doing this
+      // TODO do we have to mark changed in RecreateText()?
       _cachedOffset = TransformToAncestor(_root).Transform(new Point(0, 0));
-      _cachedSizes = null;
     }
 
     /// <summary> Recreates the FormmatedText due to a text-change event. </summary>
     private void RecreateText()
     {
       _root.MarkChanged();
+      Text.Invalidate();
 
-      int startIndex = 0;
-      var builder = new StringBuilder();
-
-      foreach (var span in _spans)
-      {
-        span.CharacterOffsetIntoTextView = startIndex;
-        builder.Append(span.Text);
-        startIndex += span.Text.Length;
-      }
-
-      if (builder.Length == 0)
-      {
-        // we use a zero-width space so that the paragraph still has some sort of height
-        builder.Append("\u200B");
-      }
-
-      _formattedText = new FormattedText(builder.ToString(),
-                                         CultureInfo.CurrentCulture,
-                                         FlowDirection.LeftToRight,
-                                         TextFont,
-                                         _textFontSize,
-                                         Brushes.Black,
-                                         null,
-                                         TextFormattingMode.Display)
-                       {
-                         MaxTextWidth = _lastMeasureSize.Width
-                       };
-
+      // TODO do we have to do all 3? 
       InvalidateMeasure();
       InvalidateArrange();
       InvalidateVisual();
     }
-
-    /// <summary> Synchronizes the properties of FormattedText with the last measure size. </summary>
-    private void UpdateFormattedTextWithConstraints()
-    {
-      // ReSharper disable once CompareOfFloatsByEqualityOperator
-      var newMaxWidth = _lastMeasureSize.Width == double.PositiveInfinity
-        ? 0
-        : _lastMeasureSize.Width;
-
-      // ReSharper disable once CompareOfFloatsByEqualityOperator
-      // ReSharper disable once RedundantCheckBeforeAssignment
-      if (newMaxWidth == _formattedText.MaxTextWidth)
-        return;
-
-      _root.MarkChanged();
-      _formattedText.MaxTextWidth = newMaxWidth;
-    }
-
-    public abstract IDocumentItem DocumentItem { get; }
   }
 }

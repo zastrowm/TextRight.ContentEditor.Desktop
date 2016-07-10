@@ -20,12 +20,12 @@ namespace TextRight.ContentEditor.Desktop.View
       _block.Target = this;
 
       SyncTextSize();
-      TextFont = new Typeface("Segoe UI Semibold");
+      Text.TextFont = new Typeface("Segoe UI Semibold");
     }
 
     private void SyncTextSize()
     {
-      TextFontSize = 20 - _block.HeadingLevel;
+      Text.TextFontSize = 20 - _block.HeadingLevel;
     }
 
     /// <inheritdoc />
