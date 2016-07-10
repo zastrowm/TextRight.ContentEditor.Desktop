@@ -9,8 +9,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   public class ParagraphBlock : TextBlockBase<ITextBlockView>
   {
     /// <inheritdoc />
-    public override string MimeType { get; }
-      = "text/plain+paragraph";
+    public override string ContentType { get; }
+      = "paragraph";
 
     /// <inheritdoc/>
     protected override TextBlock SuperClone()

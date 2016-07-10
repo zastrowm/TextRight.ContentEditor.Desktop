@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 using TextRight.ContentEditor.Core.Utilities;
@@ -44,13 +43,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Get the next block in the block collection. </summary>
     public Block GetNextBlock()
       => NextBlock;
-
-    /// <summary> The type of the block. </summary>
-    public abstract BlockType BlockType { get; }
-
-    /// <summary> The mimetype of the content within the block.  Can be null. </summary>
-    [CanBeNull]
-    public abstract string MimeType { get; }
 
     /// <summary> Get the path down to this block in the document. </summary>
     /// <returns> The path to the block in the hierarchy. </returns>

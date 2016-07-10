@@ -114,10 +114,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     {
     }
 
-    /// <inheritdoc/>
-    public override BlockType BlockType
-      => BlockType.ContainerBlock;
-
     /// <summary> Get the first block in the collection. </summary>
     public Block FirstBlock
       => _blockList.Head;
@@ -166,10 +162,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
       return true;
     }
-
-    /// <inheritdoc />
-    public override string MimeType { get; }
-      = null;
 
     /// <summary>
     ///  True if the block can break into two at the given position.

@@ -184,10 +184,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     protected abstract void SerializeToNode(SerializeNode node);
 
     /// <inheritdoc/>
-    public override BlockType BlockType
-      => BlockType.TextBlock;
-
-    /// <inheritdoc/>
     public IEnumerator<StyledTextFragment> GetEnumerator()
       => _spans.GetEnumerator();
 

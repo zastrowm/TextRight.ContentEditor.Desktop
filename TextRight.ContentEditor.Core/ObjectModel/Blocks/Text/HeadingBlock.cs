@@ -32,8 +32,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    public override string MimeType { get; }
-      = "text/plain+heading";
+    public override string ContentType { get; }
+      = "heading+multilevel";
 
     /// <summary> The level of heading that the block represents. </summary>
     public int HeadingLevel
