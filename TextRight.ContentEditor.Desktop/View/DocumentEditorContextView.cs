@@ -135,6 +135,8 @@ namespace TextRight.ContentEditor.Desktop.View
       ((IContextualCommand)new BreakTextBlockCommand()).Activate(_editor, _editor.UndoStack);
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
+
+      _editor.UndoStack.Clear();
     }
 
     /// <summary> A ChangeIndex which marks when changes to the document layout has occurred. </summary>

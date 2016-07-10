@@ -72,5 +72,12 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       action.Do(_context);
       _toUndoStack.Push(action);
     }
+
+    /// <summary> Clears the undo stack, disallowing undo/redo of past actions. </summary>
+    public void Clear()
+    {
+      _toUndoStack.Clear();
+      _toRedoStack.Clear();
+    }
   }
 }
