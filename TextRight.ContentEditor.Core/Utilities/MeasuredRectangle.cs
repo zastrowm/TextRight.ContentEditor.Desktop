@@ -140,5 +140,11 @@ namespace TextRight.ContentEditor.Core.Utilities
       point.Y = Math.Max(Top, Math.Min(Bottom, point.Y));
       return point;
     }
+
+    /// <inheritdoc/>
+    public override string ToString()
+    {
+      return $"X: {X}, Y: {Y}, Width: {Width}, Height: {Height}";
+    }
   }
 }

@@ -149,6 +149,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <inheritdoc />
     public override MeasuredRectangle MeasureCursorPosition()
     {
+      if (IsAtEnd && IsAtBeginning)
+      {
+        // if it's empty, there is no character to measure
+        return Block.GetBounds().FlattenLeft();
+      }
+
       // we want to measure the next character unless the previous character was
       // a space (as the text will most likely appear on the next line anyways) 
       bool shouldMeasureNext = IsAtBeginning

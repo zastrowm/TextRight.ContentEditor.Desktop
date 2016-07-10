@@ -115,7 +115,7 @@
     <Compile Include="ObjectModel\Blocks\IViewableObject.cs" />
     <Compile Include="ObjectModel\Blocks\Text\StyledTextFragment.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextBlock.cs" />
-    <Compile Include="ObjectModel\Blocks\Text\TextBlockCursor.Cursor.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\TextBlockCursor.cs" />
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollection.cs" />
     <Compile Include="ObjectModel\Cursors\DocumentCursor.cs" />
     <Compile Include="ObjectModel\DocumentOwner.cs" />

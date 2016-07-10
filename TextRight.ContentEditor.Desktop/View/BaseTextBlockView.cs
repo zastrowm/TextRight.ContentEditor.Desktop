@@ -81,6 +81,13 @@ namespace TextRight.ContentEditor.Desktop.View
       drawingContext.DrawText(_formattedText, new Point(0, 0));
     }
 
+    /// <summary>
+    ///  True if <see cref="MeasureCharacter"/> and <see cref="MeasureBounds"/> will return valid data,
+    ///  false otherwise.
+    /// </summary>
+    public bool IsValidForMeasuring
+      => IsArrangeValid;
+
     /// <summary> Measures the character at the given index for the given fragment. </summary>
     /// <param name="fragment"> The fragment that owns the character. </param>
     /// <param name="characterIndex"> The index of the character to measure. </param>
@@ -88,6 +95,9 @@ namespace TextRight.ContentEditor.Desktop.View
     public MeasuredRectangle MeasureCharacter(StyledStyledTextSpanView fragment, int characterIndex)
     {
       Revalidate();
+
+      if (!IsArrangeValid)
+        return MeasuredRectangle.Invalid;
 
       int offset = fragment.CharacterOffsetIntoTextView + characterIndex;
       var geometry = _formattedText.BuildHighlightGeometry(default(Point), offset, 1);
@@ -101,6 +111,23 @@ namespace TextRight.ContentEditor.Desktop.View
                Y = absoluteOffset.Y + geometry.Bounds.Y,
                Height = geometry.Bounds.Height,
                Width = geometry.Bounds.Width,
+             };
+    }
+
+    /// <inheritdoc />
+    public MeasuredRectangle MeasureBounds()
+    {
+      Revalidate();
+
+      if (!IsArrangeValid)
+        return MeasuredRectangle.Invalid;
+
+      return new MeasuredRectangle()
+             {
+               X = _cachedOffset.X,
+               Y = _cachedOffset.Y,
+               Width = ActualWidth,
+               Height = ActualHeight
              };
     }
 
@@ -144,20 +171,6 @@ namespace TextRight.ContentEditor.Desktop.View
       RecreateText();
     }
 
-    /// <inheritdoc />
-    public MeasuredRectangle MeasureBounds()
-    {
-      Revalidate();
-
-      return new MeasuredRectangle()
-             {
-               X = _cachedOffset.X,
-               Y = _cachedOffset.Y,
-               Width = ActualWidth,
-               Height = ActualHeight
-             };
-    }
-
     /// <summary>
     ///  Check if the root view has changed and if so, re-evaluate any cached data that would now be
     ///  invalid.
@@ -185,6 +198,12 @@ namespace TextRight.ContentEditor.Desktop.View
         span.CharacterOffsetIntoTextView = startIndex;
         builder.Append(span.Text);
         startIndex += span.Text.Length;
+      }
+
+      if (builder.Length == 0)
+      {
+        // we use a zero-width space so that the paragraph still has some sort of height
+        builder.Append("\u200B");
       }
 
       _formattedText = new FormattedText(builder.ToString(),
