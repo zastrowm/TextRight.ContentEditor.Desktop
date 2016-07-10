@@ -49,7 +49,8 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc/>
     public MeasuredRectangle Measure(int offset)
     {
-      return _paragraphView.MeasureCharacter(this, offset);
+      var rect = _paragraphView.MeasureCharacter(this, offset);
+      return rect;
     }
 
     public void Detach()

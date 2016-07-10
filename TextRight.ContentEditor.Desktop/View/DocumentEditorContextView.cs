@@ -139,6 +139,12 @@ namespace TextRight.ContentEditor.Desktop.View
       _editor.UndoStack.Clear();
     }
 
+    /// <summary>
+    ///  True if the view has been laid out and character measurements would be valid.
+    /// </summary>
+    public bool IsLayoutValid
+      => _blockCollectionView.IsMeasureValid;
+
     /// <summary> A ChangeIndex which marks when changes to the document layout has occurred. </summary>
     public ChangeIndex LayoutChangeIndex
       => _layoutChangeIndex;
@@ -224,7 +230,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
       // TODO, do something with mouse events
       e.Handled = true;
-      
+
       UpdateCaretPosition();
     }
 
@@ -257,7 +263,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
     public void UpdateCaretPosition()
     {
-      _cursorView.NotifyChanged();
+      _cursorView.Refresh();
     }
 
     public Block GetBlockFor(DocumentPoint point)

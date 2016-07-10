@@ -13,17 +13,19 @@ using TextRight.ContentEditor.Core.Utilities;
 namespace TextRight.ContentEditor.Desktop.View
 {
   /// <summary> The visual representation of a DocumentCursor. </summary>
-  public class DocumentCursorView : IDocumentSelectionView
+  public class DocumentCursorView
   {
     private readonly DocumentCursor _cursor;
     private readonly PointCollection _pointCollection;
     private readonly Polygon _polygon;
     private readonly Rectangle _rectangle;
+    private bool _isDirty;
 
     /// <summary> Default constructor. </summary>
     public DocumentCursorView(DocumentCursor cursor)
     {
       _cursor = cursor;
+      _cursor.CursorMoved += InvalidateCursor;
 
       _rectangle = new Rectangle()
                    {
@@ -57,6 +59,11 @@ namespace TextRight.ContentEditor.Desktop.View
       _polygon.Points = _pointCollection;
     }
 
+    private void InvalidateCursor(object sender, EventArgs e)
+    {
+      _isDirty = true;
+    }
+
     /// <summary> Attaches the view to the given editor. </summary>
     /// <param name="editor"> The editor to which the view should be attached.. </param>
     public void Attach(DocumentEditorContextView editor)
@@ -65,16 +72,27 @@ namespace TextRight.ContentEditor.Desktop.View
       editor.Children.Add(_rectangle);
     }
 
-    /// <inheritdoc />
-    public void NotifyChanged()
+    /// <inheritdoc/>
+    public void Refresh()
     {
+      Refresh(false);
+    }
+
+    /// <inheritdoc />
+    public void Refresh(bool shouldForce)
+    {
+      if (!shouldForce && !_isDirty)
+        return;
+
+      _isDirty = true;
+
       var start = _cursor.Cursor.MeasureCursorPosition();
       if (!start.IsValid)
       {
         // it's possible that we haven't had a new-layout yet, in which case we need to wait until the next tick
 
         // TODO OPTIMIZE by having some sort of queue of future actions
-        Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(NotifyChanged));
+        Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(Refresh));
         return;
       }
 

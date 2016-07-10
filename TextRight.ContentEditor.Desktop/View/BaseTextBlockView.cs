@@ -74,7 +74,7 @@ namespace TextRight.ContentEditor.Desktop.View
     ///  false otherwise.
     /// </summary>
     public bool IsValidForMeasuring
-      => IsArrangeValid;
+      => IsMeasureValid && _root.IsLayoutValid;
 
     /// <summary> Measures the character at the given index for the given fragment. </summary>
     /// <param name="fragment"> The fragment that owns the character. </param>
@@ -84,7 +84,7 @@ namespace TextRight.ContentEditor.Desktop.View
     {
       Revalidate();
 
-      if (!IsArrangeValid)
+      if (!IsValidForMeasuring)
         return MeasuredRectangle.Invalid;
 
       var formattedText = Text.GetFormattedText();
@@ -109,7 +109,7 @@ namespace TextRight.ContentEditor.Desktop.View
     {
       Revalidate();
 
-      if (!IsArrangeValid)
+      if (!IsValidForMeasuring)
         return MeasuredRectangle.Invalid;
 
       return new MeasuredRectangle()

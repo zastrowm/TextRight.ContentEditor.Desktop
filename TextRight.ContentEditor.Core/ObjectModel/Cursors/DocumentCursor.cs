@@ -17,6 +17,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     public DocumentCursor(DocumentOwner owner, IBlockContentCursor blockCursor)
     {
       Owner = owner;
+      _pooledStartSelection = new PooledBlockContentCursor();
       _pooledEndSelection = new PooledBlockContentCursor();
       _pooledEndSelection.Set(blockCursor);
     }
@@ -44,6 +45,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
       {
         _pooledStartSelection.Set(blockCursor);
       }
+
+      CursorMoved?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary> Move to the position at the given cursor. </summary>
@@ -67,5 +70,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
     /// <summary> The start of the current selection. </summary>
     public ReadonlyCursor SelectionStart
       => new ReadonlyCursor(_pooledStartSelection.Cursor);
+
+    /// <summary> Invoked when the cursor has moved. </summary>
+    public event EventHandler CursorMoved;
   }
 }
