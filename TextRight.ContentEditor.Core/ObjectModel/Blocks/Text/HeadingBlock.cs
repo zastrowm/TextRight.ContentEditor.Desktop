@@ -16,9 +16,17 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   }
 
   /// <summary> A block that holds text formatted as a heading. </summary>
-  public class HeadingBlock : TextBlockBase<IHeadingBlockView>
+  public sealed class HeadingBlock : TextBlockBase<IHeadingBlockView>
   {
     private int _headingLevel;
+
+    /// <summary> Singleton-Instance of a descriptor. </summary>
+    public static readonly RegisteredDescriptor RegisteredDescriptor
+      = RegisteredDescriptor.Register<BlockDescriptor>();
+
+    /// <inheritdoc />
+    public override RegisteredDescriptor Descriptor
+      => RegisteredDescriptor;
 
     /// <inheritdoc/>
     protected override TextBlock SuperClone()
@@ -31,10 +39,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     {
       node.Attributes.Add("HeadingLevel", HeadingLevel.ToString());
     }
-
-    /// <inheritdoc />
-    public override string ContentType { get; }
-      = "heading+multilevel";
 
     /// <summary> The level of heading that the block represents. </summary>
     public int HeadingLevel
@@ -73,7 +77,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <summary> BlockDescriptor for <see cref="HeadingBlock"/>. </summary>
-    public class Descriptor : ContentBlockDescriptor<HeadingBlock>
+    private class BlockDescriptor : ContentBlockDescriptor<HeadingBlock>
     {
       /// <inheritdoc />
       public override string Id

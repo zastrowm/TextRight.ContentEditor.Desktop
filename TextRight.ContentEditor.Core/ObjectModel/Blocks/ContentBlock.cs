@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 
@@ -13,12 +12,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// </summary>
   public abstract class ContentBlock : Block
   {
+    /// <summary> Gets a handle to the descriptor for this specific block type. </summary>
+    public abstract RegisteredDescriptor Descriptor { get; }
+
     /// <summary> The cursor pool for cursors of this block. </summary>
     public abstract ICursorPool CursorPool { get; }
-
-    /// <summary> The type of content that the block holds. </summary>
-    [NotNull]
-    public abstract string ContentType { get; }
 
     /// <summary> Gets a block-specific iterator. </summary>
     /// <returns> An iterate that can move through the block. </returns>

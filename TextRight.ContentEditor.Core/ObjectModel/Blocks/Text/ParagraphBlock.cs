@@ -7,11 +7,15 @@ using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> A block that holds text formatted as a paragraph. </summary>
-  public class ParagraphBlock : TextBlockBase<ITextBlockView>
+  public sealed class ParagraphBlock : TextBlockBase<ITextBlockView>
   {
+    /// <summary> Singleton-Instance of a descriptor. </summary>
+    public static readonly RegisteredDescriptor RegisteredDescriptor
+      = RegisteredDescriptor.Register<BlockDescriptor>();
+
     /// <inheritdoc />
-    public override string ContentType { get; }
-      = "paragraph";
+    public override RegisteredDescriptor Descriptor
+      => RegisteredDescriptor;
 
     /// <inheritdoc/>
     protected override TextBlock SuperClone()
@@ -41,7 +45,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <summary> Describes the <see cref="ParagraphBlock"/> block. </summary>
-    public class Descriptor : ContentBlockDescriptor<ParagraphBlock>
+    private class BlockDescriptor : ContentBlockDescriptor<ParagraphBlock>
     {
       /// <inheritdoc />
       public override string Id

@@ -271,7 +271,7 @@ namespace TextRight.ContentEditor.Desktop.View
       }
     }
 
-    private static KeyboardShortcutCollection ConfigureCommands()
+    private KeyboardShortcutCollection ConfigureCommands()
     {
       var configuration = @"
 Enter => block.split
@@ -298,28 +298,33 @@ Ctrl+Z => undo
 Ctrl+Y => redo
 ";
 
-      var allCommands = new IContextualCommand[]
-                        {
-                          new ConvertToLevelHeadingCommand(1),
-                          new ConvertToLevelHeadingCommand(2),
-                          new ConvertToLevelHeadingCommand(3),
-                          new ConvertToLevelHeadingCommand(4),
-                          new ConvertToLevelHeadingCommand(5),
-                          new BreakTextBlockCommand(),
-                          new DeleteNextCharacterCommand(),
-                          new DeletePreviousCharacterCommand(),
-                          new MergeTextBlocksCommand(),
-                          new MoveCaretBackwardCommand(),
-                          new MoveCaretForwardCommand(),
-                          new MoveCaretUpCommand(),
-                          new MoveCaretDownCommand(),
-                          new MoveCaretHomeCommand(),
-                          new MoveCaretEndCommand(),
-                          new MoveCaretPreviousWordCommand(),
-                          new MoveCaretNextWordCommand(),
-                          new UndoCommand(),
-                          new RedoCommand(),
-                        }.ToDictionary(c => c.Id, c => c, StringComparer.InvariantCultureIgnoreCase);
+      RegisteredDescriptor[] descriptors = new[]
+                                           {
+                                             ParagraphBlock.RegisteredDescriptor,
+                                             HeadingBlock.RegisteredDescriptor,
+                                           };
+
+      var addedCommands = new IContextualCommand[]
+                          {
+                            new BreakTextBlockCommand(),
+                            new DeleteNextCharacterCommand(),
+                            new DeletePreviousCharacterCommand(),
+                            new MergeTextBlocksCommand(),
+                            new MoveCaretBackwardCommand(),
+                            new MoveCaretForwardCommand(),
+                            new MoveCaretUpCommand(),
+                            new MoveCaretDownCommand(),
+                            new MoveCaretHomeCommand(),
+                            new MoveCaretEndCommand(),
+                            new MoveCaretPreviousWordCommand(),
+                            new MoveCaretNextWordCommand(),
+                            new UndoCommand(),
+                            new RedoCommand(),
+                          };
+
+      var allCommands = addedCommands
+        .Concat(descriptors.SelectMany(d => d.Descriptor.GetCommands(_editor.Document)))
+        .ToDictionary(c => c.Id, c => c, StringComparer.InvariantCultureIgnoreCase);
 
       var converter = new KeyGestureConverter();
 
