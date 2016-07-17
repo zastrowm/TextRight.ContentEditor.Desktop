@@ -10,6 +10,10 @@ namespace TextRight.ContentEditor.Core.Editing
   public class MoveCaretForwardCommand : CaretCommand
   {
     /// <inheritdoc />
+    public override string Id
+      => "caret.moveForward";
+
+    /// <inheritdoc />
     public override bool Activate(DocumentCursor caret, CaretMovementMode movementMode)
     {
       using (var current = caret.Cursor.Copy())

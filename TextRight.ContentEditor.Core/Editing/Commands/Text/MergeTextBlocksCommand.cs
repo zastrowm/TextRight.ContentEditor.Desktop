@@ -10,6 +10,10 @@ namespace TextRight.ContentEditor.Core.Editing
   public class MergeTextBlocksCommand : IContextualCommand
   {
     /// <inheritdoc />
+    public string Id
+      => "block.merge";
+
+    /// <inheritdoc />
     public string GetName(DocumentEditorContext context)
     {
       if (context.Cursor.IsAtBeginning)

@@ -10,6 +10,10 @@ namespace TextRight.ContentEditor.Core.Editing
   public class UndoCommand : IContextualCommand
   {
     /// <inheritdoc />
+    public string Id
+      => "undo";
+
+    /// <inheritdoc />
     string IContextualCommand.GetName(DocumentEditorContext context)
     {
       return "Undo";

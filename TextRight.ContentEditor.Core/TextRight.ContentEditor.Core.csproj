@@ -50,7 +50,7 @@
     <Compile Include="Editing\Actions\Text\BreakTextBlockAction.cs" />
     <Compile Include="Editing\Actions\Text\DeleteNextCharacterAction.cs" />
     <Compile Include="Editing\Actions\ConvertTextBlockIntoHeadingAction.cs" />
-    <Compile Include="Editing\Commands\ConvertToLevel1HeadingCommand.cs" />
+    <Compile Include="Editing\Commands\ConvertToLevelHeadingCommand.cs" />
     <Compile Include="Editing\Commands\Text\DeletePreviousCharacterCommand.cs" />
     <Compile Include="Editing\Commands\Text\DeleteNextCharacterCommand.cs" />
     <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />

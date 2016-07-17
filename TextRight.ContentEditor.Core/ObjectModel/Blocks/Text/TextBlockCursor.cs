@@ -163,6 +163,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return shouldMeasureNext
         ? MeasureForward().FlattenLeft()
         : MeasureBackward().FlattenRight();
+
     }
 
     /// <inheritdoc />

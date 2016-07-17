@@ -19,6 +19,10 @@ namespace TextRight.ContentEditor.Core.Editing
       _level = level;
     }
 
+    /// <inheritdoc />
+    public string Id
+      => "heading.convertTo" + _level;
+
     /// <inheritdoc/>
     public string GetName(DocumentEditorContext context)
       => $"Convert to level {_level} heading.";

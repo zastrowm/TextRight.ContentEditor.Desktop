@@ -9,6 +9,10 @@ namespace TextRight.ContentEditor.Core.Editing
   public class MoveCaretEndCommand : CaretCommand
   {
     /// <inheritdoc />
+    public override string Id
+      => "caret.moveEnd";
+
+    /// <inheritdoc />
     protected override bool ShouldPreserveCaretMovementMode
       => true;
 

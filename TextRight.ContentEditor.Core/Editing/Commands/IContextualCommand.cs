@@ -18,6 +18,9 @@ namespace TextRight.ContentEditor.Core.Editing
   /// </remarks>
   public interface IContextualCommand
   {
+    /// <summary> The unique, human-readable id of the command. </summary>
+    string Id { get; }
+
     /// <summary> Gets the name of the command as it should be presented to the user. </summary>
     /// <param name="context"> The context in which it's presented to the user. </param>
     string GetName(DocumentEditorContext context);

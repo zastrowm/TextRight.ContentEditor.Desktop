@@ -9,6 +9,10 @@ namespace TextRight.ContentEditor.Core.Editing
   /// <summary> Move the caret to the previous word in a TextBlock. </summary>
   public class MoveCaretPreviousWordCommand : CaretCommand
   {
+    /// <inheritdoc />
+    public override string Id
+      => "caret.moveBackwardByWord";
+
     /// <inheritdoc/>
     public override bool CanActivate(DocumentEditorContext context)
     {

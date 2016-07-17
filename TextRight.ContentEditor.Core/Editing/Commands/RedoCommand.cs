@@ -9,6 +9,10 @@ namespace TextRight.ContentEditor.Core.Editing
   public class RedoCommand : IContextualCommand
   {
     /// <inheritdoc />
+    public string Id
+      => "redo";
+
+    /// <inheritdoc />
     string IContextualCommand.GetName(DocumentEditorContext context)
     {
       return "Redo";

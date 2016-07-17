@@ -21,6 +21,9 @@ namespace TextRight.ContentEditor.Core.Editing
     /// <returns> true if it succeeds, false if it fails. </returns>
     public abstract bool Activate(DocumentCursor caret, CaretMovementMode movementMode);
 
+    /// <inheritdoc />
+    public abstract string Id { get; }
+
     /// <inheritdoc/>
     public virtual string GetName(DocumentEditorContext context)
       => null;

@@ -10,6 +10,10 @@ namespace TextRight.ContentEditor.Core.Editing
   public class BreakTextBlockCommand : IContextualCommand
   {
     /// <inheritdoc />
+    public string Id
+      => "block.split";
+
+    /// <inheritdoc />
     string IContextualCommand.GetName(DocumentEditorContext context)
     {
       return "Split Paragraph";

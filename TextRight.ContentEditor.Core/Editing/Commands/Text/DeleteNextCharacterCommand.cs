@@ -11,6 +11,10 @@ namespace TextRight.ContentEditor.Core.Editing
   public class DeleteNextCharacterCommand : IContextualCommand
   {
     /// <inheritdoc />
+    public string Id
+      => "text.deleteNextChar";
+
+    /// <inheritdoc />
     public string GetName(DocumentEditorContext context)
       => "Delete character";
 

@@ -10,6 +10,10 @@ namespace TextRight.ContentEditor.Core.Editing
   public class MoveCaretDownCommand : CaretCommand
   {
     /// <inheritdoc />
+    public override string Id
+      => "caret.moveDown";
+
+    /// <inheritdoc />
     protected override bool ShouldPreserveCaretMovementMode
       => true;
 

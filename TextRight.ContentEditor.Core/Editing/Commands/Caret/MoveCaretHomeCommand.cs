@@ -9,6 +9,10 @@ namespace TextRight.ContentEditor.Core.Editing
   public class MoveCaretHomeCommand : CaretCommand
   {
     /// <inheritdoc />
+    public override string Id
+      => "caret.moveHome";
+
+    /// <inheritdoc />
     protected override bool ShouldPreserveCaretMovementMode
       => true;
 

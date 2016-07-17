@@ -66,66 +66,9 @@ namespace TextRight.ContentEditor.Desktop.View
       SetLeft(_rootView, 0);
       SetZIndex(_rootView, 0);
 
-      _keyCommands = new KeyboardShortcutCollection()
-                     {
-                       // paragraph commands
-                       {
-                         ModifierKeys.Control, Key.D1, new ConvertToLevelHeadingCommand(1)
-                       },
-                       {
-                         ModifierKeys.Control, Key.D2, new ConvertToLevelHeadingCommand(2)
-                       },
-                       {
-                         ModifierKeys.Control, Key.D3, new ConvertToLevelHeadingCommand(3)
-                       },
-                       {
-                         ModifierKeys.Control, Key.D4, new ConvertToLevelHeadingCommand(4)
-                       },
-                       {
-                         ModifierKeys.Control, Key.D5, new ConvertToLevelHeadingCommand(5)
-                       },
+      var keyboardShortcutCollection = ConfigureCommands();
 
-                       // editing commands
-                       {
-                         Key.Enter, new IContextualCommand[]
-                                    {
-                                      new BreakTextBlockCommand()
-                                    }
-                       },
-                       {
-                         Key.Delete, new IContextualCommand[]
-                                     {
-                                       new DeleteNextCharacterCommand(),
-                                       new MergeTextBlocksCommand()
-                                     }
-                       },
-                       {
-                         Key.Back, new IContextualCommand[]
-                                   {
-                                     new DeletePreviousCharacterCommand(),
-                                     new MergeTextBlocksCommand()
-                                   }
-                       },
-                       { Key.Left, new MoveCaretBackwardCommand() },
-                       { Key.Right, new MoveCaretForwardCommand() },
-                       { Key.Up, new MoveCaretUpCommand() },
-                       { Key.Down, new MoveCaretDownCommand() },
-                       { Key.Home, new MoveCaretHomeCommand() },
-                       { Key.End, new MoveCaretEndCommand() },
-                       {
-                         ModifierKeys.Control, Key.Left, new IContextualCommand[]
-                                                         {
-                                                           new MoveCaretPreviousWordCommand(),
-                                                           new MoveCaretBackwardCommand(),
-                                                         }
-                       },
-                       {
-                         ModifierKeys.Control, Key.Z, new UndoCommand()
-                       },
-                       {
-                         ModifierKeys.Control, Key.Y, new RedoCommand()
-                       },
-                     };
+      _keyCommands = keyboardShortcutCollection;
 
       InsertText("This is an example of a document within the editor.  It has many features that extend onto " +
                  "multiple lines enough that we can start to create paragraphs.  Don't also forget" +
@@ -326,6 +269,74 @@ namespace TextRight.ContentEditor.Desktop.View
       {
         return HitTestResultBehavior.Continue;
       }
+    }
+
+    private static KeyboardShortcutCollection ConfigureCommands()
+    {
+      var configuration = @"
+Enter => block.split
+Ctrl+1 => heading.convertTo1
+Ctrl+2 => heading.convertTo2
+Ctrl+3 => heading.convertTo3
+Ctrl+4 => heading.convertTo4
+Ctrl+5 => heading.convertTo5
+Delete => text.deleteNextChar
+Delete => block.merge
+Backspace => text.deletePreviousChar
+Backspace => block.merge
+Left => caret.moveBackward
+Right => caret.moveForward
+Up => caret.moveUp
+Down => caret.moveDown
+Home => caret.moveHome
+End => caret.moveEnd
+Ctrl+Left => caret.MoveBackwardByWord
+Ctrl+Left => caret.MoveBackward
+Ctrl+Right => caret.moveForwardByWord
+Ctrl+Right => caret.moveForward
+Ctrl+Z => undo
+Ctrl+Y => redo
+";
+
+      var allCommands = new IContextualCommand[]
+                        {
+                          new ConvertToLevelHeadingCommand(1),
+                          new ConvertToLevelHeadingCommand(2),
+                          new ConvertToLevelHeadingCommand(3),
+                          new ConvertToLevelHeadingCommand(4),
+                          new ConvertToLevelHeadingCommand(5),
+                          new BreakTextBlockCommand(),
+                          new DeleteNextCharacterCommand(),
+                          new DeletePreviousCharacterCommand(),
+                          new MergeTextBlocksCommand(),
+                          new MoveCaretBackwardCommand(),
+                          new MoveCaretForwardCommand(),
+                          new MoveCaretUpCommand(),
+                          new MoveCaretDownCommand(),
+                          new MoveCaretHomeCommand(),
+                          new MoveCaretEndCommand(),
+                          new MoveCaretPreviousWordCommand(),
+                          new MoveCaretNextWordCommand(),
+                          new UndoCommand(),
+                          new RedoCommand(),
+                        }.ToDictionary(c => c.Id, c => c, StringComparer.InvariantCultureIgnoreCase);
+
+      var converter = new KeyGestureConverter();
+
+      var items = configuration
+        .Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+        .Select(s => s.Trim())
+        .Select(s => s.Split(new string[] { " => " }, StringSplitOptions.RemoveEmptyEntries))
+        .Select(p => new { StringKey = p[0], Id = p[1] })
+        .Select(i => new { Key = (KeyGesture)converter.ConvertFromString(i.StringKey), Command = allCommands[i.Id] })
+        .GroupBy(i => i.Key)
+        ;
+      var keyboardShortcutCollection = new KeyboardShortcutCollection();
+      foreach (var aGroup in items)
+      {
+        keyboardShortcutCollection.Add(aGroup.Key.Modifiers, aGroup.Key.Key, aGroup.Select(it => it.Command).ToArray());
+      }
+      return keyboardShortcutCollection;
     }
   }
 }
