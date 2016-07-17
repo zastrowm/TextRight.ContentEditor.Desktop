@@ -55,7 +55,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       /// <inheritdoc/>
       public override IEnumerable<IContextualCommand> GetCommands(DocumentOwner document)
       {
-        yield break;
+        yield return new ConvertParagraphCommand();
       }
     }
   }

@@ -296,6 +296,7 @@ Ctrl+Right => caret.moveForwardByWord
 Ctrl+Right => caret.moveForward
 Ctrl+Z => undo
 Ctrl+Y => redo
+Ctrl+R => paragraph.convertToParagraph
 ";
 
       RegisteredDescriptor[] descriptors = new[]

@@ -46,10 +46,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editing\Actions\ActionStack.cs" />
+    <Compile Include="Editing\Actions\ConvertIntoParagraphAction.cs" />
     <Compile Include="Editing\Actions\IActionStackMergePolicy.cs" />
     <Compile Include="Editing\Actions\Text\BreakTextBlockAction.cs" />
     <Compile Include="Editing\Actions\Text\DeleteNextCharacterAction.cs" />
     <Compile Include="Editing\Actions\ConvertTextBlockIntoHeadingAction.cs" />
+    <Compile Include="Editing\Commands\ConvertParagraphCommand.cs" />
     <Compile Include="Editing\Commands\ConvertToLevelHeadingCommand.cs" />
     <Compile Include="Editing\Commands\Text\DeletePreviousCharacterCommand.cs" />
     <Compile Include="Editing\Commands\Text\DeleteNextCharacterCommand.cs" />
