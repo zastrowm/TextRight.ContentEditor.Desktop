@@ -25,7 +25,9 @@ namespace TextRight.ContentEditor.Desktop.View
 
     private void SyncTextSize()
     {
-      Text.TextFontSize = 20 - _block.HeadingLevel;
+      Text.TextFontSize = 20 - _block.HeadingLevel * 2;
+
+      InvalidateMeasure();
     }
 
     /// <inheritdoc />
