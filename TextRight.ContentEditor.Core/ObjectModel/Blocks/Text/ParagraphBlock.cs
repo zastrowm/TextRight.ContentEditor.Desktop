@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -36,6 +37,21 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       public override TextBlock CreateInstance()
       {
         return new ParagraphBlock();
+      }
+    }
+
+    /// <summary> Describes the <see cref="ParagraphBlock"/> block. </summary>
+    public class Descriptor : ContentBlockDescriptor<ParagraphBlock>
+    {
+      /// <inheritdoc />
+      public override string Id
+        => "paragraph";
+
+      /// <param name="document"></param>
+      /// <inheritdoc/>
+      public override IEnumerable<IContextualCommand> GetCommands(DocumentOwner document)
+      {
+        yield break;
       }
     }
   }

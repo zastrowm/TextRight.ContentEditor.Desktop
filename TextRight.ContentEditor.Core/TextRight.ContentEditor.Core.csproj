@@ -64,7 +64,6 @@
     <Compile Include="ObjectModel\Blocks\Text\ContentBlock.cs" />
     <Compile Include="ObjectModel\Blocks\Text\ContentBlockDescriptor.cs" />
     <Compile Include="ObjectModel\Blocks\Text\HeadingBlock.cs" />
-    <Compile Include="ObjectModel\Blocks\Text\HeadingBlockDescriptor.cs" />
     <Compile Include="ObjectModel\Blocks\Text\IMarkupCollectionOwner.cs" />
     <Compile Include="ObjectModel\Blocks\Text\ITextBlockView.cs" />
     <Compile Include="ObjectModel\Blocks\Text\MarkupCollection.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="ObjectModel\Blocks\Text\MarkupType.cs" />
     <Compile Include="ObjectModel\Blocks\Text\ParagraphBlock.cs" />
     <Compile Include="ObjectModel\Blocks\Text\BaseSerializedCursor.cs" />
-    <Compile Include="ObjectModel\Blocks\Text\ParagraphBlockDescriptor.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextBlockAttributes.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextBlockBase.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextModification.cs" />
