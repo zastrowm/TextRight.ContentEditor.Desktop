@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -273,31 +274,7 @@ namespace TextRight.ContentEditor.Desktop.View
 
     private KeyboardShortcutCollection ConfigureCommands()
     {
-      var configuration = @"
-Enter       => block.split
-Ctrl+1      => heading.convertTo1
-Ctrl+2      => heading.convertTo2
-Ctrl+3      => heading.convertTo3
-Ctrl+4      => heading.convertTo4
-Ctrl+5      => heading.convertTo5
-Delete      => text.deleteNextChar
-Delete      => block.merge
-Backspace   => text.deletePreviousChar
-Backspace   => block.merge
-Left        => caret.moveBackward
-Right       => caret.moveForward
-Up          => caret.moveUp
-Down        => caret.moveDown
-Home        => caret.moveHome
-End         => caret.moveEnd
-Ctrl+Left   => caret.moveBackwardByWord
-Ctrl+Left   => caret.moveBackward
-Ctrl+Right  => caret.moveForwardByWord
-Ctrl+Right  => caret.moveForward
-Ctrl+Z      => undo
-Ctrl+Y      => redo
-Ctrl+R      => paragraph.convertToParagraph
-";
+      var configuration = File.ReadAllLines(@"keyboard.trcfg");
 
       RegisteredDescriptor[] descriptors = new[]
                                            {
@@ -330,7 +307,7 @@ Ctrl+R      => paragraph.convertToParagraph
       var converter = new KeyGestureConverter();
 
       var items = configuration
-        .Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+        .Where(s => !string.IsNullOrWhiteSpace(s))
         .Select(s => s.Trim())
         .Select(s => s.Split(new string[] { " => " }, StringSplitOptions.RemoveEmptyEntries))
         .Select(p => new { StringKey = p[0], Id = p[1] })
