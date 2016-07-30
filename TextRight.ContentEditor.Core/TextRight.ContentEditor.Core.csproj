@@ -64,7 +64,7 @@
     <Compile Include="Editing\Commands\UndoCommand.cs" />
     <Compile Include="Editing\Actions\StandardMergePolicy.cs" />
     <Compile Include="ObjectModel\Blocks\ContentBlock.cs" />
-    <Compile Include="ObjectModel\Blocks\ContentBlockDescriptor.cs" />
+    <Compile Include="ObjectModel\Blocks\BlockDescriptor.cs" />
     <Compile Include="ObjectModel\Blocks\RegisteredDescriptor.cs" />
     <Compile Include="ObjectModel\Blocks\Text\HeadingBlock.cs" />
     <Compile Include="ObjectModel\Blocks\Text\IMarkupCollectionOwner.cs" />

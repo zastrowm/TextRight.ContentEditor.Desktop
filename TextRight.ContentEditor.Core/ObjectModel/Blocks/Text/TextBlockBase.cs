@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks

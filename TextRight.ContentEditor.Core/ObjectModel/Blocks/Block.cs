@@ -51,13 +51,25 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return new BlockPath(this);
     }
 
+    /// <summary> Gets a handle to the descriptor for this specific block type. </summary>
+    public abstract RegisteredDescriptor Descriptor { get; }
+
     /// <summary> Makes a deep copy of this instance. </summary>
     /// <returns> A copy of this instance. </returns>
     public abstract Block Clone();
 
-    /// <summary> Serializes this object into a node. </summary>
-    /// <returns> A node that serializes the block.. </returns>
-    public abstract SerializeNode SerializeAsNode();
+    /// <summary> Serializes the given block into a SerializedNode. </summary>
+    /// <returns> A SerializeNode that represents the contents in the given block. </returns>
+    public SerializeNode Serialize()
+    {
+      var node = new SerializeNode(Descriptor);
+      Serialize(node);
+      return node;
+    }
+
+    protected abstract void Serialize(SerializeNode node);
+
+    protected abstract void Deserialize(SerializeNode node);
 
     /// <summary>
     ///  Retrieves the block that comes after this block in the parent collection.

@@ -34,9 +34,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel
 
     public SerializeNode SerializeAsNode()
     {
-      var node = new SerializeNode(typeof(DocumentOwner));
+      var node = new SerializeNode("temp/document");
 
-      node.Children.Add(Root.SerializeAsNode());
+      node.Children.Add(Root.Serialize());
 
       return node;
     }

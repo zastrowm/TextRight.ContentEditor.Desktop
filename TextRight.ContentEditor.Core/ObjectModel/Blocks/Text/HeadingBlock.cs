@@ -35,9 +35,19 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc/>
-    protected override void SerializeToNode(SerializeNode node)
+    protected override void Serialize(SerializeNode node)
     {
-      node.Attributes.Add("HeadingLevel", HeadingLevel.ToString());
+      base.Serialize(node);
+
+      node.AddData("HeadingLevel", HeadingLevel);
+    }
+
+    /// <inheritdoc />
+    protected override void Deserialize(SerializeNode node)
+    {
+      base.Deserialize(node);
+
+      HeadingLevel = node.GetDataOrDefault<int>("HeadingLevel");
     }
 
     /// <summary> The level of heading that the block represents. </summary>
@@ -77,7 +87,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <summary> BlockDescriptor for <see cref="HeadingBlock"/>. </summary>
-    private class BlockDescriptor : ContentBlockDescriptor<HeadingBlock>
+    private class BlockDescriptor : BlockDescriptor<HeadingBlock>
     {
       /// <inheritdoc />
       public override string Id

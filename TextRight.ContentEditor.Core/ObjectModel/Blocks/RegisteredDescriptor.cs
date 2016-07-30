@@ -5,7 +5,7 @@ using System.Linq;
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary>
-  ///  Contains a handle to a <see cref="ContentBlockDescriptor"/> that has been registered app-
+  ///  Contains a handle to a <see cref="BlockDescriptor"/> that has been registered app-
   ///  domain wide.
   /// </summary>
   public sealed class RegisteredDescriptor
@@ -16,19 +16,19 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <summary> Constructor. </summary>
     /// <param name="descriptor"> The descriptor that is referenced. </param>
-    private RegisteredDescriptor(ContentBlockDescriptor descriptor)
+    private RegisteredDescriptor(BlockDescriptor descriptor)
     {
       Descriptor = descriptor;
     }
 
     /// <summary> The descriptor that is registered. </summary>
-    public ContentBlockDescriptor Descriptor { get; set; }
+    public BlockDescriptor Descriptor { get; set; }
 
     /// <summary> Registers a new ContentBlockDescriptor type. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <returns> A DescriptorHandle. </returns>
     public static RegisteredDescriptor Register<T>()
-      where T : ContentBlockDescriptor, new()
+      where T : BlockDescriptor, new()
     {
       var handle = new RegisteredDescriptor(new T());
       RegisteredHandles.Add(typeof(T), handle);

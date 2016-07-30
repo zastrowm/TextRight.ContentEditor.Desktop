@@ -12,9 +12,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// </summary>
   public abstract class ContentBlock : Block
   {
-    /// <summary> Gets a handle to the descriptor for this specific block type. </summary>
-    public abstract RegisteredDescriptor Descriptor { get; }
-
     /// <summary> The cursor pool for cursors of this block. </summary>
     public abstract ICursorPool CursorPool { get; }
 

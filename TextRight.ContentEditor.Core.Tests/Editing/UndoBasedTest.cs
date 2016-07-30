@@ -151,11 +151,13 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     /// <summary> Finds the first difference in the two documents. </summary>
     private static void FindDifference(SerializeNode currentState, SerializeNode originalState, string path)
     {
-      Assert.That(currentState.Type, Is.EqualTo(originalState.Type), path + ".Type");
+      Assert.That(currentState.TypeId, Is.EqualTo(originalState.TypeId), path + ".Type");
 
-      var type = currentState.Type;
+      var type = currentState.TypeId;
       path += "<" + type + ">";
-      Assert.That(currentState.Data, Is.EqualTo(originalState.Data), path + ".Data");
+      Assert.That(currentState.GetDataOrDefault<string>("Body"),
+                  Is.EqualTo(originalState.GetDataOrDefault<string>("Body")),
+                  path + ".Data");
 
       int max = Math.Min(currentState.Children.Count, originalState.Children.Count);
 

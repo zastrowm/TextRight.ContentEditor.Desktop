@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 using TextRight.ContentEditor.Core.Utilities;
@@ -12,10 +13,17 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   public class VerticalBlockCollection : BlockCollection,
                                          IDocumentItem<IBlockCollectionView>
   {
+    public static readonly RegisteredDescriptor RegisteredDescriptor
+      = RegisteredDescriptor.Register<BlockDescriptor>();
+
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.
     /// </summary>
     public IBlockCollectionView Target { get; set; }
+
+    /// <inheritdoc />
+    public override RegisteredDescriptor Descriptor
+      => RegisteredDescriptor;
 
     /// <inheritdoc />
     IDocumentItemView IDocumentItem.DocumentItemView
@@ -69,14 +77,18 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    public override SerializeNode SerializeAsNode()
+    protected override void Serialize(SerializeNode node)
     {
-      var node = new SerializeNode(typeof(VerticalBlockCollection));
       foreach (var child in Children)
       {
-        node.Children.Add(child.SerializeAsNode());
+        node.Children.Add(child.Serialize());
       }
-      return node;
+    }
+
+    /// <inheritdoc />
+    protected override void Deserialize(SerializeNode node)
+    {
+      throw new NotImplementedException();
     }
 
     /// <inheritdoc />
@@ -95,6 +107,19 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public override IBlockContentCursor GetCaretFromTop(CaretMovementMode caretMovementMode)
     {
       return LastBlock.GetCaretFromTop(caretMovementMode);
+    }
+
+    private class BlockDescriptor : BlockDescriptor<VerticalBlockCollection>
+    {
+      /// <inheritdoc />
+      public override string Id
+        => "Heading";
+
+      /// <inheritdoc />
+      public override IEnumerable<IContextualCommand> GetCommands(DocumentOwner document)
+      {
+        yield break;
+      }
     }
   }
 

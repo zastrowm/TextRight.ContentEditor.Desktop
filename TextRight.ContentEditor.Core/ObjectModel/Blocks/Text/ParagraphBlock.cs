@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
@@ -24,12 +23,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc/>
-    protected override void SerializeToNode(SerializeNode node)
-    {
-      // no-op
-    }
-
-    /// <inheritdoc/>
     public override TextBlockAttributes GetAttributes()
     {
       return new Attributes();
@@ -45,7 +38,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <summary> Describes the <see cref="ParagraphBlock"/> block. </summary>
-    private class BlockDescriptor : ContentBlockDescriptor<ParagraphBlock>
+    private class BlockDescriptor : BlockDescriptor<ParagraphBlock>
     {
       /// <inheritdoc />
       public override string Id

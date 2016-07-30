@@ -164,24 +164,21 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     protected abstract TextBlock SuperClone();
 
     /// <inheritdoc />
-    public override SerializeNode SerializeAsNode()
+    protected override void Serialize(SerializeNode node)
     {
-      var node = new SerializeNode(typeof(TextBlock));
       foreach (var span in _spans)
       {
-        var subSpanNode = new SerializeNode(typeof(StyledTextFragment));
-        subSpanNode.Data = span.Text;
+        var subSpanNode = new SerializeNode("temp/fragment");
+        subSpanNode.AddData<string>("Body", span.Text);
         node.Children.Add(subSpanNode);
       }
-
-      SerializeToNode(node);
-
-      return node;
     }
 
-    /// <summary> Serializes any extra data that needs to be serialized. </summary>
-    /// <param name="node"> The node to which the data should be serialized. </param>
-    protected abstract void SerializeToNode(SerializeNode node);
+    /// <inheritdoc />
+    protected override void Deserialize(SerializeNode node)
+    {
+      throw new NotImplementedException();
+    }
 
     /// <inheritdoc/>
     public IEnumerator<StyledTextFragment> GetEnumerator()
