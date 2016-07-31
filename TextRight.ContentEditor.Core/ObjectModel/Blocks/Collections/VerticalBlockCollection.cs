@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
@@ -60,12 +61,37 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <inheritdoc />
     public override void Deserialize(SerializationContext context, SerializeNode node)
     {
-      // TODO should we be removing existing children?
+      var originalFirst = FirstBlock;
+      var originalLast = LastBlock;
+
       foreach (var nodeChild in node.Children)
       {
         var childBlock = context.Deserialize(nodeChild);
         Append(childBlock);
       }
+
+      // remove all blocks that used to exist before
+      foreach (var block in GetBlocksBetweenInclusive(originalFirst, originalLast))
+      {
+        RemoveBlock(block);
+      }
+    }
+
+    /// <summary> Gets the blocks in the collection between the two blocks. </summary>
+    private IEnumerable<Block> GetBlocksBetweenInclusive(Block firstBlock, Block lastBlock)
+    {
+      Debug.Assert(firstBlock.Parent == this);
+      Debug.Assert(lastBlock.Parent == this);
+
+      Block current;
+
+      for (current = firstBlock; current != lastBlock; current = current.NextBlock)
+      {
+        yield return current;
+      }
+
+      // need to return the last block too
+      yield return current;
     }
 
     /// <inheritdoc />
