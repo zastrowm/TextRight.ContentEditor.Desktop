@@ -29,12 +29,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       => RegisteredDescriptor;
 
     /// <inheritdoc/>
-    protected override TextBlock SuperClone()
-    {
-      return new HeadingBlock();
-    }
-
-    /// <inheritdoc/>
     protected override void SerializeInto(SerializeNode node)
     {
       base.SerializeInto(node);

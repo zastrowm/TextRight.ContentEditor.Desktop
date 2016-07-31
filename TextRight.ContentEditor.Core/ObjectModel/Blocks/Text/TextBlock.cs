@@ -151,18 +151,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <inheritdoc/>
     public override Block Clone()
     {
-      var clone = SuperClone();
+      var clone = (TextBlock)Descriptor.Descriptor.CreateInstance();
       clone._spans.Clear();
       clone.AppendAll(_spans.Select(s => s.Clone()));
       return clone;
     }
-
-    /// <summary>
-    ///  Clones the block, returning a copy of the block so that <see cref="TextBlock"/> can add the
-    ///  text to the block.
-    /// </summary>
-    /// <returns> A TextBlock. </returns>
-    protected abstract TextBlock SuperClone();
 
     /// <inheritdoc />
     protected override void SerializeInto(SerializeNode node)

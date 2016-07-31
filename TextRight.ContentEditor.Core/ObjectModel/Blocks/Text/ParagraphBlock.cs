@@ -17,12 +17,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       => RegisteredDescriptor;
 
     /// <inheritdoc/>
-    protected override TextBlock SuperClone()
-    {
-      return new ParagraphBlock();
-    }
-
-    /// <inheritdoc/>
     public override TextBlockAttributes GetAttributes()
     {
       return new Attributes();
