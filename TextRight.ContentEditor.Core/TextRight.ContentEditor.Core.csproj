@@ -123,6 +123,8 @@
     <Compile Include="ObjectModel\Blocks\VerticalBlockCollection.cs" />
     <Compile Include="ObjectModel\Cursors\DocumentCursor.cs" />
     <Compile Include="ObjectModel\DocumentOwner.cs" />
+    <Compile Include="ObjectModel\Serialization\DescriptorsLookup.cs" />
+    <Compile Include="ObjectModel\Serialization\SerializationContext.cs" />
     <Compile Include="ObjectModel\Serialization\SerializeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\MeasuredRectangle.cs" />

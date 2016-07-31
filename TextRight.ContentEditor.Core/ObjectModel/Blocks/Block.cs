@@ -63,13 +63,18 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public SerializeNode Serialize()
     {
       var node = new SerializeNode(Descriptor);
-      Serialize(node);
+      SerializeInto(node);
       return node;
     }
 
-    protected abstract void Serialize(SerializeNode node);
+    /// <summary> Saves the state of the current instance into <paramref name="node"/>. </summary>
+    /// <param name="node"> The node into which the state of this block should be stored. </param>
+    protected abstract void SerializeInto(SerializeNode node);
 
-    protected abstract void Deserialize(SerializeNode node);
+    /// <summary> Loads the state from <paramref name="node"/> into the current instance. </summary>
+    /// <param name="context"> The context in which the node is being deserialized. </param>
+    /// <param name="node"> The node that contains the data that should be loaded into this block. </param>
+    public abstract void Deserialize(SerializationContext context, SerializeNode node);
 
     /// <summary>
     ///  Retrieves the block that comes after this block in the parent collection.

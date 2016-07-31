@@ -77,7 +77,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    protected override void Serialize(SerializeNode node)
+    protected override void SerializeInto(SerializeNode node)
     {
       foreach (var child in Children)
       {
@@ -86,9 +86,14 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    protected override void Deserialize(SerializeNode node)
+    public override void Deserialize(SerializationContext context, SerializeNode node)
     {
-      throw new NotImplementedException();
+      // TODO should we be removing existing children?
+      foreach (var nodeChild in node.Children)
+      {
+        var childBlock = context.Deserialize(nodeChild);
+        Append(childBlock);
+      }
     }
 
     /// <inheritdoc />

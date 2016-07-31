@@ -35,17 +35,17 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc/>
-    protected override void Serialize(SerializeNode node)
+    protected override void SerializeInto(SerializeNode node)
     {
-      base.Serialize(node);
+      base.SerializeInto(node);
 
       node.AddData("HeadingLevel", HeadingLevel);
     }
 
     /// <inheritdoc />
-    protected override void Deserialize(SerializeNode node)
+    public override void Deserialize(SerializationContext context, SerializeNode node)
     {
-      base.Deserialize(node);
+      base.Deserialize(context, node);
 
       HeadingLevel = node.GetDataOrDefault<int>("HeadingLevel");
     }
