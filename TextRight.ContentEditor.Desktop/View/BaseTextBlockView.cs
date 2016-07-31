@@ -33,7 +33,7 @@ namespace TextRight.ContentEditor.Desktop.View
                TextFontSize = 16
              };
 
-      foreach (var span in block)
+      foreach (var span in block.Fragments)
       {
         _spans.Add(new StyledStyledTextSpanView(this, span));
       }

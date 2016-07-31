@@ -9,22 +9,24 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
 {
   public class TextBlockCursorTests
   {
-    public StyledTextFragment a, b, c, d, e;
+    public StyledTextFragment a,
+                              b,
+                              c,
+                              d,
+                              e;
 
     public TextBlock Block;
 
     [SetUp]
     public void Setup()
     {
-      Block = new ParagraphBlock()
-              {
-                (a = new StyledTextFragment("123")),
-                (b = new StyledTextFragment("456")),
-                (c = new StyledTextFragment("789")),
-              };
+      Block = new ParagraphBlock();
+      Block.Add((a = new StyledTextFragment("123")));
+      Block.Add((b = new StyledTextFragment("456")));
+      Block.Add((c = new StyledTextFragment("789")));
 
       // The first TextSpan was auto added
-      Block.RemoveSpan(Block.First());
+      Block.RemoveSpan(Block.Fragments.First());
     }
 
     [Test]
@@ -109,7 +111,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       Assert.That(spans[1], Is.EqualTo(c));
 
       Assert.That(Block.ChildCount, Is.EqualTo(1));
-      Assert.That(Block.First(), Is.EqualTo(a));
+      Assert.That(Block.Fragments.First(), Is.EqualTo(a));
     }
 
     [Test]
@@ -124,8 +126,8 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       Assert.That(spans[2], Is.EqualTo(c));
 
       Assert.That(Block.ChildCount, Is.EqualTo(1));
-      Assert.That(Block.First(), Is.EqualTo(a));
-      Assert.That(Block.First().Text, Is.EqualTo("12"));
+      Assert.That(Block.Fragments.First(), Is.EqualTo(a));
+      Assert.That(Block.Fragments.First().Text, Is.EqualTo("12"));
     }
 
     [Test]
@@ -140,8 +142,8 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       Assert.That(spans[2], Is.EqualTo(c));
 
       Assert.That(Block.ChildCount, Is.EqualTo(1));
-      Assert.That(Block.First(), Is.EqualTo(a));
-      Assert.That(Block.First().Text, Is.EqualTo(""));
+      Assert.That(Block.Fragments.First(), Is.EqualTo(a));
+      Assert.That(Block.Fragments.First().Text, Is.EqualTo(""));
     }
 
     [Test]
@@ -153,12 +155,12 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       Assert.That(spans.Length, Is.EqualTo(0));
 
       Assert.That(Block.ChildCount, Is.EqualTo(3));
-      Assert.That(Block.ElementAt(0), Is.EqualTo(a));
-      Assert.That(Block.ElementAt(0).Text, Is.EqualTo("123"));
-      Assert.That(Block.ElementAt(1), Is.EqualTo(b));
-      Assert.That(Block.ElementAt(1).Text, Is.EqualTo("456"));
-      Assert.That(Block.ElementAt(2), Is.EqualTo(c));
-      Assert.That(Block.ElementAt(2).Text, Is.EqualTo("789"));
+      Assert.That(Block.Fragments.ElementAt(0), Is.EqualTo(a));
+      Assert.That(Block.Fragments.ElementAt(0).Text, Is.EqualTo("123"));
+      Assert.That(Block.Fragments.ElementAt(1), Is.EqualTo(b));
+      Assert.That(Block.Fragments.ElementAt(1).Text, Is.EqualTo("456"));
+      Assert.That(Block.Fragments.ElementAt(2), Is.EqualTo(c));
+      Assert.That(Block.Fragments.ElementAt(2).Text, Is.EqualTo("789"));
     }
   }
 }

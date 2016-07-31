@@ -208,7 +208,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         secondaryBlock = newTextBlock;
 
         // TODO should this be done by AppendSpan automatically?
-        newTextBlock.RemoveSpan(newTextBlock.First());
+        newTextBlock.RemoveSpan(newTextBlock.Fragments.First());
 
         foreach (var fragment in fragments)
         {

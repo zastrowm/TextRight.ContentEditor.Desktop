@@ -31,7 +31,7 @@ namespace TextRight.ContentEditor.Core.Tests
     /// <summary> Set the text of the TextBlock to be equal to the given text. </summary>
     public static TextBlock WithText(this TextBlock block, string text)
     {
-      block.RemoveSpan(block.First());
+      block.RemoveSpan(block.Fragments.First());
       block.AppendSpan(new StyledTextFragment(text));
       return block;
     }
@@ -45,7 +45,7 @@ namespace TextRight.ContentEditor.Core.Tests
 
       var builder = new StringBuilder();
 
-      foreach (var fragment in textBlock)
+      foreach (var fragment in textBlock.Fragments)
       {
         builder.Append(fragment.Text);
       }

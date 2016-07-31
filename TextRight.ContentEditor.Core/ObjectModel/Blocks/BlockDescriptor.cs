@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using TextRight.ContentEditor.Core.Editing;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -19,6 +20,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> Creates a new instance of the block. </summary>
     /// <param name="document"> The document for which the block is being created. </param>
     /// <returns> The new instance of the block. </returns>
+    [Pure]
     public abstract Block CreateInstance(DocumentOwner document);
 
     /// <summary> All of the commands that should be available when the block is in a document. </summary>

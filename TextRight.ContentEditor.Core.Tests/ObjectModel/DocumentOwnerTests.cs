@@ -16,7 +16,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel
       var documentOwner = new DocumentOwner();
 
       Assert.That(documentOwner.Root.FirstBlock, Is.InstanceOf<TextBlock>());
-      Assert.That(((TextBlock)documentOwner.Root.FirstBlock).First().Text, Is.EqualTo(""));
+      Assert.That(((TextBlock)documentOwner.Root.FirstBlock).Fragments.First().Text, Is.EqualTo(""));
     }
   }
 }

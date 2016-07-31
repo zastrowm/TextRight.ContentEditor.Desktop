@@ -40,7 +40,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
     {
       var block = new ParagraphBlock();
 
-      Assert.That(block.Count(), Is.EqualTo(1));
+      Assert.That(block.Fragments.Count(), Is.EqualTo(1));
     }
 
     [Test]
@@ -51,8 +51,8 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
 
       Assert.That(nextBlock, Is.Not.Null);
 
-      Assert.That(_block.First().Text, Is.EqualTo("abc"));
-      Assert.That(nextBlock.First().Text, Is.EqualTo("123"));
+      Assert.That(_block.Fragments.First().Text, Is.EqualTo("abc"));
+      Assert.That(nextBlock.Fragments.First().Text, Is.EqualTo("123"));
     }
   }
 }

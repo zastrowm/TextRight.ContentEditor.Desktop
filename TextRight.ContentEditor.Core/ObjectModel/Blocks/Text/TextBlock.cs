@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,9 +11,8 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
   /// </summary>
-  public abstract class TextBlock : ContentBlock,
-                                    IEnumerable<StyledTextFragment>,
-                                    IEquatable<TextBlock>
+  public abstract class TextBlock : ContentBlock
+
   {
     private readonly List<StyledTextFragment> _spans;
 
@@ -40,6 +38,10 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <inheritdoc />
     public override ICursorPool CursorPool
       => TextBlockCursor.CursorPool;
+
+    /// <summary> All of the fragments contained in this textblock. </summary>
+    public IEnumerable<StyledTextFragment> Fragments
+      => _spans;
 
     /// <inheritdoc />
     protected override IBlockContentCursor CreateCursorOverride()
@@ -164,7 +166,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     protected abstract TextBlock SuperClone();
 
     /// <inheritdoc />
-    protected override void Serialize(SerializeNode node)
+    protected override void SerializeInto(SerializeNode node)
     {
       foreach (var span in _spans)
       {
@@ -175,18 +177,16 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    protected override void Deserialize(SerializeNode node)
+    public override void Deserialize(SerializationContext context, SerializeNode node)
     {
-      throw new NotImplementedException();
+      // TODO should we remove the original
+      var allSpans = from childNode in node.Children
+                     select childNode.GetDataOrDefault<string>("Body")
+                     into text
+                     select new StyledTextFragment(text);
+
+      AppendAll(allSpans);
     }
-
-    /// <inheritdoc/>
-    public IEnumerator<StyledTextFragment> GetEnumerator()
-      => _spans.GetEnumerator();
-
-    /// <inheritdoc/>
-    IEnumerator IEnumerable.GetEnumerator()
-      => GetEnumerator();
 
     /// <summary> Retrieves the span at the given index. </summary>
     /// <param name="spanIndex"> The zero-based index of the span to retrieve. </param>
@@ -340,35 +340,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       // implementation of MoveToPosition to ultimately choose the closest one. 
       BlockCursorMover.ForwardMover.MoveTowardsLineOffset(cursor, position);
       BlockCursorMover.BackwardMover.MoveTowardsLineOffset(cursor, position);
-    }
-
-    /// <inheritdoc />
-    public bool Equals(TextBlock other)
-    {
-      if (ReferenceEquals(null, other))
-        return false;
-      if (ReferenceEquals(this, other))
-        return true;
-
-      return _spans.SequenceEqual(other._spans);
-    }
-
-    /// <inheritdoc />
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj))
-        return false;
-      if (ReferenceEquals(this, obj))
-        return true;
-      if (obj.GetType() != GetType())
-        return false;
-      return Equals((TextBlock)obj);
-    }
-
-    /// <inheritdoc />
-    public override int GetHashCode()
-    {
-      return _spans.GetHashCode();
     }
   }
 }
