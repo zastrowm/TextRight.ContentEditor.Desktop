@@ -11,25 +11,25 @@ namespace TextRight.ContentEditor.Core.ObjectModel
   {
     /// <summary> Default constructor. </summary>
     public DocumentOwner()
-      : this(new VerticalBlockCollection())
+      : this((RootBlockCollection)RootBlockCollection.RegisteredDescriptor.Descriptor.CreateInstance())
     {
     }
 
     /// <summary> Constructor. </summary>
     /// <param name="collection"> The collection that should be used as the root. </param>
-    private DocumentOwner(BlockCollection collection)
+    private DocumentOwner(RootBlockCollection collection)
     {
       Root = collection;
     }
 
     /// <summary> The top level collection of elements.  </summary>
-    public BlockCollection Root { get; }
+    public RootBlockCollection Root { get; }
 
     /// <summary> Makes a deep copy of this instance. </summary>
     /// <returns> A copy of this instance. </returns>
     public DocumentOwner Clone()
     {
-      return new DocumentOwner((BlockCollection)Root.Clone());
+      return new DocumentOwner((RootBlockCollection)Root.Clone());
     }
 
     public SerializeNode SerializeAsNode()

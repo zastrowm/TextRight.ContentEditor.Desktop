@@ -78,6 +78,8 @@
     <Compile Include="ObjectModel\Blocks\Text\TextBlockBase.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextModification.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextRange.cs" />
+    <Compile Include="ObjectModel\Blocks\Collections\RootBlockCollection.cs" />
+    <Compile Include="ObjectModel\Blocks\Collections\VerticalBlockCollectionBase.cs" />
     <Compile Include="ObjectModel\Cursors\CaretMovementMode.cs" />
     <Compile Include="Editing\Commands\Text\BreakTextBlockCommand.cs" />
     <Compile Include="Editing\Commands\Caret\CaretCommand.cs" />
@@ -101,7 +103,7 @@
     <Compile Include="ObjectModel\ChangeIndex.cs" />
     <Compile Include="ObjectModel\Cursors\BaseBlockContentCursor.cs" />
     <Compile Include="ObjectModel\Blocks\Block.cs" />
-    <Compile Include="ObjectModel\Blocks\BlockCollection.cs" />
+    <Compile Include="ObjectModel\Blocks\Collections\BlockCollection.cs" />
     <Compile Include="ObjectModel\Blocks\BlockContentCursorExtensions.cs" />
     <Compile Include="ObjectModel\Blocks\BlockLinkedList.cs" />
     <Compile Include="ObjectModel\Blocks\BlockPath.cs" />
@@ -120,7 +122,7 @@
     <Compile Include="ObjectModel\Blocks\Text\StyledTextFragment.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextBlock.cs" />
     <Compile Include="ObjectModel\Blocks\Text\TextBlockCursor.cs" />
-    <Compile Include="ObjectModel\Blocks\VerticalBlockCollection.cs" />
+    <Compile Include="ObjectModel\Blocks\Collections\VerticalBlockCollection.cs" />
     <Compile Include="ObjectModel\Cursors\DocumentCursor.cs" />
     <Compile Include="ObjectModel\DocumentOwner.cs" />
     <Compile Include="ObjectModel\Serialization\DescriptorsLookup.cs" />

@@ -54,7 +54,7 @@ namespace TextRight.ContentEditor.Desktop.View
       _cursorView.Attach(this);
 
       // clear out the existing content
-      _blockCollectionView = new VerticalBlockCollectionView(this, (VerticalBlockCollection)_editor.Document.Root);
+      _blockCollectionView = new VerticalBlockCollectionView(this, _editor.Document.Root);
 
       _rootView = new ScrollViewer()
                   {

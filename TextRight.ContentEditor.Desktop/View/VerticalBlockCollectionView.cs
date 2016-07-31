@@ -14,10 +14,10 @@ namespace TextRight.ContentEditor.Desktop.View
   public class VerticalBlockCollectionView : StackPanel,
                                              IBlockCollectionView
   {
-    private readonly VerticalBlockCollection _blockCollection;
+    private readonly RootBlockCollection _blockCollection;
     private readonly DocumentEditorContextView _root;
 
-    public VerticalBlockCollectionView(DocumentEditorContextView root, VerticalBlockCollection blockCollection)
+    public VerticalBlockCollectionView(DocumentEditorContextView root, RootBlockCollection blockCollection)
     {
       _root = root;
       _blockCollection = blockCollection;

@@ -27,7 +27,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Serialization
     public Block Deserialize(SerializeNode node)
     {
       var childDescriptor = FindDescriptor(node.TypeId);
-      var block = childDescriptor.CreateInstance(null);
+      var block = childDescriptor.CreateInstance();
       block.Deserialize(this, node);
       return block;
     }

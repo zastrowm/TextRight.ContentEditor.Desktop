@@ -7,7 +7,7 @@ using TextRight.ContentEditor.Core.ObjectModel.Blocks;
 namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
 {
   /// <summary> A BlockCollection that can be initialized via collection intializer. </summary>
-  public class AddableBlockCollection : VerticalBlockCollection,
+  public class AddableBlockCollection : RootBlockCollection,
                                         IEnumerable
   {
     public IEnumerator GetEnumerator()

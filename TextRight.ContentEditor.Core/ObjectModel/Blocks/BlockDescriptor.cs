@@ -18,10 +18,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public abstract Type BlockType { get; }
 
     /// <summary> Creates a new instance of the block. </summary>
-    /// <param name="document"> The document for which the block is being created. </param>
     /// <returns> The new instance of the block. </returns>
     [Pure]
-    public abstract Block CreateInstance(DocumentOwner document);
+    public abstract Block CreateInstance();
 
     /// <summary> All of the commands that should be available when the block is in a document. </summary>
     /// <param name="document"></param>
@@ -30,15 +29,21 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
   /// <summary> Generic version of <see cref="BlockDescriptor"/> </summary>
   /// <typeparam name="TBlock"> Type of the block being described. </typeparam>
-  public abstract class BlockDescriptor<TBlock> : BlockDescriptor
-    where TBlock : Block, new()
+  public abstract class FactoryBlockDescriptor<TBlock> : BlockDescriptor
+    where TBlock : Block
   {
-    /// <inheritdoc />
-    public override Block CreateInstance(DocumentOwner document)
-      => new TBlock();
-
     /// <inheritdoc />
     public override Type BlockType
       => typeof(TBlock);
+  }
+
+  /// <summary> Generic version of <see cref="BlockDescriptor"/> </summary>
+  /// <typeparam name="TBlock"> Type of the block being described. </typeparam>
+  public abstract class BlockDescriptor<TBlock> : FactoryBlockDescriptor<TBlock>
+    where TBlock : Block, new()
+  {
+    /// <inheritdoc />
+    public override Block CreateInstance()
+      => new TBlock();
   }
 }

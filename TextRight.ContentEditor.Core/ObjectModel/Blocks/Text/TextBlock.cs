@@ -12,7 +12,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
   /// </summary>
   public abstract class TextBlock : ContentBlock
-
   {
     private readonly List<StyledTextFragment> _spans;
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Core.Editing;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 using TextRight.ContentEditor.Core.Utilities;
@@ -10,38 +9,11 @@ using TextRight.ContentEditor.Core.Utilities;
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 {
   /// <summary> A BlockCollection where the blocks are stacked vertically. </summary>
-  public class VerticalBlockCollection : BlockCollection,
-                                         IDocumentItem<IBlockCollectionView>
+  public abstract class VerticalBlockCollection : BlockCollection
   {
-    public static readonly RegisteredDescriptor RegisteredDescriptor
-      = RegisteredDescriptor.Register<BlockDescriptor>();
-
-    /// <summary>
-    ///  The object that receives all notifications of changes from this instance.
-    /// </summary>
-    public IBlockCollectionView Target { get; set; }
-
-    /// <inheritdoc />
-    public override RegisteredDescriptor Descriptor
-      => RegisteredDescriptor;
-
-    /// <inheritdoc />
-    IDocumentItemView IDocumentItem.DocumentItemView
-      => Target;
-
-    /// <inheritdoc />
-    protected override void OnBlockInserted(Block previousBlock, Block newBlock, Block nextBlock)
+    /// <summary> Default constructor. </summary>
+    internal VerticalBlockCollection()
     {
-      Target?.NotifyBlockInserted(previousBlock, newBlock, nextBlock);
-    }
-
-    /// <inheritdoc />
-    protected override void OnBlockRemoved(Block previousBlock,
-                                           Block removedBlock,
-                                           Block nextBlock,
-                                           int indexOfRemovedBlock)
-    {
-      Target?.NotifyBlockRemoved(previousBlock, removedBlock, nextBlock, indexOfRemovedBlock);
     }
 
     /// <inheritdoc />
@@ -63,7 +35,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <inheritdoc />
     public override Block Clone()
     {
-      var clone = new VerticalBlockCollection();
+      var clone = (VerticalBlockCollection)Descriptor.Descriptor.CreateInstance();
 
       foreach (var block in Children)
       {
@@ -97,12 +69,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     }
 
     /// <inheritdoc />
-    public override MeasuredRectangle GetBounds()
-    {
-      return Target?.MeasureBounds() ?? MeasuredRectangle.Invalid;
-    }
-
-    /// <inheritdoc />
     public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode)
     {
       return LastBlock.GetCaretFromBottom(caretMovementMode);
@@ -112,19 +78,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public override IBlockContentCursor GetCaretFromTop(CaretMovementMode caretMovementMode)
     {
       return LastBlock.GetCaretFromTop(caretMovementMode);
-    }
-
-    private class BlockDescriptor : BlockDescriptor<VerticalBlockCollection>
-    {
-      /// <inheritdoc />
-      public override string Id
-        => "Heading";
-
-      /// <inheritdoc />
-      public override IEnumerable<IContextualCommand> GetCommands(DocumentOwner document)
-      {
-        yield break;
-      }
     }
   }
 
