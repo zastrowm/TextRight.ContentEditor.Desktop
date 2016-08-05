@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "TextRight.Core": "1.0.0-*",
+    "NUnit": "2.6.4",
+    "Newtonsoft.Json": "7.0.1",
+    "Moq": "4.5.10",
+    "Castle.Core": "3.3.3",
+    "FluentAssertions": "4.5.0"
+  },
+
+  "frameworks": {
+    "net461": {
+    }
+  }
+}

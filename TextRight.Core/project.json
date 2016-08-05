@@ -1,0 +1,31 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "JetBrains.Annotations": "10.1.5"
+  },
+
+  "frameworks": {
+
+    "net461": {},
+
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  },
+
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
+      }
+    },
+    "Release": {
+      "buildOptions": {
+        "define": [ "RELEASE", "TRACE" ],
+        "optimize": true
+      }
+    }
+  }
+}
