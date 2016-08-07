@@ -22,5 +22,12 @@
         "System.Drawing": "4.0.0.0"
       }
     }
+  },
+
+
+  "tools": {
+    "Microsoft.DotNet.Watcher.Tools": {
+      "version": "1.0.0-*"
+    }
   }
 }

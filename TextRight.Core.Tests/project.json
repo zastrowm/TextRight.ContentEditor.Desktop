@@ -1,18 +1,31 @@
 {
   "version": "1.0.0-*",
 
+  "buildOptions": {
+    "additionalArguments": [ "/parallel"]
+  },
+
   "dependencies": {
     "NETStandard.Library": "1.6.0",
     "TextRight.Core": "1.0.0-*",
-    "NUnit": "2.6.4",
-    "Newtonsoft.Json": "7.0.1",
+    "NUnit": "3.2.0",
+    "Newtonsoft.Json": "9.0.1",
     "Moq": "4.5.10",
     "Castle.Core": "3.3.3",
-    "FluentAssertions": "4.5.0"
+    "FluentAssertions": "4.5.0",
+    "dotnet-test-nunit": "3.4.0-beta-1"
   },
+
+  "testRunner": "nunit",
 
   "frameworks": {
     "net461": {
+    }
+  },
+
+  "tools": {
+    "Microsoft.DotNet.Watcher.Tools": {
+      "version": "1.0.0-*"
     }
   }
 }
