@@ -51,8 +51,8 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
 
       Assert.That(nextBlock, Is.Not.Null);
 
-      Assert.That(_block.Fragments.First().Text, Is.EqualTo("abc"));
-      Assert.That(nextBlock.Fragments.First().Text, Is.EqualTo("123"));
+      Assert.That(_block.Fragments.First().GetText(), Is.EqualTo("abc"));
+      Assert.That(nextBlock.Fragments.First().GetText(), Is.EqualTo("123"));
     }
   }
 }

@@ -29,5 +29,24 @@
     "Microsoft.DotNet.Watcher.Tools": {
       "version": "1.0.0-*"
     }
+  },
+
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
+      }
+    },
+    "Debug-Watch": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE", "WATCHING" ]
+      }
+    },
+    "Release": {
+      "buildOptions": {
+        "define": [ "RELEASE", "TRACE" ],
+        "optimize": true
+      }
+    }
   }
 }

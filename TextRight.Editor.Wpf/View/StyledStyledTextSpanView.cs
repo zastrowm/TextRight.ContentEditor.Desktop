@@ -42,7 +42,7 @@ namespace TextRight.ContentEditor.Desktop.View
     /// <inheritdoc/>
     public void TextUpdated(StyledTextFragment fragment)
     {
-      Text = _fragment.Text;
+      Text = _fragment.GetText();
       _paragraphView.MarkTextChanged(fragment);
     }
 

@@ -47,7 +47,7 @@ namespace TextRight.ContentEditor.Core.Tests
 
       foreach (var fragment in textBlock.Fragments)
       {
-        builder.Append(fragment.Text);
+        fragment.AppendTo(builder);
       }
 
       return builder.ToString();

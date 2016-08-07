@@ -71,11 +71,11 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
     /// <summary> Get the character after the current cursor position. </summary>
     public char CharacterAfter
-      => OffsetIntoSpan != Fragment.Length ? Fragment.Text[OffsetIntoSpan] : NullCharacter;
+      => OffsetIntoSpan != Fragment.Length ? Fragment.GetCharacterAt(OffsetIntoSpan) : NullCharacter;
 
     /// <summary> Get the character before the current cursor position. </summary>
     public char CharacterBefore
-      => OffsetIntoSpan != 0 ? Fragment.Text[OffsetIntoSpan - 1] : NullCharacter;
+      => OffsetIntoSpan != 0 ? Fragment.GetCharacterAt(OffsetIntoSpan - 1) : NullCharacter;
 
     /// <inheritdoc />
     public override void MoveToBeginning()
@@ -163,7 +163,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       return shouldMeasureNext
         ? MeasureForward().FlattenLeft()
         : MeasureBackward().FlattenRight();
-
     }
 
     /// <inheritdoc />
@@ -208,7 +207,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <inheritdoc/>
     public void InsertText(string text)
     {
-      Fragment.Text = Fragment.Text.Insert(OffsetIntoSpan, text);
+      Fragment.InsertText(text, OffsetIntoSpan);
       OffsetIntoSpan += text.Length;
     }
 
@@ -232,7 +231,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         }
 
         // TODO special case when we're deleting the entire fragment
-        Fragment.Text = Fragment.Text.Remove(OffsetIntoSpan, numberOfCharactersToRemove);
+        Fragment.RemoveCharacters(OffsetIntoSpan, numberOfCharactersToRemove);
 
         numberOfCharacters -= numberOfCharactersToRemove;
         // TODO what happens for multiple fragments

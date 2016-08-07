@@ -64,7 +64,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
         var lastSpan = _spans[_spans.Count - 1];
         if (lastSpan.IsSameStyleAs(fragment))
         {
-          lastSpan.Text += fragment.Text;
+          lastSpan.InsertText(fragment.GetText(), lastSpan.Length);
           return;
         }
       }
@@ -164,7 +164,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       foreach (var span in _spans)
       {
         var subSpanNode = new SerializeNode("temp/fragment");
-        subSpanNode.AddData<string>("Body", span.Text);
+        subSpanNode.AddData<string>("Body", span.GetText());
         node.Children.Add(subSpanNode);
       }
     }
@@ -224,10 +224,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
 
         elements = new StyledTextFragment[expectedCount];
 
-        string leftHalf = startFragment.Text.Substring(0, offsetIntoFragment);
-        string rightHalf = startFragment.Text.Substring(offsetIntoFragment);
+        string rightHalf = startFragment.GetText().Substring(offsetIntoFragment);
 
-        startFragment.Text = leftHalf;
+        startFragment.RemoveCharacters(offsetIntoFragment, startFragment.Length - offsetIntoFragment);
 
         elements[0] = new StyledTextFragment(rightHalf);
         startFragment = startFragment.Next;

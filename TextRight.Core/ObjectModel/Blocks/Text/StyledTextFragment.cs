@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using TextRight.ContentEditor.Core.Utilities;
 
 namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
@@ -30,10 +31,12 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
                                     IEquatable<StyledTextFragment>,
                                     IDocumentItem<IStyledTextSpanView>
   {
+    internal IFragmentBuffer _buffer;
+
     /// <summary> Default constructor. </summary>
     public StyledTextFragment(string text)
     {
-      Text = text;
+      _buffer = new StringFragmentBuffer(text);
       Index = -1;
     }
 
@@ -49,22 +52,9 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <summary> The sibling fragment that this fragment follows. </summary>
     public StyledTextFragment Previous { get; internal set; }
 
-    /// <summary> The text in the span. </summary>
-    public string Text
-    {
-      get { return _text; }
-      internal set
-      {
-        _text = value;
-        Target?.TextUpdated(this);
-      }
-    }
-
-    private string _text;
-
     /// <summary> The number of characters in the TextSpan. </summary>
     public int Length
-      => Text.Length;
+      => _buffer.Length;
 
     /// <summary>
     ///  True if the given fragment has the same style and could be merged with this instance.
@@ -83,7 +73,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <returns> A copy of this instance. </returns>
     public StyledTextFragment Clone()
     {
-      return new StyledTextFragment(_text);
+      return new StyledTextFragment(_buffer.GetText());
     }
 
     /// <summary>
@@ -94,6 +84,13 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <inheritdoc />
     IDocumentItemView IDocumentItem.DocumentItemView
       => Target;
+
+    /// <summary> Appends the text in this span to the given string builder. </summary>
+    /// <param name="builder"> The builder to which the text in this fragment should be appended. </param>
+    public void AppendTo(StringBuilder builder)
+    {
+      _buffer.AppendTo(builder);
+    }
 
     /// <summary> Detach the fragment from any views. </summary>
     public void Detach()
@@ -109,7 +106,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       if (ReferenceEquals(this, other))
         return true;
 
-      return string.Equals(_text, other._text) && Index == other.Index;
+      return _buffer.Equals(other._buffer) && Index == other.Index;
     }
 
     /// <inheritdoc />
@@ -129,8 +126,40 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     {
       unchecked
       {
-        return (_text.GetHashCode() * 397) ^ Index;
+        return (_buffer.GetHashCodeImplementation() * 397) ^ Index;
       }
+    }
+
+    /// <summary> Inserts the given text at the given position. </summary>
+    /// <param name="text"> The text to insert. </param>
+    /// <param name="offsetIntoSpan"> The offset at which the text should be inserted. </param>
+    public void InsertText(string text, int offsetIntoSpan)
+    {
+      _buffer.InsertText(offsetIntoSpan, text);
+      Target?.TextUpdated(this);
+    }
+
+    /// <summary> Removes the given number of characters. </summary>
+    /// <param name="offsetIntoSpan"> The offset at which the characters should be removed. </param>
+    /// <param name="numberOfCharactersToRemove"> The number of characters to remove. </param>
+    public void RemoveCharacters(int offsetIntoSpan, int numberOfCharactersToRemove)
+    {
+      _buffer.DeleteText(offsetIntoSpan, numberOfCharactersToRemove);
+      Target?.TextUpdated(this);
+    }
+
+    /// <summary> Gets the character at the given position. </summary>
+    /// <param name="index"> The index within the span for the character to retrieve. </param>
+    /// <returns> The character at the given index. </returns>
+    public char GetCharacterAt(int index)
+    {
+      return _buffer.GetCharacterAt(index);
+    }
+
+    /// <summary> Retrieves the text within the fragment. </summary>
+    public string GetText()
+    {
+      return _buffer.GetText();
     }
   }
 }

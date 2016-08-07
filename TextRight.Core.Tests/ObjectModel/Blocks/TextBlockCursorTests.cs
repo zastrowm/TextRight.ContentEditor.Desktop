@@ -121,13 +121,13 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       var spans = cursor.ExtractToEnd();
 
       Assert.That(spans.Length, Is.EqualTo(3));
-      Assert.That(spans[0].Text, Is.EqualTo("3"));
+      Assert.That(spans[0].GetText(), Is.EqualTo("3"));
       Assert.That(spans[1], Is.EqualTo(b));
       Assert.That(spans[2], Is.EqualTo(c));
 
       Assert.That(Block.ChildCount, Is.EqualTo(1));
       Assert.That(Block.Fragments.First(), Is.EqualTo(a));
-      Assert.That(Block.Fragments.First().Text, Is.EqualTo("12"));
+      Assert.That(Block.Fragments.First().GetText(), Is.EqualTo("12"));
     }
 
     [Test]
@@ -137,13 +137,13 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       var spans = cursor.ExtractToEnd();
 
       Assert.That(spans.Length, Is.EqualTo(3));
-      Assert.That(spans[0].Text, Is.EqualTo("123"));
+      Assert.That(spans[0].GetText(), Is.EqualTo("123"));
       Assert.That(spans[1], Is.EqualTo(b));
       Assert.That(spans[2], Is.EqualTo(c));
 
       Assert.That(Block.ChildCount, Is.EqualTo(1));
       Assert.That(Block.Fragments.First(), Is.EqualTo(a));
-      Assert.That(Block.Fragments.First().Text, Is.EqualTo(""));
+      Assert.That(Block.Fragments.First().GetText(), Is.EqualTo(""));
     }
 
     [Test]
@@ -156,11 +156,11 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
 
       Assert.That(Block.ChildCount, Is.EqualTo(3));
       Assert.That(Block.Fragments.ElementAt(0), Is.EqualTo(a));
-      Assert.That(Block.Fragments.ElementAt(0).Text, Is.EqualTo("123"));
+      Assert.That(Block.Fragments.ElementAt(0).GetText(), Is.EqualTo("123"));
       Assert.That(Block.Fragments.ElementAt(1), Is.EqualTo(b));
-      Assert.That(Block.Fragments.ElementAt(1).Text, Is.EqualTo("456"));
+      Assert.That(Block.Fragments.ElementAt(1).GetText(), Is.EqualTo("456"));
       Assert.That(Block.Fragments.ElementAt(2), Is.EqualTo(c));
-      Assert.That(Block.Fragments.ElementAt(2).Text, Is.EqualTo("789"));
+      Assert.That(Block.Fragments.ElementAt(2).GetText(), Is.EqualTo("789"));
     }
   }
 }
