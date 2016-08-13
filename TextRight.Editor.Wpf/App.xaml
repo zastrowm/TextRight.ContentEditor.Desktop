@@ -1,8 +1,8 @@
-﻿<Application x:Class="TextRight.ContentEditor.Desktop.App.App"
+﻿<Application x:Class="TextRight.EditorApp.Wpf.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TextRight.ContentEditor.Desktop"
-             StartupUri="App/MainWindow.xaml">
+             xmlns:local="clr-namespace:TextRight.EditorApp.Wpf"
+             StartupUri="MainWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>

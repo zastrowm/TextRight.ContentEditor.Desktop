@@ -1,14 +1,17 @@
-﻿{
-  "version": "1.0.0-*",
-
+{
+  "supports": {},
   "dependencies": {
     "NETStandard.Library": "1.6.0",
+    "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
     "JetBrains.Annotations": "10.1.5"
   },
-
   "frameworks": {
+    "net461": {
 
-    "net461": {},
+    },
+    "netstandard1.3": {
+      "imports": "portable-net40+sl4+win8+wp7"
+    }
   },
 
   "configurations": {

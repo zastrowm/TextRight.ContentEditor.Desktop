@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.Internal;
 using TextRight.ContentEditor.Core.ObjectModel.Cursors;
 using TextRight.ContentEditor.Core.ObjectModel.Serialization;
 
@@ -198,7 +197,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     public StyledTextFragment[] ExtractContentToEnd(TextBlockCursor cursor)
     {
       if (cursor.IsAtEnd)
-        return ArrayEx.Empty<StyledTextFragment>();
+        return Array.Empty<StyledTextFragment>();
 
       StyledTextFragment startFragment = cursor.Fragment;
       int offsetIntoFragment = cursor.OffsetIntoSpan;
