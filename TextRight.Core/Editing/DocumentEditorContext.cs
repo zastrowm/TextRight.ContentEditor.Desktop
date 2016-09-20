@@ -21,10 +21,15 @@ namespace TextRight.ContentEditor.Core.Editing
   /// <summary> Represents a TextRight document that is being edited. </summary>
   public class DocumentEditorContext : IDocumentItem<IDocumentEditorView>
   {
-    /// <summary> Default constructor. </summary>
     public DocumentEditorContext()
+      : this(new DocumentOwner())
     {
-      Document = new DocumentOwner();
+    }
+
+    /// <summary> Default constructor. </summary>
+    public DocumentEditorContext(DocumentOwner owner)
+    {
+      Document = owner;
 
       var cursor = ((ContentBlock)Document.Root.FirstBlock).GetCursor();
       cursor.MoveToBeginning();

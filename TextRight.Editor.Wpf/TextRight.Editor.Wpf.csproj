@@ -49,6 +49,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfHosting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WpfHosting.Client.1.0.0-alpha-001\lib\net46\WpfHosting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -57,6 +61,8 @@
     </ApplicationDefinition>
     <Compile Include="App\DocumentEditor.xaml.cs" />
     <Compile Include="App\MainWindow.xaml.cs" />
+    <Compile Include="DevLoader.cs" />
+    <Compile Include="Serialization\XmlNodeSerializer.cs" />
     <Compile Include="View\BaseTextBlockView.cs" />
     <Compile Include="View\DocumentCursorView.cs" />
     <Compile Include="View\DocumentEditorContextView.cs" />
@@ -67,6 +73,7 @@
     <Compile Include="View\StyledStyledTextSpanView.cs" />
     <Compile Include="View\VerticalBlockCollectionView.cs" />
     <Compile Include="View\ViewFactory.cs" />
+    <Compile Include="WatchEntryPoint.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -101,6 +108,7 @@
     <Content Include="keyboard.trcfg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

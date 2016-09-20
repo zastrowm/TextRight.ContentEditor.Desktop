@@ -14,6 +14,11 @@ namespace TextRight.ContentEditor.Desktop.App
   public partial class DocumentEditor : UserControl
   {
     public DocumentEditor()
+      : this(new DocumentEditorContext())
+    {
+    }
+
+    public DocumentEditor(DocumentEditorContext context)
     {
       Loaded += delegate
                 {
@@ -22,7 +27,11 @@ namespace TextRight.ContentEditor.Desktop.App
                   view.Focus();
                 };
 
-      Content = new DocumentEditorContextView(new DocumentEditorContext());
+      EditorContext = context;
+      Content = new DocumentEditorContextView(EditorContext);
     }
+
+    /// <summary> The current editor context. </summary>
+    public DocumentEditorContext EditorContext { get; }
   }
 }

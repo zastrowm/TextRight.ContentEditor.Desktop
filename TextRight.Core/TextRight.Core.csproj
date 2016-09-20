@@ -39,6 +39,9 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bootstrapping\AssemblyDescriptorTypeAttribute.cs" />
+    <Compile Include="Bootstrapping\CoreFactory.cs" />
+    <Compile Include="Bootstrapping\IAssemblyDescriptorFactory.cs" />
     <Compile Include="DocumentPoint.cs" />
     <Compile Include="Editing\Actions\ActionStack.cs" />
     <Compile Include="Editing\Actions\ConvertIntoParagraphAction.cs" />
