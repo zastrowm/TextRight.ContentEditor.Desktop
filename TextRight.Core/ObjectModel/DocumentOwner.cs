@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.Core.ObjectModel.Blocks.Collections;
+using TextRight.Core.ObjectModel.Serialization;
 
-namespace TextRight.ContentEditor.Core.ObjectModel
+namespace TextRight.Core.ObjectModel
 {
   /// <summary> Represents a single TextRight document. </summary>
   public class DocumentOwner : IEquatable<DocumentOwner>

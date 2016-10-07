@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using TextRight.ContentEditor.Core.ObjectModel;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Collections;
+using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Desktop.View
+namespace TextRight.Editor.Wpf.View
 {
   /// <summary> Implements the functionality for hosting the view of a ChildCollection </summary>
   public class VerticalBlockCollectionView : StackPanel,

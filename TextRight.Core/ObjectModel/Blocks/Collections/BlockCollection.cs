@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Collections
 {
   /// <summary> A block that holds a collection of child blocks. </summary>
   public abstract class BlockCollection : Block,

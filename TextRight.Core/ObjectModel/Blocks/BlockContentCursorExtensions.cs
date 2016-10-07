@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
+using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary> Extension methods to <see cref="IBlockContentCursor"/> </summary>
   public static class BlockContentCursorExtensions
@@ -39,6 +39,5 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
       copied.Cursor.MoveTo(cursor);
       return copied;
     }
-
   }
 }

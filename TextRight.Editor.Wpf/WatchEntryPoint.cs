@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Linq;
-using TextRight.ContentEditor.Desktop.App;
 using TextRight.Editor.Wpf;
-using TextRight.EditorApp.Wpf;
 using WpfHosting;
 
 [assembly: HostedTargetType(typeof(WatchEntryPoint))]

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
+namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 {
   internal class MarkupCollectionTests
   {
@@ -379,8 +379,8 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks.Text
                       };
 
       originalRanges.ToList().ForEach(
-        r => _collection.MarkRange(r, _fakeMarkupType, null)
-        );
+                      r => _collection.MarkRange(r, _fakeMarkupType, null)
+                    );
 
       _collection.UpdateFromEvent(new TextModification(6, 2, false));
 

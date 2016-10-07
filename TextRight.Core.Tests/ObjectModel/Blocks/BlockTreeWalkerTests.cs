@@ -5,9 +5,11 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Collections;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
+namespace TextRight.Core.Tests.ObjectModel.Blocks
 {
   public class BlockTreeWalkerTests
   {
@@ -117,7 +119,7 @@ namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
       Expression<Func<Block>> currentBlock,
       Expression<Func<Block>> expectedBlock,
       string description
-      )
+    )
     {
       var data = new TestData()
                  {

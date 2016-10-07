@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.Editing;
+using TextRight.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
+namespace TextRight.Core.ObjectModel.Cursors
 {
   /// <summary>
   ///  Represents a selection within the document, holding the start position of the selection and

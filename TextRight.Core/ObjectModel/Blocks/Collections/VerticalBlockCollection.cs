@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.ObjectModel.Cursors;
+using TextRight.Core.ObjectModel.Serialization;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Collections
 {
   /// <summary> A BlockCollection where the blocks are stacked vertically. </summary>
   public abstract class VerticalBlockCollection : BlockCollection

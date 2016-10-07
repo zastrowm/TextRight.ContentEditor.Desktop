@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks;
 
 namespace TextRight.Core.Bootstrapping
 {

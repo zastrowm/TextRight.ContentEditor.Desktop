@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> Buffer for the text representation of a <see cref="StyledTextFragment"/>. </summary>
   internal interface IFragmentBuffer
@@ -22,6 +22,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
     /// <param name="position"> The index within the span for the character to retrieve. </param>
     /// <returns> The character at the given index. </returns>
     char GetCharacterAt(int position);
+
     /// <summary> The number of characters in the TextSpan. </summary>
     int Length { get; }
 

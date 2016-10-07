@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
+namespace TextRight.Core.ObjectModel.Cursors
 {
   /// <summary>
   ///  A structure which holds a reference to a block cursor and automatically recycles the cursor

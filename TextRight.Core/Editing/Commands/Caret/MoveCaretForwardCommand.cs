@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.ContentEditor.Core.Editing
+namespace TextRight.Core.Editing.Commands.Caret
 {
   /// <summary> Moves the caret backwards. </summary>
   public class MoveCaretForwardCommand : CaretCommand

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Cursors;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Core.Editing
+namespace TextRight.Core.Editing
 {
   /// <summary>
   ///  Various algorithms for moving a cursor up/down Home/End.

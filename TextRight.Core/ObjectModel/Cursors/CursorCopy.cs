@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
+namespace TextRight.Core.ObjectModel.Cursors
 {
   /// <summary> A temporary copy of a BlockContentCursor. </summary>
   public struct CursorCopy : IDisposable,
@@ -58,6 +58,6 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
 
     /// <inheritdoc />
     public bool Is<T>() where T : IBlockContentCursor
-      => _pooledCursor.Cursor is T;
+    => _pooledCursor.Cursor is T;
   }
 }

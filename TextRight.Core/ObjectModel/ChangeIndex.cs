@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TextRight.ContentEditor.Core.ObjectModel
+namespace TextRight.Core.ObjectModel
 {
   /// <summary>
   ///  Represents an immutable value that can be compared to another instance to see if a change has

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Linq;
 
-namespace TextRight.EditorApp.Wpf
+namespace TextRight.Editor.Wpf
 {
   /// <summary>
   /// Interaction logic for MainWindow.xaml

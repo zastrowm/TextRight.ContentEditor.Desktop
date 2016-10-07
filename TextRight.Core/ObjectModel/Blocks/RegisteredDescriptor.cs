@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary>
   ///  Contains a handle to a <see cref="BlockDescriptor"/> that has been registered app-

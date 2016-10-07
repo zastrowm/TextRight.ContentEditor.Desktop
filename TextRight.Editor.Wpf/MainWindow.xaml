@@ -1,11 +1,10 @@
-﻿<Window x:Class="TextRight.EditorApp.Wpf.MainWindow"
+﻿<Window x:Class="TextRight.Editor.Wpf.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TextRight.EditorApp.Wpf"
-        xmlns:app="clr-namespace:TextRight.ContentEditor.Desktop.App"
+        xmlns:wpf="clr-namespace:TextRight.Editor.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-  <app:DocumentEditor x:Name="TheEditor" />
+  <wpf:DocumentEditor x:Name="TheEditor" />
 </Window>

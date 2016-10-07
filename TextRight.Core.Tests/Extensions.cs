@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Core.Editing.Actions;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.Editing.Actions;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Collections;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.ContentEditor.Core.Tests
+namespace TextRight.Core.Tests
 {
   public static class Extensions
   {

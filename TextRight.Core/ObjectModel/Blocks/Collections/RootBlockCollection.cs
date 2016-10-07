@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.Editing;
+using TextRight.Core.Editing.Commands;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Collections
 {
   /// <summary> The collection of blocks that exist at the top of the document. </summary>
   public class RootBlockCollection : VerticalBlockCollectionBase<IBlockCollectionView>

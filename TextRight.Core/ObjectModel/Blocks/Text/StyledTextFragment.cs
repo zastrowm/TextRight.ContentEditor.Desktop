@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> Hosts the view for the TextSpan. </summary>
   public interface IStyledTextSpanView : IDocumentItemView

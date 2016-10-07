@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Collections;
 
-namespace TextRight.ContentEditor.Core.Tests.ObjectModel.Blocks
+namespace TextRight.Core.Tests.ObjectModel.Blocks
 {
   /// <summary> A BlockCollection that can be initialized via collection intializer. </summary>
   public class AddableBlockCollection : RootBlockCollection,

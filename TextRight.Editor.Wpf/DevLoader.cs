@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.Core.Editing;
+using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Cursors;
+using TextRight.Core.ObjectModel.Serialization;
 using TextRight.Editor.Wpf.Serialization;
 
-namespace TextRight.EditorApp.Wpf
+namespace TextRight.Editor.Wpf
 {
   public static class DevLoader
   {

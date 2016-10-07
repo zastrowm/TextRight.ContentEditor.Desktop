@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TextRight.ContentEditor.Core.Editing.Actions
+namespace TextRight.Core.Editing.Actions
 {
   /// <summary> Holds a set of actions that can be undone/redone. </summary>
   public sealed class ActionStack
@@ -99,6 +99,5 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
       public UndoableAction Action { get; }
       public DateTimeOffset InsertTime { get; }
     }
-
   }
 }

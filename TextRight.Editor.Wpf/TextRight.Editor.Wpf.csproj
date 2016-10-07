@@ -60,7 +60,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="App\DocumentEditor.xaml.cs" />
-    <Compile Include="App\MainWindow.xaml.cs" />
     <Compile Include="DevLoader.cs" />
     <Compile Include="Serialization\XmlNodeSerializer.cs" />
     <Compile Include="View\BaseTextBlockView.cs" />

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using TextRight.ContentEditor.Core.Editing;
+using TextRight.Core.Editing.Commands;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary>
   ///  Provides information about a specific type of block, allowing both creation and serialization.

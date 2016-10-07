@@ -7,10 +7,10 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.ObjectModel.Cursors;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Desktop.View
+namespace TextRight.Editor.Wpf.View
 {
   /// <summary> The visual representation of a DocumentCursor. </summary>
   public class DocumentCursorView

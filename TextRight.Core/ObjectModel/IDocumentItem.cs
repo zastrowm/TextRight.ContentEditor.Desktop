@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace TextRight.ContentEditor.Core.ObjectModel
+namespace TextRight.Core.ObjectModel
 {
   /// <summary> An item that exists in the Document ObjectModel. </summary>
   public interface IDocumentItem

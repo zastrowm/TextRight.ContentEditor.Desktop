@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Core.Editing.Actions
+namespace TextRight.Core.Editing.Actions
 {
   /// <summary> Determines when undo stack merging should be attempted. </summary>
   public interface IActionStackMergePolicy

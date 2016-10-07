@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Collections
 {
   /// <summary> Base class for Vertical Block Collections. </summary>
   /// <typeparam name="TBlockView"> The type of view that observes the given collection. </typeparam>

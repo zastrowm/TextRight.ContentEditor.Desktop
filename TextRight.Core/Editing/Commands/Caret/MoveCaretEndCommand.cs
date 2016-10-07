@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
+using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.ContentEditor.Core.Editing
+namespace TextRight.Core.Editing.Commands.Caret
 {
   /// <summary> Moves the caret to the end of the current line. </summary>
   public class MoveCaretEndCommand : CaretCommand

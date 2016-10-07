@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> Interface for an object that has a definitive length. </summary>
   internal interface IMarkupCollectionOwner

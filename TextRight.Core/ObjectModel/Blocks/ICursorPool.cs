@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
+using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary>
   ///  Pools cursors so that they do not need to be continually created and destroyed.

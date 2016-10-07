@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> Contains a collection of SubFragmentMarkups for a specific <see cref="StyledTextFragment"/>. </summary>
   public class MarkupCollection : IEnumerable<Markup>

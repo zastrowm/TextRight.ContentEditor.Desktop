@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.Editing.Actions;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.Editing.Actions;
+using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.ContentEditor.Core.Editing
+namespace TextRight.Core.Editing.Commands.Text
 {
   /// <summary> Merges two text blocks together so that they form a single text block. </summary>
   public class MergeTextBlocksCommand : IContextualCommand

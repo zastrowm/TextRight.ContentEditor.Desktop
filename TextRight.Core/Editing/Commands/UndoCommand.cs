@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Core.Editing.Actions;
+using TextRight.Core.Editing.Actions;
 
-namespace TextRight.ContentEditor.Core.Editing
+namespace TextRight.Core.Editing.Commands
 {
   /// <summary> Undoes the previous action. </summary>
   public class UndoCommand : IContextualCommand

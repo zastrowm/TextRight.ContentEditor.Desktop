@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Serialization
+namespace TextRight.Core.ObjectModel.Serialization
 {
   /// <summary> A lookup table of descriptors with their ids as a the key. </summary>
   public class DescriptorsLookup

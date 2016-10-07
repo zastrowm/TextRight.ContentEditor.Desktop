@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
+using TextRight.Core.ObjectModel.Blocks.Collections;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary>
   ///  An abstract way to identify a block within the hierarchy of a Document.  Only valid until

@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TextRight.ContentEditor.Core.Editing;
+using TextRight.Core.Editing;
+using TextRight.Core.Editing.Commands;
 
-namespace TextRight.ContentEditor.Desktop.View
+namespace TextRight.Editor.Wpf.View
 {
   /// <summary> Contains a collection of keyboard shortcuts. </summary>
   public class KeyboardShortcutCollection : IEnumerable<KeyboardShortcutCollection.Shortcut>

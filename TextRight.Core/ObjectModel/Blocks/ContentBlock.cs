@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
+using TextRight.Core.Editing;
+using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary>
   ///  A block that contains content instead of blocks, and thus supports cursors through the

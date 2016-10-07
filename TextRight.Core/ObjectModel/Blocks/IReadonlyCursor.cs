@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.ObjectModel.Cursors;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary>
   ///  A view of a <see cref="IBlockContentCursor"/> that only allows the consumer to query

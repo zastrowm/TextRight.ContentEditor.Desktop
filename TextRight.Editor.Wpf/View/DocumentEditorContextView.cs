@@ -8,15 +8,20 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using TextRight.ContentEditor.Core;
-using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.Editing.Actions;
-using TextRight.ContentEditor.Core.ObjectModel;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using Block = TextRight.ContentEditor.Core.ObjectModel.Blocks.Block;
-using BlockCollection = TextRight.ContentEditor.Core.ObjectModel.Blocks.BlockCollection;
+using TextRight.Core;
+using TextRight.Core.Editing;
+using TextRight.Core.Editing.Actions;
+using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.Editing.Commands;
+using TextRight.Core.Editing.Commands.Caret;
+using TextRight.Core.Editing.Commands.Text;
+using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Text;
+using Block = TextRight.Core.ObjectModel.Blocks.Block;
+using BlockCollection = TextRight.Core.ObjectModel.Blocks.Collections.BlockCollection;
 
-namespace TextRight.ContentEditor.Desktop.View
+namespace TextRight.Editor.Wpf.View
 {
   /// <summary>
   ///  Creates an editor from a FlowDocument and associated TextRight Document.
@@ -307,12 +312,12 @@ namespace TextRight.ContentEditor.Desktop.View
       var converter = new KeyGestureConverter();
 
       var items = configuration
-        .Where(s => !string.IsNullOrWhiteSpace(s))
-        .Select(s => s.Trim())
-        .Select(s => s.Split(new string[] { " => " }, StringSplitOptions.RemoveEmptyEntries))
-        .Select(p => new { StringKey = p[0], Id = p[1] })
-        .Select(i => new { Key = (KeyGesture)converter.ConvertFromString(i.StringKey), Command = allCommands[i.Id] })
-        .GroupBy(i => i.Key)
+          .Where(s => !string.IsNullOrWhiteSpace(s))
+          .Select(s => s.Trim())
+          .Select(s => s.Split(new string[] { " => " }, StringSplitOptions.RemoveEmptyEntries))
+          .Select(p => new { StringKey = p[0], Id = p[1] })
+          .Select(i => new { Key = (KeyGesture)converter.ConvertFromString(i.StringKey), Command = allCommands[i.Id] })
+          .GroupBy(i => i.Key)
         ;
       var keyboardShortcutCollection = new KeyboardShortcutCollection();
       foreach (var aGroup in items)

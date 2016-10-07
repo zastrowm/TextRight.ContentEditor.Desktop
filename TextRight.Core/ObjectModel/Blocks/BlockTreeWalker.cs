@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.ObjectModel.Blocks.Collections;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary> Walks a document navigating between blocks. </summary>
   public static class BlockTreeWalker

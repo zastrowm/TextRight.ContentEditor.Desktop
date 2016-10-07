@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.Core.ObjectModel.Serialization;
 
 namespace TextRight.Editor.Wpf.Serialization
 {

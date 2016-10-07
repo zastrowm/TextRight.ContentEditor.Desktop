@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
+namespace TextRight.Core.ObjectModel.Cursors
 {
   /// <summary> Maintains the state of a cursor so that it can be restored later. </summary>
   public struct CursorSnapshot : IDisposable

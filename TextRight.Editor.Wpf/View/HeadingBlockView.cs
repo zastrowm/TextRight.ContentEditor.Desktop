@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using TextRight.ContentEditor.Core.ObjectModel;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.ContentEditor.Desktop.View
+namespace TextRight.Editor.Wpf.View
 {
   /// <summary />
   public class HeadingBlockView : BaseTextBlockView,

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.Editing.Actions;
-using TextRight.ContentEditor.Core.ObjectModel;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.Core.Editing;
+using TextRight.Core.Editing.Actions;
+using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Serialization;
 
-namespace TextRight.ContentEditor.Core.Tests.Editing
+namespace TextRight.Core.Tests.Editing
 {
   /// <summary>
   ///  Sets up a test framework for verifying that an undo action leaves the document in the same
@@ -59,7 +59,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
     /// <summary> Gets the block at the specified index. </summary>
     public T BlockAt<T>(int index)
       where T : ContentBlock
-      => (T)Context.Document.Root.NthBlock(index);
+    => (T)Context.Document.Root.NthBlock(index);
 
     /// <summary>
     ///  Performs all of the actions given, returning an <see cref="UndoTester"/> that can be used to

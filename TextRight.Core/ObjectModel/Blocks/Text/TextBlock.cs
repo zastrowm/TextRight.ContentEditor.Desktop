@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.ObjectModel.Cursors;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.Core.Editing;
+using TextRight.Core.ObjectModel.Cursors;
+using TextRight.Core.ObjectModel.Serialization;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.

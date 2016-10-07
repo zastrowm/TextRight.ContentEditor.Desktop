@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using TextRight.ContentEditor.Core.Editing.Actions;
+using TextRight.Core.Editing.Actions;
+using TextRight.Core.Editing.Actions.Text;
 
-namespace TextRight.ContentEditor.Core.Tests.Editing
+namespace TextRight.Core.Tests.Editing
 {
   internal class DeleteNextCharacterCommandUndoableActionTests : UndoBasedTest
   {

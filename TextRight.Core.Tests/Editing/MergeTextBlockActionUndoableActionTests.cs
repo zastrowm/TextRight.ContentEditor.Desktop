@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
-using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.Editing.Actions;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.Editing.Actions;
+using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.ContentEditor.Core.Tests.Editing
+namespace TextRight.Core.Tests.Editing
 {
   public class MergeTextBlockActionUndoableActionTests : UndoBasedTest
   {
@@ -28,11 +28,11 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
       var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new MergeTextBlockAction(
-                         BlockAt(0).As<TextBlock>(),
-                         BlockAt(1).As<TextBlock>(),
-                         BlockAt(1).BeginCursor().ToHandle()),
+                               BlockAt(0).As<TextBlock>(),
+                               BlockAt(1).As<TextBlock>(),
+                               BlockAt(1).BeginCursor().ToHandle()),
                      }
-        );
+      );
 
       Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
       Assert.That(BlockAt(0), Is.InstanceOf<TextBlock>());
@@ -48,11 +48,11 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
       var it = DoAll(new Func<UndoableAction>[]
                      {
                        () => new MergeTextBlockAction(
-                         BlockAt(0).As<TextBlock>(),
-                         BlockAt(1).As<TextBlock>(),
-                         BlockAt(0).EndCursor().ToHandle()),
+                               BlockAt(0).As<TextBlock>(),
+                               BlockAt(1).As<TextBlock>(),
+                               BlockAt(0).EndCursor().ToHandle()),
                      }
-        );
+      );
 
       Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
       Assert.That(BlockAt(0), Is.InstanceOf<TextBlock>());

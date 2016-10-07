@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Serialization;
 
-namespace TextRight.ContentEditor.Core.Tests.Serialization
+namespace TextRight.Core.Tests.Serialization
 {
   public class HeadingTests
   {

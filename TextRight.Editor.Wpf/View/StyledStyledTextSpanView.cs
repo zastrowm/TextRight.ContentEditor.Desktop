@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Documents;
-using TextRight.ContentEditor.Core.ObjectModel;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Desktop.View
+namespace TextRight.Editor.Wpf.View
 {
   /// <summary>
   ///  Associates a WPF Run with a TextSpan and keeps them in sync.

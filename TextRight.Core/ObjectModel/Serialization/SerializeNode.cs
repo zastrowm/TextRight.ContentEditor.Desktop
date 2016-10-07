@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Serialization
+namespace TextRight.Core.ObjectModel.Serialization
 {
   /// <summary>
   ///  A simple data structure that contains attributes and children of an element in the document.

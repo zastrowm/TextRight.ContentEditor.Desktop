@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks;
 
-namespace TextRight.ContentEditor.Core.Editing.Actions
+namespace TextRight.Core.Editing.Actions.Text
 {
   /// <summary> Breaks a paragraph at the given caret location. </summary>
   public class BreakTextBlockAction : UndoableAction
@@ -19,11 +19,11 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
 
     /// <inheritdoc />
     public override string Name { get; }
-      = "Break Paragraph";
+    = "Break Paragraph";
 
     /// <inheritdoc />
     public override string Description { get; }
-      = "Break paragraph into two";
+    = "Break paragraph into two";
 
     /// <inheritdoc />
     public override void Do(DocumentEditorContext context)
@@ -39,7 +39,6 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
 
         context.Caret.MoveTo(newBlock.GetCursor().ToBeginning());
       }
-      
     }
 
     /// <inheritdoc />

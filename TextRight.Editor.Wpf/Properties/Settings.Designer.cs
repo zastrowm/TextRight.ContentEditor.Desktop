@@ -8,7 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TextRight.EditorApp.Wpf.Properties {
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace TextRight.Editor.Wpf.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Core.Editing.Actions
+namespace TextRight.Core.Editing.Actions
 {
   /// <summary> Will report to merge actions if they occur within the given timespan, defaulting to .75 seconds. </summary>
   public class StandardMergePolicy : IActionStackMergePolicy
@@ -12,7 +12,7 @@ namespace TextRight.ContentEditor.Core.Editing.Actions
     ///  merged.
     /// </summary>
     public TimeSpan MaxDifference { get; set; }
-      = TimeSpan.FromSeconds(.75);
+    = TimeSpan.FromSeconds(.75);
 
     /// <inheritdoc/>
     public bool ShouldTryMerge(ActionStack.UndoStackEntry originalEntry, ActionStack.UndoStackEntry newEntry)

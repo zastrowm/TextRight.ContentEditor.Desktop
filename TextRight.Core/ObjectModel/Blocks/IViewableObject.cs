@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary> An object that may have an associated view that it notifies of changes. </summary>
   /// <typeparam name="T"> Generic type parameter. </typeparam>

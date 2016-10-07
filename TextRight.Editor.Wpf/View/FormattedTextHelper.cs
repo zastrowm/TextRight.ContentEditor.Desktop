@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace TextRight.ContentEditor.Desktop.View
+namespace TextRight.Editor.Wpf.View
 {
   /// <summary> Wraps a FormattedText object, automatically recreating the text when needed. </summary>
   public class FormattedTextHelper

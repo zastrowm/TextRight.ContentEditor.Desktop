@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
-using TextRight.ContentEditor.Core.Editing;
-using TextRight.ContentEditor.Core.Editing.Actions;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.Editing.Actions;
+using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.ContentEditor.Core.Tests.Editing
+namespace TextRight.Core.Tests.Editing
 {
   public class BreakTextBlockActionUndoableActionTests : UndoBasedTest
   {
@@ -19,7 +19,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
                        () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Start of text"),
                        () => new BreakTextBlockAction(BlockAt(0).EndCursor().ToHandle()),
                      }
-        );
+      );
 
       Assert.That(Document.Root.ChildCount, Is.EqualTo(2));
       Assert.That(BlockAt(0), Is.InstanceOf<TextBlock>());
@@ -86,7 +86,7 @@ namespace TextRight.ContentEditor.Core.Tests.Editing
                          () => new InsertTextUndoableAction(BlockAt(2).BeginCursor().ToHandle(), "More text"),
                          () => new InsertTextUndoableAction(BlockAt(2).BeginCursor(1).ToHandle(), "The text"),
                        }
-        );
+      );
     }
   }
 }

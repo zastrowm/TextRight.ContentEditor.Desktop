@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TextRight.ContentEditor.Core.Utilities
+namespace TextRight.Core.Utilities
 {
   /// <summary> Contains a measurement of a location within the block. </summary>
   [DebuggerDisplay("Left: {Left}, Top: {Top}")]

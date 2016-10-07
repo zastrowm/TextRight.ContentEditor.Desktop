@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace TextRight.ContentEditor.Core
+namespace TextRight.Core
 {
   /// <summary> A simple X,Y value.  Not named Point, because everyone uses that. </summary>
   [DebuggerDisplay("X: {X}, Y: {Y}")]

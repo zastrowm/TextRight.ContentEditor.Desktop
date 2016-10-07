@@ -1,19 +1,25 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Serialization;
 
-static internal class SerializationHelpers
+namespace TextRight.Core.Tests.Serialization
 {
-  /// <summary> Verifies that the given block serializes and then deserializes properly. </summary>
-  /// <param name="originalBlock"> The original block to test the serialization process for. </param>
-  /// <param name="descriptorsLookup"> The descriptors that should be used when deserializing. </param>
-  public static void VerifyDeserialization(Block originalBlock, DescriptorsLookup descriptorsLookup)
+  internal static class SerializationHelpers
   {
-    var node = originalBlock.Serialize();
-    var context = new SerializationContext(descriptorsLookup);
+    /// <summary> Verifies that the given block serializes and then deserializes properly. </summary>
+    /// <param name="originalBlock"> The original block to test the serialization process for. </param>
+    /// <param name="descriptorsLookup"> The descriptors that should be used when deserializing. </param>
+    public static void VerifyDeserialization(Block originalBlock, DescriptorsLookup descriptorsLookup)
+    {
+      var node = originalBlock.Serialize();
+      var context = new SerializationContext(descriptorsLookup);
 
-    var deserializedBlock = context.Deserialize(node);
-    deserializedBlock.As<object>().ShouldBeEquivalentTo(originalBlock,
-                                                        c => c.IgnoringCyclicReferences());
+      var deserializedBlock = context.Deserialize(node);
+      deserializedBlock.As<object>().ShouldBeEquivalentTo(originalBlock,
+                                                          c => c.IgnoringCyclicReferences());
+    }
   }
 }

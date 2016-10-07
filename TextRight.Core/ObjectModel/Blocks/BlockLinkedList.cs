@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
+using TextRight.Core.ObjectModel.Blocks.Collections;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks
 {
   /// <summary> Maintains a linked-list of blocks. </summary>
   internal class BlockLinkedList : IEnumerable<Block>,

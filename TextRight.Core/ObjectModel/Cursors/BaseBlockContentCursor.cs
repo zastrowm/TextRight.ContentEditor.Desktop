@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
+namespace TextRight.Core.ObjectModel.Cursors
 {
   /// <summary> Base class for content cursors. </summary>
   /// <typeparam name="TCursor"> Type of the cursor. </typeparam>
@@ -15,7 +15,7 @@ namespace TextRight.ContentEditor.Core.ObjectModel.Cursors
   {
     /// <summary> Pool of cursors for this content-cursor type. </summary>
     public static CursorPool<TCursor, TBlock> CursorPool { get; }
-      = new CursorPool<TCursor, TBlock>();
+    = new CursorPool<TCursor, TBlock>();
 
     /// <summary> Specialised constructor for use only by derived class. </summary>
     /// <param name="block"> The block for which this cursor is valid. </param>

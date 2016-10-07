@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Serialization;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> Base class for a block that presents text. </summary>
   /// <typeparam name="TBlockView"> The block-specific view that should knows how to present the

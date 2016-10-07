@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.ContentEditor.Core.Editing.Actions
+namespace TextRight.Core.Editing.Actions.Text
 {
   /// <summary> Inserts text at the specified location. </summary>
   public class InsertTextUndoableAction : UndoableAction

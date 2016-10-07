@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using TextRight.ContentEditor.Core.ObjectModel;
-using TextRight.ContentEditor.Core.ObjectModel.Blocks;
-using TextRight.ContentEditor.Core.Utilities;
+using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.Utilities;
 
-namespace TextRight.ContentEditor.Desktop.View
+namespace TextRight.Editor.Wpf.View
 {
   /// <summary> Shared view representation for subclasses of <see cref="TextBlock"/> </summary>
   public abstract class BaseTextBlockView : FrameworkElement,

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.ContentEditor.Core.Editing;
+using TextRight.Core.Editing.Commands;
 
-namespace TextRight.ContentEditor.Core.ObjectModel.Blocks
+namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> A block that holds text formatted as a paragraph. </summary>
   public sealed class ParagraphBlock : TextBlockBase<ITextBlockView>
