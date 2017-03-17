@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Editing.Actions.Text
 {
@@ -19,11 +20,11 @@ namespace TextRight.Core.Editing.Actions.Text
 
     /// <inheritdoc />
     public override string Name { get; }
-    = "Break Paragraph";
+      = "Break Paragraph";
 
     /// <inheritdoc />
     public override string Description { get; }
-    = "Break paragraph into two";
+      = "Break paragraph into two";
 
     /// <inheritdoc />
     public override void Do(DocumentEditorContext context)
@@ -33,13 +34,14 @@ namespace TextRight.Core.Editing.Actions.Text
         var blockCursor = copy.Cursor;
         var blockCollection = blockCursor.Block.Parent;
 
-        var newBlock = blockCollection.TryBreakBlock(blockCursor);
+        var newBlock = TextBlockHelperMethods.TryBreakBlock(blockCursor);
         if (newBlock == null)
           return;
 
         context.Caret.MoveTo(newBlock.GetCursor().ToBeginning());
       }
     }
+
 
     /// <inheritdoc />
     public override void Undo(DocumentEditorContext context)
@@ -50,7 +52,7 @@ namespace TextRight.Core.Editing.Actions.Text
         var previousBlock = blockCursor.Block;
         var nextBlock = previousBlock.NextBlock;
 
-        nextBlock.Parent.MergeWithPrevious(nextBlock);
+        TextBlockHelperMethods.MergeWithPrevious((TextBlock)nextBlock);
 
         // move it to where it was when we wanted to break the paragraph.  It's safer to deserialize
         // again, as the cursor above is not guaranteed to be valid. 

@@ -16,7 +16,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     }
 
     /// <inheritdoc />
-    public override RegisteredDescriptor Descriptor
+    public override RegisteredDescriptor DescriptorHandle
       => RegisteredDescriptor;
 
     private class BlockDescriptor : FactoryBlockDescriptor<RootBlockCollection>

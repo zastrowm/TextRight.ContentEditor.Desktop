@@ -41,7 +41,7 @@ namespace TextRight.Core.Editing.Commands
     }
 
     /// <inheritdoc/>
-    public void Activate(DocumentEditorContext context, ActionStack actionStack)
+    public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
       actionStack.Do(new ConvertTextBlockIntoHeadingAction(context.Cursor, _level));
     }

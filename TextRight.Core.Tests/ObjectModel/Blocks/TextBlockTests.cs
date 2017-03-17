@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
@@ -48,7 +49,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     public void Break_AtBeginning_HasNewBlock()
     {
       Initialize("abc|123");
-      var nextBlock = (TextBlock)_collection.TryBreakBlock(_cursor);
+      var nextBlock = (TextBlock)TextBlockHelperMethods.TryBreakBlock(_cursor);
 
       Assert.That(nextBlock, Is.Not.Null);
 

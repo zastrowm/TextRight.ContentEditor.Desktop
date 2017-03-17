@@ -53,7 +53,7 @@ namespace TextRight.Core.ObjectModel.Blocks
     }
 
     /// <summary> Gets a handle to the descriptor for this specific block type. </summary>
-    public abstract RegisteredDescriptor Descriptor { get; }
+    public abstract RegisteredDescriptor DescriptorHandle { get; }
 
     /// <summary> Makes a deep copy of this instance. </summary>
     /// <returns> A copy of this instance. </returns>
@@ -63,7 +63,7 @@ namespace TextRight.Core.ObjectModel.Blocks
     /// <returns> A SerializeNode that represents the contents in the given block. </returns>
     public SerializeNode Serialize()
     {
-      var node = new SerializeNode(Descriptor);
+      var node = new SerializeNode(DescriptorHandle);
       SerializeInto(node);
       return node;
     }

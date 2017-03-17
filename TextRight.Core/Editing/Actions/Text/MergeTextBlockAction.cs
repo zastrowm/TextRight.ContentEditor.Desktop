@@ -45,7 +45,7 @@ namespace TextRight.Core.Editing.Actions.Text
     {
       var next = _nextPath.Get(context.Document);
 
-      next.Parent.MergeWithPrevious(next);
+      TextBlockHelperMethods.MergeWithPrevious((TextBlock)next);
       context.Caret.MoveTo(_endOfPreviousBlockHandle.Get(context));
     }
 
@@ -57,7 +57,7 @@ namespace TextRight.Core.Editing.Actions.Text
         var breakSpot = breakSpotCopy.Cursor;
 
         var previousBlock = _previousPath.Get(context.Document);
-        previousBlock.Parent.TryBreakBlock(breakSpot);
+        TextBlockHelperMethods.TryBreakBlock((TextBlockCursor)breakSpot);
 
         context.Caret.MoveTo(_originalCaretPosition.Get(context));
       }

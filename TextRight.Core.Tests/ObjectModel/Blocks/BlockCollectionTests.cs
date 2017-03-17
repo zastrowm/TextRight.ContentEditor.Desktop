@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
@@ -34,7 +35,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       cursor.MoveToBeginning();
       cursor.Move(7); // should be after "is"
 
-      var newBlock = _collection.TryBreakBlock(cursor);
+      var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor);
 
       Assert.That(_collection.ChildCount, Is.EqualTo(3));
       Assert.That(_collection.NthBlock(0).AsText(), Is.EqualTo("This is"));
@@ -50,7 +51,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = _collection.NthBlock(0).GetCursor();
       cursor.MoveToBeginning();
 
-      var newBlock = _collection.TryBreakBlock(cursor);
+      var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor);
 
       Assert.That(_collection.ChildCount, Is.EqualTo(3));
       Assert.That(_collection.NthBlock(0).AsText(), Is.EqualTo(""));
@@ -66,7 +67,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = _collection.NthBlock(0).GetCursor();
       cursor.MoveToEnd();
 
-      var newBlock = _collection.TryBreakBlock(cursor);
+      var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor);
 
       Assert.That(_collection.ChildCount, Is.EqualTo(3));
       Assert.That(_collection.NthBlock(0).AsText(), Is.EqualTo("This is line #1"));

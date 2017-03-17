@@ -36,7 +36,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     /// <inheritdoc />
     public override Block Clone()
     {
-      var clone = (VerticalBlockCollection)Descriptor.Descriptor.CreateInstance();
+      var clone = (VerticalBlockCollection)DescriptorHandle.Descriptor.CreateInstance();
 
       foreach (var block in Children)
       {

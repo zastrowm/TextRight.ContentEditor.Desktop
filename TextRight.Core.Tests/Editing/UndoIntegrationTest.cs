@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.Editing.Commands.Text;
 
 namespace TextRight.Core.Tests.Editing
 {
@@ -19,15 +20,15 @@ namespace TextRight.Core.Tests.Editing
                          {
                            // Block 1
                            () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "012345679"),
-                           () => new BreakTextBlockAction(BlockAt(0).BeginCursor(i).ToHandle()),
+                           FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(i).ToHandle()),
                            // Block 2
                            () => new InsertTextUndoableAction(BlockAt(1).BeginCursor().ToHandle(), "012345679"),
-                           () => new BreakTextBlockAction(BlockAt(0).BeginCursor(i).ToHandle()),
+                           FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(i).ToHandle()),
                            // Block 3
                            () => new InsertTextUndoableAction(BlockAt(1).EndCursor().ToHandle(), "012345679"),
                            // Block 2 (even though there is a third block
                            () => new InsertTextUndoableAction(BlockAt(1).BeginCursor().ToHandle(), "012345679"),
-                           () => new BreakTextBlockAction(BlockAt(0).BeginCursor(i).ToHandle()),
+                           FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(i).ToHandle()),
                          });
       }
     }

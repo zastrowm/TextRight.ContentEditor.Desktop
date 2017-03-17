@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace TextRight.Core.Editing.Actions
 {
   /// <summary> Holds a set of actions that can be undone/redone. </summary>
-  public sealed class ActionStack
+  public sealed class ActionStack : IActionStack
   {
     private readonly DocumentEditorContext _context;
     private readonly IActionStackMergePolicy _mergePolicy;

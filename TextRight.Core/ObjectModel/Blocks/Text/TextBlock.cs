@@ -151,7 +151,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <inheritdoc/>
     public override Block Clone()
     {
-      var clone = (TextBlock)Descriptor.Descriptor.CreateInstance();
+      var clone = (TextBlock)DescriptorHandle.Descriptor.CreateInstance();
       clone._spans.Clear();
       clone.AppendAll(_spans.Select(s => s.Clone()));
       return clone;

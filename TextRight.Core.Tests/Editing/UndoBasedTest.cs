@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using TextRight.Core.Editing;
 using TextRight.Core.Editing.Actions;
+using TextRight.Core.Editing.Commands;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Serialization;
@@ -73,6 +74,30 @@ namespace TextRight.Core.Tests.Editing
       }
 
       return new UndoTester(this, actions);
+    }
+
+    public Func<UndoableAction> FromCommand<TCommand>(Func<DocumentCursorHandle> handleGetter)
+      where TCommand : IContextualCommand, new()
+    {
+      return () =>
+             {
+               var fake = new FakeActionStack();
+               var command = new TCommand();
+               var handle = handleGetter.Invoke();
+               Context.Caret.MoveTo(handle.Get(Context));
+               command.Activate(Context, fake);
+               return fake.Action;
+             };
+    }
+
+    private class FakeActionStack : IActionStack
+    {
+      public UndoableAction Action { get; private set; }
+
+      public void Do(UndoableAction undoableAction)
+      {
+        Action = undoableAction;
+      }
     }
 
     /// <summary> Executes all and then verifies that undoing them is successful. </summary>

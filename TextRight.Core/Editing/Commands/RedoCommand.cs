@@ -32,7 +32,7 @@ namespace TextRight.Core.Editing.Commands
     }
 
     /// <inheritdoc/>
-    void IContextualCommand.Activate(DocumentEditorContext context, ActionStack actionStack)
+    void IContextualCommand.Activate(DocumentEditorContext context, IActionStack actionStack)
     {
       context.UndoStack.Redo();
     }

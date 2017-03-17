@@ -40,6 +40,6 @@ namespace TextRight.Core.Editing.Commands
     /// </summary>
     /// <param name="context"> The context in which the command should be executed. </param>
     /// <param name="actionStack"> Stack of undo-able actions. </param>
-    void Activate(DocumentEditorContext context, ActionStack actionStack);
+    void Activate(DocumentEditorContext context, IActionStack actionStack);
   }
 }

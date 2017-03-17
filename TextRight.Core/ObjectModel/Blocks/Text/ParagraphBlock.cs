@@ -13,7 +13,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       = RegisteredDescriptor.Register<BlockDescriptor>();
 
     /// <inheritdoc />
-    public override RegisteredDescriptor Descriptor
+    public override RegisteredDescriptor DescriptorHandle
       => RegisteredDescriptor;
 
     /// <inheritdoc/>

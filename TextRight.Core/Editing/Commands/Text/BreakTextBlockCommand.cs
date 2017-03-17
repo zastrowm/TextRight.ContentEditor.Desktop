@@ -35,7 +35,7 @@ namespace TextRight.Core.Editing.Commands.Text
     }
 
     /// <inheritdoc />
-    void IContextualCommand.Activate(DocumentEditorContext context, ActionStack actionStack)
+    void IContextualCommand.Activate(DocumentEditorContext context, IActionStack actionStack)
     {
       // TODO delete any text that is selected
       actionStack.Do(new BreakTextBlockAction(context.Caret));

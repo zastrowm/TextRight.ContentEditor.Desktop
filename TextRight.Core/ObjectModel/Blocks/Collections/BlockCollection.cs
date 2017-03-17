@@ -25,7 +25,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
       => _blockList;
 
     /// <summary> Adds a block to the end of the collection. </summary>
-    /// <param name="block"> The block to remove from the collection. </param>
+    /// <param name="block"> The block to add to the collection. </param>
     public void Append([NotNull] Block block)
     {
       // TODO what if the existing span is empty, should it be removed?
@@ -40,7 +40,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     ///  have unsupported or illegal values. </exception>
     /// <param name="beforeBlock"> The block the new block should be placed after. </param>
     /// <param name="newBlock"> The block that should be inserted at the given position. </param>
-    private void InsertBlockAfter([NotNull] Block beforeBlock, [NotNull] Block newBlock)
+    public void InsertBlockAfter([NotNull] Block beforeBlock, [NotNull] Block newBlock)
     {
       _blockList.InsertAfter(beforeBlock, newBlock);
       OnBlockInserted(beforeBlock, newBlock, newBlock.NextBlock);
@@ -53,7 +53,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     ///  have unsupported or illegal values. </exception>
     /// <param name="afterBlock"> The block the new block should be placed before. </param>
     /// <param name="newBlock"> The block that should be inserted at the given position. </param>
-    private void InsertBlockBefore([NotNull] Block afterBlock, [NotNull] Block newBlock)
+    public void InsertBlockBefore([NotNull] Block afterBlock, [NotNull] Block newBlock)
     {
       _blockList.InsertBefore(afterBlock, newBlock);
       OnBlockInserted(newBlock.PreviousBlock, newBlock, afterBlock);
@@ -133,93 +133,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     internal Block GetNthBlock(int blockIndex)
     {
       return _blockList.GetAtIndex(blockIndex);
-    }
-
-    /// <summary> Merges the given block with the previous block. </summary>
-    /// <param name="block"> The block to remove from the collection and whose content should be merged with the previous block. </param>
-    /// <returns> True if it was merged, false if it was not. </returns>
-    public virtual bool MergeWithPrevious(Block block)
-    {
-      // TODO support more than just text blocks?
-      var textBlock = block as TextBlock;
-      if (textBlock == null)
-        return false;
-
-      // TODO handle parent-blocks
-      if (textBlock.IsFirst)
-        return false;
-
-      var cursor = textBlock.GetTextCursor();
-      cursor.MoveToBeginning();
-
-      var previous = textBlock.PreviousBlock as TextBlock;
-      if (previous == null)
-        return false;
-
-      var fragments = cursor.ExtractToEnd();
-      previous.AppendAll(fragments);
-
-      RemoveBlock(textBlock);
-
-      return true;
-    }
-
-    /// <summary>
-    ///  True if the block can break into two at the given position.
-    /// </summary>
-    /// <param name="cursor"> The caret that specified the position. </param>
-    /// <returns> true if we can break, false if not. </returns>
-    public bool CanBreak(IBlockContentCursor cursor)
-      => true;
-
-    /// <summary> Breaks the block into two at the given location. </summary>
-    /// <param name="cursor"> The caret at which the block should be split. </param>
-    /// <returns>
-    ///  The block that is the next sibling of the original block that was split
-    ///  into two.
-    /// </returns>
-    public ContentBlock TryBreakBlock(IBlockContentCursor cursor)
-    {
-      if (cursor == null)
-        throw new ArgumentNullException(nameof(cursor));
-
-      if (!CanBreak(cursor))
-        return null;
-
-      var targetBlock = cursor.Block;
-
-      ContentBlock secondaryBlock = null;
-
-      if (cursor.IsAtEnd)
-      {
-        secondaryBlock = new ParagraphBlock();
-        InsertBlockAfter(targetBlock, secondaryBlock);
-      }
-      else if (cursor.IsAtBeginning)
-      {
-        secondaryBlock = targetBlock;
-        InsertBlockBefore(targetBlock, new ParagraphBlock());
-      }
-      else
-      {
-        var textBlockCursor = (TextBlockCursor)cursor;
-        var fragments = textBlockCursor.ExtractToEnd();
-
-        var newTextBlock = new ParagraphBlock();
-        secondaryBlock = newTextBlock;
-
-        // TODO should this be done by AppendSpan automatically?
-        newTextBlock.RemoveSpan(newTextBlock.Fragments.First());
-
-        foreach (var fragment in fragments)
-        {
-          newTextBlock.AppendSpan(fragment);
-        }
-
-        InsertBlockAfter(targetBlock, secondaryBlock);
-      }
-
-      return secondaryBlock;
     }
 
     /// <summary>

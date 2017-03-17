@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Tests.Editing
@@ -17,7 +18,7 @@ namespace TextRight.Core.Tests.Editing
       return new Func<UndoableAction>[]
              {
                () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Paragraph 1"),
-               () => new BreakTextBlockAction(BlockAt(0).EndCursor().ToHandle()),
+               FromCommand<BreakTextBlockCommand>(() => BlockAt(0).EndCursor().ToHandle()),
                () => new InsertTextUndoableAction(BlockAt(1).EndCursor().ToHandle(), "Paragraph 2"),
              };
     }

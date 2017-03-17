@@ -25,7 +25,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       = RegisteredDescriptor.Register<BlockDescriptor>();
 
     /// <inheritdoc />
-    public override RegisteredDescriptor Descriptor
+    public override RegisteredDescriptor DescriptorHandle
       => RegisteredDescriptor;
 
     /// <inheritdoc/>
@@ -47,7 +47,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> The level of heading that the block represents. </summary>
     public int HeadingLevel
     {
-      get { return _headingLevel; }
+      get => _headingLevel;
       set
       {
         _headingLevel = value;

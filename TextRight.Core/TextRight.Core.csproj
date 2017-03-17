@@ -54,6 +54,7 @@
     <Compile Include="Editing\Actions\Text\DeletePreviousCharacterAction.cs" />
     <Compile Include="Editing\Actions\Text\InsertTextUndoableAction.cs" />
     <Compile Include="Editing\Actions\Text\MergeTextBlockAction.cs" />
+    <Compile Include="Editing\Actions\Text\TextBlockHelperMethods.cs" />
     <Compile Include="Editing\Actions\UndoableAction.cs" />
     <Compile Include="Editing\BlockCursorMover.cs" />
     <Compile Include="Editing\Commands\Caret\CaretCommand.cs" />

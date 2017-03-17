@@ -30,7 +30,7 @@ namespace TextRight.Core.Editing.Commands
     }
 
     /// <inheritdoc/>
-    public void Activate(DocumentEditorContext context, ActionStack actionStack)
+    public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
       actionStack.Do(new ConvertIntoParagraphAction(context.Cursor));
     }

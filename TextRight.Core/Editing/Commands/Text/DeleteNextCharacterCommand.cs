@@ -31,7 +31,7 @@ namespace TextRight.Core.Editing.Commands.Text
     }
 
     /// <inheritdoc />
-    public void Activate(DocumentEditorContext context, ActionStack actionStack)
+    public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
       using (var copy = context.Cursor.Copy())
       {

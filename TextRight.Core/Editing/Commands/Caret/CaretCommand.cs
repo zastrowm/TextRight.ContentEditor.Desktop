@@ -37,7 +37,7 @@ namespace TextRight.Core.Editing.Commands.Caret
       => true;
 
     /// <inheritdoc/>
-    public virtual void Activate(DocumentEditorContext context, ActionStack actionStack)
+    public virtual void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
       Activate(context.Caret, context.CaretMovementMode);
       if (!ShouldPreserveCaretMovementMode)
