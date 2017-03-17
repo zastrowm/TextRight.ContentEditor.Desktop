@@ -17,9 +17,9 @@ namespace TextRight.Core.Tests.Editing
     {
       return new Func<UndoableAction>[]
              {
-               () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Paragraph 1"),
+               FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Paragraph 1"),
                FromCommand<BreakTextBlockCommand>(() => BlockAt(0).EndCursor().ToHandle()),
-               () => new InsertTextUndoableAction(BlockAt(1).EndCursor().ToHandle(), "Paragraph 2"),
+               FromCommand<InsertTextCommand, string>(() => BlockAt(1).EndCursor().ToHandle(), "Paragraph 2"),
              };
     }
 

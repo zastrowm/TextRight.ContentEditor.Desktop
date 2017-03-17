@@ -90,6 +90,20 @@ namespace TextRight.Core.Tests.Editing
              };
     }
 
+    public Func<UndoableAction> FromCommand<TCommand, TArgument>(Func<DocumentCursorHandle> handleGetter, TArgument argument)
+      where TCommand : IContextualCommand<TArgument>, new()
+    {
+      return () =>
+             {
+               var fake = new FakeActionStack();
+               var command = new TCommand();
+               var handle = handleGetter.Invoke();
+               Context.Caret.MoveTo(handle.Get(Context));
+               command.Activate(Context, fake, argument);
+               return fake.Action;
+             };
+    }
+
     private class FakeActionStack : IActionStack
     {
       public UndoableAction Action { get; private set; }

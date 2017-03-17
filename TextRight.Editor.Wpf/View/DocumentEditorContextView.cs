@@ -10,8 +10,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using TextRight.Core;
 using TextRight.Core.Editing;
-using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands;
 using TextRight.Core.Editing.Commands.Caret;
 using TextRight.Core.Editing.Commands.Text;
@@ -37,6 +35,8 @@ namespace TextRight.Editor.Wpf.View
 
     private readonly BlockSearchHitTester _blockSearchHitTester;
     private ChangeIndex _layoutChangeIndex;
+
+    private readonly IContextualCommand<string> _insertText = new InsertTextCommand();
 
     public DocumentEditorContextView(DocumentEditorContext editor)
     {
@@ -206,8 +206,7 @@ namespace TextRight.Editor.Wpf.View
 
     public void InsertText(string text)
     {
-      var action = new InsertTextUndoableAction(new DocumentCursorHandle(_editor.Caret), text);
-      _editor.UndoStack.Do(action);
+      _insertText.Activate(_editor, _editor.UndoStack, text);
     }
 
     public void UpdateCaretPosition()

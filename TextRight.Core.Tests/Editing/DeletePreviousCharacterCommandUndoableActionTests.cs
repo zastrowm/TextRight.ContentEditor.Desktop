@@ -16,7 +16,7 @@ namespace TextRight.Core.Tests.Editing
       var it = DoAll(
         new Func<UndoableAction>[]
         {
-          () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "TheWord"),
+          FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "TheWord"),
           FromCommand<DeletePreviousCharacterCommand>(() => BlockAt(0).BeginCursor(3).AsTextCursor().ToHandle()),
         });
 
@@ -35,7 +35,7 @@ namespace TextRight.Core.Tests.Editing
         var it = DoAll(
           new Func<UndoableAction>[]
           {
-            () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), text),
+            FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), text),
             FromCommand<DeletePreviousCharacterCommand>(() => BlockAt(0).BeginCursor(i).AsTextCursor().ToHandle()),
           });
 

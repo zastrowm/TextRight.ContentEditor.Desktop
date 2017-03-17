@@ -42,4 +42,27 @@ namespace TextRight.Core.Editing.Commands
     /// <param name="actionStack"> Stack of undo-able actions. </param>
     void Activate(DocumentEditorContext context, IActionStack actionStack);
   }
+
+  public interface IContextualCommand<in TArgument>
+  {
+    /// <summary> The unique, human-readable id of the command. </summary>
+    string Id { get; }
+
+    /// <summary> Gets the name of the command as it should be presented to the user. </summary>
+    /// <param name="context"> The context in which it's presented to the user. </param>
+    string GetName(DocumentEditorContext context);
+
+    /// <summary> Gets the description of the command as it should be presented to the user. </summary>
+    /// <param name="context"> The context in which it's presented to the user. </param>
+    string GetDescription(DocumentEditorContext context);
+
+    /// <summary> True if the command can be executed for the given context. </summary>
+    bool CanActivate(DocumentEditorContext context, TArgument argument);
+
+    /// <summary>
+    ///  Executes the command in the given context.  This call must be guarded by a call to
+    ///  CanActivate.
+    /// </summary>
+    void Activate(DocumentEditorContext context, IActionStack actionStack, TArgument argument);
+  }
 }

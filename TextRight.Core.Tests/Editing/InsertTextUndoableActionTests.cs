@@ -18,7 +18,7 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new InsertTextUndoableAction(Context.Caret, "The text"),
+                       FromCommand<InsertTextCommand, string>(() => Context.Caret, "The text"),
                      });
 
       var textBlock = Document.Root.FirstBlock as TextBlock;
@@ -36,8 +36,8 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "Word"),
-                       () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "Prefix"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Word"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Prefix"),
                      });
 
       Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
@@ -53,8 +53,8 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "Word"),
-                       () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Suffix"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Word"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Suffix"),
                      });
 
       Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
@@ -70,8 +70,8 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "Word"),
-                       () => new InsertTextUndoableAction(BlockAt(0).BeginCursor(2).ToHandle(), "Mid"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Word"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(2).ToHandle(), "Mid"),
                      });
 
       Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
@@ -89,14 +89,14 @@ namespace TextRight.Core.Tests.Editing
     {
       DoAllAndThenUndo(new Func<UndoableAction>[]
                        {
-                         () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text"),
-                         () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "More text"),
-                         () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "More text"),
-                         () => new InsertTextUndoableAction(BlockAt(0).BeginCursor(10).ToHandle(), "More text"),
-                         () => new InsertTextUndoableAction(BlockAt(0).BeginCursor(1).ToHandle(), "The text"),
-                         () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "More text"),
-                         () => new InsertTextUndoableAction(BlockAt(0).EndCursor(-1).ToHandle(), "More text"),
-                         () => new InsertTextUndoableAction(BlockAt(0).BeginCursor(10).ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "The text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(10).ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(1).ToHandle(), "The text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor(-1).ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(10).ToHandle(), "More text"),
                        },
                        withMerge: withMerge
       );
@@ -111,9 +111,8 @@ namespace TextRight.Core.Tests.Editing
         DoAllAndThenUndo(new Func<UndoableAction>[]
                          {
                            // Block 1
-                           () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "012345679"),
-                           () =>
-                               new InsertTextUndoableAction(BlockAt(0).BeginCursor(frozenOffset).ToHandle(), "012345679"),
+                           FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "012345679"),
+                           FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(frozenOffset).ToHandle(), "012345679"),
                          }
         );
       }
@@ -122,10 +121,10 @@ namespace TextRight.Core.Tests.Editing
     [Test]
     public void VerifyMergeWith_ModifiesOriginalAction()
     {
-      var originalAction = new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
+      var originalAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
       originalAction.Do(Context);
 
-      var mergeWithAction = new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
+      var mergeWithAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
 
       Assert.That(originalAction.TryMerge(Context, mergeWithAction), Is.True);
       Assert.That(originalAction.Text, Is.EqualTo("The textAnd More"));
@@ -134,10 +133,10 @@ namespace TextRight.Core.Tests.Editing
     [Test]
     public void VerifyMergeWith_DoesNotActsOnDocument()
     {
-      var originalAction = new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
+      var originalAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
       originalAction.Do(Context);
 
-      var mergeWithAction = new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
+      var mergeWithAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
       originalAction.TryMerge(Context, mergeWithAction);
 
       // the document should not be modified
@@ -165,8 +164,8 @@ namespace TextRight.Core.Tests.Editing
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
 
-      var first = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
-      var second = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(2).ToHandle(), "Two");
+      var first = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
+      var second = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(2).ToHandle(), "Two");
 
       Assert.That(first.TryMerge(Context, second), Is.False);
     }
@@ -176,7 +175,7 @@ namespace TextRight.Core.Tests.Editing
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
 
-      var self = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
+      var self = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
 
       Assert.That(self.TryMerge(Context, self), Is.False);
     }
@@ -186,9 +185,9 @@ namespace TextRight.Core.Tests.Editing
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
 
-      var first = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "This is a long string");
+      var first = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "This is a long string");
       first.Do(Context);
-      var second = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(first.Text.Length).ToHandle(),
+      var second = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(first.Text.Length).ToHandle(),
                                                 "This is also long");
 
       Assert.That(first.TryMerge(Context, second), Is.True);
@@ -199,7 +198,7 @@ namespace TextRight.Core.Tests.Editing
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
 
-      var insertion = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "Inserted String");
+      var insertion = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "Inserted String");
       insertion.Do(Context);
       var second =
         new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
@@ -211,7 +210,7 @@ namespace TextRight.Core.Tests.Editing
     [Test]
     public void TryMerge_WithBackspace_DoesNotWorkWhenInsertionIsEmpty()
     {
-      var insertion = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "");
+      var insertion = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "");
       insertion.Do(Context);
       var second =
         new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());

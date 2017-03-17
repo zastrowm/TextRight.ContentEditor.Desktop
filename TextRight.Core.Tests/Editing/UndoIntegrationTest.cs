@@ -19,15 +19,15 @@ namespace TextRight.Core.Tests.Editing
         DoAllAndThenUndo(new Func<UndoableAction>[]
                          {
                            // Block 1
-                           () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "012345679"),
+                           FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "012345679"),
                            FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(i).ToHandle()),
                            // Block 2
-                           () => new InsertTextUndoableAction(BlockAt(1).BeginCursor().ToHandle(), "012345679"),
+                           FromCommand<InsertTextCommand, string>(() => BlockAt(1).BeginCursor().ToHandle(), "012345679"),
                            FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(i).ToHandle()),
                            // Block 3
-                           () => new InsertTextUndoableAction(BlockAt(1).EndCursor().ToHandle(), "012345679"),
+                           FromCommand<InsertTextCommand, string>(() => BlockAt(1).EndCursor().ToHandle(), "012345679"),
                            // Block 2 (even though there is a third block
-                           () => new InsertTextUndoableAction(BlockAt(1).BeginCursor().ToHandle(), "012345679"),
+                           FromCommand<InsertTextCommand, string>(() => BlockAt(1).BeginCursor().ToHandle(), "012345679"),
                            FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(i).ToHandle()),
                          });
       }

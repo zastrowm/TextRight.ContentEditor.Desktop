@@ -17,7 +17,7 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Start of text"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"),
                        FromCommand<BreakTextBlockCommand>(() => BlockAt(0).EndCursor().ToHandle()),
                      }
       );
@@ -37,7 +37,7 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Start of text"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"),
                        FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor().ToHandle()),
                      });
 
@@ -56,7 +56,7 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "Start of text"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"),
                        FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(5).ToHandle()),
                      });
 
@@ -76,16 +76,16 @@ namespace TextRight.Core.Tests.Editing
       DoAllAndThenUndo(new Func<UndoableAction>[]
                        {
                          // Block 1
-                         () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text"),
-                         () => new InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "The text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "More text"),
                          FromCommand<BreakTextBlockCommand>(() => BlockAt(0).EndCursor().ToHandle()),
                          // Block 2
-                         () => new InsertTextUndoableAction(BlockAt(1).BeginCursor().ToHandle(), "More text"),
-                         () => new InsertTextUndoableAction(BlockAt(1).BeginCursor(1).ToHandle(), "The text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(1).BeginCursor().ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(1).BeginCursor(1).ToHandle(), "The text"),
                          FromCommand<BreakTextBlockCommand>(() => BlockAt(1).EndCursor().ToHandle()),
                          // Block 3
-                         () => new InsertTextUndoableAction(BlockAt(2).BeginCursor().ToHandle(), "More text"),
-                         () => new InsertTextUndoableAction(BlockAt(2).BeginCursor(1).ToHandle(), "The text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(2).BeginCursor().ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(() => BlockAt(2).BeginCursor(1).ToHandle(), "The text"),
                        }
       );
     }

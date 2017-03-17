@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Tests.Editing
@@ -15,7 +16,7 @@ namespace TextRight.Core.Tests.Editing
     {
       return new Func<UndoableAction>[]
              {
-               () => new InsertTextUndoableAction(Context.Caret, "This is the text"),
+               FromCommand<InsertTextCommand, string>(() => Context.Caret, "This is the text"),
              };
     }
 
