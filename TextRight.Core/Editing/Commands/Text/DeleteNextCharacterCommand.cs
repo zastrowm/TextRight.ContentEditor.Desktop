@@ -39,5 +39,46 @@ namespace TextRight.Core.Editing.Commands.Text
         actionStack.Do(new DeleteNextCharacterAction(textCursor));
       }
     }
+
+    /// <summary> Deletes text from the document. </summary>
+    internal class DeleteNextCharacterAction : UndoableAction
+    {
+      private readonly string _originalText;
+      private readonly DocumentCursorHandle _cursorHandle;
+
+      public DeleteNextCharacterAction(TextBlockCursor cursor)
+      {
+        _cursorHandle = new DocumentCursorHandle(cursor);
+        _originalText = cursor.CharacterAfter.ToString();
+      }
+
+      /// <inheritdoc />
+      public override string Name
+        => "Delete Text";
+
+      /// <inheritdoc />
+      public override string Description
+        => "Delete text from the document";
+
+      /// <inheritdoc />
+      public override void Do(DocumentEditorContext context)
+      {
+        using (var copy = _cursorHandle.Get(context))
+        {
+          var cursor = (TextBlockCursor)copy.Cursor;
+          cursor.DeleteText(1);
+        }
+      }
+
+      /// <inheritdoc />
+      public override void Undo(DocumentEditorContext context)
+      {
+        using (var copy = _cursorHandle.Get(context))
+        {
+          var cursor = (TextBlockCursor)copy.Cursor;
+          cursor.InsertText(_originalText);
+        }
+      }
+    }
   }
 }

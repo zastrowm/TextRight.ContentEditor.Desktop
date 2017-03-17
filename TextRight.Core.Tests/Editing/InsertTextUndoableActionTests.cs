@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
@@ -201,7 +202,7 @@ namespace TextRight.Core.Tests.Editing
       var insertion = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "Inserted String");
       insertion.Do(Context);
       var second =
-        new DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
+        new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
 
       Assert.That(insertion.TryMerge(Context, second), Is.True);
       Assert.That(insertion.Text, Is.EqualTo("Inserted Strin"));
@@ -213,7 +214,7 @@ namespace TextRight.Core.Tests.Editing
       var insertion = new InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "");
       insertion.Do(Context);
       var second =
-        new DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
+        new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
 
       Assert.That(insertion.TryMerge(Context, second), Is.False);
     }

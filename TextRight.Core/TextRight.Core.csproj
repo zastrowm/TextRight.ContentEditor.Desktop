@@ -47,14 +47,11 @@
     <Compile Include="Editing\Actions\ConvertIntoParagraphAction.cs" />
     <Compile Include="Editing\Actions\ConvertTextBlockIntoHeadingAction.cs" />
     <Compile Include="Editing\Actions\DocumentCursorHandle.cs" />
+    <Compile Include="Editing\Actions\IActionStack.cs" />
     <Compile Include="Editing\Actions\IActionStackMergePolicy.cs" />
     <Compile Include="Editing\Actions\StandardMergePolicy.cs" />
-    <Compile Include="Editing\Actions\Text\BreakTextBlockAction.cs" />
-    <Compile Include="Editing\Actions\Text\DeleteNextCharacterAction.cs" />
-    <Compile Include="Editing\Actions\Text\DeletePreviousCharacterAction.cs" />
     <Compile Include="Editing\Actions\Text\InsertTextUndoableAction.cs" />
-    <Compile Include="Editing\Actions\Text\MergeTextBlockAction.cs" />
-    <Compile Include="Editing\Actions\Text\TextBlockHelperMethods.cs" />
+    <Compile Include="Editing\Commands\Text\TextBlockHelperMethods.cs" />
     <Compile Include="Editing\Actions\UndoableAction.cs" />
     <Compile Include="Editing\BlockCursorMover.cs" />
     <Compile Include="Editing\Commands\Caret\CaretCommand.cs" />

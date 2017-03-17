@@ -28,10 +28,7 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new MergeTextBlockAction(
-                               BlockAt(0).As<TextBlock>(),
-                               BlockAt(1).As<TextBlock>(),
-                               BlockAt(1).BeginCursor().ToHandle()),
+                       FromCommand<MergeTextBlocksCommand>(() => BlockAt(1).BeginCursor().ToHandle()),
                      }
       );
 
@@ -48,10 +45,7 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new MergeTextBlockAction(
-                               BlockAt(0).As<TextBlock>(),
-                               BlockAt(1).As<TextBlock>(),
-                               BlockAt(0).EndCursor().ToHandle()),
+                       FromCommand<MergeTextBlocksCommand>(() => BlockAt(0).EndCursor().ToHandle()),
                      }
       );
 

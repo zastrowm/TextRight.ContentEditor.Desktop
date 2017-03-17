@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.Editing.Commands.Text;
 
 namespace TextRight.Core.Tests.Editing
 {
@@ -17,7 +18,7 @@ namespace TextRight.Core.Tests.Editing
         new Func<UndoableAction>[]
         {
           () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), "TheWord"),
-          () => new DeleteNextCharacterAction(BlockAt(0).BeginCursor(3).AsTextCursor()),
+          () => new DeleteNextCharacterCommand.DeleteNextCharacterAction(BlockAt(0).BeginCursor(3).AsTextCursor()),
         });
 
       Assert.That(BlockAt(0).AsText(), Is.EqualTo("Theord"));
@@ -37,7 +38,7 @@ namespace TextRight.Core.Tests.Editing
           new Func<UndoableAction>[]
           {
             () => new InsertTextUndoableAction(BlockAt(0).BeginCursor().ToHandle(), text),
-            () => new DeleteNextCharacterAction(BlockAt(0).BeginCursor(i).AsTextCursor()),
+            () => new DeleteNextCharacterCommand.DeleteNextCharacterAction(BlockAt(0).BeginCursor(i).AsTextCursor()),
           });
 
         var expected = text.Remove(i, 1);

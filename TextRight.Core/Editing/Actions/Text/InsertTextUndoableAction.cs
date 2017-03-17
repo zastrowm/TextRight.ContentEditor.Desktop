@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Editing.Actions.Text
@@ -61,13 +62,13 @@ namespace TextRight.Core.Editing.Actions.Text
       {
         return TryMergeWith(context, (InsertTextUndoableAction)action);
       }
-      else if (action is DeleteNextCharacterAction)
+      else if (action is DeleteNextCharacterCommand.DeleteNextCharacterAction)
       {
-        return TryMergeWith(context, (DeleteNextCharacterAction)action);
+        return TryMergeWith(context, (DeleteNextCharacterCommand.DeleteNextCharacterAction)action);
       }
-      else if (action is DeletePreviousCharacterAction)
+      else if (action is DeletePreviousCharacterCommand.DeletePreviousCharacterAction)
       {
-        return TryMergeWith(context, (DeletePreviousCharacterAction)action);
+        return TryMergeWith(context, (DeletePreviousCharacterCommand.DeletePreviousCharacterAction)action);
       }
 
       return false;
@@ -96,7 +97,7 @@ namespace TextRight.Core.Editing.Actions.Text
       }
     }
 
-    private bool TryMergeWith(DocumentEditorContext context, DeletePreviousCharacterAction action)
+    private bool TryMergeWith(DocumentEditorContext context, DeletePreviousCharacterCommand.DeletePreviousCharacterAction action)
     {
       using (var myCopy = _insertionPoint.Get(context))
       using (var otherCopy = action.CursorHandle.Get(context))
@@ -127,7 +128,7 @@ namespace TextRight.Core.Editing.Actions.Text
       }
     }
 
-    private bool TryMergeWith(DocumentEditorContext context, DeleteNextCharacterAction action)
+    private bool TryMergeWith(DocumentEditorContext context, DeleteNextCharacterCommand.DeleteNextCharacterAction action)
     {
       return false;
     }

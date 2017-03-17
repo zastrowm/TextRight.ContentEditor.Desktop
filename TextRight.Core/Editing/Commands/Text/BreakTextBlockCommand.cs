@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Editing.Commands.Text
@@ -39,6 +40,59 @@ namespace TextRight.Core.Editing.Commands.Text
     {
       // TODO delete any text that is selected
       actionStack.Do(new BreakTextBlockAction(context.Caret));
+    }
+
+    /// <summary> Breaks a paragraph at the given caret location. </summary>
+    internal class BreakTextBlockAction : UndoableAction
+    {
+      private readonly DocumentCursorHandle _handle;
+
+      /// <summary> Constructor. </summary>
+      /// <param name="handle"> The location at which the paragraph should be broken. </param>
+      public BreakTextBlockAction(DocumentCursorHandle handle)
+      {
+        _handle = handle;
+      }
+
+      /// <inheritdoc />
+      public override string Name { get; }
+        = "Break Paragraph";
+
+      /// <inheritdoc />
+      public override string Description { get; }
+        = "Break paragraph into two";
+
+      /// <inheritdoc />
+      public override void Do(DocumentEditorContext context)
+      {
+        using (var copy = _handle.Get(context))
+        {
+          var blockCursor = copy.Cursor;
+
+          var newBlock = TextBlockHelperMethods.TryBreakBlock(blockCursor);
+          if (newBlock == null)
+            return;
+
+          context.Caret.MoveTo(newBlock.GetCursor().ToBeginning());
+        }
+      }
+
+      /// <inheritdoc />
+      public override void Undo(DocumentEditorContext context)
+      {
+        using (var copy = _handle.Get(context))
+        {
+          var blockCursor = copy.Cursor;
+          var previousBlock = blockCursor.Block;
+          var nextBlock = previousBlock.NextBlock;
+
+          TextBlockHelperMethods.MergeWithPrevious((TextBlock)nextBlock);
+
+          // move it to where it was when we wanted to break the paragraph.  It's safer to deserialize
+          // again, as the cursor above is not guaranteed to be valid. 
+          context.Caret.MoveTo(_handle.Get(context));
+        }
+      }
     }
   }
 }
