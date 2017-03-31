@@ -52,7 +52,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="WpfHosting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WpfHosting.Client.1.0.0-alpha-001\lib\net46\WpfHosting.dll</HintPath>
-      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

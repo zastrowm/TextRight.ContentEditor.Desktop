@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Serialization;
 
 namespace TextRight.Core.Editing.Actions
 {
@@ -12,8 +13,10 @@ namespace TextRight.Core.Editing.Actions
   {
     private readonly DocumentCursorHandle _handle;
     private readonly int _level;
-    private readonly TextBlockAttributes _originalAttributes;
     private int? _originalHeadingLevel;
+
+    private readonly BlobSerializedData _blobSerializedData;
+    private readonly BlockDescriptor _originalDescriptor;
 
     /// <summary> Constructor. </summary>
     public ConvertTextBlockIntoHeadingAction(ReadonlyCursor cursor, int level)
@@ -30,7 +33,8 @@ namespace TextRight.Core.Editing.Actions
       }
       else
       {
-        _originalAttributes = block.GetAttributes();
+        _originalDescriptor = block.DescriptorHandle.Descriptor;
+        _blobSerializedData = block.SerializeProperties();
       }
     }
 
@@ -78,8 +82,9 @@ namespace TextRight.Core.Editing.Actions
         }
         else
         {
-          var originalBlock = _originalAttributes.CreateInstance();
-          Replace(context, (TextBlock)copy.Block, originalBlock);
+          var original = (TextBlock)_originalDescriptor.CreateInstance();
+          original.DeserializeProperties(_blobSerializedData);
+          Replace(context, (TextBlock)copy.Block, original);
         }
       }
     }

@@ -21,30 +21,15 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     private int _headingLevel;
 
     /// <summary> Singleton-Instance of a descriptor. </summary>
-    public static readonly RegisteredDescriptor RegisteredDescriptor
-      = RegisteredDescriptor.Register<BlockDescriptor>();
+    public static readonly RegisteredDescriptor DescriptorInstance
+      = RegisteredDescriptor.Register<HeadingBlockDescriptor>();
 
     /// <inheritdoc />
     public override RegisteredDescriptor DescriptorHandle
-      => RegisteredDescriptor;
-
-    /// <inheritdoc/>
-    protected override void SerializeInto(SerializeNode node)
-    {
-      base.SerializeInto(node);
-
-      node.AddData("HeadingLevel", HeadingLevel);
-    }
-
-    /// <inheritdoc />
-    public override void Deserialize(SerializationContext context, SerializeNode node)
-    {
-      base.Deserialize(context, node);
-
-      HeadingLevel = node.GetDataOrDefault<int>("HeadingLevel");
-    }
+      => DescriptorInstance;
 
     /// <summary> The level of heading that the block represents. </summary>
+    [BlockProperty("HeadingLevel")]
     public int HeadingLevel
     {
       get => _headingLevel;
@@ -55,33 +40,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       }
     }
 
-    /// <inheritdoc />
-    public override TextBlockAttributes GetAttributes()
-    {
-      return new Attributes(this);
-    }
-
-    /// <summary />
-    private class Attributes : TextBlockAttributes
-    {
-      private readonly int _level;
-
-      public Attributes(HeadingBlock block)
-      {
-        _level = block.HeadingLevel;
-      }
-
-      public override TextBlock CreateInstance()
-      {
-        return new HeadingBlock()
-               {
-                 HeadingLevel = _level
-               };
-      }
-    }
-
     /// <summary> BlockDescriptor for <see cref="HeadingBlock"/>. </summary>
-    private class BlockDescriptor : BlockDescriptor<HeadingBlock>
+    private class HeadingBlockDescriptor : BlockDescriptor<HeadingBlock>
     {
       /// <inheritdoc />
       public override string Id

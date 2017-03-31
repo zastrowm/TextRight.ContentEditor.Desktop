@@ -11,7 +11,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
   /// </summary>
-  public abstract class TextBlock : ContentBlock
+  public abstract partial class TextBlock : ContentBlock
   {
     private readonly List<StyledTextFragment> _spans;
 
@@ -48,9 +48,44 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return new TextBlockCursor(this);
     }
 
-    /// <summary> Gets the unique values of the given TextBlock class. </summary>
-    /// <returns> The attributes unique to the TextBlock type/instance. </returns>
-    public abstract TextBlockAttributes GetAttributes();
+    /// <summary>
+    ///  Serializes the properties of the given text block into a chunk of data that can be stored for
+    ///  later use.
+    /// </summary>
+    /// <returns> A SerializedData structure containg the serialized data. </returns>
+    public BlobSerializedData SerializeProperties()
+    {
+      PropertySerializers.DataWriter.Reset();
+      WriteProperties(PropertySerializers.DataWriter);
+
+      return new BlobSerializedData(PropertySerializers.DataWriter.ToArray());
+    }
+
+    /// <summary>
+    ///  Deserializes the properties contained in <paramref name="data"/> back into the block.
+    /// </summary>
+    /// <param name="data"> The data to deserialize. </param>
+    public void DeserializeProperties(BlobSerializedData data)
+    {
+      PropertySerializers.DataReader.Reset(data.Data);
+      ReadProperties(PropertySerializers.DataReader);
+    }
+
+    /// <summary>
+    ///  Reads data from the given data reader to repopulate the properties of this block.
+    /// </summary>
+    /// <param name="reader"> The reader from which to read . </param>
+    public virtual void ReadProperties(IDataReader reader)
+    {
+      DescriptorHandle.Descriptor.DefaultPropertySerializer.Read(this, reader);
+    }
+
+    /// <summary> Writes the properties of this block to the given data writer. </summary>
+    /// <param name="writer"> The writer to which to write. </param>
+    public virtual void WriteProperties(IDataWriter writer)
+    {
+      DescriptorHandle.Descriptor.DefaultPropertySerializer.Write(this, writer);
+    }
 
     /// <summary> Appends the given span to the TextBlock. </summary>
     /// <param name="fragment"> The span to add. </param>

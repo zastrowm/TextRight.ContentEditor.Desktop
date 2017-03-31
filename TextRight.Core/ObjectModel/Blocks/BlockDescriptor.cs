@@ -22,6 +22,17 @@ namespace TextRight.Core.ObjectModel.Blocks
     [Pure]
     public abstract Block CreateInstance();
 
+    protected BlockDescriptor()
+    {
+      DefaultPropertySerializer = new DefaultBlockPropertySerializer(BlockType);
+    }
+
+    /// <summary>
+    ///  A serializer which can be used to serialize the propertes of a block annotated with the
+    ///  correct attribute.
+    /// </summary>
+    internal DefaultBlockPropertySerializer DefaultPropertySerializer { get; }
+
     /// <summary> All of the commands that should be available when the block is in a document. </summary>
     /// <param name="document"></param>
     public abstract IEnumerable<IContextualCommand> GetCommands(DocumentOwner document);

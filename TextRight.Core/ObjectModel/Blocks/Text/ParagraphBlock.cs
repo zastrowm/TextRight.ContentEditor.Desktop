@@ -16,12 +16,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public override RegisteredDescriptor DescriptorHandle
       => RegisteredDescriptor;
 
-    /// <inheritdoc/>
-    public override TextBlockAttributes GetAttributes()
-    {
-      return new Attributes();
-    }
-
     /// <summary />
     private class Attributes : TextBlockAttributes
     {

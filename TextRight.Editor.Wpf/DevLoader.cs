@@ -22,7 +22,7 @@ namespace TextRight.Editor.Wpf
 
         var serializationContext = new SerializationContext(
                                      new DescriptorsLookup(ParagraphBlock.RegisteredDescriptor.Descriptor,
-                                                           HeadingBlock.RegisteredDescriptor.Descriptor
+                                                           HeadingBlock.DescriptorInstance.Descriptor
                                      )
                                    );
 

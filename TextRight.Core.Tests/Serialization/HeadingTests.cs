@@ -18,7 +18,7 @@ namespace TextRight.Core.Tests.Serialization
       cursor.InsertText("This is some of the text");
       paragraph.AppendSpan(new StyledTextFragment("Some additional text"));
 
-      var descriptorsLookup = new DescriptorsLookup(HeadingBlock.RegisteredDescriptor.Descriptor);
+      var descriptorsLookup = new DescriptorsLookup(HeadingBlock.DescriptorInstance.Descriptor);
 
       // Act
       SerializationHelpers.VerifyDeserialization(paragraph, descriptorsLookup);

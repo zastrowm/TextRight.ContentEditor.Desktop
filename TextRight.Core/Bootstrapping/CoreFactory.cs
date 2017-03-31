@@ -18,7 +18,7 @@ namespace TextRight.Core.Bootstrapping
     {
       yield return RootBlockCollection.RegisteredDescriptor;
       yield return ParagraphBlock.RegisteredDescriptor;
-      yield return HeadingBlock.RegisteredDescriptor;
+      yield return HeadingBlock.DescriptorInstance;
     }
   }
 }

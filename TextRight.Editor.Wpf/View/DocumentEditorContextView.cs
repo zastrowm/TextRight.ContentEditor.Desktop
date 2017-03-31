@@ -283,7 +283,7 @@ namespace TextRight.Editor.Wpf.View
       RegisteredDescriptor[] descriptors = new[]
                                            {
                                              ParagraphBlock.RegisteredDescriptor,
-                                             HeadingBlock.RegisteredDescriptor,
+                                             HeadingBlock.DescriptorInstance,
                                            };
 
       var addedCommands = new IContextualCommand[]

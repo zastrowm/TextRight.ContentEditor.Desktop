@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Serialization;
 
 namespace TextRight.Core.Editing.Actions
 {
@@ -10,14 +11,16 @@ namespace TextRight.Core.Editing.Actions
   public class ConvertIntoParagraphAction : UndoableAction
   {
     private readonly DocumentCursorHandle _handle;
-    private readonly TextBlockAttributes _originalAttributes;
+    private readonly BlobSerializedData _blobSerializedData;
+    private readonly BlockDescriptor _originalDescriptor;
 
     public ConvertIntoParagraphAction(ReadonlyCursor cursor)
     {
       _handle = cursor;
 
       var block = (TextBlock)cursor.Block;
-      _originalAttributes = block.GetAttributes();
+      _originalDescriptor = block.DescriptorHandle.Descriptor;
+      _blobSerializedData = block.SerializeProperties();
     }
 
     /// <inheritdoc />
@@ -44,7 +47,9 @@ namespace TextRight.Core.Editing.Actions
     {
       using (var copy = _handle.Get(context))
       {
-        Replace(context, (TextBlock)copy.Block, _originalAttributes.CreateInstance());
+        var original = (TextBlock)_originalDescriptor.CreateInstance();
+        original.DeserializeProperties(_blobSerializedData);
+        Replace(context, (TextBlock)copy.Block, original);
       }
     }
 
