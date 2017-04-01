@@ -8,19 +8,11 @@ using TextRight.Core.ObjectModel.Serialization;
 namespace TextRight.Core.Editing.Actions
 {
   /// <summary> Converts a TextBlock into a normal paragraph. </summary>
-  public class ConvertIntoParagraphAction : UndoableAction
+  public class ConvertIntoParagraphAction : ConvertTextBlockToTextBlockAction<ParagraphBlock>
   {
-    private readonly DocumentCursorHandle _handle;
-    private readonly BlobSerializedData _blobSerializedData;
-    private readonly BlockDescriptor _originalDescriptor;
-
     public ConvertIntoParagraphAction(ReadonlyCursor cursor)
+      : base(cursor)
     {
-      _handle = cursor;
-
-      var block = (TextBlock)cursor.Block;
-      _originalDescriptor = block.DescriptorHandle.Descriptor;
-      _blobSerializedData = block.SerializeProperties();
     }
 
     /// <inheritdoc />
@@ -32,37 +24,12 @@ namespace TextRight.Core.Editing.Actions
       => "Convert paragraph into a heading";
 
     /// <inheritdoc />
-    public override void Do(DocumentEditorContext context)
-    {
-      using (var copy = _handle.Get(context))
-      {
-        Replace(context,
-                (TextBlock)copy.Block,
-                new ParagraphBlock());
-      }
-    }
+    public override RegisteredDescriptor GetDestinationDescriptor() 
+      => ParagraphBlock.RegisteredDescriptor;
 
-    /// <inheritdoc />
-    public override void Undo(DocumentEditorContext context)
+    public override void MakeChangesTo(ParagraphBlock block)
     {
-      using (var copy = _handle.Get(context))
-      {
-        var original = (TextBlock)_originalDescriptor.CreateInstance();
-        original.DeserializeProperties(_blobSerializedData);
-        Replace(context, (TextBlock)copy.Block, original);
-      }
-    }
-
-    /// <summary>
-    ///  Replaces the given block in the document with the new block, transferring all contents of the
-    ///  block and adjusting the document cursor to point to the location where it was pointing
-    ///  originally.
-    /// </summary>
-    private void Replace(DocumentEditorContext context, TextBlock blockToReplace, TextBlock newBlock)
-    {
-      blockToReplace.MoveTextInto(newBlock);
-      blockToReplace.Parent.Replace(blockToReplace, newBlock);
-      context.Caret.MoveTo(_handle, context);
+      // no-op, it's just plain ol' text
     }
   }
 }

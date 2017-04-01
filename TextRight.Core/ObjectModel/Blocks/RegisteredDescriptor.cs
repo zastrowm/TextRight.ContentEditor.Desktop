@@ -24,6 +24,9 @@ namespace TextRight.Core.ObjectModel.Blocks
     /// <summary> The descriptor that is registered. </summary>
     public BlockDescriptor Descriptor { get; set; }
 
+    public Block CreateInstance()
+      => Descriptor.CreateInstance();
+
     /// <summary> Registers a new ContentBlockDescriptor type. </summary>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <returns> A DescriptorHandle. </returns>
