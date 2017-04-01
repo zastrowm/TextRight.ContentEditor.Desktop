@@ -88,6 +88,10 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TextRight.Core.Basics\TextRight.Core.Basics.csproj">
+      <Project>{733F902F-A277-49BE-923D-62613EAE315D}</Project>
+      <Name>TextRight.Core.Basics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj">
       <Project>{d78cc148-8065-4cb8-ab81-daa0b75cc6bb}</Project>
       <Name>TextRight.Core</Name>

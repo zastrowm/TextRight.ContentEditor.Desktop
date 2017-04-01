@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using TextRight.Core;
+using TextRight.Core.Blocks;
 using TextRight.Core.Editing;
 using TextRight.Core.Editing.Commands;
 using TextRight.Core.Editing.Commands.Caret;

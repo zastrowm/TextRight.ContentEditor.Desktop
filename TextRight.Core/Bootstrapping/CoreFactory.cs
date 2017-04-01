@@ -16,9 +16,8 @@ namespace TextRight.Core.Bootstrapping
     /// <inheritdoc/>
     public IEnumerable<RegisteredDescriptor> GetRegisteredDescriptors()
     {
-      yield return RootBlockCollection.RegisteredDescriptor;
-      yield return ParagraphBlock.RegisteredDescriptor;
-      yield return HeadingBlock.DescriptorInstance;
+      // TODO
+      yield break;
     }
   }
 }

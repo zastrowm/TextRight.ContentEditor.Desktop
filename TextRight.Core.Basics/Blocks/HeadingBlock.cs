@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.Commands;
 using TextRight.Core.Editing.Commands;
+using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Serialization;
 
-namespace TextRight.Core.ObjectModel.Blocks.Text
+namespace TextRight.Core.Blocks
 {
   /// <summary> View interface for <see cref="HeadingBlock"/> </summary>
   public interface IHeadingBlockView : ITextBlockView

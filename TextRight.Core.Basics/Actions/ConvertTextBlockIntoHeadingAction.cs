@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TextRight.Core.Blocks;
+using TextRight.Core.Editing.Actions;
 using TextRight.Core.ObjectModel.Blocks;
-using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.Core.Editing.Actions
+namespace TextRight.Core.Actions
 {
   /// <summary> Converts a TextBlock into a heading. </summary>
   public class ConvertTextBlockIntoHeadingAction : ConvertTextBlockToTextBlockAction<HeadingBlock>

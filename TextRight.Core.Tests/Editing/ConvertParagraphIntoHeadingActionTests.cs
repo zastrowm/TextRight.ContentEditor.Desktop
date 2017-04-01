@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
+using TextRight.Core.Actions;
+using TextRight.Core.Blocks;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands.Text;

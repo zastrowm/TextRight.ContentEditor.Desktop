@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <RootNamespace>TextRight.Core</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="10.4.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj" />
+  </ItemGroup>
+</Project>
