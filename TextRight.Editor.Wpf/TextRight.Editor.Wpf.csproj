@@ -68,6 +68,7 @@
     <Compile Include="View\FormattedTextHelper.cs" />
     <Compile Include="View\HeadingBlockView.cs" />
     <Compile Include="View\KeyboardShortcutCollection.cs" />
+    <Compile Include="View\ListItemBlockView.cs" />
     <Compile Include="View\ParagraphView.cs" />
     <Compile Include="View\StyledStyledTextSpanView.cs" />
     <Compile Include="View\VerticalBlockCollectionView.cs" />

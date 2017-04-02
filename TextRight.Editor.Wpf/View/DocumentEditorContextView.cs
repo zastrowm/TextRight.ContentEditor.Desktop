@@ -86,6 +86,14 @@ namespace TextRight.Editor.Wpf.View
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
 
+      var document = editor.Document;
+
+      var listItem = new ListItemBlock();
+      document.Root.Append(listItem);
+      var cursor = ((Core.ObjectModel.Blocks.Text.TextBlock)listItem.FirstBlock).GetTextCursor();
+      cursor.MoveToBeginning();
+      cursor.InsertText("A list item");
+
       _editor.UndoStack.Clear();
     }
 

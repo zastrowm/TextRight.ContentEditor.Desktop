@@ -18,6 +18,7 @@ namespace TextRight.Editor.Wpf.View
     {
       Add<ParagraphBlock>((c, b) => new ParagraphView(c, b));
       Add<HeadingBlock>((c, b) => new HeadingBlockView(c, b));
+      Add<ListItemBlock>((c, b) => new ListItemBlockView(c, b));
     }
 
     /// <summary> Adds a factory function for the given block type. </summary>
