@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.Editing.Commands;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.ObjectModel.Blocks.Collections
 {
@@ -12,6 +13,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
       = RegisteredDescriptor.Register<BlockDescriptor>();
 
     internal RootBlockCollection()
+      : base(new ParagraphBlock())
     {
     }
 

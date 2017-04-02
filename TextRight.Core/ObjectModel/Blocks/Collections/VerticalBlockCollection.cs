@@ -13,7 +13,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
   public abstract class VerticalBlockCollection : BlockCollection
   {
     /// <summary> Default constructor. </summary>
-    internal VerticalBlockCollection()
+    internal VerticalBlockCollection(Block firstChild)
+      : base (firstChild)
     {
     }
 

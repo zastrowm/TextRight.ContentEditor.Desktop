@@ -14,10 +14,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     private readonly BlockLinkedList _blockList;
 
     /// <summary> Default constructor. </summary>
-    protected BlockCollection()
+    protected BlockCollection(Block firstChild)
     {
       // TODO don't append a text block?
-      _blockList = new BlockLinkedList(this, new ParagraphBlock());
+      _blockList = new BlockLinkedList(this, firstChild);
     }
 
     /// <summary> The blocks that exist in the collection. </summary>

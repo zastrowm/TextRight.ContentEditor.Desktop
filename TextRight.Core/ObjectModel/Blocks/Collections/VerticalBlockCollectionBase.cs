@@ -11,6 +11,12 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
                                                                   IDocumentItem<TBlockView>
     where TBlockView : IDocumentItemView, IBlockCollectionView
   {
+    protected VerticalBlockCollectionBase(Block firstChild)
+      : base(firstChild)
+    {
+      
+    }
+
     /// <summary>
     ///  The object that receives all notifications of changes from this instance.
     /// </summary>

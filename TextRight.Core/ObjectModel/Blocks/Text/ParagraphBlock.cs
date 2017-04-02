@@ -16,15 +16,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public override RegisteredDescriptor DescriptorHandle
       => RegisteredDescriptor;
 
-    /// <summary />
-    private class Attributes : TextBlockAttributes
-    {
-      public override TextBlock CreateInstance()
-      {
-        return new ParagraphBlock();
-      }
-    }
-
     /// <summary> Describes the <see cref="ParagraphBlock"/> block. </summary>
     private class BlockDescriptor : BlockDescriptor<ParagraphBlock>
     {
