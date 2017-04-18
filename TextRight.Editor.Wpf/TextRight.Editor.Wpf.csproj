@@ -38,6 +38,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -71,6 +74,7 @@
     <Compile Include="View\ListItemBlockView.cs" />
     <Compile Include="View\ParagraphView.cs" />
     <Compile Include="View\StyledStyledTextSpanView.cs" />
+    <Compile Include="View\CustomStringRenderer.cs" />
     <Compile Include="View\VerticalBlockCollectionView.cs" />
     <Compile Include="View\ViewFactory.cs" />
     <Compile Include="WatchEntryPoint.cs" />

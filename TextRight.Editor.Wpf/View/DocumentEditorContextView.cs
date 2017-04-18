@@ -88,11 +88,11 @@ namespace TextRight.Editor.Wpf.View
 
       var document = editor.Document;
 
-      var listItem = new ListItemBlock();
-      document.Root.Append(listItem);
-      var cursor = ((Core.ObjectModel.Blocks.Text.TextBlock)listItem.FirstBlock).GetTextCursor();
-      cursor.MoveToBeginning();
-      cursor.InsertText("A list item");
+      //var listItem = new ListItemBlock();
+      //document.Root.Append(listItem);
+      //var cursor = ((Core.ObjectModel.Blocks.Text.TextBlock)listItem.FirstBlock).GetTextCursor();
+      //cursor.MoveToBeginning();
+      //cursor.InsertText("A list item");
 
       _editor.UndoStack.Clear();
     }

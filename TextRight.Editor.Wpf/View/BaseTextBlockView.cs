@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.TextFormatting;
 using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.Utilities;
 
@@ -15,7 +19,9 @@ namespace TextRight.Editor.Wpf.View
                                             ITextBlockView
   {
     private readonly DocumentEditorContextView _root;
+    private readonly TextBlock _block;
     private readonly List<StyledStyledTextSpanView> _spans;
+    private readonly CustomStringRenderer _renderer;
 
     private ChangeIndex _cachedIndex;
     private Point _cachedOffset;
@@ -26,12 +32,9 @@ namespace TextRight.Editor.Wpf.View
     protected internal BaseTextBlockView(DocumentEditorContextView root, TextBlock block)
     {
       _root = root;
+      _block = block;
       _spans = new List<StyledStyledTextSpanView>();
-      Text = new FormattedTextHelper(_spans)
-             {
-               TextFont = new Typeface("Times New Roman"),
-               TextFontSize = 16
-             };
+      _renderer = new CustomStringRenderer(block, _spans);
 
       foreach (var span in block.Fragments)
       {
@@ -41,23 +44,18 @@ namespace TextRight.Editor.Wpf.View
       RecreateText();
     }
 
-    /// <summary> The formatted text for this view.. </summary>
-    protected FormattedTextHelper Text { get; }
-
     /// <summary> The document item for the view. </summary>
     public abstract IDocumentItem DocumentItem { get; }
 
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size constraint)
     {
-      var formattedText = Text.GetFormattedText();
-
-      if (Text.SetSizeConstraint(constraint.Width))
+      if (_renderer.SetMaxWidth(constraint.Width))
       {
         _root.MarkChanged();
       }
 
-      return new Size(formattedText.Width, formattedText.Height);
+      return new Size(_renderer.MaxWidth, _renderer.GetHeight());
     }
 
     /// <inheritdoc />
@@ -65,8 +63,10 @@ namespace TextRight.Editor.Wpf.View
     {
       base.OnRender(drawingContext);
 
-      var formattedText = Text.GetFormattedText();
-      drawingContext.DrawText(formattedText, new Point(0, 0));
+      if (_block == null)
+        return;
+
+      _renderer.Render(drawingContext);
     }
 
     /// <summary>
@@ -87,21 +87,14 @@ namespace TextRight.Editor.Wpf.View
       if (!IsValidForMeasuring)
         return MeasuredRectangle.Invalid;
 
-      var formattedText = Text.GetFormattedText();
+      var rect = _renderer.MeasureCharacter(fragment, characterIndex);
+      if (!rect.IsValid)
+        return rect;
 
-      int offset = fragment.CharacterOffsetIntoTextView + characterIndex;
-      var geometry = formattedText.BuildHighlightGeometry(default(Point), offset, 1);
-      Debug.Assert(geometry != null);
+      rect.X += _cachedOffset.X;
+      rect.Y += _cachedOffset.Y;
 
-      var absoluteOffset = _cachedOffset;
-
-      return new MeasuredRectangle()
-             {
-               X = absoluteOffset.X + geometry.Bounds.X,
-               Y = absoluteOffset.Y + geometry.Bounds.Y,
-               Height = geometry.Bounds.Height,
-               Width = geometry.Bounds.Width,
-             };
+      return rect;
     }
 
     /// <inheritdoc />
@@ -179,11 +172,10 @@ namespace TextRight.Editor.Wpf.View
     private void RecreateText()
     {
       _root.MarkChanged();
-      Text.Invalidate();
+      _renderer.Invalidate();
 
-      // TODO do we have to do all 3? 
+      // TODO do we have to do both 
       InvalidateMeasure();
-      InvalidateArrange();
       InvalidateVisual();
     }
   }

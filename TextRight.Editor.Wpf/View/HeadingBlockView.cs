@@ -24,12 +24,12 @@ namespace TextRight.Editor.Wpf.View
       Margin = new Thickness(10);
 
       SyncTextSize();
-      Text.TextFont = new Typeface("Segoe UI Semibold");
+      //Text.TextFont = new Typeface("Segoe UI Semibold");
     }
 
     private void SyncTextSize()
     {
-      Text.TextFontSize = 20 - _block.HeadingLevel * 2;
+      //Text.TextFontSize = 20 - _block.HeadingLevel * 2;
 
       InvalidateMeasure();
     }
