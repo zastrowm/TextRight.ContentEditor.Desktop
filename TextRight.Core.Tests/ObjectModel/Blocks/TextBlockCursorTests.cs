@@ -26,7 +26,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       Block.Add((c = new StyledTextFragment("789")));
 
       // The first TextSpan was auto added
-      Block.RemoveSpan(Block.Fragments.First());
+      StyledTextFragment fragment = Block.Content.Fragments.First();
+      Block.Content.RemoveSpan(fragment);
     }
 
     [Test]
@@ -110,8 +111,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       Assert.That(spans[0], Is.EqualTo(b));
       Assert.That(spans[1], Is.EqualTo(c));
 
-      Assert.That(Block.ChildCount, Is.EqualTo(1));
-      Assert.That(Block.Fragments.First(), Is.EqualTo(a));
+      Assert.That(Block.Content.ChildCount, Is.EqualTo(1));
+      Assert.That(Block.Content.Fragments.First(), Is.EqualTo(a));
     }
 
     [Test]
@@ -125,9 +126,9 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       Assert.That(spans[1], Is.EqualTo(b));
       Assert.That(spans[2], Is.EqualTo(c));
 
-      Assert.That(Block.ChildCount, Is.EqualTo(1));
-      Assert.That(Block.Fragments.First(), Is.EqualTo(a));
-      Assert.That(Block.Fragments.First().GetText(), Is.EqualTo("12"));
+      Assert.That(Block.Content.ChildCount, Is.EqualTo(1));
+      Assert.That(Block.Content.Fragments.First(), Is.EqualTo(a));
+      Assert.That(Block.Content.Fragments.First().GetText(), Is.EqualTo("12"));
     }
 
     [Test]
@@ -141,9 +142,9 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       Assert.That(spans[1], Is.EqualTo(b));
       Assert.That(spans[2], Is.EqualTo(c));
 
-      Assert.That(Block.ChildCount, Is.EqualTo(1));
-      Assert.That(Block.Fragments.First(), Is.EqualTo(a));
-      Assert.That(Block.Fragments.First().GetText(), Is.EqualTo(""));
+      Assert.That(Block.Content.ChildCount, Is.EqualTo(1));
+      Assert.That(Block.Content.Fragments.First(), Is.EqualTo(a));
+      Assert.That(Block.Content.Fragments.First().GetText(), Is.EqualTo(""));
     }
 
     [Test]
@@ -154,13 +155,13 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       Assert.That(spans.Length, Is.EqualTo(0));
 
-      Assert.That(Block.ChildCount, Is.EqualTo(3));
-      Assert.That(Block.Fragments.ElementAt(0), Is.EqualTo(a));
-      Assert.That(Block.Fragments.ElementAt(0).GetText(), Is.EqualTo("123"));
-      Assert.That(Block.Fragments.ElementAt(1), Is.EqualTo(b));
-      Assert.That(Block.Fragments.ElementAt(1).GetText(), Is.EqualTo("456"));
-      Assert.That(Block.Fragments.ElementAt(2), Is.EqualTo(c));
-      Assert.That(Block.Fragments.ElementAt(2).GetText(), Is.EqualTo("789"));
+      Assert.That(Block.Content.ChildCount, Is.EqualTo(3));
+      Assert.That(Block.Content.Fragments.ElementAt(0), Is.EqualTo(a));
+      Assert.That(Block.Content.Fragments.ElementAt(0).GetText(), Is.EqualTo("123"));
+      Assert.That(Block.Content.Fragments.ElementAt(1), Is.EqualTo(b));
+      Assert.That(Block.Content.Fragments.ElementAt(1).GetText(), Is.EqualTo("456"));
+      Assert.That(Block.Content.Fragments.ElementAt(2), Is.EqualTo(c));
+      Assert.That(Block.Content.Fragments.ElementAt(2).GetText(), Is.EqualTo("789"));
     }
   }
 }

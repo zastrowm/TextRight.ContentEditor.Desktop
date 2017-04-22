@@ -89,14 +89,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <inheritdoc />
     public override void MoveToBeginning()
     {
-      Fragment = Block.FirstFragment;
+      Fragment = Block.Content.FirstFragment;
       OffsetIntoSpan = 0;
     }
 
     /// <inheritdoc />
     public override void MoveToEnd()
     {
-      Fragment = Block.LastFragment;
+      Fragment = Block.Content.LastFragment;
       OffsetIntoSpan = Fragment.Length;
     }
 
@@ -320,7 +320,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       public override void Deserialize(TextBlockCursor cursor)
       {
         cursor.OffsetIntoSpan = _offset;
-        cursor.Fragment = cursor.Block.GetSpanAtIndex(_spanId);
+        cursor.Fragment = cursor.Block.Content.GetSpanAtIndex(_spanId);
       }
     }
   }

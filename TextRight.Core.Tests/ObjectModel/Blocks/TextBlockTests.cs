@@ -42,7 +42,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     {
       var block = new ParagraphBlock();
 
-      Assert.That(block.Fragments.Count(), Is.EqualTo(1));
+      Assert.That(block.Content.Fragments.Count(), Is.EqualTo(1));
     }
 
     [Test]
@@ -53,8 +53,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       Assert.That(nextBlock, Is.Not.Null);
 
-      Assert.That(_block.Fragments.First().GetText(), Is.EqualTo("abc"));
-      Assert.That(nextBlock.Fragments.First().GetText(), Is.EqualTo("123"));
+      Assert.That(_block.Content.Fragments.First().GetText(), Is.EqualTo("abc"));
+      Assert.That(nextBlock.Content.Fragments.First().GetText(), Is.EqualTo("123"));
     }
   }
 }

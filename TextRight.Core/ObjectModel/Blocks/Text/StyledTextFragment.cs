@@ -43,8 +43,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> The index of the span within a TextBlock. </summary>
     public int Index { get; internal set; }
 
+    /// <summary> The owner of the fragment. </summary>
+    public TextBlockContent Owner { get; internal set; }
+
     /// <summary> The TextBlock that owns the span. </summary>
-    public TextBlock Parent { get; internal set; }
+    public TextBlock Parent => Owner.Owner;
 
     /// <summary> The sibling fragment that follows this fragment. </summary>
     public StyledTextFragment Next { get; internal set; }

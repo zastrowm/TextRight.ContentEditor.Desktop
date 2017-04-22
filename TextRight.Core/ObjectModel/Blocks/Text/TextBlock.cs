@@ -13,34 +13,39 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   /// </summary>
   public abstract class TextBlock : ContentBlock
   {
-    private readonly List<StyledTextFragment> _spans;
+    private TextBlockContent _content;
 
     /// <summary> Default constructor. </summary>
     internal TextBlock()
     {
-      _spans = new List<StyledTextFragment>();
-      AppendSpan(new StyledTextFragment(""));
+      Content = new TextBlockContent()
+                {
+                  Owner = this
+                };
     }
 
-    /// <summary> The number of fragments contained in this block. </summary>
-    public int ChildCount
-      => _spans.Count;
+    /// <summary> The textual content within the block </summary>
+    public TextBlockContent Content
+    {
+      get { return _content; }
+      private set
+      {
+        var theValue = value ?? new TextBlockContent();
+        if (theValue.Owner != null)
+        {
+          theValue.Owner = null;
+        }
 
-    /// <summary> The first fragment in the block. </summary>
-    public StyledTextFragment FirstFragment
-      => _spans[0];
+        theValue.Owner = this;
+        _content = value;
 
-    /// <summary> The last fragment in the block. </summary>
-    public StyledTextFragment LastFragment
-      => _spans[_spans.Count - 1];
+        // TODO notify others
+      }
+    }
 
     /// <inheritdoc />
     public override ICursorPool CursorPool
       => TextBlockCursor.CursorPool;
-
-    /// <summary> All of the fragments contained in this textblock. </summary>
-    public IEnumerable<StyledTextFragment> Fragments
-      => _spans;
 
     /// <inheritdoc />
     protected override IBlockContentCursor CreateCursorOverride()
@@ -87,98 +92,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       DescriptorHandle.Descriptor.DefaultPropertySerializer.Write(this, writer);
     }
 
-    /// <summary> Appends the given span to the TextBlock. </summary>
-    /// <param name="fragment"> The span to add. </param>
-    /// <param name="autoMerge"> True to automatically merge similar fragments together. </param>
-    public void AppendSpan(StyledTextFragment fragment, bool autoMerge = true)
-    {
-      // FYI early exit
-      if (autoMerge && _spans.Count > 0)
-      {
-        var lastSpan = _spans[_spans.Count - 1];
-        if (lastSpan.IsSameStyleAs(fragment))
-        {
-          lastSpan.InsertText(fragment.GetText(), lastSpan.Length);
-          return;
-        }
-      }
-
-      fragment.Index = _spans.Count;
-      fragment.Parent = this;
-      _spans.Add(fragment);
-      UpdateChildrenNumbering(Math.Max(fragment.Index - 1, 0));
-
-      OnFragmentInserted(fragment.Previous, fragment, fragment.Next);
-    }
-
     /// <summary> Invoked when a new fragment is inserted into the textblock. </summary>
     /// <param name="previous"> The fragment that precedes the inserted fragment, can be null. </param>
     /// <param name="fragment"> The fragment that was inserted. </param>
     /// <param name="next"> The fragment that follows the inserted fragment, can be null. </param>
-    protected abstract void OnFragmentInserted(StyledTextFragment previous,
+    protected internal abstract void OnFragmentInserted(StyledTextFragment previous,
                                                StyledTextFragment fragment,
                                                StyledTextFragment next);
 
-    /// <summary> Appends all fragments to the text block.  </summary>
-    /// <param name="fragments"> The fragments to add to the text block. </param>
-    public void AppendAll(IEnumerable<StyledTextFragment> fragments)
-    {
-      bool autoMerge = true;
-
-      foreach (var fragment in fragments)
-      {
-        AppendSpan(fragment, autoMerge);
-        autoMerge = false;
-      }
-    }
-
-    /// <summary> Removes the given span from the text block. </summary>
-    /// <param name="fragment"> The span to remove. </param>
-    public void RemoveSpan(StyledTextFragment fragment)
-    {
-      var originalIndex = fragment.Index;
-
-      _spans.RemoveAt(fragment.Index);
-      ClearFragment(fragment);
-
-      // renumber all of the subsequent blocks
-      var startIterateIndex = originalIndex - 1;
-      if (startIterateIndex < 0)
-      {
-        startIterateIndex = 0;
-      }
-
-      UpdateChildrenNumbering(startIterateIndex);
-
-      // TODO remove child from element tree
-    }
-
-    private static void ClearFragment(StyledTextFragment fragment)
-    {
-      fragment.Parent = null;
-      fragment.Index = -1;
-    }
-
-    /// <summary> Updates the children numbering starting at the given index. </summary>
-    /// <param name="startIndex"> The start index. </param>
-    private void UpdateChildrenNumbering(int startIndex = 0)
-    {
-      // OPTIMIZE to get rid of the two ifs inside here
-      for (var i = startIndex; i < _spans.Count; i++)
-      {
-        var currentSpan = _spans[i];
-
-        currentSpan.Previous = i > 0
-          ? _spans[i - 1]
-          : null;
-
-        currentSpan.Index = i;
-
-        currentSpan.Next = i < _spans.Count - 1
-          ? _spans[i + 1]
-          : null;
-      }
-    }
 
     public TextBlockCursor GetTextCursor()
       => new TextBlockCursor(this);
@@ -187,43 +108,20 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public override Block Clone()
     {
       var clone = (TextBlock)DescriptorHandle.Descriptor.CreateInstance();
-      clone._spans.Clear();
-      clone.AppendAll(_spans.Select(s => s.Clone()));
+      clone.Content = Content.Clone();
       return clone;
     }
 
     /// <inheritdoc />
     protected override void SerializeInto(SerializeNode node)
     {
-      foreach (var span in _spans)
-      {
-        var subSpanNode = new SerializeNode("temp/fragment");
-        subSpanNode.AddData<string>("Body", span.GetText());
-        node.Children.Add(subSpanNode);
-      }
+      Content.SerializeInto(node);
     }
 
     /// <inheritdoc />
     public override void Deserialize(SerializationContext context, SerializeNode node)
     {
-      // TODO should we remove the original
-      var allSpans = from childNode in node.Children
-                     select childNode.GetDataOrDefault<string>("Body")
-                     into text
-                     select new StyledTextFragment(text);
-
-      AppendAll(allSpans);
-    }
-
-    /// <summary> Retrieves the span at the given index. </summary>
-    /// <param name="spanIndex"> The zero-based index of the span to retrieve. </param>
-    /// <returns> The span at the given index. </returns>
-    public StyledTextFragment GetSpanAtIndex(int spanIndex)
-    {
-      if (spanIndex < 0 || spanIndex >= _spans.Count)
-        throw new ArgumentOutOfRangeException(nameof(spanIndex), spanIndex, $"Number of spans: {_spans.Count}");
-
-      return _spans[spanIndex];
+      Content.Deserialize(context, node);
     }
 
     /// <summary> Extracts the content starting at the cursor and continuing to the end of the block. </summary>
@@ -231,69 +129,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <returns> The fragments that have been extracted. </returns>
     public StyledTextFragment[] ExtractContentToEnd(TextBlockCursor cursor)
     {
-      if (cursor.IsAtEnd)
-        return Array.Empty<StyledTextFragment>();
-
-      StyledTextFragment startFragment = cursor.Fragment;
-      int offsetIntoFragment = cursor.OffsetIntoSpan;
-
-      StyledTextFragment[] elements;
-      int index;
-
-      bool isAtEndOfFragment = offsetIntoFragment == startFragment.Length;
-
-      if (isAtEndOfFragment)
-      {
-        // we only need everything passed the fragment
-        int expectedCount = ChildCount - (startFragment.Index + 1);
-
-        elements = new StyledTextFragment[expectedCount];
-        startFragment = startFragment.Next;
-        index = 0;
-      }
-      else
-      {
-        // we only need everything passed the fragment plus part of the current fragment
-        int expectedCount = ChildCount - startFragment.Index;
-
-        elements = new StyledTextFragment[expectedCount];
-
-        string rightHalf = startFragment.GetText().Substring(offsetIntoFragment);
-
-        startFragment.RemoveCharacters(offsetIntoFragment, startFragment.Length - offsetIntoFragment);
-
-        elements[0] = new StyledTextFragment(rightHalf);
-        startFragment = startFragment.Next;
-
-        index = 1;
-      }
-
-      // needs to be before we clear each fragment, otherwise the index will end up 
-      // being -1
-      int indexOfFirstRemovedSpan = startFragment?.Index ?? Int32.MaxValue;
-
-      while (startFragment != null)
-      {
-        ClearFragment(startFragment);
-
-        elements[index] = startFragment;
-        startFragment = startFragment.Next;
-        index += 1;
-      }
-
-      // remove all of the spans from this block now
-      for (int i = _spans.Count - 1; i >= indexOfFirstRemovedSpan; i--)
-      {
-        var fragment = _spans[i];
-        fragment.Detach();
-        _spans.RemoveAt(i);
-      }
-
-      UpdateChildrenNumbering(Math.Max(indexOfFirstRemovedSpan - 1, 0));
-
-      Debug.Assert(index == elements.Length);
-
-      return elements;
+      return Content.ExtractContentToEnd(cursor);
     }
 
     /// <summary> Move the fragments and text from this block into the other block. </summary>
@@ -306,7 +142,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         var cursor = (TextBlockCursor)copy.Cursor;
         cursor.MoveToBeginning();
         var extracted = cursor.ExtractToEnd();
-        otherBlock.AppendAll(extracted);
+        otherBlock.Content.AppendAll(extracted);
       }
     }
 

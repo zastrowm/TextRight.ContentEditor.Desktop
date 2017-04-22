@@ -33,7 +33,7 @@ namespace TextRight.Core.Editing.Actions.Text
         return false;
 
       var fragments = cursor.ExtractToEnd();
-      previous.AppendAll(fragments);
+      previous.Content.AppendAll(fragments);
 
       collection.RemoveBlock(textBlock);
 
@@ -79,11 +79,12 @@ namespace TextRight.Core.Editing.Actions.Text
         secondaryBlock = newTextBlock;
 
         // TODO should this be done by AppendSpan automatically?
-        newTextBlock.RemoveSpan(newTextBlock.Fragments.First());
+        StyledTextFragment fragment1 = newTextBlock.Content.Fragments.First();
+        newTextBlock.Content.RemoveSpan(fragment1);
 
         foreach (var fragment in fragments)
         {
-          newTextBlock.AppendSpan(fragment);
+          newTextBlock.Content.AppendSpan(fragment, true);
         }
 
         blockCollection.InsertBlockAfter(targetBlock, secondaryBlock);

@@ -10,7 +10,7 @@ namespace TextRight.Editor.Wpf.View.Text
   {
     public static (StyledTextFragment fragment, int numCharsBeforeFragment) GetFragmentFromBlockCharacterIndex(int index, TextBlock textBlock)
     {
-      var fragment = textBlock.FirstFragment;
+      var fragment = textBlock.Content.FirstFragment;
       int numberOfCharactersBeforeFragment = 0;
 
       while (fragment.Next != null && index < numberOfCharactersBeforeFragment + fragment.Length)
@@ -30,7 +30,7 @@ namespace TextRight.Editor.Wpf.View.Text
     /// </returns>
     public static int GetCharacterIndex(TextBlockValueCursor cursor)
     {
-      var currentFragment = cursor.Fragment.Parent.FirstFragment;
+      var currentFragment = cursor.Fragment.Parent.Content.FirstFragment;
 
       int total = 0;
 

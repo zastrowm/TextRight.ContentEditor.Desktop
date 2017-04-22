@@ -27,14 +27,16 @@ namespace TextRight.Core.Tests
     /// </summary>
     public static void Add(this TextBlock block, StyledTextFragment fragment)
     {
-      block.AppendSpan(fragment, false);
+      block.Content.AppendSpan(fragment, false);
     }
 
     /// <summary> Set the text of the TextBlock to be equal to the given text. </summary>
     public static TextBlock WithText(this TextBlock block, string text)
     {
-      block.RemoveSpan(block.Fragments.First());
-      block.AppendSpan(new StyledTextFragment(text));
+      StyledTextFragment fragment1 = block.Content.Fragments.First();
+      block.Content.RemoveSpan(fragment1);
+      StyledTextFragment fragment = new StyledTextFragment(text);
+      block.Content.AppendSpan(fragment, true);
       return block;
     }
 
@@ -47,7 +49,7 @@ namespace TextRight.Core.Tests
 
       var builder = new StringBuilder();
 
-      foreach (var fragment in textBlock.Fragments)
+      foreach (var fragment in textBlock.Content.Fragments)
       {
         fragment.AppendTo(builder);
       }

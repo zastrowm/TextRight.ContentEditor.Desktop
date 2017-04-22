@@ -37,7 +37,7 @@ namespace TextRight.Editor.Wpf.View
       _spans = new List<StyledStyledTextSpanView>();
       _renderer = new CustomStringRenderer(block, _spans);
 
-      foreach (var span in block.Fragments)
+      foreach (var span in block.Content.Fragments)
       {
         _spans.Add(new StyledStyledTextSpanView(this, span));
       }

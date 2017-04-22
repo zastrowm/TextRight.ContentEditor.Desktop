@@ -317,7 +317,7 @@ namespace TextRight.Editor.Wpf.View
       public override TextRun GetTextRun(int desiredCharacterIndex)
       {
         int startIndex = 0;
-        var fragment = _block.FirstFragment;
+        var fragment = _block.Content.FirstFragment;
 
         while (fragment != null)
         {

@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
+  /// <summary> A cursor looking in a textblock. </summary>
   public struct TextBlockValueCursor
   {
     /// <summary> A cursor which represents an invalid location. </summary>
@@ -18,6 +19,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       OffsetIntoSpan = offsetIntoSpan;
     }
 
+    /// <summary>
+    ///  True if the cursor represents a location in a fragment, false if there is no fragment
+    ///  associated with the cursor.
+    /// </summary>
     public bool IsValid
       => Fragment != null;
 

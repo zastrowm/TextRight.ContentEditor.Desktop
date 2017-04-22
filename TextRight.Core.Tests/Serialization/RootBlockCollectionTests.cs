@@ -32,7 +32,8 @@ namespace TextRight.Core.Tests.Serialization
       var paragraph = new ParagraphBlock();
       var cursor = paragraph.GetTextCursor().ToBeginning();
       cursor.InsertText("This is some of the text");
-      paragraph.AppendSpan(new StyledTextFragment("Some additional text"));
+      StyledTextFragment fragment = new StyledTextFragment("Some additional text");
+      paragraph.Content.AppendSpan(fragment, true);
       return paragraph;
     }
   }

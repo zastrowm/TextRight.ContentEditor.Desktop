@@ -26,7 +26,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <inheritdoc/>
-    protected override void OnFragmentInserted(StyledTextFragment previous,
+    protected internal override void OnFragmentInserted(StyledTextFragment previous,
                                                StyledTextFragment fragment,
                                                StyledTextFragment next)
     {
