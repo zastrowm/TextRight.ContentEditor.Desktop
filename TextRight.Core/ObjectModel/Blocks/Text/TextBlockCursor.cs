@@ -7,6 +7,27 @@ using TextRight.Core.Utilities;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
+  public struct TextBlockValueCursor
+  {
+    public TextBlockValueCursor(StyledTextFragment fragment, int offsetIntoSpan)
+    {
+      Fragment = fragment;
+
+      // TODO verify the offset is valid
+      OffsetIntoSpan = offsetIntoSpan;
+    }
+
+    /// <summary>
+    ///  The span that the cursor is currently pointing towards.
+    /// </summary>
+    public StyledTextFragment Fragment { get; }
+
+    /// <summary>
+    ///  The offset into <see cref="Fragment"/> where this cursor is pointing.
+    /// </summary>
+    public int OffsetIntoSpan { get;}
+  }
+
   /// <summary> Iterates a TextBlock. </summary>
   /// <remarks>
   ///  When pointing at a TextBlock, the cursor is really pointing at one of the
@@ -33,6 +54,15 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public TextBlockCursor(TextBlock block)
       : base(block)
     {
+    }
+
+    public TextBlockCursor(TextBlockValueCursor cursor)
+      : base(cursor.Fragment.Parent)
+    {
+      // TODO verify the offset is correct.
+
+      Fragment = cursor.Fragment;
+      OffsetIntoSpan = cursor.OffsetIntoSpan;
     }
 
     /// <summary>

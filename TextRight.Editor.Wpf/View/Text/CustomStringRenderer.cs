@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
+using TextRight.Core;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.Utilities;
+using TextRight.Editor.Wpf.View.Text;
 
 namespace TextRight.Editor.Wpf.View
 {
@@ -19,6 +22,8 @@ namespace TextRight.Editor.Wpf.View
     private bool _isDirty = true;
     private double _restrictedWidth;
     private double _height;
+    private BlockBasedTextSource _textSource;
+    private TextFormatter _textFormatter;
 
     public CustomStringRenderer(TextBlock block, List<StyledStyledTextSpanView> spans)
     {
@@ -26,6 +31,9 @@ namespace TextRight.Editor.Wpf.View
       _spans = spans;
       _restrictedWidth = 100;
       _cachedLines = new List<TextLineContainer>();
+
+      _textSource = new BlockBasedTextSource(_block);
+      _textFormatter = TextFormatter.Create(TextFormattingMode.Display);
     }
 
     /// <summary> The maximum width of the lines in this renderer </summary>
@@ -80,13 +88,51 @@ namespace TextRight.Editor.Wpf.View
       return _height;
     }
 
+    /// <summary> Gets the cursor at the designated point. </summary>
+    /// <param name="point"> The point at which the cursor should be pointing.. </param>
+    /// <returns> The cursor at the designated point. </returns>
+    public TextBlockValueCursor GetCursor(DocumentPoint point)
+    {
+      var (currentLine, numberOfCharactersBeforeLine) = GetLineForYPosition(point.Y);
+
+      var characterHit = currentLine.Line.GetCharacterHitFromDistance(point.X);
+      int absoluteIndexOfCharacter = characterHit.FirstCharacterIndex;
+
+      var (fragment, numberOfCharactersBeforeFragment) = TextBlockUtils.GetFragmentFromBlockCharacterIndex(absoluteIndexOfCharacter, _block);
+
+      int indexOfCharacterInFragment = absoluteIndexOfCharacter - numberOfCharactersBeforeFragment;
+
+      return new TextBlockValueCursor(fragment, indexOfCharacterInFragment);
+    }
+
+    private (TextLineContainer line, int numCharactersBefore) GetLineForYPosition(double y)
+    {
+      TextLineContainer currentLine = _cachedLines[0];
+
+      int numberOfCharactersBeforeLine = 0;
+
+      foreach (var lineInfo in _cachedLines)
+      {
+        currentLine = lineInfo;
+
+        if (y < lineInfo.Point.Y + lineInfo.Line.Height)
+        {
+          break;
+        }
+
+        numberOfCharactersBeforeLine += currentLine.CharacterStartIndex;
+      }
+
+      return (currentLine, numberOfCharactersBeforeLine);
+    }
+
     /// <summary> Measures the character at the given index for the given fragment. </summary>
     /// <param name="fragment"> The fragment that owns the character. </param>
     /// <param name="characterIndex"> The index of the character to measure. </param>
     /// <returns> The size of the character. </returns>
     public MeasuredRectangle MeasureCharacter(StyledStyledTextSpanView fragment, int characterIndex)
     {
-      this.RecalculateIfDirty();
+      RecalculateIfDirty();
 
       int totalLength = 0;
       foreach (var item in _cachedLines)
@@ -110,43 +156,54 @@ namespace TextRight.Editor.Wpf.View
 
     private double GetLinesToDraw(List<TextLineContainer> linesToDraw)
     {
-      var textStore = new CustomTextSource(_block);
-
       // Create a TextFormatter object.
-      TextFormatter formatter = TextFormatter.Create(TextFormattingMode.Display);
-
       int textStorePosition = 0;
 
-      int textLength = _spans.Sum(s => ((StyledTextFragment)s.DocumentItem).Length);
-      Point linePosition = new Point();
+      var textLength = GetTotalTextLength();
+      Point currentLinePosition = new Point();
 
       double maxWidth = 0;
+      bool isFirst = true;
 
       // Format each line of text from the text store and draw it.
       while (textStorePosition < textLength)
       {
+        // OPTIMIZE we could just re-format the lines that changed, not everything
+        // (if the change was text being added/removed)
+
         // Create a textline from the text store using the TextFormatter object.
-        TextLine myTextLine = formatter.FormatLine(
-          textStore,
+        TextLine myTextLine = _textFormatter.FormatLine(
+          _textSource,
           textStorePosition,
           _restrictedWidth,
-          new GenericTextParagraphProperties(textLength == 0),
+          new GenericTextParagraphProperties(isFirst),
           null);
 
-        linesToDraw.Add(new TextLineContainer(linePosition, myTextLine, textStorePosition));
+        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, textStorePosition));
 
         // Update the index position in the text store.
         textStorePosition += myTextLine.Length;
 
         // Update the line position coordinate for the displayed line.
-        linePosition.Y += myTextLine.Height;
+        currentLinePosition.Y += myTextLine.Height;
 
         maxWidth = Math.Max(maxWidth, myTextLine.Width);
+        isFirst = false;
       }
 
       MaxWidth = maxWidth;
 
-      return linePosition.Y;
+      return currentLinePosition.Y;
+    }
+
+    private int GetTotalTextLength()
+    {
+      int textLength = 0;
+      foreach (var s in _spans)
+      {
+        textLength += ((StyledTextFragment)s.DocumentItem).Length;
+      }
+      return textLength;
     }
 
     public void Invalidate()
@@ -177,7 +234,7 @@ namespace TextRight.Editor.Wpf.View
         TextAlignment = TextAlignment.Left;
         LineHeight = 20;
         FirstLineInParagraph = isFirst;
-        DefaultTextRunProperties = new CustomStringRenderer.GenericTextRunProperties();
+        DefaultTextRunProperties = new StyledTextRunProperties();
         TextWrapping = TextWrapping.Wrap;
         TextMarkerProperties = null;
         Indent = 0;
@@ -193,17 +250,50 @@ namespace TextRight.Editor.Wpf.View
       public override double Indent { get; }
     }
 
-    private class CustomTextSource : TextSource
+    private struct FragmentInfo
+    {
+      public FragmentInfo(StyledTextFragment fragment, int startIndex, int endIndex)
+        : this()
+      {
+        Fragment = fragment;
+        StartIndex = startIndex;
+        EndIndex = endIndex;
+      }
+
+      public StyledTextFragment Fragment { get; }
+      public int StartIndex { get; }
+      public int EndIndex { get; }
+    }
+
+    private class FragmentBasedTextCharacters : TextCharacters
+    {
+      public FragmentBasedTextCharacters(
+        int characterStartIndex,
+        FragmentInfo fragmentInfo,
+        StyledTextRunProperties properties)
+        : base(fragmentInfo.Fragment.GetText(),
+               characterStartIndex - fragmentInfo.StartIndex,
+               fragmentInfo.EndIndex - characterStartIndex,
+               properties)
+      {
+        FragmentInfo = fragmentInfo;
+      }
+
+      public FragmentInfo FragmentInfo { get; }
+    }
+
+    /// <summary> Provides formatted text from a TextBlock. </summary>
+    private class BlockBasedTextSource : TextSource
     {
       private readonly TextBlock _block;
 
-      public CustomTextSource(TextBlock block)
+      public BlockBasedTextSource(TextBlock block)
       {
         _block = block;
       }
 
       /// <inheritdoc />
-      public override TextRun GetTextRun(int textSourceCharacterIndex)
+      public override TextRun GetTextRun(int desiredCharacterIndex)
       {
         int startIndex = 0;
         var fragment = _block.FirstFragment;
@@ -212,16 +302,13 @@ namespace TextRight.Editor.Wpf.View
         {
           int endIndex = startIndex + fragment.Length;
 
-          if (endIndex <= textSourceCharacterIndex)
+          if (endIndex <= desiredCharacterIndex)
             break;
 
-          if (startIndex <= textSourceCharacterIndex)
-            return new TextCharacters(
-              fragment.GetText(),
-              textSourceCharacterIndex - startIndex,
-              endIndex - textSourceCharacterIndex,
-              new GenericTextRunProperties()
-            );
+          if (startIndex <= desiredCharacterIndex)
+            return new FragmentBasedTextCharacters(desiredCharacterIndex,
+                                                   new FragmentInfo(fragment, startIndex, endIndex),
+                                                   new StyledTextRunProperties());
 
           startIndex += fragment.Length;
           fragment = fragment.Next;
@@ -230,42 +317,22 @@ namespace TextRight.Editor.Wpf.View
         return new TextEndOfParagraph(1);
       }
 
-
       /// <inheritdoc />
       public override TextSpan<CultureSpecificCharacterBufferRange> GetPrecedingText(int textSourceCharacterIndexLimit)
       {
+        Debug.Fail("When is this called");
         // TODO?
-        return new TextSpan<CultureSpecificCharacterBufferRange>(0, new CultureSpecificCharacterBufferRange(CultureInfo.CurrentCulture, CharacterBufferRange.Empty));
+        return new TextSpan<CultureSpecificCharacterBufferRange>(
+          0,
+          new CultureSpecificCharacterBufferRange(CultureInfo.CurrentCulture, CharacterBufferRange.Empty));
       }
 
       /// <inheritdoc />
       public override int GetTextEffectCharacterIndexFromTextSourceCharacterIndex(int textSourceCharacterIndex)
       {
+        Debug.Fail("When is this called");
         return 0;
       }
-    }
-
-    private class GenericTextRunProperties : TextRunProperties
-    {
-      public GenericTextRunProperties()
-      {
-        Typeface = new Typeface("Tahoma");
-        FontRenderingEmSize = FontHintingEmSize = 16;
-        TextDecorations = new TextDecorationCollection();
-        ForegroundBrush = new SolidColorBrush() { Color = Colors.Black };
-        BackgroundBrush = new SolidColorBrush() { Color = Colors.White };
-        CultureInfo = CultureInfo.CurrentCulture;
-        TextEffects = new TextEffectCollection();
-      }
-
-      public override Typeface Typeface { get; }
-      public override double FontRenderingEmSize { get; }
-      public override double FontHintingEmSize { get; }
-      public override TextDecorationCollection TextDecorations { get; }
-      public override Brush ForegroundBrush { get; }
-      public override Brush BackgroundBrush { get; }
-      public override CultureInfo CultureInfo { get; }
-      public override TextEffectCollection TextEffects { get; }
     }
   }
 }

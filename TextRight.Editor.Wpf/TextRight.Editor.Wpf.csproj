@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TextRight.Editor.Wpf</RootNamespace>
     <AssemblyName>TextRight.Editor.Wpf</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -38,9 +38,6 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime" />
-    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -68,13 +65,14 @@
     <Compile Include="View\BaseTextBlockView.cs" />
     <Compile Include="View\DocumentCursorView.cs" />
     <Compile Include="View\DocumentEditorContextView.cs" />
-    <Compile Include="View\FormattedTextHelper.cs" />
     <Compile Include="View\HeadingBlockView.cs" />
     <Compile Include="View\KeyboardShortcutCollection.cs" />
     <Compile Include="View\ListItemBlockView.cs" />
     <Compile Include="View\ParagraphView.cs" />
-    <Compile Include="View\StyledStyledTextSpanView.cs" />
-    <Compile Include="View\CustomStringRenderer.cs" />
+    <Compile Include="View\Text\StyledStyledTextSpanView.cs" />
+    <Compile Include="View\Text\CustomStringRenderer.cs" />
+    <Compile Include="View\Text\StyledTextRunProperties.cs" />
+    <Compile Include="View\Text\TextBlockUtils.cs" />
     <Compile Include="View\VerticalBlockCollectionView.cs" />
     <Compile Include="View\ViewFactory.cs" />
     <Compile Include="WatchEntryPoint.cs" />

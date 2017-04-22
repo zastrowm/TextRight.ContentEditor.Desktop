@@ -19,6 +19,7 @@ using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using Block = TextRight.Core.ObjectModel.Blocks.Block;
 using BlockCollection = TextRight.Core.ObjectModel.Blocks.Collections.BlockCollection;
+using TextBlock = TextRight.Core.ObjectModel.Blocks.Text.TextBlock;
 
 namespace TextRight.Editor.Wpf.View
 {
@@ -184,7 +185,15 @@ namespace TextRight.Editor.Wpf.View
       base.OnPreviewMouseDown(e);
 
       var position = e.GetPosition(this);
-      _editor.HandleMouseDown(new DocumentPoint(position.X, position.Y));
+      var point = new DocumentPoint(position.X, position.Y);
+      _editor.HandleMouseDown(point);
+
+      var block = _editor.Target?.GetBlockFor(point) as IDocumentItem;
+      if (block != null)
+      {
+        var cursor = (block.DocumentItemView as BaseTextBlockView).GetCursor(point);
+        _editor.Caret.MoveTo(new TextBlockCursor(cursor));
+      }
 
       // TODO, do something with mouse events
       e.Handled = true;

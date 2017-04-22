@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
+using TextRight.Core;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
@@ -152,6 +153,14 @@ namespace TextRight.Editor.Wpf.View
       }
 
       RecreateText();
+    }
+
+    public TextBlockValueCursor GetCursor(DocumentPoint point)
+    {
+      point.X -= _cachedOffset.X;
+      point.Y -= _cachedOffset.Y;
+
+      return _renderer.GetCursor(point);
     }
 
     /// <summary>
