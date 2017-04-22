@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using TextRight.Core;
+using TextRight.Core.Editing;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.Utilities;
 using TextRight.Editor.Wpf.View.Text;
@@ -102,7 +103,29 @@ namespace TextRight.Editor.Wpf.View
 
       int indexOfCharacterInFragment = absoluteIndexOfCharacter - numberOfCharactersBeforeFragment;
 
-      return new TextBlockValueCursor(fragment, indexOfCharacterInFragment);
+      var cursor = new TextBlockValueCursor(fragment, indexOfCharacterInFragment);
+
+      // We clicked on a character, but the caret position actually represents the left side of the character.
+      // For example, given "|a|", when we click on 'a', the | represents the possible places for the caret
+      // to be placed.  If we're closer to the left, choose the current caret position.  If the right is closer
+      // to where we clicked, choose the next caret position.
+      var nextPosition = cursor.MoveForward();
+      if (nextPosition.IsValid)
+      {
+        var positionPrevious = MeasureCharacter(cursor).FlattenLeft();
+        var positionNext = MeasureCharacter(nextPosition).FlattenLeft();
+
+        var distancePrevious = DocumentPoint.MeasureDistanceSquared(positionPrevious.Center, point);
+        var distanceNext = DocumentPoint.MeasureDistanceSquared(positionNext.Center, point);
+
+        // prefer left over right, thus the <
+        if (distanceNext < distancePrevious)
+        {
+          cursor = nextPosition;
+        }
+      }
+
+      return cursor;
     }
 
     private (TextLineContainer line, int numCharactersBefore) GetLineForYPosition(double y)
@@ -126,13 +149,11 @@ namespace TextRight.Editor.Wpf.View
       return (currentLine, numberOfCharactersBeforeLine);
     }
 
-    /// <summary> Measures the character at the given index for the given fragment. </summary>
-    /// <param name="fragment"> The fragment that owns the character. </param>
-    /// <param name="characterIndex"> The index of the character to measure. </param>
-    /// <returns> The size of the character. </returns>
-    public MeasuredRectangle MeasureCharacter(StyledStyledTextSpanView fragment, int characterIndex)
+    public MeasuredRectangle MeasureCharacter(TextBlockValueCursor cursor)
     {
       RecalculateIfDirty();
+
+      int characterIndex = TextBlockUtils.GetCharacterIndex(cursor);
 
       int totalLength = 0;
       foreach (var item in _cachedLines)

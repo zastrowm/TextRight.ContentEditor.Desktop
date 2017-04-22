@@ -88,7 +88,8 @@ namespace TextRight.Editor.Wpf.View
       if (!IsValidForMeasuring)
         return MeasuredRectangle.Invalid;
 
-      var rect = _renderer.MeasureCharacter(fragment, characterIndex);
+      var cursor = new TextBlockValueCursor((StyledTextFragment)fragment.DocumentItem, characterIndex);
+      var rect = _renderer.MeasureCharacter(cursor);
       if (!rect.IsValid)
         return rect;
 
