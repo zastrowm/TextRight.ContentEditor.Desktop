@@ -28,7 +28,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public TextBlockContent Content
     {
       get { return _content; }
-      private set
+      set
       {
         var theValue = value ?? new TextBlockContent();
         if (theValue.Owner != null)

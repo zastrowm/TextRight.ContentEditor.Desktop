@@ -92,7 +92,7 @@ namespace TextRight.Core.Editing.Actions
     /// </summary>
     private void Replace(DocumentEditorContext context, TextBlock blockToReplace, TextBlock newBlock)
     {
-      blockToReplace.MoveTextInto(newBlock);
+      newBlock.Content = blockToReplace.Content;
       blockToReplace.Parent.Replace(blockToReplace, newBlock);
       context.Caret.MoveTo(_handle, context);
     }
