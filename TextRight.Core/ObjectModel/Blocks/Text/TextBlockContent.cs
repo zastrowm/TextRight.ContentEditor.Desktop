@@ -42,7 +42,15 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public void AppendSpan(StyledTextFragment fragment, bool autoMerge = true)
     {
       // FYI early exit
-      if (autoMerge && _spans.Count > 0)
+
+      
+      if (_spans.Count == 1 && FirstFragment.Length == 0)
+      {
+        // if we had a single empty span, we treat that as a placeholder that didn't really mean anything other than
+        // "we have no content"
+        _spans.Clear();
+      }
+      else if (autoMerge && _spans.Count > 0)
       {
         var lastSpan = _spans[_spans.Count - 1];
         if (lastSpan.IsSameStyleAs(fragment))
@@ -65,7 +73,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public void AppendAll(IEnumerable<StyledTextFragment> fragments)
     {
       bool autoMerge = true;
-
+      // TODO optimize
       foreach (var fragment in fragments)
       {
         AppendSpan(fragment, autoMerge);

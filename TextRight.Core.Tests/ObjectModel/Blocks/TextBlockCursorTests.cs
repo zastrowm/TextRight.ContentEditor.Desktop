@@ -24,10 +24,6 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       Block.Add((a = new StyledTextFragment("123")));
       Block.Add((b = new StyledTextFragment("456")));
       Block.Add((c = new StyledTextFragment("789")));
-
-      // The first TextSpan was auto added
-      StyledTextFragment fragment = Block.Content.Fragments.First();
-      Block.Content.RemoveSpan(fragment);
     }
 
     [Test]
