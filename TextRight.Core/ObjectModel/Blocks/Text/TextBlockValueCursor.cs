@@ -13,9 +13,26 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     public TextBlockValueCursor(StyledTextFragment fragment, int offsetIntoSpan)
     {
-      Fragment = fragment;
+      if (offsetIntoSpan < 0)
+        throw new ArgumentException("Offset must be zero or a positive number",nameof(offsetIntoSpan));
+      if (offsetIntoSpan > fragment.Length)
+        throw new ArgumentException($"Offset must be <= ({fragment.Length}", nameof(offsetIntoSpan));
 
-      // TODO verify the offset is valid
+      if (offsetIntoSpan == 0 && fragment.Previous != null)
+      {
+        Fragment = fragment.Previous;
+        OffsetIntoSpan = fragment.Previous.Length;
+      }
+      else
+      {
+        Fragment = fragment;
+        OffsetIntoSpan = offsetIntoSpan;
+      }
+    }
+
+    internal TextBlockValueCursor(StyledTextFragment fragment, int offsetIntoSpan, object unused)
+    {
+      Fragment = fragment;
       OffsetIntoSpan = offsetIntoSpan;
     }
 
@@ -37,12 +54,20 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public int OffsetIntoSpan { get; }
 
     /// <inheritdoc />
-    public bool IsAtBeginning 
+    public bool IsAtBeginningOfBlock
       => OffsetIntoSpan == 0;
 
     /// <inheritdoc />
-    public bool IsAtEnd 
+    public bool IsAtEndOfBlock
       => OffsetIntoSpan >= Fragment.Length && Fragment.Next == null;
+
+    /// <summary> True if the cursor is pointing at the end of the current fragment. </summary>
+    public bool IsAtBeginningOfFragment
+      => OffsetIntoSpan == 0 || (Fragment.Previous != null && OffsetIntoSpan == 1);
+
+    /// <summary> True if the cursor is pointing at the end of the current fragment. </summary>
+    public bool IsAtEndOfFragment
+      => OffsetIntoSpan >= Fragment.Length;
 
     /// <inheritdoc />
     public TextBlockValueCursor MoveForward()
@@ -50,7 +75,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       // we move right to end of the span
       if (OffsetIntoSpan < Fragment.Length)
       {
-        return new TextBlockValueCursor(Fragment, OffsetIntoSpan + 1);
+        return new TextBlockValueCursor(Fragment, OffsetIntoSpan + 1, null);
       }
 
       // we're at the end of the span and as long as we can move to the next span,
@@ -58,10 +83,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (Fragment.Next != null)
       {
         // we're never at offset=0 unless we're at the beginning of the first span.
-        return new TextBlockValueCursor(Fragment.Next, 1);
+        return new TextBlockValueCursor(Fragment.Next, 1, null);
       }
 
-      return TextBlockValueCursor.Invalid;
+      return Invalid;
     }
 
     /// <inheritdoc />
@@ -69,23 +94,23 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       // we're at the beginning of the first span
       if (OffsetIntoSpan == 0)
-        return TextBlockValueCursor.Invalid;
+        return Invalid;
 
       if (OffsetIntoSpan > 2)
       {
-        return new TextBlockValueCursor(Fragment, OffsetIntoSpan - 1);
+        return new TextBlockValueCursor(Fragment, OffsetIntoSpan - 1, null);
       }
 
       if (OffsetIntoSpan != 1 || Fragment.Index == 0)
       {
         // at offset 1 of the first span, so go to offset 0 which indicates the
         // beginning of the block. 
-        return new TextBlockValueCursor(Fragment, OffsetIntoSpan - 1);
+        return new TextBlockValueCursor(Fragment, OffsetIntoSpan - 1, null);
       }
 
       // we're at the beginning of the current span, so go ahead and move onto
       // previous span. 
-      return new TextBlockValueCursor(Fragment.Previous, Fragment.Length);
+      return new TextBlockValueCursor(Fragment.Previous, Fragment.Length, null);
     }
   }
 }

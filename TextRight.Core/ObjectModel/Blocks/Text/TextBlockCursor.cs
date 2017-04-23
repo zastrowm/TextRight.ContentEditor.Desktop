@@ -39,7 +39,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       : base(cursor.Fragment.Parent)
     {
       // TODO verify the offset is correct.
-
       Fragment = cursor.Fragment;
       OffsetIntoSpan = cursor.OffsetIntoSpan;
     }

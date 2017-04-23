@@ -91,6 +91,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       UpdateChildrenNumbering(startIterateIndex);
 
+      if (_spans.Count == 0)
+      {
+        AppendSpan(new StyledTextFragment(""));
+      }
       // TODO remove child from element tree
     }
 
@@ -130,6 +134,43 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         throw new ArgumentOutOfRangeException(nameof(spanIndex), spanIndex, $"Number of spans: {_spans.Count}");
 
       return _spans[spanIndex];
+    }
+
+    public TextBlockContent ExtractContent(TextBlockValueCursor start, TextBlockValueCursor end)
+    {
+      if (!start.IsValid || start.Fragment.Owner != this)
+        throw new ArgumentException("Start cursor is not pointing at this content", nameof(start));
+      if (!end.IsValid || end.Fragment.Owner != this)
+        throw new ArgumentException("End cursor is not pointing at this content", nameof(end));
+      if (start.Fragment == end.Fragment && start.OffsetIntoSpan >= end.OffsetIntoSpan)
+        throw new ArgumentException("End cursor does not come after the start cursor", nameof(end));
+
+      var current = start.Fragment;
+      while (current != end.Fragment)
+      {
+        current = current.Next;
+        if (current == null)
+          throw new ArgumentException("End cursor does not come after the start cursor", nameof(end));
+      }
+
+      if (start.IsAtBeginningOfBlock && end.IsAtEndOfBlock)
+      {
+        return ExtractAllContent();
+      }
+      else
+      {
+        return ExtractContent(start, end);
+      }
+    }
+
+    private TextBlockContent ExtractAllContent()
+    {
+      var other = new TextBlockContent();
+      other._spans.Clear();
+
+      other.AppendAll(_spans);
+      _spans.Clear();
+      return other;
     }
 
     /// <summary> Extracts the content starting at the cursor and continuing to the end of the block. </summary>
@@ -232,5 +273,100 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       AppendAll(allSpans);
     }
+
+    internal class TextBlockContentExtractor
+    {
+      private TextBlockValueCursor _start;
+      private TextBlockValueCursor _end;
+      private int _numberOfFragmentsBetweenStartAndEnd;
+
+      public TextBlockContentExtractor(TextBlockContent content, TextBlockValueCursor start, TextBlockValueCursor end)
+      {
+        if (!start.IsValid || start.Fragment.Owner != content)
+          throw new ArgumentException("Start cursor is not pointing at this content", nameof(start));
+        if (!end.IsValid || end.Fragment.Owner != content)
+          throw new ArgumentException("End cursor is not pointing at this content", nameof(end));
+        if (start.Fragment == end.Fragment && start.OffsetIntoSpan >= end.OffsetIntoSpan)
+          throw new ArgumentException("End cursor does not come after the start cursor", nameof(end));
+
+        int numberOfFragmentsBetween = 1;
+        var current = start.Fragment;
+        while (current != end.Fragment)
+        {
+          numberOfFragmentsBetween++;
+          current = current.Next;
+          if (current == null)
+            throw new ArgumentException("End cursor does not come after the start cursor", nameof(end));
+        }
+
+        _start = start;
+        _end = end;
+        _numberOfFragmentsBetweenStartAndEnd = numberOfFragmentsBetween;
+      }
+
+      private struct FragmentAndOffset
+      {
+        public StyledTextFragment Fragment;
+        public int Offset;
+
+        public FragmentAndOffset(StyledTextFragment fragment, int offset)
+        {
+          Fragment = fragment;
+          Offset = offset;
+        }
+      }
+
+      private TextBlockContent ExtractContent(TextBlockCursor startCursor, TextBlockCursor endCursor)
+      {
+        var start = GetStart(startCursor);
+        var end = new FragmentAndOffset(endCursor.Fragment, endCursor.OffsetIntoSpan);
+
+        // clone it and take everything except what we leave behind
+        var startFragment = start.Fragment.Clone();
+        startFragment.RemoveCharacters(0, start.Offset);
+
+        if (start.Fragment == end.Fragment)
+        {
+          return ExtractWithinFragment(end, start);
+        }
+       
+        // todo loop through all of the fragments 
+        return null;
+      }
+
+      private TextBlockContent ExtractWithinFragment(FragmentAndOffset end, FragmentAndOffset start)
+      {
+        StyledTextFragment singleFragment;
+
+        int totalSize = end.Offset - start.Offset;
+        if (totalSize == start.Fragment.Length)
+        {
+          _start.Fragment.Owner.RemoveSpan(_start.Fragment);
+          singleFragment = _start.Fragment;
+        }
+        else
+        {
+          var cloned = _start.Fragment.Clone();
+          cloned.RemoveCharacters(end.Offset, cloned.Length - end.Offset);
+          cloned.RemoveCharacters(0, start.Offset);
+          singleFragment = cloned;
+
+          _start.Fragment.RemoveCharacters(start.Offset, end.Offset - start.Offset);
+        }
+
+        var clonedContent = new TextBlockContent();
+        clonedContent.AppendSpan(singleFragment);
+        return clonedContent;
+      }
+
+      private FragmentAndOffset GetStart(TextBlockCursor start)
+      {
+        if (start.OffsetIntoSpan == start.Fragment.Length && start.Fragment.Next != null)
+          return new FragmentAndOffset(start.Fragment.Next, 0);
+        else
+          return new FragmentAndOffset(start.Fragment, start.OffsetIntoSpan);
+      }
+    }
+
   }
 }
