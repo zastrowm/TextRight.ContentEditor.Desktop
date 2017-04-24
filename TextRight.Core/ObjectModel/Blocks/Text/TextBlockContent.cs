@@ -7,7 +7,7 @@ using TextRight.Core.ObjectModel.Serialization;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
-  public sealed class TextBlockContent
+  public sealed partial class TextBlockContent
   {
     private readonly List<StyledTextFragment> _spans;
 
@@ -36,6 +36,20 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public IEnumerable<StyledTextFragment> Fragments
       => _spans;
 
+    public TextBlockValueCursor CursorFromCharacterIndex(int index)
+    {
+      int numberOfCharacters = 0;
+      var current = FirstFragment;
+
+      while (index > numberOfCharacters + current.Length)
+      {
+        numberOfCharacters += current.Length;
+        current = current.Next ?? throw new Exception("Invalid index for cursor");
+      }
+
+      return new TextBlockValueCursor(current, index - numberOfCharacters);
+    }
+
     /// <summary> Appends the given span to the TextBlock. </summary>
     /// <param name="fragment"> The span to add. </param>
     /// <param name="autoMerge"> True to automatically merge similar fragments together. </param>
@@ -43,7 +57,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       // FYI early exit
 
-      
       if (_spans.Count == 1 && FirstFragment.Length == 0)
       {
         // if we had a single empty span, we treat that as a placeholder that didn't really mean anything other than
@@ -106,6 +119,18 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       // TODO remove child from element tree
     }
 
+    /// <summary> Remove all of the given fragments from this text block. </summary>
+    /// <param name="fragments"> The fragments to remove from the text block. </param>
+    public void RemoveAll(IEnumerable<StyledTextFragment> fragments)
+    {
+      var frags = fragments.OrderBy(f => f.Index).ToList();
+
+      for (var i = frags.Count - 1; i >= 0; i--)
+      {
+        RemoveSpan(frags[i]);
+      }
+    }
+
     private static void ClearFragment(StyledTextFragment fragment)
     {
       fragment.Owner = null;
@@ -144,42 +169,12 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return _spans[spanIndex];
     }
 
+    /// <summary> Extracts the textual content of this block into a seperate content object. </summary>
+    /// <param name="start"> The position at which extraction should start. </param>
+    /// <param name="end"> The position at which the content extraction should end. </param>
+    /// <returns> The extracted content. </returns>
     public TextBlockContent ExtractContent(TextBlockValueCursor start, TextBlockValueCursor end)
-    {
-      if (!start.IsValid || start.Fragment.Owner != this)
-        throw new ArgumentException("Start cursor is not pointing at this content", nameof(start));
-      if (!end.IsValid || end.Fragment.Owner != this)
-        throw new ArgumentException("End cursor is not pointing at this content", nameof(end));
-      if (start.Fragment == end.Fragment && start.OffsetIntoSpan >= end.OffsetIntoSpan)
-        throw new ArgumentException("End cursor does not come after the start cursor", nameof(end));
-
-      var current = start.Fragment;
-      while (current != end.Fragment)
-      {
-        current = current.Next;
-        if (current == null)
-          throw new ArgumentException("End cursor does not come after the start cursor", nameof(end));
-      }
-
-      if (start.IsAtBeginningOfBlock && end.IsAtEndOfBlock)
-      {
-        return ExtractAllContent();
-      }
-      else
-      {
-        return ExtractContent(start, end);
-      }
-    }
-
-    private TextBlockContent ExtractAllContent()
-    {
-      var other = new TextBlockContent();
-      other._spans.Clear();
-
-      other.AppendAll(_spans);
-      _spans.Clear();
-      return other;
-    }
+      => TextBlockContentExtractor.Extract(this, start, end);
 
     /// <summary> Extracts the content starting at the cursor and continuing to the end of the block. </summary>
     /// <param name="cursor"> The position at which extraction should start. </param>
@@ -281,100 +276,5 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       AppendAll(allSpans);
     }
-
-    internal class TextBlockContentExtractor
-    {
-      private TextBlockValueCursor _start;
-      private TextBlockValueCursor _end;
-      private int _numberOfFragmentsBetweenStartAndEnd;
-
-      public TextBlockContentExtractor(TextBlockContent content, TextBlockValueCursor start, TextBlockValueCursor end)
-      {
-        if (!start.IsValid || start.Fragment.Owner != content)
-          throw new ArgumentException("Start cursor is not pointing at this content", nameof(start));
-        if (!end.IsValid || end.Fragment.Owner != content)
-          throw new ArgumentException("End cursor is not pointing at this content", nameof(end));
-        if (start.Fragment == end.Fragment && start.OffsetIntoSpan >= end.OffsetIntoSpan)
-          throw new ArgumentException("End cursor does not come after the start cursor", nameof(end));
-
-        int numberOfFragmentsBetween = 1;
-        var current = start.Fragment;
-        while (current != end.Fragment)
-        {
-          numberOfFragmentsBetween++;
-          current = current.Next;
-          if (current == null)
-            throw new ArgumentException("End cursor does not come after the start cursor", nameof(end));
-        }
-
-        _start = start;
-        _end = end;
-        _numberOfFragmentsBetweenStartAndEnd = numberOfFragmentsBetween;
-      }
-
-      private struct FragmentAndOffset
-      {
-        public StyledTextFragment Fragment;
-        public int Offset;
-
-        public FragmentAndOffset(StyledTextFragment fragment, int offset)
-        {
-          Fragment = fragment;
-          Offset = offset;
-        }
-      }
-
-      private TextBlockContent ExtractContent(TextBlockCursor startCursor, TextBlockCursor endCursor)
-      {
-        var start = GetStart(startCursor);
-        var end = new FragmentAndOffset(endCursor.Fragment, endCursor.OffsetIntoSpan);
-
-        // clone it and take everything except what we leave behind
-        var startFragment = start.Fragment.Clone();
-        startFragment.RemoveCharacters(0, start.Offset);
-
-        if (start.Fragment == end.Fragment)
-        {
-          return ExtractWithinFragment(end, start);
-        }
-       
-        // todo loop through all of the fragments 
-        return null;
-      }
-
-      private TextBlockContent ExtractWithinFragment(FragmentAndOffset end, FragmentAndOffset start)
-      {
-        StyledTextFragment singleFragment;
-
-        int totalSize = end.Offset - start.Offset;
-        if (totalSize == start.Fragment.Length)
-        {
-          _start.Fragment.Owner.RemoveSpan(_start.Fragment);
-          singleFragment = _start.Fragment;
-        }
-        else
-        {
-          var cloned = _start.Fragment.Clone();
-          cloned.RemoveCharacters(end.Offset, cloned.Length - end.Offset);
-          cloned.RemoveCharacters(0, start.Offset);
-          singleFragment = cloned;
-
-          _start.Fragment.RemoveCharacters(start.Offset, end.Offset - start.Offset);
-        }
-
-        var clonedContent = new TextBlockContent();
-        clonedContent.AppendSpan(singleFragment);
-        return clonedContent;
-      }
-
-      private FragmentAndOffset GetStart(TextBlockCursor start)
-      {
-        if (start.OffsetIntoSpan == start.Fragment.Length && start.Fragment.Next != null)
-          return new FragmentAndOffset(start.Fragment.Next, 0);
-        else
-          return new FragmentAndOffset(start.Fragment, start.OffsetIntoSpan);
-      }
-    }
-
   }
 }

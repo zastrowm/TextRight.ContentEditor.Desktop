@@ -16,7 +16,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (offsetIntoSpan < 0)
         throw new ArgumentException("Offset must be zero or a positive number",nameof(offsetIntoSpan));
       if (offsetIntoSpan > fragment.Length)
-        throw new ArgumentException($"Offset must be <= ({fragment.Length}", nameof(offsetIntoSpan));
+        throw new ArgumentException(
+          $"Offset must be <= fragment.Length ({fragment.Length}) but was ({offsetIntoSpan})",
+          nameof(offsetIntoSpan));
 
       if (offsetIntoSpan == 0 && fragment.Previous != null)
       {

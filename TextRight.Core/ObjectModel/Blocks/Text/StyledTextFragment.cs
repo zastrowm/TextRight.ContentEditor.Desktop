@@ -26,16 +26,18 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   ///  Contains a span of single run of text that is styled or has some sort of other data
   ///  associated with it.
   /// </summary>
-  [DebuggerDisplay("StyledTextFragment(text={Text}, Index={Index})")]
+  [DebuggerDisplay("StyledTextFragment(text={GetText()}, Index={Index})")]
   public class StyledTextFragment : IViewableObject<IStyledTextSpanView>,
                                     IEquatable<StyledTextFragment>,
                                     IDocumentItem<IStyledTextSpanView>
   {
+    private readonly string _styleId;
     internal IFragmentBuffer _buffer;
 
     /// <summary> Default constructor. </summary>
-    public StyledTextFragment(string text)
+    public StyledTextFragment(string text, string styleId = null)
     {
+      _styleId = styleId;
       _buffer = new StringFragmentBuffer(text);
       Index = -1;
     }
@@ -68,8 +70,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// </returns>
     public bool IsSameStyleAs(StyledTextFragment fragment)
     {
-      // TODO support styles
-      return true;
+      return fragment._styleId == _styleId;
     }
 
     /// <summary> Makes a deep copy of this instance. </summary>

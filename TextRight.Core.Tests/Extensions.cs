@@ -46,10 +46,17 @@ namespace TextRight.Core.Tests
     public static string AsText(this Block block)
     {
       var textBlock = (TextBlock)block;
+      return textBlock.Content.AsText();
+    }
 
+    /// <summary>
+    ///  Convert a block into the text that is contained within the block.
+    /// </summary>
+    public static string AsText(this TextBlockContent content)
+    {
       var builder = new StringBuilder();
 
-      foreach (var fragment in textBlock.Content.Fragments)
+      foreach (var fragment in content.Fragments)
       {
         fragment.AppendTo(builder);
       }

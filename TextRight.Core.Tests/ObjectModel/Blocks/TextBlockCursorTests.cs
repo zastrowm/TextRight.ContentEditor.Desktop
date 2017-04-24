@@ -2,11 +2,60 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using NFluent;
+
 using NUnit.Framework;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Tests.ObjectModel.Blocks
 {
+  public class TextBlockContentTests
+  {
+    public StyledTextFragment a,
+                              b,
+                              c,
+                              d,
+                              e;
+
+    public TextBlockContent Content;
+
+    [SetUp]
+    public void Setup()
+    {
+      Content = new TextBlockContent();
+      Content.AppendSpan((a = new StyledTextFragment("123", "a")));
+      Content.AppendSpan((b = new StyledTextFragment("456", "b")));
+      Content.AppendSpan((c = new StyledTextFragment("789", "c")));
+    }
+
+    public static IEnumerable<TestCaseData> VerifyExtractionEverywhereData()
+    {
+      for (int start = 0; start < 9; start++)
+      {
+        for (int end = start; end < 9; end++)
+        {
+          yield return new TestCaseData(start, end);
+        }
+      }
+    }
+
+    [TestCaseSource(nameof(VerifyExtractionEverywhereData))]
+    public void VerifyExtractionEverywhere(int start, int end)
+    {
+      var originalText = Content.AsText();
+
+      var extracted = Content.ExtractContent(Content.CursorFromCharacterIndex(start),
+                                             Content.CursorFromCharacterIndex(end));
+
+      var removedText = originalText.Substring(start, end - start);
+      var modifiedText = originalText.Remove(start, end - start);
+
+      Check.That(Content.AsText()).Equals(modifiedText);
+      Check.That(extracted.AsText().Equals(removedText));
+    }
+  }
+
   public class TextBlockCursorTests
   {
     public StyledTextFragment a,
@@ -21,9 +70,9 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     public void Setup()
     {
       Block = new ParagraphBlock();
-      Block.Add((a = new StyledTextFragment("123")));
-      Block.Add((b = new StyledTextFragment("456")));
-      Block.Add((c = new StyledTextFragment("789")));
+      Block.Add((a = new StyledTextFragment("123", "a")));
+      Block.Add((b = new StyledTextFragment("456", "b")));
+      Block.Add((c = new StyledTextFragment("789", "c")));
     }
 
     [Test]
@@ -139,7 +188,6 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       Assert.That(spans[2], Is.EqualTo(c));
 
       Assert.That(Block.Content.ChildCount, Is.EqualTo(1));
-      Assert.That(Block.Content.Fragments.First(), Is.EqualTo(a));
       Assert.That(Block.Content.Fragments.First().GetText(), Is.EqualTo(""));
     }
 
@@ -149,7 +197,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = GetCursor(9);
       var spans = cursor.ExtractToEnd();
 
-      Assert.That(spans.Length, Is.EqualTo(0));
+      Assert.That(spans.Length, Is.EqualTo(1));
+      Check.That(spans[0].GetText()).Equals("");
 
       Assert.That(Block.Content.ChildCount, Is.EqualTo(3));
       Assert.That(Block.Content.Fragments.ElementAt(0), Is.EqualTo(a));

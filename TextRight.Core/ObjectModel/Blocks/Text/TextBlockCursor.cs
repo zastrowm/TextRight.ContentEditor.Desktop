@@ -267,6 +267,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       State = cursor.State;
     }
 
+    /// <summary> Creates a <see cref="TextBlockValueCursor"/> from this cursor. </summary>
+    public TextBlockValueCursor ToValue() 
+      => new TextBlockValueCursor(Fragment, OffsetIntoSpan);
+
     /// <inheritdoc />
     public bool Equals(TextBlockCursor other)
     {
