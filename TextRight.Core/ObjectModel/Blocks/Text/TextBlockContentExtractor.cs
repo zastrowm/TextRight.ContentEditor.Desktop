@@ -17,6 +17,12 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       VerifyExtractParameters(content, startCursor, endCursor);
 
+      // zero-width; this check is needed, as the normalization process might shift the end to be
+      // before the start when both are pointing at the end of a fragment (the start is normalized to
+      // point at the beginning of the next fragment instead). 
+      if (startCursor == endCursor)
+        return new TextBlockContent();
+
       var start = GetStart(startCursor);
       var end = new FragmentAndOffset(endCursor.Fragment, endCursor.OffsetIntoSpan);
 

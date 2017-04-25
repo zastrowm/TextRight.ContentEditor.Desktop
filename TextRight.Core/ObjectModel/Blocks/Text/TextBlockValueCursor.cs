@@ -5,7 +5,7 @@ using System.Linq;
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> A cursor looking in a textblock. </summary>
-  public struct TextBlockValueCursor
+  public struct TextBlockValueCursor : IEquatable<TextBlockValueCursor>
   {
     /// <summary> A cursor which represents an invalid location. </summary>
     public static readonly TextBlockValueCursor Invalid
@@ -114,5 +114,35 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       // previous span. 
       return new TextBlockValueCursor(Fragment.Previous, Fragment.Length, null);
     }
+
+    /// <inheritdoc />
+    public bool Equals(TextBlockValueCursor other) 
+      => Equals(Fragment, other.Fragment) && OffsetIntoSpan == other.OffsetIntoSpan;
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+
+      return obj is TextBlockValueCursor && Equals((TextBlockValueCursor)obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+      unchecked
+      {
+        return ((Fragment != null ? Fragment.GetHashCode() : 0) * 397) ^ OffsetIntoSpan;
+      }
+    }
+
+    /// <inheritdoc />
+    public static bool operator ==(TextBlockValueCursor left, TextBlockValueCursor right) 
+      => left.Equals(right);
+
+    /// <inheritdoc />
+    public static bool operator !=(TextBlockValueCursor left, TextBlockValueCursor right) 
+      => !left.Equals(right);
   }
 }

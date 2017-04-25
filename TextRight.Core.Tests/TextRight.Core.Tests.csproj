@@ -87,6 +87,7 @@
     <Compile Include="ObjectModel\Blocks\AddableBlockCollection.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollectionTests.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalkerTests.cs" />
+    <Compile Include="ObjectModel\Blocks\TextBlockContentTests.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlockCursorTests.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlockTests.cs" />
     <Compile Include="ObjectModel\Blocks\Text\MarkupCollectionTests.cs" />
