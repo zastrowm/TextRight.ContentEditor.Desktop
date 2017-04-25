@@ -6,7 +6,6 @@ using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Serialization;
-
 using Xunit;
 
 namespace TextRight.Core.Tests.Serialization

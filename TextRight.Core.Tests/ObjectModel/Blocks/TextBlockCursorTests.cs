@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using NFluent;
-
 using TextRight.Core.ObjectModel.Blocks.Text;
-
 using Xunit;
 
 namespace TextRight.Core.Tests.ObjectModel.Blocks
@@ -99,6 +96,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
         cursor.MoveForward();
         amount -= 1;
       }
+
       return cursor;
     }
 

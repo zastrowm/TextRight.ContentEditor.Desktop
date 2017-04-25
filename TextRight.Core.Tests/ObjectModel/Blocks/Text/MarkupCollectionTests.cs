@@ -4,11 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-
 using NFluent;
-
 using TextRight.Core.ObjectModel.Blocks.Text;
-
 using Xunit;
 
 namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
@@ -386,7 +383,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
                         new TextRange(7, 11),
                       };
 
-      originalRanges.ToList().ForEach(
+      originalRanges.ToList()
+                    .ForEach(
                       r => _collection.MarkRange(r, _fakeMarkupType, null)
                     );
 

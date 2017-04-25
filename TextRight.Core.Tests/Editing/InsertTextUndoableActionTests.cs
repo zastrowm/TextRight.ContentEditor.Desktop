@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-
 using NFluent;
-
 using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
-
 using Xunit;
 
 namespace TextRight.Core.Tests.Editing
@@ -96,11 +92,15 @@ namespace TextRight.Core.Tests.Editing
                          FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "The text"),
                          FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "More text"),
                          FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "More text"),
-                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(10).ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(
+                           () => BlockAt(0).BeginCursor(10).ToHandle(),
+                           "More text"),
                          FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(1).ToHandle(), "The text"),
                          FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "More text"),
                          FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor(-1).ToHandle(), "More text"),
-                         FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(10).ToHandle(), "More text"),
+                         FromCommand<InsertTextCommand, string>(
+                           () => BlockAt(0).BeginCursor(10).ToHandle(),
+                           "More text"),
                        },
                        withMerge: withMerge
       );
@@ -116,7 +116,9 @@ namespace TextRight.Core.Tests.Editing
                          {
                            // Block 1
                            FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "012345679"),
-                           FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(frozenOffset).ToHandle(), "012345679"),
+                           FromCommand<InsertTextCommand, string>(
+                             () => BlockAt(0).BeginCursor(frozenOffset).ToHandle(),
+                             "012345679"),
                          }
         );
       }
@@ -125,10 +127,12 @@ namespace TextRight.Core.Tests.Editing
     [Fact]
     public void VerifyMergeWith_ModifiesOriginalAction()
     {
-      var originalAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
+      var originalAction =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
       originalAction.Do(Context);
 
-      var mergeWithAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
+      var mergeWithAction =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
 
       Check.That(originalAction.TryMerge(Context, mergeWithAction)).IsTrue();
       Check.That(originalAction.Text).IsEqualTo("The textAnd More");
@@ -137,10 +141,12 @@ namespace TextRight.Core.Tests.Editing
     [Fact]
     public void VerifyMergeWith_DoesNotActsOnDocument()
     {
-      var originalAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
+      var originalAction =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
       originalAction.Do(Context);
 
-      var mergeWithAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
+      var mergeWithAction =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
       originalAction.TryMerge(Context, mergeWithAction);
 
       // the document should not be modified
@@ -168,8 +174,10 @@ namespace TextRight.Core.Tests.Editing
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
 
-      var first = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
-      var second = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(2).ToHandle(), "Two");
+      var first =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
+      var second =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(2).ToHandle(), "Two");
 
       Check.That(first.TryMerge(Context, second)).IsFalse();
     }
@@ -189,10 +197,13 @@ namespace TextRight.Core.Tests.Editing
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
 
-      var first = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "This is a long string");
+      var first =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(),
+                                                       "This is a long string");
       first.Do(Context);
-      var second = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(first.Text.Length).ToHandle(),
-                                                "This is also long");
+      var second = new InsertTextCommand.InsertTextUndoableAction(
+        BlockAt<TextBlock>(0).BeginCursor(first.Text.Length).ToHandle(),
+        "This is also long");
 
       Check.That(first.TryMerge(Context, second)).IsTrue();
     }
@@ -202,10 +213,13 @@ namespace TextRight.Core.Tests.Editing
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
 
-      var insertion = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "Inserted String");
+      var insertion =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(),
+                                                       "Inserted String");
       insertion.Do(Context);
       var second =
-        new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
+        new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(
+          BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
 
       Check.That(insertion.TryMerge(Context, second)).IsTrue();
       Check.That(insertion.Text).IsEqualTo("Inserted Strin");
@@ -214,10 +228,12 @@ namespace TextRight.Core.Tests.Editing
     [Fact]
     public void TryMerge_WithBackspace_DoesNotWorkWhenInsertionIsEmpty()
     {
-      var insertion = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "");
+      var insertion =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "");
       insertion.Do(Context);
       var second =
-        new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
+        new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(
+          BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
 
       Check.That(insertion.TryMerge(Context, second)).IsFalse();
     }

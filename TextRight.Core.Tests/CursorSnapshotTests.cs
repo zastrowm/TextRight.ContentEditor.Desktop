@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using NFluent;
-
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
-
 using Xunit;
 
 namespace TextRight.Core.Tests
 {
   public class CursorSnapshotTests
   {
-    private TextBlock _textBlock;
+    private readonly TextBlock _textBlock;
 
     public CursorSnapshotTests()
     {

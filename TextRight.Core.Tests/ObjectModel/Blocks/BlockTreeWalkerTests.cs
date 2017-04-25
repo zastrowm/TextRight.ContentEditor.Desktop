@@ -4,13 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-
 using NFluent;
-
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
-
 using Xunit;
 
 namespace TextRight.Core.Tests.ObjectModel.Blocks

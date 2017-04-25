@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using NFluent;
-
 using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands.Text;
-
 using Xunit;
 
 namespace TextRight.Core.Tests.Editing

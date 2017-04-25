@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using NFluent;
-
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
-
 using Xunit;
 
 namespace TextRight.Core.Tests.ObjectModel.Blocks

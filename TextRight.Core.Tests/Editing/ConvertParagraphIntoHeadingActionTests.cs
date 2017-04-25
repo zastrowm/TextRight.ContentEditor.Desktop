@@ -2,16 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-
 using NFluent;
-
 using TextRight.Core.Actions;
 using TextRight.Core.Blocks;
 using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands.Text;
-using TextRight.Core.ObjectModel.Blocks.Text;
-
 using Xunit;
 
 namespace TextRight.Core.Tests.Editing
