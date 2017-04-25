@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
+using Xunit;
+
 namespace TextRight.Core.Tests.ObjectModel.Blocks
 {
-  internal class TextBlockTests
+  public class TextBlockTests
   {
     private TextBlock _block;
     private BlockCollection _collection;
@@ -37,24 +41,24 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
                     };
     }
 
-    [Test]
+    [Fact]
     public void ByDefault_HasSingleSpan()
     {
       var block = new ParagraphBlock();
 
-      Assert.That(block.Content.Fragments.Count(), Is.EqualTo(1));
+      Check.That(block.Content.Fragments.Count()).IsEqualTo(1);
     }
 
-    [Test]
+    [Fact]
     public void Break_AtBeginning_HasNewBlock()
     {
       Initialize("abc|123");
       var nextBlock = (TextBlock)TextBlockHelperMethods.TryBreakBlock(_cursor);
 
-      Assert.That(nextBlock, Is.Not.Null);
+      Check.That(nextBlock).IsNotNull();
 
-      Assert.That(_block.Content.Fragments.First().GetText(), Is.EqualTo("abc"));
-      Assert.That(nextBlock.Content.Fragments.First().GetText(), Is.EqualTo("123"));
+      Check.That(_block.Content.Fragments.First().GetText()).IsEqualTo("abc");
+      Check.That(nextBlock.Content.Fragments.First().GetText()).IsEqualTo("123");
     }
   }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using NUnit.Framework;
+using NFluent;
 using TextRight.Core.Editing;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Commands;
@@ -24,8 +24,7 @@ namespace TextRight.Core.Tests.Editing
     protected DocumentOwner Document
       => Context.Document;
 
-    [SetUp]
-    public void BaseSetup()
+    public UndoBasedTest()
     {
       Reinitialize();
     }
@@ -60,7 +59,7 @@ namespace TextRight.Core.Tests.Editing
     /// <summary> Gets the block at the specified index. </summary>
     public T BlockAt<T>(int index)
       where T : ContentBlock
-    => (T)Context.Document.Root.NthBlock(index);
+      => (T)Context.Document.Root.NthBlock(index);
 
     /// <summary>
     ///  Performs all of the actions given, returning an <see cref="UndoTester"/> that can be used to
@@ -90,7 +89,9 @@ namespace TextRight.Core.Tests.Editing
              };
     }
 
-    public Func<UndoableAction> FromCommand<TCommand, TArgument>(Func<DocumentCursorHandle> handleGetter, TArgument argument)
+    public Func<UndoableAction> FromCommand<TCommand, TArgument>(
+      Func<DocumentCursorHandle> handleGetter,
+      TArgument argument)
       where TCommand : IContextualCommand<TArgument>, new()
     {
       return () =>
@@ -175,7 +176,7 @@ namespace TextRight.Core.Tests.Editing
 
       if (originalState.Equals(currentState))
       {
-        Assert.That(newJson, Is.EqualTo(originalJson));
+        Check.That(newJson).IsEqualTo(originalJson);
         return;
       }
 
@@ -190,13 +191,16 @@ namespace TextRight.Core.Tests.Editing
     /// <summary> Finds the first difference in the two documents. </summary>
     private static void FindDifference(SerializeNode currentState, SerializeNode originalState, string path)
     {
-      Assert.That(currentState.TypeId, Is.EqualTo(originalState.TypeId), path + ".Type");
+      Check.That(currentState.TypeId)
+           .IsEqualTo(originalState.TypeId);
 
       var type = currentState.TypeId;
       path += "<" + type + ">";
-      Assert.That(currentState.GetDataOrDefault<string>("Body"),
-                  Is.EqualTo(originalState.GetDataOrDefault<string>("Body")),
-                  path + ".Data");
+
+      var fullPath = path + ".Data";
+
+      Check.That(currentState.GetDataOrDefault<string>("Body"))
+           .IsEqualTo(originalState.GetDataOrDefault<string>("Body"));
 
       int max = Math.Min(currentState.Children.Count, originalState.Children.Count);
 
@@ -205,7 +209,9 @@ namespace TextRight.Core.Tests.Editing
         FindDifference(currentState.Children[i], originalState.Children[i], path + ".[" + i + "]");
       }
 
-      Assert.That(currentState.Children.Count, Is.EqualTo(originalState.Children.Count), path + ".Count");
+      var theFullPath = path + ".Count";
+
+      Check.That(currentState.Children.Count).IsEqualTo(originalState.Children.Count);
     }
 
     /// <summary>

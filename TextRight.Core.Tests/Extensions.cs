@@ -89,7 +89,7 @@ namespace TextRight.Core.Tests
     /// <summary> Gets a cursor to the end of the block. </summary>
     public static IBlockContentCursor EndCursor(this ContentBlock block, int offset = 0)
     {
-      var cursor = block.GetCursor().ToEnd();
+      var cursor = new TextBlockCursor((TextBlock)block).ToEnd();
       cursor.Move(offset);
       return cursor;
     }

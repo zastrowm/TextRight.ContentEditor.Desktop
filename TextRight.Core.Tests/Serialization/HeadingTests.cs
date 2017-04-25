@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using TextRight.Core.Blocks;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Serialization;
 
+using Xunit;
+
 namespace TextRight.Core.Tests.Serialization
 {
   public class HeadingTests
   {
-    [Test]
+    [Fact]
     public void Verify_Serialization()
     {
       var paragraph = new HeadingBlock();

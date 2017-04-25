@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands.Text;
+
+using Xunit;
 
 namespace TextRight.Core.Tests.Editing
 {
   public class UndoIntegrationTest : UndoBasedTest
   {
-    [Test]
+    [Fact]
     public void Undo_RestoresInitalState_AnywhereInParagraphs()
     {
       for (int i = 0; i < 10; i++)

@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
+using Xunit;
+
 namespace TextRight.Core.Tests.Editing
 {
   public class InsertTextUndoableActionTests : UndoBasedTest
   {
-    [Test]
+    [Fact]
     public void VerifyItWorks()
     {
       var it = DoAll(new Func<UndoableAction>[]
@@ -22,16 +26,16 @@ namespace TextRight.Core.Tests.Editing
                      });
 
       var textBlock = Document.Root.FirstBlock as TextBlock;
-      Assert.That(textBlock, Is.Not.Null);
+      Check.That(textBlock).IsNotNull();
 
-      Assert.That(textBlock.AsText(), Is.EqualTo("The text"));
-      Assert.That(Context.Cursor.Block, Is.EqualTo(textBlock));
-      Assert.That(Context.Cursor.IsAtEnd, Is.True);
+      Check.That(textBlock.AsText()).IsEqualTo("The text");
+      Check.That(Context.Cursor.Block).IsEqualTo(textBlock);
+      Check.That(Context.Cursor.IsAtEnd).IsTrue();
 
       it.VerifyUndo();
     }
 
-    [Test]
+    [Fact]
     public void InsertAtBeginning_InsertsTextAtBeginning()
     {
       var it = DoAll(new Func<UndoableAction>[]
@@ -40,15 +44,15 @@ namespace TextRight.Core.Tests.Editing
                        FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Prefix"),
                      });
 
-      Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
-      Assert.That(BlockAt(0), Is.InstanceOf<TextBlock>());
+      Check.That(Document.Root.ChildCount).IsEqualTo(1);
+      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
 
-      Assert.That(BlockAt(0).As<TextBlock>().AsText(), Is.EqualTo("PrefixWord"));
+      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("PrefixWord");
 
       it.VerifyUndo();
     }
 
-    [Test]
+    [Fact]
     public void InsertAtEnd_InsertsTextToEnd()
     {
       var it = DoAll(new Func<UndoableAction>[]
@@ -57,15 +61,15 @@ namespace TextRight.Core.Tests.Editing
                        FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Suffix"),
                      });
 
-      Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
-      Assert.That(BlockAt(0), Is.InstanceOf<TextBlock>());
+      Check.That(Document.Root.ChildCount).IsEqualTo(1);
+      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
 
-      Assert.That(BlockAt(0).As<TextBlock>().AsText(), Is.EqualTo("WordSuffix"));
+      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("WordSuffix");
 
       it.VerifyUndo();
     }
 
-    [Test]
+    [Fact]
     public void InsertAtMiddle_InsertsTextInMiddle()
     {
       var it = DoAll(new Func<UndoableAction>[]
@@ -74,17 +78,17 @@ namespace TextRight.Core.Tests.Editing
                        FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(2).ToHandle(), "Mid"),
                      });
 
-      Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
-      Assert.That(BlockAt(0), Is.InstanceOf<TextBlock>());
+      Check.That(Document.Root.ChildCount).IsEqualTo(1);
+      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
 
-      Assert.That(BlockAt(0).As<TextBlock>().AsText(), Is.EqualTo("WoMidrd"));
+      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("WoMidrd");
 
       it.VerifyUndo();
     }
 
-    [Test]
-    [TestCase(true)]
-    [TestCase(false)]
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
     public void Undo_RestoresInitialState(bool withMerge)
     {
       DoAllAndThenUndo(new Func<UndoableAction>[]
@@ -102,7 +106,7 @@ namespace TextRight.Core.Tests.Editing
       );
     }
 
-    [Test]
+    [Fact]
     public void Undo_RestoresInitalState_AnywhereInParagraps()
     {
       for (int offset = 0; offset < 10; offset++)
@@ -118,7 +122,7 @@ namespace TextRight.Core.Tests.Editing
       }
     }
 
-    [Test]
+    [Fact]
     public void VerifyMergeWith_ModifiesOriginalAction()
     {
       var originalAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
@@ -126,11 +130,11 @@ namespace TextRight.Core.Tests.Editing
 
       var mergeWithAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
 
-      Assert.That(originalAction.TryMerge(Context, mergeWithAction), Is.True);
-      Assert.That(originalAction.Text, Is.EqualTo("The textAnd More"));
+      Check.That(originalAction.TryMerge(Context, mergeWithAction)).IsTrue();
+      Check.That(originalAction.Text).IsEqualTo("The textAnd More");
     }
 
-    [Test]
+    [Fact]
     public void VerifyMergeWith_DoesNotActsOnDocument()
     {
       var originalAction = new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "The text");
@@ -140,10 +144,10 @@ namespace TextRight.Core.Tests.Editing
       originalAction.TryMerge(Context, mergeWithAction);
 
       // the document should not be modified
-      Assert.That(BlockAt<TextBlock>(0).AsText(), Is.EqualTo("The text"));
+      Check.That(BlockAt<TextBlock>(0).AsText()).IsEqualTo("The text");
     }
 
-    [Test]
+    [Fact]
     public void VerifyMerge_DoesntWork_WhenDifferentFragments()
     {
       // TODO when we have the ability to add text to the NEXT span, test that
@@ -159,7 +163,7 @@ namespace TextRight.Core.Tests.Editing
       //var last = new InsertTextUndoableAction(firstBlock.GetCursor().ToEnd().ToHandle(), "");
     }
 
-    [Test]
+    [Fact]
     public void TryMerge_DoesNotMergeWhenNotNextToEachother()
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
@@ -167,20 +171,20 @@ namespace TextRight.Core.Tests.Editing
       var first = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
       var second = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(2).ToHandle(), "Two");
 
-      Assert.That(first.TryMerge(Context, second), Is.False);
+      Check.That(first.TryMerge(Context, second)).IsFalse();
     }
 
-    [Test]
+    [Fact]
     public void TryMerge_WithSelf_Fails()
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
 
       var self = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
 
-      Assert.That(self.TryMerge(Context, self), Is.False);
+      Check.That(self.TryMerge(Context, self)).IsFalse();
     }
 
-    [Test]
+    [Fact]
     public void TryMerge_WorksOnLargerStrings()
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
@@ -190,10 +194,10 @@ namespace TextRight.Core.Tests.Editing
       var second = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(first.Text.Length).ToHandle(),
                                                 "This is also long");
 
-      Assert.That(first.TryMerge(Context, second), Is.True);
+      Check.That(first.TryMerge(Context, second)).IsTrue();
     }
 
-    [Test]
+    [Fact]
     public void TryMerge_WithBackspaceAction_Works()
     {
       BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
@@ -203,11 +207,11 @@ namespace TextRight.Core.Tests.Editing
       var second =
         new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
 
-      Assert.That(insertion.TryMerge(Context, second), Is.True);
-      Assert.That(insertion.Text, Is.EqualTo("Inserted Strin"));
+      Check.That(insertion.TryMerge(Context, second)).IsTrue();
+      Check.That(insertion.Text).IsEqualTo("Inserted Strin");
     }
 
-    [Test]
+    [Fact]
     public void TryMerge_WithBackspace_DoesNotWorkWhenInsertionIsEmpty()
     {
       var insertion = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "");
@@ -215,7 +219,7 @@ namespace TextRight.Core.Tests.Editing
       var second =
         new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
 
-      Assert.That(insertion.TryMerge(Context, second), Is.False);
+      Check.That(insertion.TryMerge(Context, second)).IsFalse();
     }
   }
 }

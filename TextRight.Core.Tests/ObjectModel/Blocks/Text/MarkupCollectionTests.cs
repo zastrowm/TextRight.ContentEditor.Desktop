@@ -4,12 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.ObjectModel.Blocks.Text;
+
+using Xunit;
 
 namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 {
-  internal class MarkupCollectionTests
+  public class MarkupCollectionTests
   {
     private MarkupCollection _collection;
     private readonly MarkupType _fakeMarkupType = default(MarkupType);
@@ -17,8 +21,12 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     public TextRange[] Ranges
       => _collection.Select(s => s.GetRange()).ToArray();
 
-    [SetUp]
-    public void Setup()
+    public MarkupCollectionTests()
+    {
+      Reset();
+    }
+
+    private void Reset()
     {
       _collectionOwner = Mock.Of<IMarkupCollectionOwner>(c => c.Length == 15);
       _collection = new MarkupCollection(_collectionOwner);
@@ -38,7 +46,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       }
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_Works()
     {
       var markup = _collection.MarkRange(new TextRange(0, 3), _fakeMarkupType, null);
@@ -46,14 +54,14 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       markup.Should().NotBeNull();
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_ThrowsWhenOutOfRange()
     {
       CreateActionFor(new TextRange(-1, 3)).ShouldThrow<ArgumentOutOfRangeException>();
       CreateActionFor(new TextRange(3, _collectionOwner.Length + 1)).ShouldThrow<ArgumentOutOfRangeException>();
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_DoesNotThrowForFullRange()
     {
       CreateActionFor(new TextRange(0, _collectionOwner.Length)).ShouldNotThrow();
@@ -64,16 +72,16 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       return () => _collection.MarkRange(r, _fakeMarkupType, null);
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_ActuallyAdds()
     {
       _collection.MarkRange(new TextRange(0, 3), _fakeMarkupType, null);
 
       var first = _collection.First();
-      Assert.That(first.GetRange(), Is.EqualTo(new TextRange(0, 3)));
+      Check.That(first.GetRange()).IsEqualTo(new TextRange(0, 3));
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_MultipleItemsAddsThemAll()
     {
       _collection.MarkRange(new TextRange(0, 3), _fakeMarkupType, null);
@@ -87,7 +95,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.Should().Contain(it => it.GetRange().Equals(new TextRange(0, 7)));
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_NonZeroItem_Works()
     {
       _collection.MarkRange(new TextRange(1, 7), _fakeMarkupType, null);
@@ -96,7 +104,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       Ranges.Should().HaveElementAt(0, new TextRange(1, 7));
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_InMiddleWorks()
     {
       _collection.MarkRange(new TextRange(0, 8), _fakeMarkupType, null);
@@ -106,7 +114,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       Ranges.Should().HaveElementAt(1, new TextRange(1, 7));
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_OutOfOrderMaintainsSortedOrder()
     {
       _collection.MarkRange(new TextRange(3, 4), _fakeMarkupType, null);
@@ -118,7 +126,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       Ranges.Should().HaveElementAt(2, new TextRange(3, 4));
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_TryMany()
     {
       /*
@@ -144,7 +152,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       }
     }
 
-    [Test]
+    [Fact]
     public void MarkRange_ReturnsInstance_ThatsValidAfterOperation()
     {
       var instance = _collection.MarkRange(new TextRange(0, 10), _fakeMarkupType, null);
@@ -153,7 +161,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.First().Should().BeSameAs(instance);
     }
 
-    [Test]
+    [Fact]
     public void InsertText_BeforeRange_ShiftsRangesOver()
     {
       Verify(new TextRange(3, 8),
@@ -161,7 +169,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(6, 11));
     }
 
-    [Test]
+    [Fact]
     public void InsertText_AfterRange_DoesNothing()
     {
       Verify(new TextRange(3, 8),
@@ -169,7 +177,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(3, 8));
     }
 
-    [Test]
+    [Fact]
     public void InsertText_AtBeginningOfRange_DoesNotChangeLengthOfRange()
     {
       Verify(new TextRange(3, 8),
@@ -177,7 +185,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(6, 11));
     }
 
-    [Test]
+    [Fact]
     public void InsertText_AtEndOfRange_DoesNotChangeLengthOfRange()
     {
       Verify(new TextRange(3, 8),
@@ -185,7 +193,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(3, 8));
     }
 
-    [Test]
+    [Fact]
     public void InsertText_InMiddleOfRange_ExtendsRange()
     {
       Verify(new TextRange(3, 8),
@@ -193,7 +201,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(3, 9));
     }
 
-    [Test]
+    [Fact]
     public void InsertText_TryMany()
     {
       /*
@@ -242,7 +250,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     private Lazy<List<TextRange>> _allValidTextRanges;
     private IMarkupCollectionOwner _collectionOwner;
 
-    [Test]
+    [Fact]
     public void InsertText_Iterations()
     {
       // it's actually very easy to take a given TextRange and TextModification and figure out what
@@ -264,7 +272,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       }
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_AtBeginning_RemovesLength()
     {
       Verify(new TextRange(3, 8),
@@ -272,7 +280,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(3, 7));
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_AtBeginningWithLongRange_CollapsesRange()
     {
       Verify(new TextRange(3, 8),
@@ -280,7 +288,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(3, 3));
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_BeforeWithLongRange_ShiftsAndCollapsesRange()
     {
       Verify(new TextRange(3, 8),
@@ -288,7 +296,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(1, 1));
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_UptoRange_RemovesNothing()
     {
       Verify(new TextRange(1, 2),
@@ -296,7 +304,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(0, 1));
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_Before_ShiftsRange()
     {
       Verify(new TextRange(3, 8),
@@ -304,7 +312,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(2, 7));
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_BeforeEmptyRange_ShiftsRange()
     {
       Verify(new TextRange(1, 1),
@@ -312,7 +320,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(0, 0));
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_AfterEnd_DoesNothing()
     {
       Verify(new TextRange(3, 8),
@@ -320,7 +328,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(3, 8));
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_AfterStart_RemovesLength()
     {
       Verify(new TextRange(3, 8),
@@ -328,7 +336,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(3, 4));
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_InRange_RemovesLength()
     {
       Verify(new TextRange(3, 8),
@@ -336,7 +344,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
              new TextRange(3, 6));
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_TryMany()
     {
       /*
@@ -393,7 +401,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       Ranges.Should().HaveElementAt(3, newRanges[3]);
     }
 
-    [Test]
+    [Fact]
     public void DeleteText_Iterations()
     {
       // it's actually very easy to take a given TextRange and TextModification and figure out what
@@ -418,7 +426,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     private void VerifyCorrectness(TextModification modification)
     {
       // clear it so that we're at a clean slate
-      Setup();
+      Reset();
 
       AddAllRangesToCollection(_allValidTextRanges.Value);
       _collection.UpdateFromEvent(modification);
@@ -449,7 +457,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       {
         // single range, easy
-        Setup();
+        Reset();
         _collection.MarkRange(original, _fakeMarkupType, null);
 
         /* Extra Check */
@@ -468,7 +476,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       {
         // duplicated range, let's make sure that works right
-        Setup();
+        Reset();
         _collection.MarkRange(original, _fakeMarkupType, null);
         _collection.MarkRange(original, _fakeMarkupType, null);
         _collection.UpdateFromEvent(modification);
@@ -478,7 +486,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       {
         // duplicated duplicated range, just for good measure
-        Setup();
+        Reset();
         _collection.MarkRange(original, _fakeMarkupType, null);
         _collection.MarkRange(original, _fakeMarkupType, null);
         _collection.MarkRange(original, _fakeMarkupType, null);

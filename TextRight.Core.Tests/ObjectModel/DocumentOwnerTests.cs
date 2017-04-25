@@ -2,21 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
+using Xunit;
+
 namespace TextRight.Core.Tests.ObjectModel
 {
-  internal class DocumentOwnerTests
+  public class DocumentOwnerTests
   {
-    [Test]
+    [Fact]
     public void ByDefault_SingleTextBlockExists()
     {
       var documentOwner = new DocumentOwner();
 
-      Assert.That(documentOwner.Root.FirstBlock, Is.InstanceOf<TextBlock>());
-      Assert.That(((TextBlock)documentOwner.Root.FirstBlock).Content.Fragments.First().GetText(), Is.EqualTo(""));
+      Check.That(documentOwner.Root.FirstBlock).InheritsFrom<TextBlock>();
+      Check.That(((TextBlock)documentOwner.Root.FirstBlock).Content.Fragments.First().GetText()).IsEqualTo("");
     }
   }
 }

@@ -2,26 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
 
+using Xunit;
+
 namespace TextRight.Core.Tests
 {
-  internal class CursorSnapshotTests
+  public class CursorSnapshotTests
   {
     private TextBlock _textBlock;
 
-    [SetUp]
-    public void Setup()
+    public CursorSnapshotTests()
     {
       _textBlock = new ParagraphBlock();
       var cursor = _textBlock.GetTextCursor().ToBeginning();
       cursor.InsertText("This is the beginning of the paragraph");
     }
 
-    [Test]
+    [Fact]
     public void StateCanBeRestored()
     {
       var end = _textBlock.GetTextCursor().ToEnd();
@@ -33,13 +36,13 @@ namespace TextRight.Core.Tests
       {
         random.MoveTo(end);
         // proof that the cursor was changed
-        Assert.That(random.CharacterAfter, Is.EqualTo('\0'));
+        Check.That(random.CharacterAfter).IsEqualTo('\0');
 
         snapshot.Restore(random);
       }
 
-      Assert.That(random.CharacterAfter, Is.EqualTo('s'));
-      Assert.That(random.CharacterBefore, Is.EqualTo('i'));
+      Check.That(random.CharacterAfter).IsEqualTo('s');
+      Check.That(random.CharacterBefore).IsEqualTo('i');
     }
   }
 }

@@ -2,13 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.Actions;
 using TextRight.Core.Blocks;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks.Text;
+
+using Xunit;
 
 namespace TextRight.Core.Tests.Editing
 {
@@ -22,7 +26,7 @@ namespace TextRight.Core.Tests.Editing
              };
     }
 
-    [Test]
+    [Fact]
     public void Action_Works()
     {
       var it = DoAll(new Func<UndoableAction>[]
@@ -31,14 +35,14 @@ namespace TextRight.Core.Tests.Editing
                      });
 
       var heading = Document.Root.FirstBlock.As<HeadingBlock>();
-      Assert.That(heading, Is.Not.Null);
-      Assert.That(heading.HeadingLevel, Is.EqualTo(0));
-      Assert.That(heading.AsText(), Is.EqualTo("This is the text"));
+      Check.That(heading).IsNotNull();
+      Check.That(heading.HeadingLevel).IsEqualTo(0);
+      Check.That(heading.AsText()).IsEqualTo("This is the text");
 
       it.VerifyUndo();
     }
 
-    [Test]
+    [Fact]
     public void ExecutingOnHeading_SimplyChangesLevel()
     {
       DoAll(new Func<UndoableAction>[]
@@ -53,11 +57,11 @@ namespace TextRight.Core.Tests.Editing
               () => new ConvertTextBlockIntoHeadingAction(Context.Caret.Cursor, 3),
             });
 
-      Assert.That(heading, Is.SameAs(Document.Root.FirstBlock));
-      Assert.That(heading.HeadingLevel, Is.EqualTo(3));
+      Check.That(heading).IsSameReferenceThan(Document.Root.FirstBlock);
+      Check.That(heading.HeadingLevel).IsEqualTo(3);
     }
 
-    [Test]
+    [Fact]
     public void ExecutingOnHeading_IsUndoable()
     {
       var it = DoAll(new Func<UndoableAction>[]

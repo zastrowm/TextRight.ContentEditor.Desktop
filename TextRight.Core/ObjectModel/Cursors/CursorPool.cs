@@ -26,15 +26,18 @@ namespace TextRight.Core.ObjectModel.Cursors
       if (block == null)
         throw new ArgumentNullException(nameof(block));
 
-      if (_cursors.Count > 0)
+      lock (_cursors)
       {
-        var pooledCursor = _cursors.Pop();
-        pooledCursor.Reset(block);
-        return pooledCursor;
-      }
-      else
-      {
-        return (TCursor)block.CreateCursor();
+        if (_cursors.Count > 0)
+        {
+          var pooledCursor = _cursors.Pop();
+          pooledCursor.Reset(block);
+          return pooledCursor;
+        }
+        else
+        {
+          return (TCursor)block.CreateCursor();
+        }
       }
     }
 
@@ -42,10 +45,13 @@ namespace TextRight.Core.ObjectModel.Cursors
     /// <param name="cursor"> The cursor to put into the pool. </param>
     public void Recycle(TCursor cursor)
     {
-      if (cursor == null)
-        throw new ArgumentNullException(nameof(cursor));
+      lock (_cursors)
+      {
+        if (cursor == null)
+          throw new ArgumentNullException(nameof(cursor));
 
-      _cursors.Push(cursor);
+        _cursors.Push(cursor);
+      }
     }
 
     /// <inheritdoc />

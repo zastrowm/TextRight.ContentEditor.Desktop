@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands.Text;
 
+using Xunit;
+
 namespace TextRight.Core.Tests.Editing
 {
-  internal class DeletePreviousCharacterCommandUndoableActionTests : UndoBasedTest
+  public class DeletePreviousCharacterCommandUndoableActionTests : UndoBasedTest
   {
-    [Test]
+    [Fact]
     public void VerifyItWorks()
     {
       var it = DoAll(
@@ -20,11 +24,11 @@ namespace TextRight.Core.Tests.Editing
           FromCommand<DeletePreviousCharacterCommand>(() => BlockAt(0).BeginCursor(3).AsTextCursor().ToHandle()),
         });
 
-      Assert.That(BlockAt(0).AsText(), Is.EqualTo("ThWord"));
+      Check.That(BlockAt(0).AsText()).IsEqualTo("ThWord");
       it.VerifyUndo();
     }
 
-    [Test]
+    [Fact]
     public void DeleteNextCharacter_WorksAtAllLocationsInTheParagraph()
     {
       string text = "TheWord";
@@ -41,7 +45,7 @@ namespace TextRight.Core.Tests.Editing
 
         var expected = text.Remove(i - 1, 1);
 
-        Assert.That(BlockAt(0).AsText(), Is.EqualTo(expected));
+        Check.That(BlockAt(0).AsText()).IsEqualTo(expected);
         it.VerifyUndo();
       }
     }

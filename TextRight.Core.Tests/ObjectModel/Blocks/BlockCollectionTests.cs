@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
+using Xunit;
+
 namespace TextRight.Core.Tests.ObjectModel.Blocks
 {
-  internal class BlockCollectionTests
+  public class BlockCollectionTests
   {
     private BlockCollection _collection;
 
-    [SetUp]
-    public void Setup()
+    public BlockCollectionTests()
     {
       _collection = new AddableBlockCollection()
                     {
@@ -25,10 +28,10 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
                     }
         .RemoveFirstChilds();
 
-      Assert.That(_collection.ChildCount, Is.EqualTo(2));
+      Check.That(_collection.ChildCount).IsEqualTo(2);
     }
 
-    [Test]
+    [Fact]
     public void VerifyBreakInMiddleOfParagraph_SplitsIntoTwo()
     {
       var cursor = _collection.NthBlock(0).GetCursor();
@@ -37,15 +40,15 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor);
 
-      Assert.That(_collection.ChildCount, Is.EqualTo(3));
-      Assert.That(_collection.NthBlock(0).AsText(), Is.EqualTo("This is"));
-      Assert.That(_collection.NthBlock(1).AsText(), Is.EqualTo(" line #1"));
-      Assert.That(_collection.NthBlock(2).AsText(), Is.EqualTo("This is line #2"));
+      Check.That(_collection.ChildCount).IsEqualTo(3);
+      Check.That(_collection.NthBlock(0).AsText()).IsEqualTo("This is");
+      Check.That(_collection.NthBlock(1).AsText()).IsEqualTo(" line #1");
+      Check.That(_collection.NthBlock(2).AsText()).IsEqualTo("This is line #2");
 
-      Assert.That(newBlock, Is.EqualTo(_collection.NthBlock(1)));
+      Check.That(newBlock).IsEqualTo(_collection.NthBlock(1));
     }
 
-    [Test]
+    [Fact]
     public void BreakInBeginning_MakesNewPreviousEmptyBlock()
     {
       var cursor = _collection.NthBlock(0).GetCursor();
@@ -53,15 +56,15 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor);
 
-      Assert.That(_collection.ChildCount, Is.EqualTo(3));
-      Assert.That(_collection.NthBlock(0).AsText(), Is.EqualTo(""));
-      Assert.That(_collection.NthBlock(1).AsText(), Is.EqualTo("This is line #1"));
-      Assert.That(_collection.NthBlock(2).AsText(), Is.EqualTo("This is line #2"));
+      Check.That(_collection.ChildCount).IsEqualTo(3);
+      Check.That(_collection.NthBlock(0).AsText()).IsEqualTo("");
+      Check.That(_collection.NthBlock(1).AsText()).IsEqualTo("This is line #1");
+      Check.That(_collection.NthBlock(2).AsText()).IsEqualTo("This is line #2");
 
-      Assert.That(newBlock, Is.EqualTo(_collection.NthBlock(1)));
+      Check.That(newBlock).IsEqualTo(_collection.NthBlock(1));
     }
 
-    [Test]
+    [Fact]
     public void BreakAtEnd_MakesNewNextEmptyBlock()
     {
       var cursor = _collection.NthBlock(0).GetCursor();
@@ -69,12 +72,12 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor);
 
-      Assert.That(_collection.ChildCount, Is.EqualTo(3));
-      Assert.That(_collection.NthBlock(0).AsText(), Is.EqualTo("This is line #1"));
-      Assert.That(_collection.NthBlock(1).AsText(), Is.EqualTo(""));
-      Assert.That(_collection.NthBlock(2).AsText(), Is.EqualTo("This is line #2"));
+      Check.That(_collection.ChildCount).IsEqualTo(3);
+      Check.That(_collection.NthBlock(0).AsText()).IsEqualTo("This is line #1");
+      Check.That(_collection.NthBlock(1).AsText()).IsEqualTo("");
+      Check.That(_collection.NthBlock(2).AsText()).IsEqualTo("This is line #2");
 
-      Assert.That(newBlock, Is.EqualTo(_collection.NthBlock(1)));
+      Check.That(newBlock).IsEqualTo(_collection.NthBlock(1));
     }
   }
 }

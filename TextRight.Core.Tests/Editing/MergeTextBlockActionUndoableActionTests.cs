@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks.Text;
+
+using Xunit;
 
 namespace TextRight.Core.Tests.Editing
 {
@@ -23,7 +27,7 @@ namespace TextRight.Core.Tests.Editing
              };
     }
 
-    [Test]
+    [Fact]
     public void MergeAt_BeginningOfSecondBlock_MergesIntoOne()
     {
       var it = DoAll(new Func<UndoableAction>[]
@@ -32,15 +36,15 @@ namespace TextRight.Core.Tests.Editing
                      }
       );
 
-      Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
-      Assert.That(BlockAt(0), Is.InstanceOf<TextBlock>());
+      Check.That(Document.Root.ChildCount).IsEqualTo(1);
+      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
 
-      Assert.That(BlockAt(0).As<TextBlock>().AsText(), Is.EqualTo("Paragraph 1Paragraph 2"));
+      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("Paragraph 1Paragraph 2");
 
       it.VerifyUndo();
     }
 
-    [Test]
+    [Fact]
     public void MergeAt_EndOfFirstBlock_MergesIntoOne()
     {
       var it = DoAll(new Func<UndoableAction>[]
@@ -49,10 +53,10 @@ namespace TextRight.Core.Tests.Editing
                      }
       );
 
-      Assert.That(Document.Root.ChildCount, Is.EqualTo(1));
-      Assert.That(BlockAt(0), Is.InstanceOf<TextBlock>());
+      Check.That(Document.Root.ChildCount).IsEqualTo(1);
+      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
 
-      Assert.That(BlockAt(0).As<TextBlock>().AsText(), Is.EqualTo("Paragraph 1Paragraph 2"));
+      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("Paragraph 1Paragraph 2");
 
       it.VerifyUndo();
     }

@@ -4,10 +4,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using NUnit.Framework;
+
+using NFluent;
+
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
+
+using Xunit;
 
 namespace TextRight.Core.Tests.ObjectModel.Blocks
 {
@@ -76,46 +80,52 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
         ?.Name;
     }
 
-    public static IEnumerable<TestCaseData> GetNextData()
+    public static TheoryData<TestData> GetNextData()
     {
-      yield return CreateTestCase(() => a11, () => a12, "simple move (beginning)");
-      yield return CreateTestCase(() => a12, () => a13, "simple move (end)");
-      yield return CreateTestCase(() => a13, () => b111, "move to sub-level");
-      yield return CreateTestCase(() => b111, () => b12, "move to parent level");
-      yield return CreateTestCase(() => c, () => NullBlock, "end of document");
+      return new TheoryData<TestData>()
+             {
+               CreateTestCase(() => a11, () => a12, "simple move (beginning)"),
+               CreateTestCase(() => a12, () => a13, "simple move (end)"),
+               CreateTestCase(() => a13, () => b111, "move to sub-level"),
+               CreateTestCase(() => b111, () => b12, "move to parent level"),
+               CreateTestCase(() => c, () => NullBlock, "end of document"),
+             };
     }
 
-    [Test]
-    [TestCaseSource(nameof(GetNextData))]
+    [Theory]
+    [MemberData(nameof(GetNextData))]
     public void GetNextContainerBlock_Works(TestData data)
     {
       var nextBlock = BlockTreeWalker.GetNextNonContainerBlock(data.Current);
 
-      Assert.That(GetNameOf(nextBlock), Is.EqualTo(GetNameOf(data.Expected)));
-      Assert.That(nextBlock, Is.EqualTo(data.Expected));
+      Check.That(GetNameOf(nextBlock)).IsEqualTo(GetNameOf(data.Expected));
+      Check.That(nextBlock).IsEqualTo(data.Expected);
     }
 
-    public static IEnumerable<TestCaseData> GetPreviousData()
+    public static TheoryData<TestData> GetPreviousData()
     {
-      yield return CreateTestCase(() => a12, () => a11, "simple move (beginning)");
-      yield return CreateTestCase(() => a13, () => a12, "simple move (end)");
-      yield return CreateTestCase(() => b111, () => a13, "move to parent level");
-      yield return CreateTestCase(() => b12, () => b111, "move to sub-level");
-      yield return CreateTestCase(() => a11, () => NullBlock, "beginning of document");
+      return new TheoryData<TestData>()
+             {
+               CreateTestCase(() => a12, () => a11, "simple move (beginning)"),
+               CreateTestCase(() => a13, () => a12, "simple move (end)"),
+               CreateTestCase(() => b111, () => a13, "move to parent level"),
+               CreateTestCase(() => b12, () => b111, "move to sub-level"),
+               CreateTestCase(() => a11, () => NullBlock, "beginning of document"),
+             };
     }
 
-    [Test]
-    [TestCaseSource(nameof(GetPreviousData))]
+    [Theory]
+    [MemberData(nameof(GetPreviousData))]
     public void GetPreviousContainerBlock_Works(TestData data)
     {
       var nextBlock = BlockTreeWalker.GetPreviousNonContainerBlock(data.Current);
 
-      Assert.That(GetNameOf(nextBlock), Is.EqualTo(GetNameOf(data.Expected)));
-      Assert.That(nextBlock, Is.EqualTo(data.Expected));
+      Check.That(GetNameOf(nextBlock)).IsEqualTo(GetNameOf(data.Expected));
+      Check.That(nextBlock).IsEqualTo(data.Expected);
     }
 
     /// <summary> Create a test case from the given information. </summary>
-    private static TestCaseData CreateTestCase(
+    private static TestData CreateTestCase(
       Expression<Func<Block>> currentBlock,
       Expression<Func<Block>> expectedBlock,
       string description
@@ -130,7 +140,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
                    Description = description,
                  };
 
-      return data.ToTestCase();
+      return data;
     }
 
     /// <summary> Test data for a single test case </summary>
@@ -144,9 +154,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       public string Description;
 
-      public TestCaseData ToTestCase()
-        => new TestCaseData(this)
-          .SetName($"{Description}: {CurrentName}->{ExpectedName}");
+      public override string ToString()
+        => Description;
     }
   }
 }
