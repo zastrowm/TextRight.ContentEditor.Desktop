@@ -97,7 +97,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.MarkRange(new TextRange(1, 7), _fakeMarkupType, null);
       _collection.Should().HaveCount(1);
 
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, new TextRange(1, 7));
+      DidYouKnow.That(Ranges).Should().HaveElementAt(0, new TextRange(1, 7));
     }
 
     [Fact]
@@ -106,8 +106,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.MarkRange(new TextRange(0, 8), _fakeMarkupType, null);
       _collection.MarkRange(new TextRange(1, 7), _fakeMarkupType, null);
 
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, new TextRange(0, 8));
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(1, new TextRange(1, 7));
+      DidYouKnow.That(Ranges).Should().HaveElementAt(0, new TextRange(0, 8));
+      DidYouKnow.That(Ranges).Should().HaveElementAt(1, new TextRange(1, 7));
     }
 
     [Fact]
@@ -117,9 +117,9 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.MarkRange(new TextRange(1, 7), _fakeMarkupType, null);
       _collection.MarkRange(new TextRange(0, 8), _fakeMarkupType, null);
 
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, new TextRange(0, 8));
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(1, new TextRange(1, 7));
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(2, new TextRange(3, 4));
+      DidYouKnow.That(Ranges).Should().HaveElementAt(0, new TextRange(0, 8));
+      DidYouKnow.That(Ranges).Should().HaveElementAt(1, new TextRange(1, 7));
+      DidYouKnow.That(Ranges).Should().HaveElementAt(2, new TextRange(3, 4));
     }
 
     [Fact]
@@ -141,7 +141,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       for (var i = 0; i < originalRanges.Length; i++)
       {
-        TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(i, originalRanges[i]);
+        DidYouKnow.That(Ranges).Should().HaveElementAt(i, originalRanges[i]);
       }
     }
 
@@ -151,7 +151,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       var instance = _collection.MarkRange(new TextRange(0, 10), _fakeMarkupType, null);
       _collection.UpdateFromEvent(new TextModification(4, 4, true));
 
-      TextRight.Core.Tests.DidYouKnow.That(_collection).Should().HaveElementAt(0, instance);
+      DidYouKnow.That(_collection).Should().HaveElementAt(0, instance);
     }
 
     [Fact]
@@ -225,14 +225,14 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       _collection.UpdateFromEvent(new TextModification(6, 2, true));
 
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, newRanges[0]);
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, newRanges[0]);
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(1, newRanges[1]);
+      DidYouKnow.That(Ranges).Should().HaveElementAt(0, newRanges[0]);
+      DidYouKnow.That(Ranges).Should().HaveElementAt(0, newRanges[0]);
+      DidYouKnow.That(Ranges).Should().HaveElementAt(1, newRanges[1]);
 
       // note that technically the api doesn't guarantee that just be cause we added #3 after #2 that
       // the order was maintained so this could fail the test in the future if that changes. 
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(2, newRanges[2]);
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(3, newRanges[3]);
+      DidYouKnow.That(Ranges).Should().HaveElementAt(2, newRanges[2]);
+      DidYouKnow.That(Ranges).Should().HaveElementAt(3, newRanges[3]);
     }
 
     private Lazy<List<TextRange>> _allValidTextRanges;
@@ -369,13 +369,13 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       _collection.UpdateFromEvent(new TextModification(6, 2, false));
 
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, newRanges[0]);
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(1, newRanges[1]);
+      DidYouKnow.That(Ranges).Should().HaveElementAt(0, newRanges[0]);
+      DidYouKnow.That(Ranges).Should().HaveElementAt(1, newRanges[1]);
 
       // note that technically the api doesn't guarantee that just be cause we added #3 after #2 that
       // the order was maintained so this could fail the test in the future if that changes. 
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(2, newRanges[2]);
-      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(3, newRanges[3]);
+      DidYouKnow.That(Ranges).Should().HaveElementAt(2, newRanges[2]);
+      DidYouKnow.That(Ranges).Should().HaveElementAt(3, newRanges[3]);
     }
 
     [Fact]
@@ -417,7 +417,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
         var msg = $"'operation {type} @{modification.Index} of @{modification.NumberOfCharacters} characters'.  Original was {rangesOriginal[i]}";
 
         var expected = Transform(rangesOriginal[i], modification);
-        TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(i, expected); // msg
+        DidYouKnow.That(Ranges).Should().HaveElementAt(i, expected); // msg
       }
     }
 

@@ -7,6 +7,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   /// <summary> A cursor looking in a textblock. </summary>
   public struct TextBlockValueCursor : IEquatable<TextBlockValueCursor>
   {
+    private const char NullCharacter = '\0';
+
     /// <summary> A cursor which represents an invalid location. </summary>
     public static readonly TextBlockValueCursor Invalid
       = default(TextBlockValueCursor);
@@ -50,6 +52,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// </summary>
     public StyledTextFragment Fragment { get; }
 
+    /// <summary> The block that this cursor is associated with. </summary>
+    public Block Block
+      => Fragment.Parent;
+
     /// <summary>
     ///  The offset into <see cref="Fragment"/> where this cursor is pointing.
     /// </summary>
@@ -61,7 +67,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <inheritdoc />
     public bool IsAtEndOfBlock
-      => OffsetIntoSpan >= Fragment.Length && Fragment.Next == null;
+      => IsAtEndOfFragment && Fragment.Next == null;
 
     /// <summary> True if the cursor is pointing at the end of the current fragment. </summary>
     public bool IsAtBeginningOfFragment
@@ -70,6 +76,31 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> True if the cursor is pointing at the end of the current fragment. </summary>
     public bool IsAtEndOfFragment
       => OffsetIntoSpan >= Fragment.Length;
+
+    /// <summary> Get the character after the current cursor position. </summary>
+    public char CharacterAfter
+    {
+      get
+      {
+        if (!IsAtEndOfFragment)
+          return Fragment.GetCharacterAt(OffsetIntoSpan);
+        if (Fragment.Next == null)
+          return NullCharacter;
+        return Fragment.Next.GetCharacterAt(0);
+      }
+    }
+
+    /// <summary> Get the character before the current cursor position. </summary>
+    public char CharacterBefore
+    {
+      get
+      {
+        if (OffsetIntoSpan != 0)
+          return Fragment.GetCharacterAt(OffsetIntoSpan - 1);
+        else
+          return NullCharacter;
+      }
+    }
 
     /// <inheritdoc />
     public TextBlockValueCursor MoveForward()

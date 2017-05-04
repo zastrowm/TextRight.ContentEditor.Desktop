@@ -72,7 +72,6 @@
     <Compile Include="View\Text\StyledStyledTextSpanView.cs" />
     <Compile Include="View\Text\CustomStringRenderer.cs" />
     <Compile Include="View\Text\StyledTextRunProperties.cs" />
-    <Compile Include="View\Text\TextBlockUtils.cs" />
     <Compile Include="View\VerticalBlockCollectionView.cs" />
     <Compile Include="View\ViewFactory.cs" />
     <Compile Include="WatchEntryPoint.cs" />
@@ -128,6 +127,10 @@
     <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj">
       <Project>{d78cc148-8065-4cb8-ab81-daa0b75cc6bb}</Project>
       <Name>TextRight.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TextRight.Editor.View\TextRight.Editor.View.csproj">
+      <Project>{35967BA4-B64D-4731-A3B6-AA9C220061DA}</Project>
+      <Name>TextRight.Editor.View</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -10,7 +10,7 @@ using TextRight.Core;
 using TextRight.Core.Editing;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.Utilities;
-using TextRight.Editor.Wpf.View.Text;
+using TextRight.Editor.View.Blocks;
 
 namespace TextRight.Editor.Wpf.View
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.Editor.Wpf.View.Text
+namespace TextRight.Editor.View.Blocks
 {
   /// <summary> Utility methods to be  </summary>
   public static class TextBlockUtils

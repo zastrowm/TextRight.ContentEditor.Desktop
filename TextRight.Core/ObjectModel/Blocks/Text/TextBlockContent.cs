@@ -7,12 +7,16 @@ using TextRight.Core.ObjectModel.Serialization;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
-  public sealed partial class TextBlockContent
+  /// <summary>
+  ///  Contains various <see cref="StyledTextFragment"/> parts that is presumed to be part of a
+  ///  larger block.
+  /// </summary>
+  public sealed class TextBlockContent
   {
     private readonly List<StyledTextFragment> _spans;
 
     /// <summary> TextBlockContent constructor. </summary>
-    internal TextBlockContent()
+    public TextBlockContent()
     {
       _spans = new List<StyledTextFragment>();
       AppendSpan(new StyledTextFragment(""));
@@ -36,6 +40,18 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public IEnumerable<StyledTextFragment> Fragments
       => _spans;
 
+    /// <summary> Gets a cursor that is looking at the beginning of this content. </summary>
+    public TextBlockValueCursor GetCursorToBeginning() 
+      => new TextBlockValueCursor(FirstFragment, 0);
+
+    /// <summary> Gets a cursor that is looking at the end of this content. </summary>
+    public TextBlockValueCursor GetCursorToEnd()
+      => new TextBlockValueCursor(LastFragment, LastFragment.Length);
+
+    /// <summary> Retrieves a cursor that points at the given character. </summary>
+    /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>
+    /// <param name="index"> The index of the character to point at. </param>
+    /// <returns> A TextBlockValueCursor that is pointing at the given character. </returns>
     public TextBlockValueCursor CursorFromCharacterIndex(int index)
     {
       int numberOfCharacters = 0;

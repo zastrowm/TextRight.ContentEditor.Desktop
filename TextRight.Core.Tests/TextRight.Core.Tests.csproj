@@ -78,6 +78,7 @@
     <Compile Include="Editing\UndoBasedTest.cs" />
     <Compile Include="Editing\UndoIntegrationTest.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Framework\RangedDataAttribute.cs" />
     <Compile Include="ObjectModel\Blocks\AddableBlockCollection.cs" />
     <Compile Include="ObjectModel\Blocks\BlockCollectionTests.cs" />
     <Compile Include="ObjectModel\Blocks\BlockTreeWalkerTests.cs" />
@@ -85,11 +86,13 @@
     <Compile Include="ObjectModel\Blocks\TextBlockCursorTests.cs" />
     <Compile Include="ObjectModel\Blocks\TextBlockTests.cs" />
     <Compile Include="ObjectModel\Blocks\Text\MarkupCollectionTests.cs" />
+    <Compile Include="ObjectModel\Blocks\Text\TextBlockCaretTests.cs" />
     <Compile Include="ObjectModel\DocumentOwnerTests.cs" />
     <Compile Include="Serialization\HeadingTests.cs" />
     <Compile Include="Serialization\ParagraphTests.cs" />
     <Compile Include="Serialization\RootBlockCollectionTests.cs" />
     <Compile Include="Serialization\SerializationHelpers.cs" />
+    <Compile Include="TextBlockValueCursorExtensions.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="DidYouKnow.cs" />
   </ItemGroup>
