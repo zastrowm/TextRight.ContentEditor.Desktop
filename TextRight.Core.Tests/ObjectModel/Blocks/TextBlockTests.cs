@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NFluent;
+using FluentAssertions;
 using TextRight.Core.Editing.Actions.Text;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
@@ -43,7 +43,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     {
       var block = new ParagraphBlock();
 
-      Check.That(block.Content.Fragments.Count()).IsEqualTo(1);
+      DidYouKnow.That(block.Content.Fragments.Count()).Should().Be(1);
     }
 
     [Fact]
@@ -52,10 +52,10 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       Initialize("abc|123");
       var nextBlock = (TextBlock)TextBlockHelperMethods.TryBreakBlock(_cursor);
 
-      Check.That(nextBlock).IsNotNull();
+      DidYouKnow.That(nextBlock).Should().NotBeNull();
 
-      Check.That(_block.Content.Fragments.First().GetText()).IsEqualTo("abc");
-      Check.That(nextBlock.Content.Fragments.First().GetText()).IsEqualTo("123");
+      DidYouKnow.That(_block.Content.Fragments.First().GetText()).Should().Be("abc");
+      DidYouKnow.That(nextBlock.Content.Fragments.First().GetText()).Should().Be("123");
     }
   }
 }

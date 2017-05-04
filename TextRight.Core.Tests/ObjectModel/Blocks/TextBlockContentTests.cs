@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NFluent;
+using FluentAssertions;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using Xunit;
 
@@ -60,8 +60,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var removedText = originalText.Substring(start, end - start);
       var modifiedText = originalText.Remove(start, end - start);
 
-      Check.That(Content.AsText()).IsEqualTo(modifiedText);
-      Check.That(extracted.AsText().Equals(removedText));
+      DidYouKnow.That(Content.AsText()).Should().Be(modifiedText);
+      DidYouKnow.That(extracted.AsText()).Should().Be(removedText);
     }
   }
 }

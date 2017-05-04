@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NFluent;
 using TextRight.Core.Actions;
 using TextRight.Core.Blocks;
 using TextRight.Core.Editing.Actions;
@@ -30,9 +29,9 @@ namespace TextRight.Core.Tests.Editing
                      });
 
       var heading = Document.Root.FirstBlock.As<HeadingBlock>();
-      Check.That(heading).IsNotNull();
-      Check.That(heading.HeadingLevel).IsEqualTo(0);
-      Check.That(heading.AsText()).IsEqualTo("This is the text");
+      DidYouKnow.That(heading).Should().NotBeNull();
+      DidYouKnow.That(heading.HeadingLevel).Should().Be(0);
+      DidYouKnow.That(heading.AsText()).Should().Be("This is the text");
 
       it.VerifyUndo();
     }
@@ -52,8 +51,8 @@ namespace TextRight.Core.Tests.Editing
               () => new ConvertTextBlockIntoHeadingAction(Context.Caret.Cursor, 3),
             });
 
-      Check.That(heading).IsSameReferenceThan(Document.Root.FirstBlock);
-      Check.That(heading.HeadingLevel).IsEqualTo(3);
+      DidYouKnow.That(heading).Should().BeSameAs(Document.Root.FirstBlock);
+      DidYouKnow.That(heading.HeadingLevel).Should().Be(3);
     }
 
     [Fact]

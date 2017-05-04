@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using NFluent;
+using FluentAssertions;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
@@ -95,8 +95,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     {
       var nextBlock = BlockTreeWalker.GetNextNonContainerBlock(data.Current);
 
-      Check.That(GetNameOf(nextBlock)).IsEqualTo(GetNameOf(data.Expected));
-      Check.That(nextBlock).IsEqualTo(data.Expected);
+      DidYouKnow.That(GetNameOf(nextBlock)).Should().Be(GetNameOf(data.Expected));
+      DidYouKnow.That(nextBlock).Should().Be(data.Expected);
     }
 
     public static TheoryData<TestData> GetPreviousData()
@@ -117,8 +117,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     {
       var nextBlock = BlockTreeWalker.GetPreviousNonContainerBlock(data.Current);
 
-      Check.That(GetNameOf(nextBlock)).IsEqualTo(GetNameOf(data.Expected));
-      Check.That(nextBlock).IsEqualTo(data.Expected);
+      DidYouKnow.That(GetNameOf(nextBlock)).Should().Be(GetNameOf(data.Expected));
+      DidYouKnow.That(nextBlock).Should().Be(data.Expected);
     }
 
     /// <summary> Create a test case from the given information. </summary>

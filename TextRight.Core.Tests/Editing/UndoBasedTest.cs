@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Newtonsoft.Json;
-using NFluent;
 using TextRight.Core.Editing;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Commands;
@@ -176,7 +176,7 @@ namespace TextRight.Core.Tests.Editing
 
       if (originalState.Equals(currentState))
       {
-        Check.That(newJson).IsEqualTo(originalJson);
+        DidYouKnow.That(newJson).Should().Be(originalJson);
         return;
       }
 
@@ -191,16 +191,16 @@ namespace TextRight.Core.Tests.Editing
     /// <summary> Finds the first difference in the two documents. </summary>
     private static void FindDifference(SerializeNode currentState, SerializeNode originalState, string path)
     {
-      Check.That(currentState.TypeId)
-           .IsEqualTo(originalState.TypeId);
+      DidYouKnow.That(currentState.TypeId).Should()
+           .Be(originalState.TypeId);
 
       var type = currentState.TypeId;
       path += "<" + type + ">";
 
       var fullPath = path + ".Data";
 
-      Check.That(currentState.GetDataOrDefault<string>("Body"))
-           .IsEqualTo(originalState.GetDataOrDefault<string>("Body"));
+      DidYouKnow.That(currentState.GetDataOrDefault<string>("Body")).Should()
+           .Be(originalState.GetDataOrDefault<string>("Body"));
 
       int max = Math.Min(currentState.Children.Count, originalState.Children.Count);
 
@@ -211,7 +211,7 @@ namespace TextRight.Core.Tests.Editing
 
       var theFullPath = path + ".Count";
 
-      Check.That(currentState.Children.Count).IsEqualTo(originalState.Children.Count);
+      DidYouKnow.That(currentState.Children.Count).Should().Be(originalState.Children.Count);
     }
 
     /// <summary>

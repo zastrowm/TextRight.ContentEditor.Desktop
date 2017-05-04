@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NFluent;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks.Text;
@@ -22,12 +21,12 @@ namespace TextRight.Core.Tests.Editing
                      }
       );
 
-      Check.That(Document.Root.ChildCount).IsEqualTo(2);
-      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
-      Check.That(BlockAt(1)).InheritsFrom<TextBlock>();
+      DidYouKnow.That(Document.Root.ChildCount).Should().Be(2);
+      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
+      DidYouKnow.That(BlockAt(1)).Should().BeAssignableTo<TextBlock>();
 
-      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("Start of text");
-      Check.That(BlockAt(1).As<TextBlock>().AsText()).IsEqualTo("");
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("Start of text");
+      DidYouKnow.That(BlockAt(1).As<TextBlock>().AsText()).Should().Be("");
 
       it.VerifyUndo();
     }
@@ -37,16 +36,15 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"),
-                       FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor().ToHandle()),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"), FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor().ToHandle()),
                      });
 
-      Check.That(Document.Root.ChildCount).IsEqualTo(2);
-      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
-      Check.That(BlockAt(1)).InheritsFrom<TextBlock>();
+      DidYouKnow.That(Document.Root.ChildCount).Should().Be(2);
+      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
+      DidYouKnow.That(BlockAt(1)).Should().BeAssignableTo<TextBlock>();
 
-      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("");
-      Check.That(BlockAt(1).As<TextBlock>().AsText()).IsEqualTo("Start of text");
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("");
+      DidYouKnow.That(BlockAt(1).As<TextBlock>().AsText()).Should().Be("Start of text");
 
       it.VerifyUndo();
     }
@@ -56,16 +54,15 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"),
-                       FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(5).ToHandle()),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"), FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(5).ToHandle()),
                      });
 
-      Check.That(Document.Root.ChildCount).IsEqualTo(2);
-      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
-      Check.That(BlockAt(1)).InheritsFrom<TextBlock>();
+      DidYouKnow.That(Document.Root.ChildCount).Should().Be(2);
+      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
+      DidYouKnow.That(BlockAt(1)).Should().BeAssignableTo<TextBlock>();
 
-      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("Start");
-      Check.That(BlockAt(1).As<TextBlock>().AsText()).IsEqualTo(" of text");
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("Start");
+      DidYouKnow.That(BlockAt(1).As<TextBlock>().AsText()).Should().Be(" of text");
 
       it.VerifyUndo();
     }

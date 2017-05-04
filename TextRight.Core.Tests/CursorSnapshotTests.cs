@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NFluent;
+using FluentAssertions;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
@@ -33,13 +33,14 @@ namespace TextRight.Core.Tests
       {
         random.MoveTo(end);
         // proof that the cursor was changed
-        Check.That(random.CharacterAfter).IsEqualTo('\0');
+        DidYouKnow.That(random.CharacterAfter).Should().Be('\0');
+        DidYouKnow.That(random.CharacterAfter).Should().Be('\0');
 
         snapshot.Restore(random);
       }
 
-      Check.That(random.CharacterAfter).IsEqualTo('s');
-      Check.That(random.CharacterBefore).IsEqualTo('i');
+      DidYouKnow.That(random.CharacterAfter).Should().Be('s');
+      DidYouKnow.That(random.CharacterBefore).Should().Be('i');
     }
   }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NFluent;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks;
@@ -22,11 +21,11 @@ namespace TextRight.Core.Tests.Editing
                      });
 
       var textBlock = Document.Root.FirstBlock as TextBlock;
-      Check.That(textBlock).IsNotNull();
+      DidYouKnow.That(textBlock).Should().NotBeNull();
 
-      Check.That(textBlock.AsText()).IsEqualTo("The text");
-      Check.That(Context.Cursor.Block).IsEqualTo(textBlock);
-      Check.That(Context.Cursor.IsAtEnd).IsTrue();
+      DidYouKnow.That(textBlock.AsText()).Should().Be("The text");
+      DidYouKnow.That(Context.Cursor.Block).Should().Be(textBlock);
+      DidYouKnow.That(Context.Cursor.IsAtEnd).Should().BeTrue();
 
       it.VerifyUndo();
     }
@@ -40,10 +39,10 @@ namespace TextRight.Core.Tests.Editing
                        FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Prefix"),
                      });
 
-      Check.That(Document.Root.ChildCount).IsEqualTo(1);
-      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
+      DidYouKnow.That(Document.Root.ChildCount).Should().Be(1);
+      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
 
-      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("PrefixWord");
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("PrefixWord");
 
       it.VerifyUndo();
     }
@@ -53,14 +52,13 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Word"),
-                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Suffix"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Word"), FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Suffix"),
                      });
 
-      Check.That(Document.Root.ChildCount).IsEqualTo(1);
-      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
+      DidYouKnow.That(Document.Root.ChildCount).Should().Be(1);
+      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
 
-      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("WordSuffix");
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("WordSuffix");
 
       it.VerifyUndo();
     }
@@ -70,14 +68,13 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Word"),
-                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(2).ToHandle(), "Mid"),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "Word"), FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor(2).ToHandle(), "Mid"),
                      });
 
-      Check.That(Document.Root.ChildCount).IsEqualTo(1);
-      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
+      DidYouKnow.That(Document.Root.ChildCount).Should().Be(1);
+      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
 
-      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("WoMidrd");
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("WoMidrd");
 
       it.VerifyUndo();
     }
@@ -134,8 +131,8 @@ namespace TextRight.Core.Tests.Editing
       var mergeWithAction =
         new InsertTextCommand.InsertTextUndoableAction(BlockAt(0).EndCursor().ToHandle(), "And More");
 
-      Check.That(originalAction.TryMerge(Context, mergeWithAction)).IsTrue();
-      Check.That(originalAction.Text).IsEqualTo("The textAnd More");
+      DidYouKnow.That(originalAction.TryMerge(Context, mergeWithAction)).Should().BeTrue();
+      DidYouKnow.That(originalAction.Text).Should().Be("The textAnd More");
     }
 
     [Fact]
@@ -150,7 +147,7 @@ namespace TextRight.Core.Tests.Editing
       originalAction.TryMerge(Context, mergeWithAction);
 
       // the document should not be modified
-      Check.That(BlockAt<TextBlock>(0).AsText()).IsEqualTo("The text");
+      DidYouKnow.That(BlockAt<TextBlock>(0).AsText()).Should().Be("The text");
     }
 
     [Fact]
@@ -179,7 +176,7 @@ namespace TextRight.Core.Tests.Editing
       var second =
         new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(2).ToHandle(), "Two");
 
-      Check.That(first.TryMerge(Context, second)).IsFalse();
+      DidYouKnow.That(first.TryMerge(Context, second)).Should().BeFalse();
     }
 
     [Fact]
@@ -189,7 +186,7 @@ namespace TextRight.Core.Tests.Editing
 
       var self = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
 
-      Check.That(self.TryMerge(Context, self)).IsFalse();
+      DidYouKnow.That(self.TryMerge(Context, self)).Should().BeFalse();
     }
 
     [Fact]
@@ -205,7 +202,7 @@ namespace TextRight.Core.Tests.Editing
         BlockAt<TextBlock>(0).BeginCursor(first.Text.Length).ToHandle(),
         "This is also long");
 
-      Check.That(first.TryMerge(Context, second)).IsTrue();
+      DidYouKnow.That(first.TryMerge(Context, second)).Should().BeTrue();
     }
 
     [Fact]
@@ -221,8 +218,8 @@ namespace TextRight.Core.Tests.Editing
         new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(
           BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
 
-      Check.That(insertion.TryMerge(Context, second)).IsTrue();
-      Check.That(insertion.Text).IsEqualTo("Inserted Strin");
+      DidYouKnow.That(insertion.TryMerge(Context, second)).Should().BeTrue();
+      DidYouKnow.That(insertion.Text).Should().Be("Inserted Strin");
     }
 
     [Fact]
@@ -235,7 +232,7 @@ namespace TextRight.Core.Tests.Editing
         new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(
           BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
 
-      Check.That(insertion.TryMerge(Context, second)).IsFalse();
+      DidYouKnow.That(insertion.TryMerge(Context, second)).Should().BeFalse();
     }
   }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NFluent;
+using FluentAssertions;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Commands.Text;
 using Xunit;
@@ -21,7 +21,7 @@ namespace TextRight.Core.Tests.Editing
           () => new DeleteNextCharacterCommand.DeleteNextCharacterAction(BlockAt(0).BeginCursor(3).AsTextCursor()),
         });
 
-      Check.That(BlockAt(0).AsText()).IsEqualTo("Theord");
+      DidYouKnow.That(BlockAt(0).AsText()).Should().Be("Theord");
       it.VerifyUndo();
     }
 
@@ -43,7 +43,7 @@ namespace TextRight.Core.Tests.Editing
 
         var expected = text.Remove(i, 1);
 
-        Check.That(BlockAt(0).AsText()).IsEqualTo(expected);
+        DidYouKnow.That(BlockAt(0).AsText()).Should().Be(expected);
         it.VerifyUndo();
       }
     }

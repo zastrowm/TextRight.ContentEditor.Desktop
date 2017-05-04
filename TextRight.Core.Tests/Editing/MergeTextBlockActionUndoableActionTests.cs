@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NFluent;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks.Text;
@@ -32,10 +31,10 @@ namespace TextRight.Core.Tests.Editing
                      }
       );
 
-      Check.That(Document.Root.ChildCount).IsEqualTo(1);
-      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
+      DidYouKnow.That(Document.Root.ChildCount).Should().Be(1);
+      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
 
-      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("Paragraph 1Paragraph 2");
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("Paragraph 1Paragraph 2");
 
       it.VerifyUndo();
     }
@@ -46,13 +45,12 @@ namespace TextRight.Core.Tests.Editing
       var it = DoAll(new Func<UndoableAction>[]
                      {
                        FromCommand<MergeTextBlocksCommand>(() => BlockAt(0).EndCursor().ToHandle()),
-                     }
-      );
+                     });
 
-      Check.That(Document.Root.ChildCount).IsEqualTo(1);
-      Check.That(BlockAt(0)).InheritsFrom<TextBlock>();
+      DidYouKnow.That(Document.Root.ChildCount).Should().Be(1);
+      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
 
-      Check.That(BlockAt(0).As<TextBlock>().AsText()).IsEqualTo("Paragraph 1Paragraph 2");
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("Paragraph 1Paragraph 2");
 
       it.VerifyUndo();
     }

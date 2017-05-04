@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NFluent;
+using FluentAssertions;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using Xunit;
 
@@ -32,8 +32,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = (TextBlockCursor)Block.GetCursor();
       cursor.MoveToBeginning();
 
-      Check.That(cursor.CharacterBefore).IsEqualTo('\0');
-      Check.That(cursor.CharacterAfter).IsEqualTo('1');
+      DidYouKnow.That(cursor.CharacterBefore).Should().Be('\0');
+      DidYouKnow.That(cursor.CharacterAfter).Should().Be('1');
     }
 
     [Theory]
@@ -57,8 +57,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
         cursor.MoveForward();
       }
 
-      Check.That(cursor.CharacterBefore).IsEqualTo(beforeChar);
-      Check.That(cursor.CharacterAfter).IsEqualTo(afterChar);
+      DidYouKnow.That(cursor.CharacterBefore).Should().Be(beforeChar);
+      DidYouKnow.That(cursor.CharacterAfter).Should().Be(afterChar);
     }
 
     [Theory]
@@ -82,8 +82,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
         cursor.MoveBackward();
       }
 
-      Check.That(cursor.CharacterBefore).IsEqualTo(beforeChar);
-      Check.That(cursor.CharacterAfter).IsEqualTo(afterChar);
+      DidYouKnow.That(cursor.CharacterBefore).Should().Be(beforeChar);
+      DidYouKnow.That(cursor.CharacterAfter).Should().Be(afterChar);
     }
 
     private TextBlockCursor GetCursor(int amount)
@@ -106,12 +106,12 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = GetCursor(3);
       var spans = cursor.ExtractToEnd();
 
-      Check.That(spans.Length).IsEqualTo(2);
-      Check.That(spans[0]).IsEqualTo(b);
-      Check.That(spans[1]).IsEqualTo(c);
+      DidYouKnow.That(spans.Length).Should().Be(2);
+      DidYouKnow.That(spans[0]).Should().Be(b);
+      DidYouKnow.That(spans[1]).Should().Be(c);
 
-      Check.That(Block.Content.ChildCount).IsEqualTo(1);
-      Check.That(Block.Content.Fragments.First()).IsEqualTo(a);
+      DidYouKnow.That(Block.Content.ChildCount).Should().Be(1);
+      DidYouKnow.That(Block.Content.Fragments.First()).Should().Be(a);
     }
 
     [Fact]
@@ -120,14 +120,14 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = GetCursor(2);
       var spans = cursor.ExtractToEnd();
 
-      Check.That(spans.Length).IsEqualTo(3);
-      Check.That(spans[0].GetText()).IsEqualTo("3");
-      Check.That(spans[1]).IsEqualTo(b);
-      Check.That(spans[2]).IsEqualTo(c);
+      DidYouKnow.That(spans.Length).Should().Be(3);
+      DidYouKnow.That(spans[0].GetText()).Should().Be("3");
+      DidYouKnow.That(spans[1]).Should().Be(b);
+      DidYouKnow.That(spans[2]).Should().Be(c);
 
-      Check.That(Block.Content.ChildCount).IsEqualTo(1);
-      Check.That(Block.Content.Fragments.First()).IsEqualTo(a);
-      Check.That(Block.Content.Fragments.First().GetText()).IsEqualTo("12");
+      DidYouKnow.That(Block.Content.ChildCount).Should().Be(1);
+      DidYouKnow.That(Block.Content.Fragments.First()).Should().Be(a);
+      DidYouKnow.That(Block.Content.Fragments.First().GetText()).Should().Be("12");
     }
 
     [Fact]
@@ -136,13 +136,13 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = GetCursor(0);
       var spans = cursor.ExtractToEnd();
 
-      Check.That(spans.Length).IsEqualTo(3);
-      Check.That(spans[0].GetText()).IsEqualTo("123");
-      Check.That(spans[1]).IsEqualTo(b);
-      Check.That(spans[2]).IsEqualTo(c);
+      DidYouKnow.That(spans.Length).Should().Be(3);
+      DidYouKnow.That(spans[0].GetText()).Should().Be("123");
+      DidYouKnow.That(spans[1]).Should().Be(b);
+      DidYouKnow.That(spans[2]).Should().Be(c);
 
-      Check.That(Block.Content.ChildCount).IsEqualTo(1);
-      Check.That(Block.Content.Fragments.First().GetText()).IsEqualTo("");
+      DidYouKnow.That(Block.Content.ChildCount).Should().Be(1);
+      DidYouKnow.That(Block.Content.Fragments.First().GetText()).Should().Be("");
     }
 
     [Fact]
@@ -151,16 +151,16 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = GetCursor(9);
       var spans = cursor.ExtractToEnd();
 
-      Check.That(spans.Length).IsEqualTo(1);
-      Check.That(spans[0].GetText()).IsEqualTo("");
+      DidYouKnow.That(spans.Length).Should().Be(1);
+      DidYouKnow.That(spans[0].GetText()).Should().Be("");
 
-      Check.That(Block.Content.ChildCount).IsEqualTo(3);
-      Check.That(Block.Content.Fragments.ElementAt(0)).IsEqualTo(a);
-      Check.That(Block.Content.Fragments.ElementAt(0).GetText()).IsEqualTo("123");
-      Check.That(Block.Content.Fragments.ElementAt(1)).IsEqualTo(b);
-      Check.That(Block.Content.Fragments.ElementAt(1).GetText()).IsEqualTo("456");
-      Check.That(Block.Content.Fragments.ElementAt(2)).IsEqualTo(c);
-      Check.That(Block.Content.Fragments.ElementAt(2).GetText()).IsEqualTo("789");
+      DidYouKnow.That(Block.Content.ChildCount).Should().Be(3);
+      DidYouKnow.That(Block.Content.Fragments.ElementAt(0)).Should().Be(a);
+      DidYouKnow.That(Block.Content.Fragments.ElementAt(0).GetText()).Should().Be("123");
+      DidYouKnow.That(Block.Content.Fragments.ElementAt(1)).Should().Be(b);
+      DidYouKnow.That(Block.Content.Fragments.ElementAt(1).GetText()).Should().Be("456");
+      DidYouKnow.That(Block.Content.Fragments.ElementAt(2)).Should().Be(c);
+      DidYouKnow.That(Block.Content.Fragments.ElementAt(2).GetText()).Should().Be("789");
     }
   }
 }

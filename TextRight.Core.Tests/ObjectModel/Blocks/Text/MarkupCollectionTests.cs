@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using NFluent;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using Xunit;
 
@@ -48,7 +47,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     {
       var markup = _collection.MarkRange(new TextRange(0, 3), _fakeMarkupType, null);
 
-      markup.Should().NotBeNull();
+      DidYouKnow.That(markup).Should().NotBeNull();
     }
 
     [Fact]
@@ -75,7 +74,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.MarkRange(new TextRange(0, 3), _fakeMarkupType, null);
 
       var first = _collection.First();
-      Check.That(first.GetRange()).IsEqualTo(new TextRange(0, 3));
+      DidYouKnow.That(first.GetRange()).Should().Be(new TextRange(0, 3));
     }
 
     [Fact]
@@ -85,11 +84,11 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.MarkRange(new TextRange(0, 5), _fakeMarkupType, null);
       _collection.MarkRange(new TextRange(0, 7), _fakeMarkupType, null);
 
-      _collection.Should().HaveCount(3);
-
-      _collection.Should().Contain(it => it.GetRange().Equals(new TextRange(0, 3)));
-      _collection.Should().Contain(it => it.GetRange().Equals(new TextRange(0, 5)));
-      _collection.Should().Contain(it => it.GetRange().Equals(new TextRange(0, 7)));
+      DidYouKnow.That(_collection).Should()
+                .HaveCount(3)
+                .And.Contain(it => it.GetRange().Equals(new TextRange(0, 3)))
+                .And.Contain(it => it.GetRange().Equals(new TextRange(0, 5)))
+                .And.Contain(it => it.GetRange().Equals(new TextRange(0, 7)));
     }
 
     [Fact]
@@ -98,7 +97,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.MarkRange(new TextRange(1, 7), _fakeMarkupType, null);
       _collection.Should().HaveCount(1);
 
-      Ranges.Should().HaveElementAt(0, new TextRange(1, 7));
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, new TextRange(1, 7));
     }
 
     [Fact]
@@ -107,8 +106,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.MarkRange(new TextRange(0, 8), _fakeMarkupType, null);
       _collection.MarkRange(new TextRange(1, 7), _fakeMarkupType, null);
 
-      Ranges.Should().HaveElementAt(0, new TextRange(0, 8));
-      Ranges.Should().HaveElementAt(1, new TextRange(1, 7));
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, new TextRange(0, 8));
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(1, new TextRange(1, 7));
     }
 
     [Fact]
@@ -118,9 +117,9 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       _collection.MarkRange(new TextRange(1, 7), _fakeMarkupType, null);
       _collection.MarkRange(new TextRange(0, 8), _fakeMarkupType, null);
 
-      Ranges.Should().HaveElementAt(0, new TextRange(0, 8));
-      Ranges.Should().HaveElementAt(1, new TextRange(1, 7));
-      Ranges.Should().HaveElementAt(2, new TextRange(3, 4));
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, new TextRange(0, 8));
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(1, new TextRange(1, 7));
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(2, new TextRange(3, 4));
     }
 
     [Fact]
@@ -135,17 +134,14 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
        */
       var originalRanges = new[]
                            {
-                             new TextRange(0, 4),
-                             new TextRange(2, 10),
-                             new TextRange(6, 12),
-                             new TextRange(7, 14),
+                             new TextRange(0, 4), new TextRange(2, 10), new TextRange(6, 12), new TextRange(7, 14),
                            };
 
       AddAllRangesToCollection(originalRanges);
 
       for (var i = 0; i < originalRanges.Length; i++)
       {
-        Ranges.Should().HaveElementAt(i, originalRanges[i]);
+        TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(i, originalRanges[i]);
       }
     }
 
@@ -155,47 +151,47 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       var instance = _collection.MarkRange(new TextRange(0, 10), _fakeMarkupType, null);
       _collection.UpdateFromEvent(new TextModification(4, 4, true));
 
-      _collection.First().Should().BeSameAs(instance);
+      TextRight.Core.Tests.DidYouKnow.That(_collection).Should().HaveElementAt(0, instance);
     }
 
     [Fact]
     public void InsertText_BeforeRange_ShiftsRangesOver()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(1, 3, true),
-             new TextRange(6, 11));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(1, 3, true),
+                         new TextRange(6, 11));
     }
 
     [Fact]
     public void InsertText_AfterRange_DoesNothing()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(10, 3, true),
-             new TextRange(3, 8));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(10, 3, true),
+                         new TextRange(3, 8));
     }
 
     [Fact]
     public void InsertText_AtBeginningOfRange_DoesNotChangeLengthOfRange()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(3, 3, true),
-             new TextRange(6, 11));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(3, 3, true),
+                         new TextRange(6, 11));
     }
 
     [Fact]
     public void InsertText_AtEndOfRange_DoesNotChangeLengthOfRange()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(8, 3, true),
-             new TextRange(3, 8));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(8, 3, true),
+                         new TextRange(3, 8));
     }
 
     [Fact]
     public void InsertText_InMiddleOfRange_ExtendsRange()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(4, 1, true),
-             new TextRange(3, 9));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(4, 1, true),
+                         new TextRange(3, 9));
     }
 
     [Fact]
@@ -210,10 +206,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
        */
       var originalRanges = new[]
                            {
-                             new TextRange(0, 4),
-                             new TextRange(2, 10),
-                             new TextRange(6, 12),
-                             new TextRange(6, 14),
+                             new TextRange(0, 4), new TextRange(2, 10), new TextRange(6, 12), new TextRange(6, 14),
                            };
 
       /*
@@ -225,23 +218,21 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
        */
       var newRanges = new[]
                       {
-                        new TextRange(0, 4),
-                        new TextRange(2, 12),
-                        new TextRange(8, 14),
-                        new TextRange(8, 16),
+                        new TextRange(0, 4), new TextRange(2, 12), new TextRange(8, 14), new TextRange(8, 16),
                       };
 
       AddAllRangesToCollection(originalRanges);
 
       _collection.UpdateFromEvent(new TextModification(6, 2, true));
 
-      Ranges.Should().HaveElementAt(0, newRanges[0]);
-      Ranges.Should().HaveElementAt(1, newRanges[1]);
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, newRanges[0]);
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, newRanges[0]);
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(1, newRanges[1]);
 
       // note that technically the api doesn't guarantee that just be cause we added #3 after #2 that
       // the order was maintained so this could fail the test in the future if that changes. 
-      Ranges.Should().HaveElementAt(2, newRanges[2]);
-      Ranges.Should().HaveElementAt(3, newRanges[3]);
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(2, newRanges[2]);
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(3, newRanges[3]);
     }
 
     private Lazy<List<TextRange>> _allValidTextRanges;
@@ -272,73 +263,73 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     [Fact]
     public void DeleteText_AtBeginning_RemovesLength()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(3, 1, false),
-             new TextRange(3, 7));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(3, 1, false),
+                         new TextRange(3, 7));
     }
 
     [Fact]
     public void DeleteText_AtBeginningWithLongRange_CollapsesRange()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(3, 10, false),
-             new TextRange(3, 3));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(3, 10, false),
+                         new TextRange(3, 3));
     }
 
     [Fact]
     public void DeleteText_BeforeWithLongRange_ShiftsAndCollapsesRange()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(1, 10, false),
-             new TextRange(1, 1));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(1, 10, false),
+                         new TextRange(1, 1));
     }
 
     [Fact]
     public void DeleteText_UptoRange_RemovesNothing()
     {
-      Verify(new TextRange(1, 2),
-             new TextModification(0, 1, false),
-             new TextRange(0, 1));
+      VerifyModification(new TextRange(1, 2),
+                         new TextModification(0, 1, false),
+                         new TextRange(0, 1));
     }
 
     [Fact]
     public void DeleteText_Before_ShiftsRange()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(1, 1, false),
-             new TextRange(2, 7));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(1, 1, false),
+                         new TextRange(2, 7));
     }
 
     [Fact]
     public void DeleteText_BeforeEmptyRange_ShiftsRange()
     {
-      Verify(new TextRange(1, 1),
-             new TextModification(0, 1, false),
-             new TextRange(0, 0));
+      VerifyModification(new TextRange(1, 1),
+                         new TextModification(0, 1, false),
+                         new TextRange(0, 0));
     }
 
     [Fact]
     public void DeleteText_AfterEnd_DoesNothing()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(8, 3, false),
-             new TextRange(3, 8));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(8, 3, false),
+                         new TextRange(3, 8));
     }
 
     [Fact]
     public void DeleteText_AfterStart_RemovesLength()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(4, 8, false),
-             new TextRange(3, 4));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(4, 8, false),
+                         new TextRange(3, 4));
     }
 
     [Fact]
     public void DeleteText_InRange_RemovesLength()
     {
-      Verify(new TextRange(3, 8),
-             new TextModification(4, 2, false),
-             new TextRange(3, 6));
+      VerifyModification(new TextRange(3, 8),
+                         new TextModification(4, 2, false),
+                         new TextRange(3, 6));
     }
 
     [Fact]
@@ -356,12 +347,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var originalRanges = new[]
                            {
-                             new TextRange(0, 4),
-                             new TextRange(2, 12),
-                             new TextRange(7, 10),
-                             new TextRange(8, 14),
-                             new TextRange(8, 15),
-                             new TextRange(9, 13),
+                             new TextRange(0, 4), new TextRange(2, 12), new TextRange(7, 10), new TextRange(8, 14), new TextRange(8, 15), new TextRange(9, 13),
                            };
 
       /*
@@ -375,28 +361,21 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
        */
       var newRanges = new[]
                       {
-                        new TextRange(0, 4),
-                        new TextRange(2, 10),
-                        new TextRange(6, 8),
-                        new TextRange(6, 12),
-                        new TextRange(6, 13),
-                        new TextRange(7, 11),
+                        new TextRange(0, 4), new TextRange(2, 10), new TextRange(6, 8), new TextRange(6, 12), new TextRange(6, 13), new TextRange(7, 11),
                       };
 
       originalRanges.ToList()
-                    .ForEach(
-                      r => _collection.MarkRange(r, _fakeMarkupType, null)
-                    );
+                    .ForEach(r => _collection.MarkRange(r, _fakeMarkupType, null));
 
       _collection.UpdateFromEvent(new TextModification(6, 2, false));
 
-      Ranges.Should().HaveElementAt(0, newRanges[0]);
-      Ranges.Should().HaveElementAt(1, newRanges[1]);
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(0, newRanges[0]);
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(1, newRanges[1]);
 
       // note that technically the api doesn't guarantee that just be cause we added #3 after #2 that
       // the order was maintained so this could fail the test in the future if that changes. 
-      Ranges.Should().HaveElementAt(2, newRanges[2]);
-      Ranges.Should().HaveElementAt(3, newRanges[3]);
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(2, newRanges[2]);
+      TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(3, newRanges[3]);
     }
 
     [Fact]
@@ -435,11 +414,10 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       for (var i = 0; i < Ranges.Length; i++)
       {
         var type = modification.WasAdded ? "insert" : "deletion";
-        var msg =
-          $"'operation {type} @{modification.Index} of @{modification.NumberOfCharacters} characters'.  Original was {rangesOriginal[i]}";
+        var msg = $"'operation {type} @{modification.Index} of @{modification.NumberOfCharacters} characters'.  Original was {rangesOriginal[i]}";
 
         var expected = Transform(rangesOriginal[i], modification);
-        actualRanges.Should().HaveElementAt(i, expected, msg);
+        TextRight.Core.Tests.DidYouKnow.That(Ranges).Should().HaveElementAt(i, expected); // msg
       }
     }
 
@@ -447,7 +425,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     ///  Verifies that when the given modification is operated on the given range, that the expect
     ///  range is output.
     /// </summary>
-    private void Verify(TextRange original, TextModification modification, TextRange expected)
+    private void VerifyModification(TextRange original, TextModification modification, TextRange expected)
     {
       // note, technically the single range is all that SHOULD be tested, but since everything
       // funnels through here, we might as well test that when the ranges are duplicated, that all of
@@ -489,6 +467,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
         _collection.MarkRange(original, _fakeMarkupType, null);
         _collection.MarkRange(original, _fakeMarkupType, null);
         _collection.UpdateFromEvent(modification);
+
         Ranges.Should().HaveElementAt(0, expected, "'duplicated thrice'");
         Ranges.Should().HaveElementAt(1, expected, "'duplicated thrice'");
         Ranges.Should().HaveElementAt(2, expected, "'duplicated thrice'");
