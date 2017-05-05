@@ -41,18 +41,18 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       => _spans;
 
     /// <summary> Gets a cursor that is looking at the beginning of this content. </summary>
-    public TextBlockValueCursor GetCursorToBeginning() 
-      => new TextBlockValueCursor(FirstFragment, 0);
+    public TextCaret GetCursorToBeginning() 
+      => new TextCaret(FirstFragment, 0);
 
     /// <summary> Gets a cursor that is looking at the end of this content. </summary>
-    public TextBlockValueCursor GetCursorToEnd()
-      => new TextBlockValueCursor(LastFragment, LastFragment.Length);
+    public TextCaret GetCursorToEnd()
+      => new TextCaret(LastFragment, LastFragment.Length);
 
     /// <summary> Retrieves a cursor that points at the given character. </summary>
     /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>
     /// <param name="index"> The index of the character to point at. </param>
     /// <returns> A TextBlockValueCursor that is pointing at the given character. </returns>
-    public TextBlockValueCursor CursorFromCharacterIndex(int index)
+    public TextCaret CursorFromCharacterIndex(int index)
     {
       int numberOfCharacters = 0;
       var current = FirstFragment;
@@ -63,7 +63,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         current = current.Next ?? throw new Exception("Invalid index for cursor");
       }
 
-      return new TextBlockValueCursor(current, index - numberOfCharacters);
+      return new TextCaret(current, index - numberOfCharacters);
     }
 
     /// <summary> Appends the given span to the TextBlock. </summary>
@@ -189,7 +189,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <param name="start"> The position at which extraction should start. </param>
     /// <param name="end"> The position at which the content extraction should end. </param>
     /// <returns> The extracted content. </returns>
-    public TextBlockContent ExtractContent(TextBlockValueCursor start, TextBlockValueCursor end)
+    public TextBlockContent ExtractContent(TextCaret start, TextCaret end)
       => TextBlockContentExtractor.Extract(this, start, end);
 
     /// <summary> Extracts the content starting at the cursor and continuing to the end of the block. </summary>

@@ -92,7 +92,7 @@ namespace TextRight.Editor.Wpf.View
     /// <summary> Gets the cursor at the designated point. </summary>
     /// <param name="point"> The point at which the cursor should be pointing.. </param>
     /// <returns> The cursor at the designated point. </returns>
-    public TextBlockValueCursor GetCursor(DocumentPoint point)
+    public TextCaret GetCursor(DocumentPoint point)
     {
       var (currentLine, numberOfCharactersBeforeLine) = GetLineForYPosition(point.Y);
 
@@ -103,7 +103,7 @@ namespace TextRight.Editor.Wpf.View
 
       int indexOfCharacterInFragment = absoluteIndexOfCharacter - numberOfCharactersBeforeFragment;
 
-      var cursor = new TextBlockValueCursor(fragment, indexOfCharacterInFragment);
+      var cursor = new TextCaret(fragment, indexOfCharacterInFragment);
 
       // We clicked on a character, but the caret position actually represents the left side of the character.
       // For example, given "|a|", when we click on 'a', the | represents the possible places for the caret
@@ -149,7 +149,7 @@ namespace TextRight.Editor.Wpf.View
       return (currentLine, numberOfCharactersBeforeLine);
     }
 
-    public MeasuredRectangle MeasureCharacter(TextBlockValueCursor cursor)
+    public MeasuredRectangle MeasureCharacter(TextCaret cursor)
     {
       RecalculateIfDirty();
 

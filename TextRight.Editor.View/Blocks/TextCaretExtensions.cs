@@ -7,9 +7,9 @@ using TextRight.Core.Utilities;
 namespace TextRight.Editor.View.Blocks
 {
   /// <summary>
-  ///  Extension methods for interacting with a <see cref="TextBlockValueCursor"/>.
+  ///  Extension methods for interacting with a <see cref="TextCaret"/>.
   /// </summary>
-  public static class TextBlockValueCursorExtensions
+  public static class TextCaretExtensions
   {
     /// <summary> Gets the position of a caret. </summary>
     /// <param name="cursor"> The caret to measure. </param>
@@ -18,7 +18,7 @@ namespace TextRight.Editor.View.Blocks
     ///  A MeasuredRectangle representing the caret position of the <see cref="cursor"/> that should
     ///  be rendered if the text was to be inserted into the document at the given location.
     /// </returns>
-    public static MeasuredRectangle MeasureCaret(this TextBlockValueCursor cursor, ITextBlockRenderer associatedRenderer)
+    public static MeasuredRectangle MeasureCaret(this TextCaret cursor, ITextBlockRenderer associatedRenderer)
     {
       if (cursor.IsAtEndOfBlock && cursor.IsAtBeginningOfBlock)
       {
@@ -45,21 +45,21 @@ namespace TextRight.Editor.View.Blocks
       // no "previous" character
       if (cursor.IsAtBeginningOfBlock)
         shouldMeasureNext = true;
-      else if (!cursor.IsAtEndOfBlock && cursor.CharacterBefore.IsWhitespace)
+      else if (!cursor.IsAtEndOfBlock && cursor.GetCharacterBefore().IsWhitespace)
         shouldMeasureNext = true;
       else
         shouldMeasureNext = false;
 
       if (shouldMeasureNext)
       {
-        var rect = associatedRenderer.MeasureGraphemeBehind(cursor);
+        var rect = associatedRenderer.MeasureGraphemeFollowing(cursor);
         return rect.FlattenLeft();
       }
       else
       {
         // we measure the previous character by moving backwards then measuring
         cursor = cursor.MoveBackward();
-        var rect = associatedRenderer.MeasureGraphemeBehind(cursor);
+        var rect = associatedRenderer.MeasureGraphemeFollowing(cursor);
         return rect.FlattenRight();
       }
     }

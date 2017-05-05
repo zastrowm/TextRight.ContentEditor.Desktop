@@ -4,14 +4,16 @@ using System.Linq;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
-  /// <summary> A cursor looking in a textblock. </summary>
-  public struct TextBlockValueCursor : IEquatable<TextBlockValueCursor>
+  /// <summary>
+  ///  A position within a <see cref="StyledTextFragment"/> where text can be inserted.
+  /// </summary>
+  public struct TextCaret : IEquatable<TextCaret>
   {
     /// <summary> A cursor which represents an invalid location. </summary>
-    public static readonly TextBlockValueCursor Invalid
-      = default(TextBlockValueCursor);
+    public static readonly TextCaret Invalid
+      = default(TextCaret);
 
-    public TextBlockValueCursor(StyledTextFragment fragment, int offsetIntoSpan)
+    public TextCaret(StyledTextFragment fragment, int offsetIntoSpan)
     {
       if (offsetIntoSpan < 0)
         throw new ArgumentException("Offset must be zero or a positive number",nameof(offsetIntoSpan));
@@ -32,8 +34,12 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       }
     }
 
-    internal TextBlockValueCursor(StyledTextFragment fragment, int offsetIntoSpan, object unused)
+    // ReSharper disable once UnusedParameter.Local
+    internal TextCaret(StyledTextFragment fragment, int offsetIntoSpan, object unused)
     {
+      // constructor used soley to avoid the checks in the other constructors when we can guarantee
+      // those are true. 
+
       Fragment = fragment;
       OffsetIntoSpan = offsetIntoSpan;
     }
@@ -67,7 +73,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public bool IsAtEndOfBlock
       => IsAtEndOfFragment && Fragment.Next == null;
 
-    /// <summary> True if the cursor is pointing at the end of the current fragment. </summary>
+    /// <summary> True if the cursor is pointing at the beginning of the current fragment. </summary>
     public bool IsAtBeginningOfFragment
       => OffsetIntoSpan == 0 || (Fragment.Previous != null && OffsetIntoSpan == 1);
 
@@ -88,25 +94,13 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       }
     }
 
-    /// <summary> Get the character before the current cursor position. </summary>
-    public TextUnit CharacterBefore
-    {
-      get
-      {
-        if (OffsetIntoSpan != 0)
-          return Fragment.GetCharacterAt(OffsetIntoSpan - 1);
-        else
-          return TextUnit.Default;
-      }
-    }
-
     /// <inheritdoc />
-    public TextBlockValueCursor MoveForward()
+    public TextCaret MoveForward()
     {
       // we move right to end of the span
       if (OffsetIntoSpan < Fragment.Length)
       {
-        return new TextBlockValueCursor(Fragment, OffsetIntoSpan + 1, null);
+        return new TextCaret(Fragment, OffsetIntoSpan + 1, null);
       }
 
       // we're at the end of the span and as long as we can move to the next span,
@@ -114,14 +108,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (Fragment.Next != null)
       {
         // we're never at offset=0 unless we're at the beginning of the first span.
-        return new TextBlockValueCursor(Fragment.Next, 1, null);
+        return new TextCaret(Fragment.Next, 1, null);
       }
 
       return Invalid;
     }
 
     /// <inheritdoc />
-    public TextBlockValueCursor MoveBackward()
+    public TextCaret MoveBackward()
     {
       // we're at the beginning of the first span
       if (OffsetIntoSpan == 0)
@@ -129,23 +123,23 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       if (OffsetIntoSpan > 2)
       {
-        return new TextBlockValueCursor(Fragment, OffsetIntoSpan - 1, null);
+        return new TextCaret(Fragment, OffsetIntoSpan - 1, null);
       }
 
       if (OffsetIntoSpan != 1 || Fragment.Index == 0)
       {
         // at offset 1 of the first span, so go to offset 0 which indicates the
         // beginning of the block. 
-        return new TextBlockValueCursor(Fragment, OffsetIntoSpan - 1, null);
+        return new TextCaret(Fragment, OffsetIntoSpan - 1, null);
       }
 
       // we're at the beginning of the current span, so go ahead and move onto
       // previous span. 
-      return new TextBlockValueCursor(Fragment.Previous, Fragment.Length, null);
+      return new TextCaret(Fragment.Previous, Fragment.Length, null);
     }
 
     /// <inheritdoc />
-    public bool Equals(TextBlockValueCursor other) 
+    public bool Equals(TextCaret other) 
       => Equals(Fragment, other.Fragment) && OffsetIntoSpan == other.OffsetIntoSpan;
 
     /// <inheritdoc />
@@ -154,7 +148,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (ReferenceEquals(null, obj))
         return false;
 
-      return obj is TextBlockValueCursor && Equals((TextBlockValueCursor)obj);
+      return obj is TextCaret && Equals((TextCaret)obj);
     }
 
     /// <inheritdoc />
@@ -167,11 +161,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <inheritdoc />
-    public static bool operator ==(TextBlockValueCursor left, TextBlockValueCursor right) 
+    public static bool operator ==(TextCaret left, TextCaret right) 
       => left.Equals(right);
 
     /// <inheritdoc />
-    public static bool operator !=(TextBlockValueCursor left, TextBlockValueCursor right) 
+    public static bool operator !=(TextCaret left, TextCaret right) 
       => !left.Equals(right);
   }
 }

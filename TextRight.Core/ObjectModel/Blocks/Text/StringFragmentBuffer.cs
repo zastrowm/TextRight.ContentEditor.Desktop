@@ -66,20 +66,4 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public int Length
       => _text.Length;
   }
-
-  public struct TextUnit
-  {
-    public static TextUnit Default { get; }
-     = new TextUnit();
-
-    public TextUnit(char character)
-    {
-      Character = character;
-    }
-
-    public char Character { get; }
-
-    public bool IsWhitespace
-      => char.IsWhiteSpace(Character);
-  }
 }

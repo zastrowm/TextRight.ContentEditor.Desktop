@@ -16,10 +16,10 @@ namespace TextRight.Editor.View.Blocks
     /// <summary> Measure the grapheme that follows the given caret location. </summary>
     /// <remarks>
     ///  Returns <see cref="MeasuredRectangle.Invalid"/> if
-    ///  <paramref name="cursor"/>.<see cref="TextBlockValueCursor.IsAtEndOfBlock"/> is true.
+    ///  <paramref name="cursor"/>.<see cref="TextCaret.IsAtEndOfBlock"/> is true.
     /// </remarks>
     /// <param name="cursor"> The caret location after which the grapheme should be measured. </param>
     /// <returns> A MeasuredRectangle representing the bounds of the grapheme. </returns>
-    MeasuredRectangle MeasureGraphemeFollowing(TextBlockValueCursor cursor);
+    MeasuredRectangle MeasureGraphemeFollowing(TextCaret cursor);
   }
 }

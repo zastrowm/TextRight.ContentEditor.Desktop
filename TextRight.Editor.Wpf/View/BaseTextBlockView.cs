@@ -88,7 +88,7 @@ namespace TextRight.Editor.Wpf.View
       if (!IsValidForMeasuring)
         return MeasuredRectangle.Invalid;
 
-      var cursor = new TextBlockValueCursor((StyledTextFragment)fragment.DocumentItem, characterIndex);
+      var cursor = new TextCaret((StyledTextFragment)fragment.DocumentItem, characterIndex);
       var rect = _renderer.MeasureCharacter(cursor);
       if (!rect.IsValid)
         return rect;
@@ -156,7 +156,7 @@ namespace TextRight.Editor.Wpf.View
       RecreateText();
     }
 
-    public TextBlockValueCursor GetCursor(DocumentPoint point)
+    public TextCaret GetCursor(DocumentPoint point)
     {
       point.X -= _cachedOffset.X;
       point.Y -= _cachedOffset.Y;

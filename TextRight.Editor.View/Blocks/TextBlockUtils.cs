@@ -28,7 +28,7 @@ namespace TextRight.Editor.View.Blocks
     ///  two fragments have a size of 10 characters each, and the cursor is pointing to the second
     ///  character of the second fragment, this method would return 12.
     /// </returns>
-    public static int GetCharacterIndex(TextBlockValueCursor cursor)
+    public static int GetCharacterIndex(TextCaret cursor)
     {
       var currentFragment = cursor.Fragment.Parent.Content.FirstFragment;
 

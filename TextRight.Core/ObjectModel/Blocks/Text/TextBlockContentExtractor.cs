@@ -12,8 +12,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   {
     /// <see cref="TextBlockContent.ExtractContent"/>
     public static TextBlockContent Extract(TextBlockContent content,
-                                           TextBlockValueCursor startCursor,
-                                           TextBlockValueCursor endCursor)
+                                           TextCaret startCursor,
+                                           TextCaret endCursor)
     {
       VerifyExtractParameters(content, startCursor, endCursor);
 
@@ -55,8 +55,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     [AssertionMethod]
     private static void VerifyExtractParameters(TextBlockContent content,
-                                                TextBlockValueCursor startCursor,
-                                                TextBlockValueCursor endCursor)
+                                                TextCaret startCursor,
+                                                TextCaret endCursor)
     {
       if (!startCursor.IsValid || startCursor.Fragment.Owner != content)
         throw new ArgumentException("Start cursor is not pointing at this content", nameof(startCursor));
@@ -153,7 +153,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return clone;
     }
 
-    private static FragmentAndOffset GetStart(TextBlockValueCursor start)
+    private static FragmentAndOffset GetStart(TextCaret start)
     {
       if (start.IsAtBeginningOfBlock)
         return new FragmentAndOffset(start.Fragment, 0);

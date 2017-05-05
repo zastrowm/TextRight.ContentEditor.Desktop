@@ -8,7 +8,7 @@ using Xunit;
 
 namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 {
-  public class TextBlockCaretTests
+  public class TextCaretTests
   {
     [Fact]
     public void CharactersAreReportedCorrectly_AtBeginning()
@@ -22,11 +22,11 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       DidYouKnow.That(cursor.IsAtBeginningOfFragment).Should().BeTrue();
 
       DidYouKnow.That(cursor.IsAtEndOfBlock).Should().BeFalse();
-      DidYouKnow.That(cursor.IsAtBeginningOfFragment).Should().BeFalse();
+      DidYouKnow.That(cursor.IsAtEndOfFragment).Should().BeFalse();
 
       DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(0);
-      DidYouKnow.That(cursor.CharacterAfter).Should().Be('0');
-      DidYouKnow.That(cursor.CharacterBefore).Should().Be('\0');
+      DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('0');
+      DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be('\0');
     }
 
     [Fact]
@@ -41,11 +41,11 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       DidYouKnow.That(cursor.IsAtBeginningOfFragment).Should().BeFalse();
 
       DidYouKnow.That(cursor.IsAtEndOfBlock).Should().BeTrue();
-      DidYouKnow.That(cursor.IsAtBeginningOfFragment).Should().BeTrue();
+      DidYouKnow.That(cursor.IsAtEndOfFragment).Should().BeTrue();
 
       DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(10);
-      DidYouKnow.That(cursor.CharacterAfter).Should().Be('\0');
-      DidYouKnow.That(cursor.CharacterBefore).Should().Be('9');
+      DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('\0');
+      DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be('9');
     }
 
     private static TextBlockContent CreateContent(params string[] texts)
@@ -68,8 +68,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       var cursor = content.GetCursorToBeginning().MoveCursorForwardBy(index);
 
       DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(index);
-      DidYouKnow.That(cursor.CharacterAfter).Should().Be(expectedRightCharacter);
-      DidYouKnow.That(cursor.CharacterBefore).Should().Be(expectedLeftCharacter);
+      DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be(expectedRightCharacter);
+      DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be(expectedLeftCharacter);
     }
 
     [Fact]
@@ -82,8 +82,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       DidYouKnow.That(cursor).Should().Be(content.GetCursorToEnd());
       DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(10);
-      DidYouKnow.That(cursor.CharacterAfter).Should().Be('\0');
-      DidYouKnow.That(cursor.CharacterBefore).Should().Be('9');
+      DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('\0');
+      DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be('9');
     }
 
     [Theory]
@@ -103,8 +103,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var cursor = content.GetCursorToBeginning().MoveCursorForwardBy(amountToMove);
 
-      DidYouKnow.That(cursor.CharacterBefore).Should().Be(beforeChar);
-      DidYouKnow.That(cursor.CharacterAfter).Should().Be(afterChar);
+      DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be(beforeChar);
+      DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be(afterChar);
     }
 
     [Theory]
@@ -124,8 +124,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var cursor = content.GetCursorToEnd().MoveCursorBackwardBy(amountToMove);
 
-      DidYouKnow.That(cursor.CharacterBefore).Should().Be(beforeChar);
-      DidYouKnow.That(cursor.CharacterAfter).Should().Be(afterChar);
+      DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be(beforeChar);
+      DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be(afterChar);
     }
   }
 }

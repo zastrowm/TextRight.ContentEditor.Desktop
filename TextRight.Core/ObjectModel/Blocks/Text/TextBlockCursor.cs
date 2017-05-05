@@ -35,7 +35,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
     }
 
-    public TextBlockCursor(TextBlockValueCursor cursor)
+    public TextBlockCursor(TextCaret cursor)
       : base(cursor.Fragment.Parent)
     {
       // TODO verify the offset is correct.
@@ -267,9 +267,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       State = cursor.State;
     }
 
-    /// <summary> Creates a <see cref="TextBlockValueCursor"/> from this cursor. </summary>
-    public TextBlockValueCursor ToValue() 
-      => new TextBlockValueCursor(Fragment, OffsetIntoSpan);
+    /// <summary> Creates a <see cref="TextCaret"/> from this cursor. </summary>
+    public TextCaret ToValue() 
+      => new TextCaret(Fragment, OffsetIntoSpan);
 
     /// <inheritdoc />
     public bool Equals(TextBlockCursor other)

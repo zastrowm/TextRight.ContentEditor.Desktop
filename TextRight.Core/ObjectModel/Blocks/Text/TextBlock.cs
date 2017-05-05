@@ -129,7 +129,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <returns> The fragments that have been extracted. </returns>
     public StyledTextFragment[] ExtractContentToEnd(TextBlockCursor cursor)
     {
-      var endCursor = new TextBlockValueCursor(cursor.Block.Content.LastFragment, cursor.Block.Content.LastFragment.Length);
+      var endCursor = new TextCaret(cursor.Block.Content.LastFragment, cursor.Block.Content.LastFragment.Length);
       return Content.ExtractContent(cursor.ToValue(), endCursor).Fragments.ToArray();
     }
 
