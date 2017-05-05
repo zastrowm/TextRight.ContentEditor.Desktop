@@ -155,7 +155,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> Gets the character at the given position. </summary>
     /// <param name="index"> The index within the span for the character to retrieve. </param>
     /// <returns> The character at the given index. </returns>
-    public char GetCharacterAt(int index)
+    public TextUnit GetCharacterAt(int index)
     {
       return _buffer.GetCharacterAt(index);
     }

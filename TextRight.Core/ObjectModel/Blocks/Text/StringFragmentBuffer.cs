@@ -59,11 +59,27 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <inheritdoc />
-    public char GetCharacterAt(int position)
-      => _text[position];
+    public TextUnit GetCharacterAt(int position)
+      => new TextUnit(_text[position]);
 
     /// <inheritdoc />
     public int Length
       => _text.Length;
+  }
+
+  public struct TextUnit
+  {
+    public static TextUnit Default { get; }
+     = new TextUnit();
+
+    public TextUnit(char character)
+    {
+      Character = character;
+    }
+
+    public char Character { get; }
+
+    public bool IsWhitespace
+      => char.IsWhiteSpace(Character);
   }
 }

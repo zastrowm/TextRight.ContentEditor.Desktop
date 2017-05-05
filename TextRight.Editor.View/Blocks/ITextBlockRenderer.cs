@@ -7,30 +7,19 @@ using TextRight.Core.Utilities;
 
 namespace TextRight.Editor.View.Blocks
 {
+  /// <summary> Responsible for rendering a <see cref="TextBlockContent"/>. </summary>
   public interface ITextBlockRenderer
   {
-    MeasuredRectangle MeasureForward(TextBlockValueCursor cursor);
-    MeasuredRectangle MeasureBackward(TextBlockValueCursor cursor);
-  }
+    /// <summary> The content that is being rendered. </summary>
+    TextBlockContent Content { get; }
 
-  public static class TextBlockValueCursorExtensions
-  {
-    public static MeasuredRectangle MeasurePosition(this TextBlockValueCursor cursor, ITextBlockRenderer associatedRenderer)
-    {
-      if (cursor.IsAtEndOfBlock && cursor.IsAtBeginningOfBlock)
-      {
-        // if it's empty, there is no character to measure
-        return cursor.Block.GetBounds().FlattenLeft();
-      }
-
-      // we want to measure the next character unless the previous character was
-      // a space (as the text will most likely appear on the next line anyways) 
-      bool shouldMeasureNext = cursor.IsAtBeginningOfBlock
-                               || (!cursor.IsAtEndOfBlock && cursor.CharacterBefore == ' ');
-
-      return shouldMeasureNext
-        ? associatedRenderer.MeasureForward(cursor).FlattenLeft()
-        : associatedRenderer.MeasureBackward(cursor).FlattenRight();
-    }
+    /// <summary> Measure the grapheme that follows the given caret location. </summary>
+    /// <remarks>
+    ///  Returns <see cref="MeasuredRectangle.Invalid"/> if
+    ///  <paramref name="cursor"/>.<see cref="TextBlockValueCursor.IsAtEndOfBlock"/> is true.
+    /// </remarks>
+    /// <param name="cursor"> The caret location after which the grapheme should be measured. </param>
+    /// <returns> A MeasuredRectangle representing the bounds of the grapheme. </returns>
+    MeasuredRectangle MeasureGraphemeFollowing(TextBlockValueCursor cursor);
   }
 }

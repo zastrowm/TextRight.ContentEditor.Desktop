@@ -79,11 +79,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <summary> Get the character after the current cursor position. </summary>
     public char CharacterAfter
-      => OffsetIntoSpan != Fragment.Length ? Fragment.GetCharacterAt(OffsetIntoSpan) : NullCharacter;
+      => OffsetIntoSpan != Fragment.Length ? Fragment.GetCharacterAt(OffsetIntoSpan).Character : NullCharacter;
 
     /// <summary> Get the character before the current cursor position. </summary>
     public char CharacterBefore
-      => OffsetIntoSpan != 0 ? Fragment.GetCharacterAt(OffsetIntoSpan - 1) : NullCharacter;
+      => OffsetIntoSpan != 0 ? Fragment.GetCharacterAt(OffsetIntoSpan - 1).Character : NullCharacter;
 
     /// <inheritdoc />
     public override void MoveToBeginning()
