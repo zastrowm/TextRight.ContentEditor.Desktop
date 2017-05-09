@@ -14,6 +14,12 @@ namespace TextRight.Core.Utilities
     public static readonly MeasuredRectangle Invalid
       = new MeasuredRectangle(double.MinValue, double.MinValue, 0, 0);
 
+    public MeasuredRectangle(DocumentPoint documentPoint, double width, double height)
+      : this(documentPoint.X, documentPoint.Y, width, height)
+    {
+      
+    }
+
     /// <summary> Constructor. </summary>
     /// <param name="x"> The X coordinate of the rectangle. </param>
     /// <param name="y"> The Y coordinate of the rectangle. </param>

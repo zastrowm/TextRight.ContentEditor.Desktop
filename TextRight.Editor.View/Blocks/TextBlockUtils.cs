@@ -30,7 +30,7 @@ namespace TextRight.Editor.View.Blocks
     /// </returns>
     public static int GetCharacterIndex(TextCaret cursor)
     {
-      var currentFragment = cursor.Fragment.Parent.Content.FirstFragment;
+      var currentFragment = cursor.Fragment.Owner.FirstFragment;
 
       int total = 0;
 

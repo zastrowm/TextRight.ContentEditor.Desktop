@@ -16,7 +16,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       var text = "0123456789";
       var content = CreateContent(text);
 
-      var cursor = content.GetCursorToBeginning();
+      var cursor = content.GetCaretAtBeginning();
 
       DidYouKnow.That(cursor.IsAtBeginningOfBlock).Should().BeTrue();
       DidYouKnow.That(cursor.IsAtBeginningOfFragment).Should().BeTrue();
@@ -65,7 +65,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var content = CreateContent(text);
 
-      var cursor = content.GetCursorToBeginning().MoveCursorForwardBy(index);
+      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(index);
 
       DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(index);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be(expectedRightCharacter);
@@ -78,7 +78,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       var text = "0123456789";
       var content = CreateContent(text);
 
-      var cursor = content.GetCursorToBeginning().MoveCursorForwardBy(10);
+      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(10);
 
       DidYouKnow.That(cursor).Should().Be(content.GetCursorToEnd());
       DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(10);
@@ -101,7 +101,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     {
       var content = CreateContent("123", "456", "789");
 
-      var cursor = content.GetCursorToBeginning().MoveCursorForwardBy(amountToMove);
+      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(amountToMove);
 
       DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be(beforeChar);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be(afterChar);

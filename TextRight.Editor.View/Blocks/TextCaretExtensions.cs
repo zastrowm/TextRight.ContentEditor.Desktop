@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.Utilities;
 
@@ -18,6 +19,7 @@ namespace TextRight.Editor.View.Blocks
     ///  A MeasuredRectangle representing the caret position of the <see cref="cursor"/> that should
     ///  be rendered if the text was to be inserted into the document at the given location.
     /// </returns>
+    [Pure]
     public static MeasuredRectangle MeasureCaret(this TextCaret cursor, ITextBlockRenderer associatedRenderer)
     {
       if (cursor.IsAtEndOfBlock && cursor.IsAtBeginningOfBlock)
