@@ -109,7 +109,7 @@ namespace TextRight.Editor.Wpf.View
       // For example, given "|a|", when we click on 'a', the | represents the possible places for the caret
       // to be placed.  If we're closer to the left, choose the current caret position.  If the right is closer
       // to where we clicked, choose the next caret position.
-      var nextPosition = cursor.MoveForward();
+      var nextPosition = cursor.GetNextPosition();
       if (nextPosition.IsValid)
       {
         var positionPrevious = MeasureCharacter(cursor).FlattenLeft();

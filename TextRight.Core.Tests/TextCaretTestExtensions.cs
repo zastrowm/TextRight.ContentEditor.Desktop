@@ -13,7 +13,7 @@ namespace TextRight.Core.Tests
       if (caret.IsAtBeginningOfBlock)
         return TextUnit.Default;
 
-      caret = caret.MoveBackward();
+      caret = caret.GetPreviousPosition();
       return caret.CharacterAfter;
     }
 
@@ -22,7 +22,7 @@ namespace TextRight.Core.Tests
       int i = index;
       while (i > 0)
       {
-        cursor = cursor.MoveForward();
+        cursor = cursor.GetNextPosition();
         i -= 1;
       }
 
@@ -34,7 +34,7 @@ namespace TextRight.Core.Tests
       int i = index;
       while (i > 0)
       {
-        cursor = cursor.MoveBackward();
+        cursor = cursor.GetPreviousPosition();
         i -= 1;
       }
 

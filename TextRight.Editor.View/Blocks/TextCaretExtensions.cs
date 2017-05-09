@@ -45,7 +45,7 @@ namespace TextRight.Editor.View.Blocks
       // no "previous" character
       if (cursor.IsAtBeginningOfBlock)
         shouldMeasureNext = true;
-      else if (!cursor.IsAtEndOfBlock && cursor.GetCharacterBefore().IsWhitespace)
+      else if (!cursor.IsAtEndOfBlock && cursor.GetPreviousPosition().CharacterAfter.IsWhitespace)
         shouldMeasureNext = true;
       else
         shouldMeasureNext = false;
@@ -58,7 +58,7 @@ namespace TextRight.Editor.View.Blocks
       else
       {
         // we measure the previous character by moving backwards then measuring
-        cursor = cursor.MoveBackward();
+        cursor = cursor.GetPreviousPosition();
         var rect = associatedRenderer.MeasureGraphemeFollowing(cursor);
         return rect.FlattenRight();
       }

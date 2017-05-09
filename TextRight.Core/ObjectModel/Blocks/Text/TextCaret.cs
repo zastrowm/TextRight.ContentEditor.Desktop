@@ -37,7 +37,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     // ReSharper disable once UnusedParameter.Local
     internal TextCaret(StyledTextFragment fragment, int offsetIntoSpan, object unused)
     {
-      // constructor used soley to avoid the checks in the other constructors when we can guarantee
+      // constructor used solely to avoid the checks in the other constructors when we can guarantee
       // those are true. 
 
       Fragment = fragment;
@@ -95,7 +95,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <inheritdoc />
-    public TextCaret MoveForward()
+    public TextCaret GetNextPosition()
     {
       // we move right to end of the span
       if (OffsetIntoSpan < Fragment.Length)
@@ -115,7 +115,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <inheritdoc />
-    public TextCaret MoveBackward()
+    public TextCaret GetPreviousPosition()
     {
       // we're at the beginning of the first span
       if (OffsetIntoSpan == 0)
