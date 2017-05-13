@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -186,11 +184,21 @@ namespace TextRight.Editor.Wpf.View
       double maxWidth = 0;
       bool isFirst = true;
 
+      StyledTextFragment currentFragment = _block.Content.FirstFragment;
+      int currentFragmentOffset = 0;
+
       // Format each line of text from the text store and draw it.
       while (textStorePosition < textLength)
       {
         // OPTIMIZE we could just re-format the lines that changed, not everything
         // (if the change was text being added/removed)
+
+        // TODO when we switch length to be graphemes, this will have to change
+        while (textStorePosition > currentFragmentOffset + currentFragment.Length)
+        {
+          currentFragmentOffset += currentFragment.Length;
+          currentFragment = currentFragment.Next;
+        }
 
         // Create a textline from the text store using the TextFormatter object.
         TextLine myTextLine = _textFormatter.FormatLine(
@@ -200,7 +208,7 @@ namespace TextRight.Editor.Wpf.View
           new GenericTextParagraphProperties(isFirst),
           null);
 
-        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, textStorePosition));
+        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, textStorePosition, currentFragment, currentFragmentOffset));
 
         // Update the index position in the text store.
         textStorePosition += myTextLine.Length;
@@ -230,130 +238,6 @@ namespace TextRight.Editor.Wpf.View
     public void Invalidate()
     {
       _isDirty = true;
-    }
-
-    /// <summary> Container for holding the cached line and point for rendering. </summary>
-    private struct TextLineContainer
-    {
-      public TextLine Line { get; }
-      public int CharacterStartIndex { get; }
-      public Point Point { get; }
-
-      public TextLineContainer(Point point, TextLine line, int characterStartIndex)
-      {
-        Line = line;
-        CharacterStartIndex = characterStartIndex;
-        Point = point;
-      }
-    }
-
-    private class GenericTextParagraphProperties : TextParagraphProperties
-    {
-      public GenericTextParagraphProperties(bool isFirst)
-      {
-        FlowDirection = FlowDirection.LeftToRight;
-        TextAlignment = TextAlignment.Left;
-        LineHeight = 20;
-        FirstLineInParagraph = isFirst;
-        DefaultTextRunProperties = new StyledTextRunProperties();
-        TextWrapping = TextWrapping.Wrap;
-        TextMarkerProperties = null;
-        Indent = 0;
-      }
-
-      public override FlowDirection FlowDirection { get; }
-      public override TextAlignment TextAlignment { get; }
-      public override double LineHeight { get; }
-      public override bool FirstLineInParagraph { get; }
-      public override TextRunProperties DefaultTextRunProperties { get; }
-      public override TextWrapping TextWrapping { get; }
-      public override TextMarkerProperties TextMarkerProperties { get; }
-      public override double Indent { get; }
-    }
-
-    private struct FragmentInfo
-    {
-      public FragmentInfo(StyledTextFragment fragment, int startIndex, int endIndex)
-        : this()
-      {
-        Fragment = fragment;
-        StartIndex = startIndex;
-        EndIndex = endIndex;
-      }
-
-      public StyledTextFragment Fragment { get; }
-      public int StartIndex { get; }
-      public int EndIndex { get; }
-    }
-
-    private class FragmentBasedTextCharacters : TextCharacters
-    {
-      public FragmentBasedTextCharacters(
-        int characterStartIndex,
-        FragmentInfo fragmentInfo,
-        StyledTextRunProperties properties)
-        : base(fragmentInfo.Fragment.GetText(),
-               characterStartIndex - fragmentInfo.StartIndex,
-               fragmentInfo.EndIndex - characterStartIndex,
-               properties)
-      {
-        FragmentInfo = fragmentInfo;
-      }
-
-      public FragmentInfo FragmentInfo { get; }
-    }
-
-    /// <summary> Provides formatted text from a TextBlock. </summary>
-    private class BlockBasedTextSource : TextSource
-    {
-      private readonly TextBlock _block;
-
-      public BlockBasedTextSource(TextBlock block)
-      {
-        _block = block;
-      }
-
-      /// <inheritdoc />
-      public override TextRun GetTextRun(int desiredCharacterIndex)
-      {
-        int startIndex = 0;
-        var fragment = _block.Content.FirstFragment;
-
-        while (fragment != null)
-        {
-          int endIndex = startIndex + fragment.Length;
-
-          if (endIndex <= desiredCharacterIndex)
-            break;
-
-          if (startIndex <= desiredCharacterIndex)
-            return new FragmentBasedTextCharacters(desiredCharacterIndex,
-                                                   new FragmentInfo(fragment, startIndex, endIndex),
-                                                   new StyledTextRunProperties());
-
-          startIndex += fragment.Length;
-          fragment = fragment.Next;
-        }
-
-        return new TextEndOfParagraph(1);
-      }
-
-      /// <inheritdoc />
-      public override TextSpan<CultureSpecificCharacterBufferRange> GetPrecedingText(int textSourceCharacterIndexLimit)
-      {
-        Debug.Fail("When is this called");
-        // TODO?
-        return new TextSpan<CultureSpecificCharacterBufferRange>(
-          0,
-          new CultureSpecificCharacterBufferRange(CultureInfo.CurrentCulture, CharacterBufferRange.Empty));
-      }
-
-      /// <inheritdoc />
-      public override int GetTextEffectCharacterIndexFromTextSourceCharacterIndex(int textSourceCharacterIndex)
-      {
-        Debug.Fail("When is this called");
-        return 0;
-      }
     }
   }
 }
