@@ -12,24 +12,39 @@ using TextRight.Editor.View.Blocks;
 
 namespace TextRight.Editor.Wpf.View
 {
+  internal class LineRenderer : List<TextLineContainer>
+  {
+    private readonly IOffsetBasedItem _parent;
+
+    public LineRenderer(IOffsetBasedItem parent)
+    {
+      _parent = parent;
+    }
+
+    public Point Offset
+      => _parent.Offset;
+  }
+
   /// <summary> Responsible for rendering data within a textblock. </summary>
   public class CustomStringRenderer
   {
+    private readonly IOffsetBasedItem _parent;
     private readonly TextBlock _block;
     private readonly List<StyledStyledTextSpanView> _spans;
-    private readonly List<TextLineContainer> _cachedLines;
+    private readonly LineRenderer _cachedLines;
     private bool _isDirty = true;
     private double _restrictedWidth;
     private double _height;
     private BlockBasedTextSource _textSource;
     private TextFormatter _textFormatter;
 
-    public CustomStringRenderer(TextBlock block, List<StyledStyledTextSpanView> spans)
+    public CustomStringRenderer(IOffsetBasedItem parent, TextBlock block, List<StyledStyledTextSpanView> spans)
     {
+      _parent = parent;
       _block = block;
       _spans = spans;
       _restrictedWidth = 100;
-      _cachedLines = new List<TextLineContainer>();
+      _cachedLines = new LineRenderer(parent);
 
       _textSource = new BlockBasedTextSource(_block);
       _textFormatter = TextFormatter.Create(TextFormattingMode.Display);
@@ -37,6 +52,9 @@ namespace TextRight.Editor.Wpf.View
 
     /// <summary> The maximum width of the lines in this renderer </summary>
     public double MaxWidth { get; private set; }
+
+    public Point Offset 
+      => _parent.Offset;
 
     public bool SetMaxWidth(double width)
     {

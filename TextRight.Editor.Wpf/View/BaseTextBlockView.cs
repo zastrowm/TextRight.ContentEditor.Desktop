@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.TextFormatting;
 using TextRight.Core;
 using TextRight.Core.ObjectModel;
-using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.Utilities;
 
@@ -17,6 +12,7 @@ namespace TextRight.Editor.Wpf.View
 {
   /// <summary> Shared view representation for subclasses of <see cref="TextBlock"/> </summary>
   public abstract class BaseTextBlockView : FrameworkElement,
+                                            IOffsetBasedItem,
                                             ITextBlockView
   {
     private readonly DocumentEditorContextView _root;
@@ -35,7 +31,7 @@ namespace TextRight.Editor.Wpf.View
       _root = root;
       _block = block;
       _spans = new List<StyledStyledTextSpanView>();
-      _renderer = new CustomStringRenderer(block, _spans);
+      _renderer = new CustomStringRenderer(this, block, _spans);
 
       foreach (var span in block.Content.Fragments)
       {
@@ -44,6 +40,11 @@ namespace TextRight.Editor.Wpf.View
 
       RecreateText();
     }
+
+    // TODO what if this isn't valid yet
+    /// <inheritdoc />
+    public Point Offset
+      => _cachedOffset;
 
     /// <summary> The document item for the view. </summary>
     public abstract IDocumentItem DocumentItem { get; }

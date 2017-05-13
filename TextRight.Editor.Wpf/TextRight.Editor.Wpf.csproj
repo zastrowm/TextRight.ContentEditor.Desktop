@@ -146,6 +146,7 @@
     <Compile Include="View\DocumentCursorView.cs" />
     <Compile Include="View\DocumentEditorContextView.cs" />
     <Compile Include="View\HeadingBlockView.cs" />
+    <Compile Include="View\IOffsetBasedItem.cs" />
     <Compile Include="View\KeyboardShortcutCollection.cs" />
     <Compile Include="View\ListItemBlockView.cs" />
     <Compile Include="View\ParagraphView.cs" />
