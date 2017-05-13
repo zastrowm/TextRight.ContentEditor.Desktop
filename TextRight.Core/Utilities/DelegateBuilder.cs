@@ -15,7 +15,7 @@ namespace TextRight.Core.Utilities
     {
       var queueMissingParams = new Queue<object>(missingParamValues);
 
-      var dgtMi = typeof(T).GetMethod("Invoke");
+      var dgtMi = typeof(T).GetTypeInfo().GetMethod("Invoke");
       var dgtRet = dgtMi.ReturnType;
       var dgtParams = dgtMi.GetParameters();
 
@@ -61,7 +61,7 @@ namespace TextRight.Core.Utilities
       if (queueMissingParams.Count > 0)
         return Expression.Constant(queueMissingParams.Dequeue());
 
-      if (callParamType.ParameterType.IsValueType)
+      if (callParamType.ParameterType.GetTypeInfo().IsValueType)
         return Expression.Constant(Activator.CreateInstance(callParamType.ParameterType));
 
       return Expression.Constant(null);

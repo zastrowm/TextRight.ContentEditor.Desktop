@@ -15,10 +15,12 @@ namespace TextRight.Core.ObjectModel.Blocks
 
     /// <summary> Constructor. </summary>
     /// <param name="type"> The type from which to pull the properties from. </param>
-    internal DefaultBlockPropertySerializer(IReflect type)
+    internal DefaultBlockPropertySerializer(Type type)
     {
+      var typeInfo = type.GetTypeInfo();
+
       var propertiesToSerialize =
-        from property in type.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance)
+        from property in typeInfo.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance)
         let attribute = property.GetCustomAttribute<BlockPropertyAttribute>()
         where attribute != null
         select new { attribute, property };

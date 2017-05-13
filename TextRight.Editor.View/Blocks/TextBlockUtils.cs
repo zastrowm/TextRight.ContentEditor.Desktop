@@ -5,10 +5,28 @@ using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Editor.View.Blocks
 {
+  public struct FragmentAndCharCount
+  {
+    public StyledTextFragment Fragment;
+    public int NumCharsBeforeFragment;
+
+    public FragmentAndCharCount(StyledTextFragment fragment, int numCharsBeforeFragment)
+    {
+      this.Fragment = fragment;
+      this.NumCharsBeforeFragment = numCharsBeforeFragment;
+    }
+
+    public void Deconstruct(out StyledTextFragment fragment, out int numCharsBeforeFragment)
+    {
+      fragment = Fragment;
+      numCharsBeforeFragment = NumCharsBeforeFragment;
+    }
+  }
+
   /// <summary> Utility methods to be  </summary>
   public static class TextBlockUtils
   {
-    public static (StyledTextFragment fragment, int numCharsBeforeFragment) GetFragmentFromBlockCharacterIndex(int index, TextBlock textBlock)
+    public static FragmentAndCharCount GetFragmentFromBlockCharacterIndex(int index, TextBlock textBlock)
     {
       var fragment = textBlock.Content.FirstFragment;
       int numberOfCharactersBeforeFragment = 0;
@@ -18,7 +36,7 @@ namespace TextRight.Editor.View.Blocks
         numberOfCharactersBeforeFragment += fragment.Length;
       }
 
-      return (fragment, numberOfCharactersBeforeFragment);
+      return new FragmentAndCharCount(fragment, numberOfCharactersBeforeFragment);
     }
 
     /// <summary> Gets the index of the character pointed to by the given cursor. </summary>
