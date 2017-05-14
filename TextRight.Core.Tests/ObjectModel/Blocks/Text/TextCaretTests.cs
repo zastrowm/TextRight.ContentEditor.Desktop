@@ -91,7 +91,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     private const bool Tru = true;
     private const bool Fls = false;
 
-    public class MovementTestData : SerialaizableTestData<MovementTestData>
+    public class MovementTestData : SerializableTestData<MovementTestData>
     {
       public int AmountToMove;
       public char ExpectedBeforeChar;

@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
 using TextRight.Core;
 using TextRight.Core.Tests;
+using TextRight.Core.Tests.Framework;
 using TextRight.Core.Utilities;
 using TextRight.Editor.View.Blocks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace TextRight.Editor.View.Tests
 {
@@ -67,7 +70,7 @@ namespace TextRight.Editor.View.Tests
       DidYouKnow.That(measurement).ShouldBeEquivalentTo(data.Measurement, data.Reason);
     }
 
-    public class MeasurementsData
+    public class MeasurementsData : SerializableTestData<MeasurementsData>
     {
       public string Reason;
       public int Position;
@@ -75,6 +78,9 @@ namespace TextRight.Editor.View.Tests
 
       public override string ToString()
         => $"Position={Position}, Reason={Reason}";
+
+      public override bool IsRecursive
+        => true;
     }
   }
 }

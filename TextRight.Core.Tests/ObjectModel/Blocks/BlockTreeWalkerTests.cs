@@ -8,7 +8,9 @@ using FluentAssertions;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.Tests.Framework;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace TextRight.Core.Tests.ObjectModel.Blocks
 {
@@ -93,10 +95,10 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     [MemberData(nameof(GetNextData))]
     public void GetNextContainerBlock_Works(TestData data)
     {
-      var nextBlock = BlockTreeWalker.GetNextNonContainerBlock(data.Current);
+      var nextBlock = BlockTreeWalker.GetNextNonContainerBlock(data.GetCurrent(this));
 
-      DidYouKnow.That(GetNameOf(nextBlock)).Should().Be(GetNameOf(data.Expected));
-      DidYouKnow.That(nextBlock).Should().Be(data.Expected);
+      DidYouKnow.That(GetNameOf(nextBlock)).Should().Be(GetNameOf(data.GetExpected(this)));
+      DidYouKnow.That(nextBlock).Should().Be(data.GetExpected(this));
     }
 
     public static TheoryData<TestData> GetPreviousData()
@@ -115,10 +117,10 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     [MemberData(nameof(GetPreviousData))]
     public void GetPreviousContainerBlock_Works(TestData data)
     {
-      var nextBlock = BlockTreeWalker.GetPreviousNonContainerBlock(data.Current);
+      var nextBlock = BlockTreeWalker.GetPreviousNonContainerBlock(data.GetCurrent(this));
 
-      DidYouKnow.That(GetNameOf(nextBlock)).Should().Be(GetNameOf(data.Expected));
-      DidYouKnow.That(nextBlock).Should().Be(data.Expected);
+      DidYouKnow.That(GetNameOf(nextBlock)).Should().Be(GetNameOf(data.GetExpected(this)));
+      DidYouKnow.That(nextBlock).Should().Be(data.GetExpected(this));
     }
 
     /// <summary> Create a test case from the given information. </summary>
@@ -130,8 +132,6 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     {
       var data = new TestData()
                  {
-                   Current = currentBlock.Compile().Invoke(),
-                   Expected = expectedBlock.Compile().Invoke(),
                    CurrentName = Utils.GetFieldInfo(currentBlock).Name,
                    ExpectedName = Utils.GetFieldInfo(expectedBlock).Name,
                    Description = description,
@@ -141,14 +141,16 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     }
 
     /// <summary> Test data for a single test case </summary>
-    public struct TestData
+    public class TestData : SerializableTestData<TestData>
     {
-      public Block Current;
-      public Block Expected;
+      public Block GetCurrent(BlockTreeWalkerTests instance)
+        => instance.GetFieldValue<Block>(CurrentName);
+
+      public Block GetExpected(BlockTreeWalkerTests instance)
+        => instance.GetFieldValue<Block>(ExpectedName);
 
       public string CurrentName;
       public string ExpectedName;
-
       public string Description;
 
       public override string ToString()
