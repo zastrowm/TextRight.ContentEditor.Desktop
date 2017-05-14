@@ -119,7 +119,7 @@ namespace TextRight.Editor.Wpf.View
 
       int indexOfCharacterInFragment = absoluteIndexOfCharacter - numberOfCharactersBeforeFragment;
 
-      var cursor = new TextCaret(fragment, indexOfCharacterInFragment);
+      var cursor = TextCaret.FromOffset(fragment, indexOfCharacterInFragment);
 
       // We clicked on a character, but the caret position actually represents the left side of the character.
       // For example, given "|a|", when we click on 'a', the | represents the possible places for the caret
@@ -212,9 +212,9 @@ namespace TextRight.Editor.Wpf.View
         // (if the change was text being added/removed)
 
         // TODO when we switch length to be graphemes, this will have to change
-        while (textStorePosition > currentFragmentOffset + currentFragment.Length)
+        while (textStorePosition > currentFragmentOffset + currentFragment.NumberOfChars)
         {
-          currentFragmentOffset += currentFragment.Length;
+          currentFragmentOffset += currentFragment.NumberOfChars;
           currentFragment = currentFragment.Next;
         }
 
@@ -248,7 +248,7 @@ namespace TextRight.Editor.Wpf.View
       int textLength = 0;
       foreach (var s in _spans)
       {
-        textLength += ((StyledTextFragment)s.DocumentItem).Length;
+        textLength += ((StyledTextFragment)s.DocumentItem).NumberOfChars;
       }
       return textLength;
     }

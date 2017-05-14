@@ -24,7 +24,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       DidYouKnow.That(cursor.IsAtEndOfBlock).Should().BeFalse();
       DidYouKnow.That(cursor.IsAtEndOfFragment).Should().BeFalse();
 
-      DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(0);
+      DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(0);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('0');
       DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be('\0');
     }
@@ -43,7 +43,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       DidYouKnow.That(cursor.IsAtEndOfBlock).Should().BeTrue();
       DidYouKnow.That(cursor.IsAtEndOfFragment).Should().BeTrue();
 
-      DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(10);
+      DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(10);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('\0');
       DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be('9');
     }
@@ -51,7 +51,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     private static TextBlockContent CreateContent(params string[] texts)
     {
       var content = new TextBlockContent();
-      content.AppendAll(texts.Select((t,i) => new StyledTextFragment(t, $"Style_{i}")));
+      content.AppendAll(texts.Select((t, i) => new StyledTextFragment(t, $"Style_{i}")));
       return content;
     }
 
@@ -67,7 +67,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(index);
 
-      DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(index);
+      DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(index);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be(expectedRightCharacter);
       DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be(expectedLeftCharacter);
     }
@@ -81,51 +81,154 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(10);
 
       DidYouKnow.That(cursor).Should().Be(content.GetCursorToEnd());
-      DidYouKnow.That(cursor.OffsetIntoSpan).Should().Be(10);
+      DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(10);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('\0');
       DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be('9');
     }
 
-    [Theory]
-    [InlineData(0, '\0', '1')]
-    [InlineData(1, '1', '2')]
-    [InlineData(2, '2', '3')]
-    [InlineData(3, '3', '4', "End of first span")]
-    [InlineData(4, '4', '5')]
-    [InlineData(5, '5', '6')]
-    [InlineData(6, '6', '7', "End of second span")]
-    [InlineData(7, '7', '8')]
-    [InlineData(8, '8', '9')]
-    [InlineData(9, '9', '\0', "End of third span")]
-    public void MoveForwardWorks(int amountToMove, char beforeChar, char afterChar, string desc = null)
+    private const char NUL = '\0';
+
+    private const bool Tru = true;
+    private const bool Fls = false;
+
+    public class MovementTestData : SerialaizableTestData<MovementTestData>
     {
-      var content = CreateContent("123", "456", "789");
+      public int AmountToMove;
+      public char ExpectedBeforeChar;
+      public char ExpectedAfterChar;
+      public bool IsAtFragmentStart;
+      public bool IsAtFragmentEnd;
+      public bool IsAtBlockStart;
+      public bool IsAtBlockEnd;
 
-      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(amountToMove);
+      public override string ToString()
+        => $"MoveBy: {AmountToMove}, Character: {ExpectedAfterChar}";
 
-      DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be(beforeChar);
-      DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be(afterChar);
+      public static MovementTestData CreateData(int amountToMove,
+                                                char expectedBeforeChar,
+                                                char expectedAfterChar,
+                                                bool isAtFragmentStart,
+                                                bool isAtFragmentEnd,
+                                                bool isAtBlockStart,
+                                                bool isAtBlockEnd)
+        => new MovementTestData()
+           {
+             AmountToMove = amountToMove,
+             ExpectedBeforeChar = expectedBeforeChar,
+             ExpectedAfterChar = expectedAfterChar,
+             IsAtFragmentStart = isAtFragmentStart,
+             IsAtFragmentEnd = isAtFragmentEnd,
+             IsAtBlockStart = isAtBlockStart,
+             IsAtBlockEnd = isAtBlockEnd,
+           };
+    }
+
+    public static TheoryData<MovementTestData> GetMoveForwardData()
+    {
+      return new TheoryData<MovementTestData>()
+             {
+               MovementTestData.CreateData(0, NUL, '1', Tru, Fls, Tru, Fls),
+               MovementTestData.CreateData(1, '1', '2', Fls, Fls, Fls, Fls),
+               MovementTestData.CreateData(2, '2', '3', Fls, Tru, Fls, Fls),
+               MovementTestData.CreateData(3, '3', '4', Tru, Fls, Fls, Fls),
+               MovementTestData.CreateData(4, '4', '5', Fls, Fls, Fls, Fls),
+               MovementTestData.CreateData(5, '5', '6', Fls, Tru, Fls, Fls),
+               MovementTestData.CreateData(6, '6', '7', Tru, Fls, Fls, Fls),
+               MovementTestData.CreateData(7, '7', '8', Fls, Fls, Fls, Fls),
+               MovementTestData.CreateData(8, '8', '9', Fls, Fls, Fls, Fls),
+               MovementTestData.CreateData(9, '9', NUL, Fls, Tru, Fls, Tru),
+             };
     }
 
     [Theory]
-    [InlineData(9, '\0', '1')]
-    [InlineData(8, '1', '2')]
-    [InlineData(7, '2', '3')]
-    [InlineData(6, '3', '4', "End of first span")]
-    [InlineData(5, '4', '5')]
-    [InlineData(4, '5', '6')]
-    [InlineData(3, '6', '7', "End of second span")]
-    [InlineData(2, '7', '8')]
-    [InlineData(1, '8', '9')]
-    [InlineData(0, '9', '\0', "End of third span")]
-    public void MoveBackwardWorks(int amountToMove, char beforeChar, char afterChar, string desc = null)
+    [MemberData(nameof(GetMoveForwardData))]
+    public void MoveForward_ReportsStartAndEndCorrectly(MovementTestData testData)
     {
       var content = CreateContent("123", "456", "789");
 
-      var cursor = content.GetCursorToEnd().MoveCursorBackwardBy(amountToMove);
+      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(testData.AmountToMove);
 
-      DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be(beforeChar);
-      DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be(afterChar);
+      DidYouKnow.That(cursor.IsAtBeginningOfFragment)
+                .Should().Be(testData.IsAtFragmentStart);
+
+      DidYouKnow.That(cursor.IsAtBeginningOfBlock)
+                .Should().Be(testData.IsAtBlockStart);
+
+      DidYouKnow.That(cursor.IsAtEndOfFragment)
+                .Should().Be(testData.IsAtFragmentEnd);
+
+      DidYouKnow.That(cursor.IsAtEndOfBlock)
+                .Should().Be(testData.IsAtBlockEnd);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetMoveForwardData))]
+    public void MoveForwardWorks(MovementTestData testData)
+    {
+      Console.WriteLine(testData);
+
+      var content = CreateContent("123", "456", "789");
+
+      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(testData.AmountToMove);
+
+      DidYouKnow.That(cursor.CharacterAfter.Character)
+                .Should().Be(testData.ExpectedAfterChar);
+
+      DidYouKnow.That(cursor.GetCharacterBefore().Character)
+                .Should().Be(testData.ExpectedBeforeChar);
+    }
+
+    public static TheoryData<MovementTestData> GetMoveBackwardData()
+    {
+      return new TheoryData<MovementTestData>()
+             {
+               MovementTestData.CreateData(9, NUL, '1', Tru, Fls, Tru, Fls),
+               MovementTestData.CreateData(8, '1', '2', Fls, Fls, Fls, Fls),
+               MovementTestData.CreateData(7, '2', '3', Fls, Tru, Fls, Fls),
+               MovementTestData.CreateData(6, '3', '4', Tru, Fls, Fls, Fls),
+               MovementTestData.CreateData(5, '4', '5', Fls, Fls, Fls, Fls),
+               MovementTestData.CreateData(4, '5', '6', Fls, Tru, Fls, Fls),
+               MovementTestData.CreateData(3, '6', '7', Tru, Fls, Fls, Fls),
+               MovementTestData.CreateData(2, '7', '8', Fls, Fls, Fls, Fls),
+               MovementTestData.CreateData(1, '8', '9', Fls, Fls, Fls, Fls),
+               MovementTestData.CreateData(0, '9', NUL, Fls, Tru, Fls, Tru),
+             };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetMoveBackwardData))]
+    public void MoveBackward_ReportsStartAndEndCorrectly(MovementTestData testData)
+    {
+      var content = CreateContent("123", "456", "789");
+
+      var cursor = content.GetCursorToEnd().MoveCursorBackwardBy(testData.AmountToMove);
+
+      DidYouKnow.That(cursor.IsAtBeginningOfFragment)
+                .Should().Be(testData.IsAtFragmentStart);
+
+      DidYouKnow.That(cursor.IsAtBeginningOfBlock)
+                .Should().Be(testData.IsAtBlockStart);
+
+      DidYouKnow.That(cursor.IsAtEndOfFragment)
+                .Should().Be(testData.IsAtFragmentEnd);
+
+      DidYouKnow.That(cursor.IsAtEndOfBlock)
+                .Should().Be(testData.IsAtBlockEnd);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetMoveBackwardData))]
+    public void MoveBackwardWorks(MovementTestData testData)
+    {
+      var content = CreateContent("123", "456", "789");
+
+      var cursor = content.GetCursorToEnd().MoveCursorBackwardBy(testData.AmountToMove);
+
+      DidYouKnow.That(cursor.CharacterAfter.Character)
+        .Should().Be(testData.ExpectedAfterChar);
+
+      DidYouKnow.That(cursor.GetCharacterBefore().Character)
+        .Should().Be(testData.ExpectedBeforeChar);
     }
   }
 }

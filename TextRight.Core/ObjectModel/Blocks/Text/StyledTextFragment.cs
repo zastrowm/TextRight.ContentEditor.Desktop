@@ -58,8 +58,16 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public StyledTextFragment Previous { get; internal set; }
 
     /// <summary> The number of characters in the TextSpan. </summary>
-    public int Length
-      => _buffer.Length;
+    public int NumberOfChars
+      => _buffer.NumberOfChars;
+
+    /// <summary> The total number of graphemes in this fragment. </summary>
+    public int GraphemeLength
+      => _buffer.GraphemeLength;
+
+    /// <summary> The buffer associated with this fragment.. </summary>
+    internal IFragmentBuffer Buffer
+      => _buffer;
 
     /// <summary>
     ///  True if the given fragment has the same style and could be merged with this instance.
@@ -150,14 +158,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       _buffer.DeleteText(offsetIntoSpan, numberOfCharactersToRemove);
       Target?.TextUpdated(this);
-    }
-
-    /// <summary> Gets the character at the given position. </summary>
-    /// <param name="index"> The index within the span for the character to retrieve. </param>
-    /// <returns> The character at the given index. </returns>
-    public TextUnit GetCharacterAt(int index)
-    {
-      return _buffer.GetCharacterAt(index);
     }
 
     /// <summary> Retrieves the text within the fragment. </summary>

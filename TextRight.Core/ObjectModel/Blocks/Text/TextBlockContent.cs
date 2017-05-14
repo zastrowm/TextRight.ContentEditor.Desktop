@@ -41,29 +41,29 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       => _spans;
 
     /// <summary> Gets a cursor that is looking at the beginning of this content. </summary>
-    public TextCaret GetCaretAtBeginning() 
-      => new TextCaret(FirstFragment, 0);
+    public TextCaret GetCaretAtBeginning()
+      => TextCaret.FromBeginning(this);
 
     /// <summary> Gets a cursor that is looking at the end of this content. </summary>
     public TextCaret GetCursorToEnd()
-      => new TextCaret(LastFragment, LastFragment.Length);
+      => TextCaret.FromEnd(this);
 
     /// <summary> Retrieves a cursor that points at the given character. </summary>
     /// <exception cref="Exception"> Thrown when an exception error condition occurs. </exception>
-    /// <param name="index"> The index of the character to point at. </param>
-    /// <returns> A TextBlockValueCursor that is pointing at the given character. </returns>
-    public TextCaret CursorFromCharacterIndex(int index)
+    /// <param name="graphemeIndex"> The index of the grapheme to point at. </param>
+    /// <returns> A TextBlockValueCursor that is pointing at the given grapheme. </returns>
+    public TextCaret CursorFromGraphemeIndex(int graphemeIndex)
     {
-      int numberOfCharacters = 0;
+      int numberOfGraphemes = 0;
       var current = FirstFragment;
 
-      while (index > numberOfCharacters + current.Length)
+      while (graphemeIndex > numberOfGraphemes + current.GraphemeLength)
       {
-        numberOfCharacters += current.Length;
+        numberOfGraphemes += current.NumberOfChars;
         current = current.Next ?? throw new Exception("Invalid index for cursor");
       }
 
-      return new TextCaret(current, index - numberOfCharacters);
+      return TextCaret.FromOffset(current, graphemeIndex - numberOfGraphemes);
     }
 
     /// <summary> Appends the given span to the TextBlock. </summary>
@@ -73,7 +73,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       // FYI early exit
 
-      if (_spans.Count == 1 && FirstFragment.Length == 0)
+      if (_spans.Count == 1 && FirstFragment.NumberOfChars == 0)
       {
         // if we had a single empty span, we treat that as a placeholder that didn't really mean anything other than
         // "we have no content"
@@ -84,7 +84,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         var lastSpan = _spans[_spans.Count - 1];
         if (lastSpan.IsSameStyleAs(fragment))
         {
-          lastSpan.InsertText(fragment.GetText(), lastSpan.Length);
+          lastSpan.InsertText(fragment.GetText(), lastSpan.NumberOfChars);
           return;
         }
       }
@@ -206,7 +206,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       StyledTextFragment[] elements;
       int index;
 
-      bool isAtEndOfFragment = offsetIntoFragment == startFragment.Length;
+      bool isAtEndOfFragment = offsetIntoFragment == startFragment.NumberOfChars;
 
       if (isAtEndOfFragment)
       {
@@ -226,7 +226,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
         string rightHalf = startFragment.GetText().Substring(offsetIntoFragment);
 
-        startFragment.RemoveCharacters(offsetIntoFragment, startFragment.Length - offsetIntoFragment);
+        startFragment.RemoveCharacters(offsetIntoFragment, startFragment.NumberOfChars - offsetIntoFragment);
 
         elements[0] = new StyledTextFragment(rightHalf);
         startFragment = startFragment.Next;

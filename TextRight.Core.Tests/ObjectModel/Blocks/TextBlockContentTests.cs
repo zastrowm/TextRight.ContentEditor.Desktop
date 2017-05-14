@@ -54,8 +54,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     {
       var originalText = Content.AsText();
 
-      var extracted = Content.ExtractContent(Content.CursorFromCharacterIndex(start),
-                                             Content.CursorFromCharacterIndex(end));
+      var extracted = Content.ExtractContent(Content.CursorFromGraphemeIndex(start),
+                                             Content.CursorFromGraphemeIndex(end));
 
       var removedText = originalText.Substring(start, end - start);
       var modifiedText = originalText.Remove(start, end - start);

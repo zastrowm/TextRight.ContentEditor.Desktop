@@ -26,7 +26,7 @@ namespace TextRight.Editor.Wpf.View
 
       while (fragment != null)
       {
-        int endIndex = startIndex + fragment.Length;
+        int endIndex = startIndex + fragment.NumberOfChars;
 
         if (endIndex <= desiredCharacterIndex)
           break;
@@ -36,7 +36,7 @@ namespace TextRight.Editor.Wpf.View
                                         fragment, startIndex, endIndex,
                                         new StyledTextRunProperties());
 
-        startIndex += fragment.Length;
+        startIndex += fragment.NumberOfChars;
         fragment = fragment.Next;
       }
 

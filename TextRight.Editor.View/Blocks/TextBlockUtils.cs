@@ -26,14 +26,15 @@ namespace TextRight.Editor.View.Blocks
   /// <summary> Utility methods to be  </summary>
   public static class TextBlockUtils
   {
+    // TODO base off graphemes
     public static FragmentAndCharCount GetFragmentFromBlockCharacterIndex(int index, TextBlock textBlock)
     {
       var fragment = textBlock.Content.FirstFragment;
       int numberOfCharactersBeforeFragment = 0;
 
-      while (fragment.Next != null && index < numberOfCharactersBeforeFragment + fragment.Length)
+      while (fragment.Next != null && index < numberOfCharactersBeforeFragment + fragment.NumberOfChars)
       {
-        numberOfCharactersBeforeFragment += fragment.Length;
+        numberOfCharactersBeforeFragment += fragment.NumberOfChars;
       }
 
       return new FragmentAndCharCount(fragment, numberOfCharactersBeforeFragment);
@@ -56,10 +57,10 @@ namespace TextRight.Editor.View.Blocks
       {
         if (currentFragment == cursor.Fragment)
         {
-          return total + cursor.OffsetIntoSpan;
+          return total + cursor.Offset.GraphemeOffset;
         }
 
-        total += currentFragment.Length;
+        total += currentFragment.NumberOfChars;
         currentFragment = currentFragment.Next;
       }
 

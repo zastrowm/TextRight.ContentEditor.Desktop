@@ -40,7 +40,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       // TODO verify the offset is correct.
       Fragment = cursor.Fragment;
-      OffsetIntoSpan = cursor.OffsetIntoSpan;
+      OffsetIntoSpan = cursor.Offset.GraphemeOffset;
     }
 
     /// <summary>
@@ -79,11 +79,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <summary> Get the character after the current cursor position. </summary>
     public char CharacterAfter
-      => OffsetIntoSpan != Fragment.Length ? Fragment.GetCharacterAt(OffsetIntoSpan).Character : NullCharacter;
+      => OffsetIntoSpan != Fragment.NumberOfChars ? Fragment.Buffer.GetCharacterAt(OffsetIntoSpan).Character : NullCharacter;
 
     /// <summary> Get the character before the current cursor position. </summary>
     public char CharacterBefore
-      => OffsetIntoSpan != 0 ? Fragment.GetCharacterAt(OffsetIntoSpan - 1).Character : NullCharacter;
+      => OffsetIntoSpan != 0 ? Fragment.Buffer.GetCharacterAt(OffsetIntoSpan - 1).Character : NullCharacter;
 
     /// <inheritdoc />
     public override void MoveToBeginning()
@@ -96,7 +96,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public override void MoveToEnd()
     {
       Fragment = Block.Content.LastFragment;
-      OffsetIntoSpan = Fragment.Length;
+      OffsetIntoSpan = Fragment.NumberOfChars;
     }
 
     /// <inheritdoc />
@@ -104,7 +104,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       get
       {
-        return OffsetIntoSpan >= Fragment.Length
+        return OffsetIntoSpan >= Fragment.NumberOfChars
                && Fragment.Next == null;
       }
     }
@@ -113,7 +113,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public override bool MoveForward()
     {
       // we move right to end of the span
-      if (OffsetIntoSpan < Fragment.Length)
+      if (OffsetIntoSpan < Fragment.NumberOfChars)
       {
         OffsetIntoSpan++;
         return true;
@@ -197,7 +197,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       // we're at the beginning of the current span, so go ahead and move onto
       // previous span. 
       Fragment = Fragment.Previous;
-      OffsetIntoSpan = Fragment.Length;
+      OffsetIntoSpan = Fragment.NumberOfChars;
 
       return true;
     }
@@ -230,7 +230,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       //while (numberOfCharacters > 0)
       {
-        int numberOfCharactersRemainingInCurrentFragment = Fragment.Length - OffsetIntoSpan;
+        int numberOfCharactersRemainingInCurrentFragment = Fragment.NumberOfChars - OffsetIntoSpan;
         int numberOfCharactersToRemove = numberOfCharacters;
 
         if (numberOfCharactersToRemove > numberOfCharactersRemainingInCurrentFragment)
@@ -269,7 +269,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <summary> Creates a <see cref="TextCaret"/> from this cursor. </summary>
     public TextCaret ToValue() 
-      => new TextCaret(Fragment, OffsetIntoSpan);
+      => TextCaret.FromOffset(Fragment, OffsetIntoSpan);
 
     /// <inheritdoc />
     public bool Equals(TextBlockCursor other)

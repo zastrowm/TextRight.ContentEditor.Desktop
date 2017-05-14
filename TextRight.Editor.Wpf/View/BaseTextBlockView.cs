@@ -89,7 +89,7 @@ namespace TextRight.Editor.Wpf.View
       if (!IsValidForMeasuring)
         return MeasuredRectangle.Invalid;
 
-      var cursor = new TextCaret((StyledTextFragment)fragment.DocumentItem, characterIndex);
+      var cursor = TextCaret.FromOffset((StyledTextFragment)fragment.DocumentItem, characterIndex);
       var rect = _renderer.MeasureCharacter(cursor);
       if (!rect.IsValid)
         return rect;

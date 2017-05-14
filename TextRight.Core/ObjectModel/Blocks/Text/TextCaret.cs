@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
@@ -13,35 +14,12 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public static readonly TextCaret Invalid
       = default(TextCaret);
 
-    public TextCaret(StyledTextFragment fragment, int offsetIntoSpan)
-    {
-      if (offsetIntoSpan < 0)
-        throw new ArgumentException("Offset must be zero or a positive number",nameof(offsetIntoSpan));
-      if (offsetIntoSpan > fragment.Length)
-        throw new ArgumentException(
-          $"Offset must be <= fragment.Length ({fragment.Length}) but was ({offsetIntoSpan})",
-          nameof(offsetIntoSpan));
-
-      if (offsetIntoSpan == 0 && fragment.Previous != null)
-      {
-        Fragment = fragment.Previous;
-        OffsetIntoSpan = fragment.Previous.Length;
-      }
-      else
-      {
-        Fragment = fragment;
-        OffsetIntoSpan = offsetIntoSpan;
-      }
-    }
-
     // ReSharper disable once UnusedParameter.Local
-    internal TextCaret(StyledTextFragment fragment, int offsetIntoSpan, object unused)
+    private TextCaret(StyledTextFragment fragment, TextOffset offset, object unused)
     {
-      // constructor used solely to avoid the checks in the other constructors when we can guarantee
-      // those are true. 
-
       Fragment = fragment;
-      OffsetIntoSpan = offsetIntoSpan;
+      Offset = offset;
+      // TODO
     }
 
     /// <summary>
@@ -60,56 +38,66 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public Block Block
       => Fragment.Parent;
 
-    /// <summary>
-    ///  The offset into <see cref="Fragment"/> where this cursor is pointing.
-    /// </summary>
-    public int OffsetIntoSpan { get; }
-
-    /// <inheritdoc />
-    public bool IsAtBeginningOfBlock
-      => OffsetIntoSpan == 0;
-
-    /// <inheritdoc />
-    public bool IsAtEndOfBlock
-      => IsAtEndOfFragment && Fragment.Next == null;
+    /// <summary> The offset into <see cref="Fragment"/> that this cursor is pointing. </summary>
+    public TextOffset Offset { get; }
 
     /// <summary> True if the cursor is pointing at the beginning of the current fragment. </summary>
     public bool IsAtBeginningOfFragment
-      => OffsetIntoSpan == 0 || (Fragment.Previous != null && OffsetIntoSpan == 1);
+      => Offset.GraphemeOffset == 0;
 
     /// <summary> True if the cursor is pointing at the end of the current fragment. </summary>
     public bool IsAtEndOfFragment
-      => OffsetIntoSpan >= Fragment.Length;
+    {
+      get
+      {
+        if (Fragment.Next == null)
+          return Offset.GraphemeOffset >= Fragment.GraphemeLength;
+        else
+          return Offset.GraphemeOffset >= Fragment.GraphemeLength - 1;
+      }
+    }
+
+    /// <inheritdoc />
+    public bool IsAtBeginningOfBlock
+      => Fragment.Previous == null && IsAtBeginningOfFragment;
+
+    /// <inheritdoc />
+    public bool IsAtEndOfBlock
+      => Fragment.Next == null && IsAtEndOfFragment;
 
     /// <summary> Get the character after the current cursor position. </summary>
     public TextUnit CharacterAfter
     {
       get
       {
-        if (!IsAtEndOfFragment)
-          return Fragment.GetCharacterAt(OffsetIntoSpan);
-        if (Fragment.Next == null)
-          return TextUnit.Default;
-        return Fragment.Next.GetCharacterAt(0);
+        if (!IsAtEndOfBlock)
+          return Fragment.Buffer.GetCharacterAt(Offset.GraphemeOffset);
+
+        return TextUnit.Default;
       }
     }
 
     /// <inheritdoc />
     public TextCaret GetNextPosition()
     {
-      // we move right to end of the span
-      if (OffsetIntoSpan < Fragment.Length)
+      var maybeNextOffset = Fragment.Buffer.GetNextOffset(Offset);
+      if (maybeNextOffset != null)
       {
-        return new TextCaret(Fragment, OffsetIntoSpan + 1, null);
+        var nextOffset = maybeNextOffset.GetValueOrDefault();
+        return new TextCaret(Fragment, nextOffset, null);
       }
+
+      var nextFragment = Fragment.Next;
 
       // we're at the end of the span and as long as we can move to the next span,
       // do so. 
-      if (Fragment.Next != null)
+      if (nextFragment != null)
       {
-        // we're never at offset=0 unless we're at the beginning of the first span.
-        return new TextCaret(Fragment.Next, 1, null);
+        return new TextCaret(nextFragment, nextFragment.Buffer.GetFirstOffset(), null);
       }
+
+      if (Fragment.Buffer.GetLastOffset() == Offset)
+        return new TextCaret(Fragment, TextOffsetHelpers.CreateAfterTextOffset(Fragment.Buffer), null);
 
       return Invalid;
     }
@@ -118,29 +106,28 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public TextCaret GetPreviousPosition()
     {
       // we're at the beginning of the first span
-      if (OffsetIntoSpan == 0)
+      if (IsAtBeginningOfBlock)
         return Invalid;
 
-      if (OffsetIntoSpan > 2)
+      if (Offset.GraphemeOffset > 0)
       {
-        return new TextCaret(Fragment, OffsetIntoSpan - 1, null);
+        return new TextCaret(Fragment, Fragment.Buffer.GetPreviousOffset(Offset).GetValueOrDefault(), null);
+      }
+     
+      if (Offset.GraphemeOffset == 0 && Fragment.Previous != null)
+      {
+        // we're at the beginning of the current span, so go ahead and move into
+        // previous span. 
+        return new TextCaret(Fragment.Previous, Fragment.Previous.Buffer.GetLastOffset(), null);
       }
 
-      if (OffsetIntoSpan != 1 || Fragment.Index == 0)
-      {
-        // at offset 1 of the first span, so go to offset 0 which indicates the
-        // beginning of the block. 
-        return new TextCaret(Fragment, OffsetIntoSpan - 1, null);
-      }
-
-      // we're at the beginning of the current span, so go ahead and move onto
-      // previous span. 
-      return new TextCaret(Fragment.Previous, Fragment.Length, null);
+      Debug.Fail("How did we get here?");
+      return Invalid;
     }
 
     /// <inheritdoc />
     public bool Equals(TextCaret other) 
-      => Equals(Fragment, other.Fragment) && OffsetIntoSpan == other.OffsetIntoSpan;
+      => Equals(Fragment, other.Fragment) && Offset == other.Offset;
 
     /// <inheritdoc />
     public override bool Equals(object obj)
@@ -156,7 +143,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       unchecked
       {
-        return ((Fragment != null ? Fragment.GetHashCode() : 0) * 397) ^ OffsetIntoSpan;
+        return ((Fragment != null ? Fragment.GetHashCode() : 0) * 397) ^ Offset.GetHashCode();
       }
     }
 
@@ -167,5 +154,22 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <inheritdoc />
     public static bool operator !=(TextCaret left, TextCaret right) 
       => !left.Equals(right);
+
+    public static TextCaret FromBeginning(TextBlockContent content)
+    {
+      return new TextCaret(content.FirstFragment, content.FirstFragment.Buffer.GetFirstOffset(), null);
+    }
+
+    public static TextCaret FromEnd(TextBlockContent content)
+    {
+      return new TextCaret(content.LastFragment, TextOffsetHelpers.CreateAfterTextOffset(content.LastFragment.Buffer), null);
+    }
+
+    public static TextCaret FromOffset(StyledTextFragment fragment, int graphemeIndex)
+    {
+      // TODO validate
+      var offset = fragment.Buffer.GetOffsetToGraphemeIndex(graphemeIndex);
+      return new TextCaret(fragment, offset.GetValueOrDefault(), null);
+    }
   }
 }
