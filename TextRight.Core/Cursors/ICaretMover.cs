@@ -37,4 +37,12 @@ namespace TextRight.Core.Cursors
     /// <returns> True if the caret is at the end of the content, false otherwise. </returns>
     bool IsAtBlockEnd(BlockCaret caret);
   }
+
+  /// <summary> Generic interface for a caret mover. </summary>
+  /// <typeparam name="TCaret"> Type of the caret. </typeparam>
+  public interface ICaretMover<TCaret> : ICaretMover
+    where TCaret : struct, IBlockCaret, IEquatable<TCaret>
+  {
+    
+  }
 }

@@ -9,7 +9,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   /// <summary>
   ///  A position within a <see cref="StyledTextFragment"/> where text can be inserted.
   /// </summary>
-  public struct TextCaret : IEquatable<TextCaret>, IBlockCaret
+  public struct TextCaret : IEquatable<TextCaret>,
+                            IBlockCaret
   {
     /// <summary> A cursor which represents an invalid location. </summary>
     public static readonly TextCaret Invalid
@@ -198,14 +199,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       => !left.Equals(right);
 
     /// <summary> Implicit cast that converts the given TextCaret to a BlockCaret. </summary>
-    public static implicit operator BlockCaret(TextCaret caret) 
+    public static implicit operator BlockCaret(TextCaret caret)
       => caret.ToBlockCaret();
 
     /// <summary> Implicit cast that converts the given BlockCaret to a TextCaret. </summary>
     public static implicit operator TextCaret(BlockCaret caret)
       => FromBlockCaret(caret);
 
-    private class TextCaretMover : ICaretMover
+    private class TextCaretMover : ICaretMover<TextCaret>
     {
       internal static readonly TextCaretMover Instance
         = new TextCaretMover();

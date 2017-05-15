@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
@@ -25,8 +26,11 @@ namespace TextRight.Core.Editing.Commands.Caret
     {
       using (var current = caret.Cursor.Copy())
       {
-        if (TextBlockMoveToNextWord(current.Cursor))
+        var original = ((TextBlockCursor)current.Cursor).ToValue();
+        var newPosition = TextBlockMoveToNextWord(original);
+        if (original != newPosition)
         {
+          ((TextBlockCursor)current.Cursor).MoveTo(newPosition);
           caret.MoveTo(current);
           return true;
         }
@@ -35,20 +39,12 @@ namespace TextRight.Core.Editing.Commands.Caret
       }
     }
 
-    private bool TextBlockMoveToNextWord(IBlockContentCursor cursor)
+    private TextCaret TextBlockMoveToNextWord(TextCaret textCaret)
     {
-      var blockCaret = cursor;
+      if (textCaret.IsAtBlockEnd)
+        return textCaret;
 
-      // we either don't know what kind of block cursor it is, or we want to move
-      // to the next block anyways. 
-      if (blockCaret.IsAtEnd)
-      {
-        return false;
-      }
-
-      var textCursor = (TextBlockCursor)blockCaret;
-
-      var characterType = TextCharacterizer.Characterize(textCursor.CharacterAfter);
+      var characterType = TextCharacterizer.Characterize(textCaret.CharacterAfter);
       TextCharacterizer.CharacterType lastCharacterType;
 
       // navigate until we get to a character category that A) is different from the last
@@ -57,16 +53,16 @@ namespace TextRight.Core.Editing.Commands.Caret
       {
         lastCharacterType = characterType;
 
-        if (!textCursor.MoveForward())
+        if (!CaretHelpers.TryMoveForward(ref textCaret))
         {
           break;
         }
 
-        characterType = TextCharacterizer.Characterize(textCursor.CharacterAfter);
+        characterType = TextCharacterizer.Characterize(textCaret.CharacterAfter);
       } while (lastCharacterType == characterType
                || characterType < TextCharacterizer.CharacterType.PlannedCharacters);
 
-      return true;
+      return textCaret;
     }
   }
 }

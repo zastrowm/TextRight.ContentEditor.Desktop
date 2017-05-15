@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Editing.Commands.Caret
 {
@@ -8,10 +9,11 @@ namespace TextRight.Core.Editing.Commands.Caret
   internal static class TextCharacterizer
   {
     /// <summary> Identifies the "type" of the character for analyzing groups of words. </summary>
-    /// <param name="letter"> The letter that should be categorized. </param>
+    /// <param name="unit"> The TextUnit that should be categorized. </param>
     /// <returns> The "type" of the character </returns>
-    public static CharacterType Characterize(char letter)
+    public static CharacterType Characterize(TextUnit unit)
     {
+      var letter = unit.Text[0];
       if (letter == '\'')
       {
         // TODO should we do this?

@@ -21,5 +21,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     public bool IsWhitespace
       => char.IsWhiteSpace(Character);
+
+    public string Text
+      => Character.ToString();
   }
 }

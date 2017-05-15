@@ -271,6 +271,16 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public TextCaret ToValue() 
       => TextCaret.FromOffset(Fragment, OffsetIntoSpan);
 
+    internal void MoveTo(TextCaret newPosition)
+    {
+      State = new SnapshotState()
+              {
+                Block = newPosition.Fragment.Parent,
+                Fragment = newPosition.Fragment,
+                OffsetIntoSpan = newPosition.Offset.GraphemeOffset,
+              };
+    }
+
     /// <inheritdoc />
     public bool Equals(TextBlockCursor other)
     {

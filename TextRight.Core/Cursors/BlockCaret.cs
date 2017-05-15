@@ -5,7 +5,7 @@ using System.Linq;
 namespace TextRight.Core.Cursors
 {
   /// <summary> Represents a generic caret that is pointing to content within a block. </summary>
-  public struct BlockCaret
+  public struct BlockCaret : IBlockCaret
   {
     public static readonly BlockCaret Invalid
       = default(BlockCaret);
@@ -36,6 +36,23 @@ namespace TextRight.Core.Cursors
       InstanceOffset3 = instanceOffset3;
       InstanceOffset4 = instanceOffset4;
     }
+
+    /// <inheritdoc />
+    public bool IsAtBlockStart
+      => Mover.IsAtBlockStart(this);
+
+    /// <inheritdoc />
+    public bool IsAtBlockEnd
+      => Mover.IsAtBlockStart(this);
+
+    /// <inheritdoc />
+    public BlockCaret ToBlockCaret()
+      => this;
+
+    /// <summary> True if the caret is of the specified type. </summary>
+    public bool Is<TCaret>()
+      where TCaret : struct, IEquatable<TCaret>, IBlockCaret 
+      => Mover is ICaretMover<TCaret>;
 
     /// <summary> The type-specific mover associated with the caret. </summary>
     public ICaretMover Mover { get; }

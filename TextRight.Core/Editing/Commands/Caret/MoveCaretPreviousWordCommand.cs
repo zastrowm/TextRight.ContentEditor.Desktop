@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
@@ -25,8 +26,11 @@ namespace TextRight.Core.Editing.Commands.Caret
     {
       using (var current = caret.Cursor.Copy())
       {
-        if (TextBlockMove(current.Cursor))
+        var original = ((TextBlockCursor)current.Cursor).ToValue();
+        var newPosition = TextBlockMove(original);
+        if (original != newPosition)
         {
+          ((TextBlockCursor)current.Cursor).MoveTo(newPosition);
           caret.MoveTo(current);
           return true;
         }
@@ -35,16 +39,10 @@ namespace TextRight.Core.Editing.Commands.Caret
       }
     }
 
-    private bool TextBlockMove(IBlockContentCursor cursor)
+    private TextCaret TextBlockMove(TextCaret textCaret)
     {
-      var blockCaret = cursor;
-
-      // we either don't know what kind of block cursor it is, or we want to move
-      // to the next block anyways. 
-      if (blockCaret.IsAtBeginning)
-        return false;
-
-      var textCursor = (TextBlockCursor)blockCaret;
+      if (textCaret.IsAtBlockStart)
+        return textCaret;
 
       TextCharacterizer.CharacterType characterType;
       TextCharacterizer.CharacterType lastCharacterType;
@@ -53,24 +51,32 @@ namespace TextRight.Core.Editing.Commands.Caret
       // until we reach a non whitespace/undesirable.
       do
       {
-        characterType = TextCharacterizer.Characterize(textCursor.CharacterBefore);
+        characterType = TextCharacterizer.Characterize(GetPreviousCharacter(textCaret));
       } while (characterType < TextCharacterizer.CharacterType.PlannedCharacters
-               && textCursor.MoveBackward());
+               && CaretHelpers.TryMoveBackward(ref textCaret));
 
       // now move backwards until we change categories
       do
       {
         lastCharacterType = characterType;
 
-        if (!textCursor.MoveBackward())
+        if (!CaretHelpers.TryMoveBackward(ref textCaret))
         {
           break;
         }
 
-        characterType = TextCharacterizer.Characterize(textCursor.CharacterBefore);
+        characterType = TextCharacterizer.Characterize(GetPreviousCharacter(textCaret));
       } while (lastCharacterType == characterType);
 
-      return true;
+      return textCaret;
+    }
+
+    private TextUnit GetPreviousCharacter(TextCaret caret)
+    {
+      var previous = caret.GetPreviousPosition();
+      if (previous.IsValid)
+        return previous.CharacterAfter;
+      return TextUnit.Default;
     }
   }
 }
