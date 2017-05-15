@@ -14,7 +14,7 @@ namespace TextRight.Core.Tests.Framework
   public abstract class SerializableTestData<T> : IXunitSerializable
     where T : new()
   {
-    public virtual bool ShouldSerializeChildren
+    public virtual bool IsRecursive
       => false;
 
     public void Deserialize(IXunitSerializationInfo info)
@@ -77,7 +77,7 @@ namespace TextRight.Core.Tests.Framework
 
     private object GetValue(IXunitSerializationInfo info, string name, Type type)
     {
-      if (!ShouldSerializeChildren || IsSupportedType(type))
+      if (!IsRecursive || IsSupportedType(type))
         return info.GetValue(name, type);
 
       var value = Activator.CreateInstance(type);
@@ -87,7 +87,7 @@ namespace TextRight.Core.Tests.Framework
 
     private void SetValue(IXunitSerializationInfo info, string name, object value)
     {
-      if (!ShouldSerializeChildren || value == null || IsSupportedType(value.GetType()))
+      if (!IsRecursive || value == null || IsSupportedType(value.GetType()))
       {
         info.AddValue(name, value);
         return;

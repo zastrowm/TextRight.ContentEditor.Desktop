@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using TextRight.Core.Cursors;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
@@ -14,12 +15,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public static readonly TextCaret Invalid
       = default(TextCaret);
 
-    // ReSharper disable once UnusedParameter.Local
-    private TextCaret(StyledTextFragment fragment, TextOffset offset, object unused)
+    private TextCaret(StyledTextFragment fragment, TextOffset offset)
     {
       Fragment = fragment;
       Offset = offset;
-      // TODO
     }
 
     /// <summary>
@@ -84,7 +83,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (maybeNextOffset != null)
       {
         var nextOffset = maybeNextOffset.GetValueOrDefault();
-        return new TextCaret(Fragment, nextOffset, null);
+        return new TextCaret(Fragment, nextOffset);
       }
 
       var nextFragment = Fragment.Next;
@@ -93,11 +92,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       // do so. 
       if (nextFragment != null)
       {
-        return new TextCaret(nextFragment, nextFragment.Buffer.GetFirstOffset(), null);
+        return new TextCaret(nextFragment, nextFragment.Buffer.GetFirstOffset());
       }
 
       if (Fragment.Buffer.GetLastOffset() == Offset)
-        return new TextCaret(Fragment, TextOffsetHelpers.CreateAfterTextOffset(Fragment.Buffer), null);
+        return new TextCaret(Fragment, TextOffsetHelpers.CreateAfterTextOffset(Fragment.Buffer));
 
       return Invalid;
     }
@@ -111,14 +110,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       if (Offset.GraphemeOffset > 0)
       {
-        return new TextCaret(Fragment, Fragment.Buffer.GetPreviousOffset(Offset).GetValueOrDefault(), null);
+        return new TextCaret(Fragment, Fragment.Buffer.GetPreviousOffset(Offset).GetValueOrDefault());
       }
-     
+
       if (Offset.GraphemeOffset == 0 && Fragment.Previous != null)
       {
         // we're at the beginning of the current span, so go ahead and move into
         // previous span. 
-        return new TextCaret(Fragment.Previous, Fragment.Previous.Buffer.GetLastOffset(), null);
+        return new TextCaret(Fragment.Previous, Fragment.Previous.Buffer.GetLastOffset());
       }
 
       Debug.Fail("How did we get here?");
@@ -126,7 +125,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <inheritdoc />
-    public bool Equals(TextCaret other) 
+    public bool Equals(TextCaret other)
       => Equals(Fragment, other.Fragment) && Offset == other.Offset;
 
     /// <inheritdoc />
@@ -147,29 +146,81 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       }
     }
 
-    /// <inheritdoc />
-    public static bool operator ==(TextCaret left, TextCaret right) 
-      => left.Equals(right);
+    /// <summary> Converts the current instance into a non-specific block caret. </summary>
+    public BlockCaret ToBlockCaret()
+    {
+      if (!IsValid)
+        return BlockCaret.Invalid;
 
-    /// <inheritdoc />
-    public static bool operator !=(TextCaret left, TextCaret right) 
-      => !left.Equals(right);
+      return new BlockCaret(TextCaretMover.Instance, Offset.CharOffset, Offset.GraphemeOffset, Offset.GraphemeLength);
+    }
 
+    /// <summary>
+    ///  Converts the given caret into a TextCaret, assuming that the BlockCaret is pointing at text
+    ///  content.
+    /// </summary>
+    public static TextCaret FromBlockCaret(BlockCaret caret)
+    {
+      if (caret.Mover != TextCaretMover.Instance)
+        throw new ArgumentException("Caret does not represent the content of a TextCaret", nameof(caret));
+
+      var offset = new TextOffset(caret.InstanceOffset1, caret.InstanceOffset2, caret.InstanceOffset3);
+      return new TextCaret((StyledTextFragment)caret.InstanceDatum, offset);
+    }
+
+    /// <summary> Gets a cursor that is looking at the beginning of the content. </summary>
     public static TextCaret FromBeginning(TextBlockContent content)
     {
-      return new TextCaret(content.FirstFragment, content.FirstFragment.Buffer.GetFirstOffset(), null);
+      return new TextCaret(content.FirstFragment, content.FirstFragment.Buffer.GetFirstOffset());
     }
 
+    /// <summary> Gets a cursor that is looking at the end of the content. </summary>
     public static TextCaret FromEnd(TextBlockContent content)
     {
-      return new TextCaret(content.LastFragment, TextOffsetHelpers.CreateAfterTextOffset(content.LastFragment.Buffer), null);
+      return new TextCaret(content.LastFragment,
+                           TextOffsetHelpers.CreateAfterTextOffset(content.LastFragment.Buffer));
     }
 
+    /// <summary> Gets a cursor that is looking at the grapheme at the given index. </summary>
     public static TextCaret FromOffset(StyledTextFragment fragment, int graphemeIndex)
     {
       // TODO validate
       var offset = fragment.Buffer.GetOffsetToGraphemeIndex(graphemeIndex);
-      return new TextCaret(fragment, offset.GetValueOrDefault(), null);
+      return new TextCaret(fragment, offset.GetValueOrDefault());
+    }
+
+    /// <inheritdoc />
+    public static bool operator ==(TextCaret left, TextCaret right)
+      => left.Equals(right);
+
+    /// <inheritdoc />
+    public static bool operator !=(TextCaret left, TextCaret right)
+      => !left.Equals(right);
+
+    /// <summary> Implicit cast that converts the given TextCaret to a BlockCaret. </summary>
+    public static implicit operator BlockCaret(TextCaret caret) 
+      => caret.ToBlockCaret();
+
+    /// <summary> Implicit cast that converts the given BlockCaret to a TextCaret. </summary>
+    public static implicit operator TextCaret(BlockCaret caret)
+      => FromBlockCaret(caret);
+
+    private class TextCaretMover : ICaretMover
+    {
+      internal static readonly TextCaretMover Instance
+        = new TextCaretMover();
+
+      public BlockCaret MoveForward(BlockCaret caret)
+        => FromBlockCaret(caret).GetNextPosition().ToBlockCaret();
+
+      public BlockCaret MoveBackward(BlockCaret caret)
+        => FromBlockCaret(caret).GetNextPosition().ToBlockCaret();
+
+      public bool IsAtBlockEnd(BlockCaret caret)
+        => FromBlockCaret(caret).IsAtEndOfBlock;
+
+      public bool IsAtBlockStart(BlockCaret caret)
+        => FromBlockCaret(caret).IsAtBeginningOfBlock;
     }
   }
 }
