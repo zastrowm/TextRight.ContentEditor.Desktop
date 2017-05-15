@@ -16,7 +16,7 @@ namespace TextRight.Editor.View.Blocks
     /// <summary> Measure the grapheme that follows the given caret location. </summary>
     /// <remarks>
     ///  Returns <see cref="MeasuredRectangle.Invalid"/> if
-    ///  <paramref name="caret"/>.<see cref="TextCaret.IsAtEndOfBlock"/> is true.
+    ///  <paramref name="caret"/>.<see cref="TextCaret.IsAtBlockEnd"/> is true.
     /// </remarks>
     /// <param name="caret"> The caret location after which the grapheme should be measured. </param>
     /// <returns> A MeasuredRectangle representing the bounds of the grapheme. </returns>

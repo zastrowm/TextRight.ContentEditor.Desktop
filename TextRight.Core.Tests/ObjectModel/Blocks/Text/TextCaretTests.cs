@@ -18,11 +18,11 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var cursor = content.GetCaretAtBeginning();
 
-      DidYouKnow.That(cursor.IsAtBeginningOfBlock).Should().BeTrue();
-      DidYouKnow.That(cursor.IsAtBeginningOfFragment).Should().BeTrue();
+      DidYouKnow.That(cursor.IsAtBlockStart).Should().BeTrue();
+      DidYouKnow.That(cursor.IsAtFragmentStart).Should().BeTrue();
 
-      DidYouKnow.That(cursor.IsAtEndOfBlock).Should().BeFalse();
-      DidYouKnow.That(cursor.IsAtEndOfFragment).Should().BeFalse();
+      DidYouKnow.That(cursor.IsAtBlockEnd).Should().BeFalse();
+      DidYouKnow.That(cursor.IsAtFragmentEnd).Should().BeFalse();
 
       DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(0);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('0');
@@ -37,11 +37,11 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var cursor = content.GetCursorToEnd();
 
-      DidYouKnow.That(cursor.IsAtBeginningOfBlock).Should().BeFalse();
-      DidYouKnow.That(cursor.IsAtBeginningOfFragment).Should().BeFalse();
+      DidYouKnow.That(cursor.IsAtBlockStart).Should().BeFalse();
+      DidYouKnow.That(cursor.IsAtFragmentStart).Should().BeFalse();
 
-      DidYouKnow.That(cursor.IsAtEndOfBlock).Should().BeTrue();
-      DidYouKnow.That(cursor.IsAtEndOfFragment).Should().BeTrue();
+      DidYouKnow.That(cursor.IsAtBlockEnd).Should().BeTrue();
+      DidYouKnow.That(cursor.IsAtFragmentEnd).Should().BeTrue();
 
       DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(10);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('\0');
@@ -148,16 +148,16 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(testData.AmountToMove);
 
-      DidYouKnow.That(cursor.IsAtBeginningOfFragment)
+      DidYouKnow.That(cursor.IsAtFragmentStart)
                 .Should().Be(testData.IsAtFragmentStart);
 
-      DidYouKnow.That(cursor.IsAtBeginningOfBlock)
+      DidYouKnow.That(cursor.IsAtBlockStart)
                 .Should().Be(testData.IsAtBlockStart);
 
-      DidYouKnow.That(cursor.IsAtEndOfFragment)
+      DidYouKnow.That(cursor.IsAtFragmentEnd)
                 .Should().Be(testData.IsAtFragmentEnd);
 
-      DidYouKnow.That(cursor.IsAtEndOfBlock)
+      DidYouKnow.That(cursor.IsAtBlockEnd)
                 .Should().Be(testData.IsAtBlockEnd);
     }
 
@@ -203,16 +203,16 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var cursor = content.GetCursorToEnd().MoveCursorBackwardBy(testData.AmountToMove);
 
-      DidYouKnow.That(cursor.IsAtBeginningOfFragment)
+      DidYouKnow.That(cursor.IsAtFragmentStart)
                 .Should().Be(testData.IsAtFragmentStart);
 
-      DidYouKnow.That(cursor.IsAtBeginningOfBlock)
+      DidYouKnow.That(cursor.IsAtBlockStart)
                 .Should().Be(testData.IsAtBlockStart);
 
-      DidYouKnow.That(cursor.IsAtEndOfFragment)
+      DidYouKnow.That(cursor.IsAtFragmentEnd)
                 .Should().Be(testData.IsAtFragmentEnd);
 
-      DidYouKnow.That(cursor.IsAtEndOfBlock)
+      DidYouKnow.That(cursor.IsAtBlockEnd)
                 .Should().Be(testData.IsAtBlockEnd);
     }
 

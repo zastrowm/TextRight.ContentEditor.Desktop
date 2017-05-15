@@ -9,7 +9,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   /// <summary>
   ///  A position within a <see cref="StyledTextFragment"/> where text can be inserted.
   /// </summary>
-  public struct TextCaret : IEquatable<TextCaret>
+  public struct TextCaret : IEquatable<TextCaret>, IBlockCaret
   {
     /// <summary> A cursor which represents an invalid location. </summary>
     public static readonly TextCaret Invalid
@@ -41,11 +41,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public TextOffset Offset { get; }
 
     /// <summary> True if the cursor is pointing at the beginning of the current fragment. </summary>
-    public bool IsAtBeginningOfFragment
+    public bool IsAtFragmentStart
       => Offset.GraphemeOffset == 0;
 
     /// <summary> True if the cursor is pointing at the end of the current fragment. </summary>
-    public bool IsAtEndOfFragment
+    public bool IsAtFragmentEnd
     {
       get
       {
@@ -57,19 +57,19 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <inheritdoc />
-    public bool IsAtBeginningOfBlock
-      => Fragment.Previous == null && IsAtBeginningOfFragment;
+    public bool IsAtBlockStart
+      => Fragment.Previous == null && IsAtFragmentStart;
 
     /// <inheritdoc />
-    public bool IsAtEndOfBlock
-      => Fragment.Next == null && IsAtEndOfFragment;
+    public bool IsAtBlockEnd
+      => Fragment.Next == null && IsAtFragmentEnd;
 
     /// <summary> Get the character after the current cursor position. </summary>
     public TextUnit CharacterAfter
     {
       get
       {
-        if (!IsAtEndOfBlock)
+        if (!IsAtBlockEnd)
           return Fragment.Buffer.GetCharacterAt(Offset.GraphemeOffset);
 
         return TextUnit.Default;
@@ -105,7 +105,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public TextCaret GetPreviousPosition()
     {
       // we're at the beginning of the first span
-      if (IsAtBeginningOfBlock)
+      if (IsAtBlockStart)
         return Invalid;
 
       if (Offset.GraphemeOffset > 0)
@@ -217,10 +217,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         => FromBlockCaret(caret).GetNextPosition().ToBlockCaret();
 
       public bool IsAtBlockEnd(BlockCaret caret)
-        => FromBlockCaret(caret).IsAtEndOfBlock;
+        => FromBlockCaret(caret).IsAtBlockEnd;
 
       public bool IsAtBlockStart(BlockCaret caret)
-        => FromBlockCaret(caret).IsAtBeginningOfBlock;
+        => FromBlockCaret(caret).IsAtBlockStart;
     }
   }
 }

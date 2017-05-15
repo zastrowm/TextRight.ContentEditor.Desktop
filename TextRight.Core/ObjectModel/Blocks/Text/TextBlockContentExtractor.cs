@@ -26,7 +26,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       var start = GetStart(startCursor);
       var end = new FragmentAndOffset(endCursor.Fragment, endCursor.Offset.GraphemeOffset);
 
-      if (startCursor.IsAtBeginningOfBlock && endCursor.IsAtEndOfBlock)
+      if (startCursor.IsAtBlockStart && endCursor.IsAtBlockEnd)
       {
         return ExtractAllContent(content);
       }
@@ -155,7 +155,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     private static FragmentAndOffset GetStart(TextCaret start)
     {
-      if (start.IsAtBeginningOfBlock)
+      if (start.IsAtBlockStart)
         return new FragmentAndOffset(start.Fragment, 0);
       else if (start.Offset.GraphemeOffset == start.Fragment.NumberOfChars && start.Fragment.Next != null)
         return new FragmentAndOffset(start.Fragment.Next, 0);

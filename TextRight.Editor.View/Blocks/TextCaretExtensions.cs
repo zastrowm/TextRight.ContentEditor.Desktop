@@ -22,7 +22,7 @@ namespace TextRight.Editor.View.Blocks
     [Pure]
     public static MeasuredRectangle MeasureCaret(this TextCaret cursor, ITextBlockRenderer associatedRenderer)
     {
-      if (cursor.IsAtEndOfBlock && cursor.IsAtBeginningOfBlock)
+      if (cursor.IsAtBlockEnd && cursor.IsAtBlockStart)
       {
         // if it's empty, there is no character to measure
         return cursor.Block.GetBounds().FlattenLeft();
@@ -45,9 +45,9 @@ namespace TextRight.Editor.View.Blocks
 
       // if we're at the beginning of the block, we have to measure the next character, as there is
       // no "previous" character
-      if (cursor.IsAtBeginningOfBlock)
+      if (cursor.IsAtBlockStart)
         shouldMeasureNext = true;
-      else if (!cursor.IsAtEndOfBlock && cursor.GetPreviousPosition().CharacterAfter.IsWhitespace)
+      else if (!cursor.IsAtBlockEnd && cursor.GetPreviousPosition().CharacterAfter.IsWhitespace)
         shouldMeasureNext = true;
       else
         shouldMeasureNext = false;

@@ -10,7 +10,7 @@ namespace TextRight.Core.Tests
     /// <summary> Get the character before the current cursor position. </summary>
     public static TextUnit GetCharacterBefore(this TextCaret caret)
     {
-      if (caret.IsAtBeginningOfBlock)
+      if (caret.IsAtBlockStart)
         return TextUnit.Default;
 
       caret = caret.GetPreviousPosition();
