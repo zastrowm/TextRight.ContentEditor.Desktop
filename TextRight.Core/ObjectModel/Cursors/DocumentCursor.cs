@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.ObjectModel.Cursors
 {
@@ -63,6 +65,25 @@ namespace TextRight.Core.ObjectModel.Cursors
       MoveTo(cursorCopy.Cursor);
     }
 
+    /// <summary> Move to the given caret location. </summary>
+    /// <param name="blockCaret"> The block caret. </param>
+    public void MoveTo(BlockCaret blockCaret) 
+      // TODO make it not TextBlock specific
+      => MoveTo(new TextBlockCursor((TextCaret)blockCaret));
+
+    /// <summary> The current caret position. </summary>
+    public BlockCaret Caret
+    {
+      get
+      {
+      // TODO make it not TextBlock specific
+        using (var copy = Cursor.Copy())
+        {
+          return ((TextBlockCursor)copy.Cursor).ToValue();
+        }
+      }
+    }
+
     /// <summary> A readonly cursor which allows positional information to be read. </summary>
     public ReadonlyCursor Cursor
       => new ReadonlyCursor(_pooledEndSelection.Cursor);
@@ -73,5 +94,10 @@ namespace TextRight.Core.ObjectModel.Cursors
 
     /// <summary> Invoked when the cursor has moved. </summary>
     public event EventHandler CursorMoved;
+
+    /// <summary> Checks if the caret is of the given type. </summary>
+    public bool Is<T>()
+      where T : struct, IEquatable<T>, IBlockCaret
+      => Caret.Is<T>();
   }
 }

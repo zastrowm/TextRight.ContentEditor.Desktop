@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
 
 namespace TextRight.Core.Editing.Actions
@@ -34,6 +36,14 @@ namespace TextRight.Core.Editing.Actions
     public DocumentCursorHandle(IBlockContentCursor cursor)
     {
       _serializedCursor = cursor.Serialize();
+    }
+
+    public BlockCaret GetCaret(DocumentEditorContext context)
+    {
+      using (var copy = Get(context))
+      {
+        return ((TextBlockCursor)copy.Cursor).ToValue();
+      }
     }
 
     /// <summary>

@@ -5,7 +5,8 @@ using System.Linq;
 namespace TextRight.Core.Cursors
 {
   /// <summary> Represents a generic caret that is pointing to content within a block. </summary>
-  public struct BlockCaret : IBlockCaret
+  public struct BlockCaret : IBlockCaret,
+                             IEquatable<BlockCaret>
   {
     public static readonly BlockCaret Invalid
       = default(BlockCaret);
@@ -51,7 +52,7 @@ namespace TextRight.Core.Cursors
 
     /// <summary> True if the caret is of the specified type. </summary>
     public bool Is<TCaret>()
-      where TCaret : struct, IEquatable<TCaret>, IBlockCaret 
+      where TCaret : struct, IEquatable<TCaret>, IBlockCaret
       => Mover is ICaretMover<TCaret>;
 
     /// <summary> The type-specific mover associated with the caret. </summary>
@@ -71,5 +72,45 @@ namespace TextRight.Core.Cursors
 
     /// <summary> Arbitrary data to be stored in the caret. </summary>
     public int InstanceOffset4 { get; }
+
+    /// <summary />
+    public bool Equals(BlockCaret other) =>
+      Equals(Mover, other.Mover) && Equals(InstanceDatum, other.InstanceDatum) &&
+      InstanceOffset1 == other.InstanceOffset1 &&
+      InstanceOffset2 == other.InstanceOffset2 &&
+      InstanceOffset3 == other.InstanceOffset3 &&
+      InstanceOffset4 == other.InstanceOffset4;
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj))
+        return false;
+
+      return obj is BlockCaret && Equals((BlockCaret)obj);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+      unchecked
+      {
+        var hashCode = (Mover != null ? Mover.GetHashCode() : 0);
+        hashCode = (hashCode * 397) ^ (InstanceDatum != null ? InstanceDatum.GetHashCode() : 0);
+        hashCode = (hashCode * 397) ^ InstanceOffset1;
+        hashCode = (hashCode * 397) ^ InstanceOffset2;
+        hashCode = (hashCode * 397) ^ InstanceOffset3;
+        hashCode = (hashCode * 397) ^ InstanceOffset4;
+        return hashCode;
+      }
+    }
+
+    /// <summary />
+    public static bool operator ==(BlockCaret left, BlockCaret right)
+      => left.Equals(right);
+
+    /// <summary />
+    public static bool operator !=(BlockCaret left, BlockCaret right)
+      => !left.Equals(right);
   }
 }

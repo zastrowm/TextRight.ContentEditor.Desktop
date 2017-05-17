@@ -18,7 +18,7 @@ namespace TextRight.Core.Tests.Editing
         new Func<UndoableAction>[]
         {
           FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), "TheWord"),
-          () => new DeleteNextCharacterCommand.DeleteNextCharacterAction(BlockAt(0).BeginCursor(3).AsTextCursor()),
+          () => new DeleteNextCharacterCommand.DeleteNextCharacterAction(BlockAt(0).BeginCaret(3).AsTextCursor()),
         });
 
       DidYouKnow.That(BlockAt(0).AsText()).Should().Be("Theord");
@@ -38,7 +38,7 @@ namespace TextRight.Core.Tests.Editing
           new Func<UndoableAction>[]
           {
             FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), text),
-            () => new DeleteNextCharacterCommand.DeleteNextCharacterAction(BlockAt(0).BeginCursor(i).AsTextCursor()),
+            () => new DeleteNextCharacterCommand.DeleteNextCharacterAction(BlockAt(0).BeginCaret(i).AsTextCursor()),
           });
 
         var expected = text.Remove(i, 1);

@@ -22,21 +22,17 @@ namespace TextRight.Core.Editing.Commands.Caret
     }
 
     /// <inheritdoc/>
-    public override bool Activate(DocumentCursor caret, CaretMovementMode movementMode)
+    public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)
     {
-      using (var current = caret.Cursor.Copy())
+      var original = (TextCaret)cursor.Caret;
+      var newPosition = TextBlockMoveToNextWord(original);
+      if (original != newPosition)
       {
-        var original = ((TextBlockCursor)current.Cursor).ToValue();
-        var newPosition = TextBlockMoveToNextWord(original);
-        if (original != newPosition)
-        {
-          ((TextBlockCursor)current.Cursor).MoveTo(newPosition);
-          caret.MoveTo(current);
-          return true;
-        }
-
-        return false;
+        cursor.MoveTo(newPosition);
+        return true;
       }
+
+      return false;
     }
 
     private TextCaret TextBlockMoveToNextWord(TextCaret textCaret)

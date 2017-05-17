@@ -26,18 +26,14 @@ namespace TextRight.Core.Editing.Commands.Text
     /// <inheritdoc />
     public bool CanActivate(DocumentEditorContext context)
     {
-      var cursor = context.Cursor;
-      return cursor.Is<TextBlockCursor>() && !cursor.IsAtEnd;
+      var cursor = context.Caret.Caret;
+      return cursor.Is<TextCaret>() && !cursor.IsAtBlockEnd;
     }
 
     /// <inheritdoc />
     public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      using (var copy = context.Cursor.Copy())
-      {
-        var textCursor = (TextBlockCursor)copy.Cursor;
-        actionStack.Do(new DeleteNextCharacterAction(textCursor));
-      }
+      actionStack.Do(new DeleteNextCharacterAction((TextCaret)context.Caret.Caret));
     }
 
     /// <summary> Deletes text from the document. </summary>
@@ -46,10 +42,10 @@ namespace TextRight.Core.Editing.Commands.Text
       private readonly string _originalText;
       private readonly DocumentCursorHandle _cursorHandle;
 
-      public DeleteNextCharacterAction(TextBlockCursor cursor)
+      public DeleteNextCharacterAction(TextCaret caret)
       {
-        _cursorHandle = new DocumentCursorHandle(cursor);
-        _originalText = cursor.CharacterAfter.ToString();
+        _cursorHandle = new DocumentCursorHandle(new TextBlockCursor(caret));
+        _originalText = caret.CharacterAfter.Text;
       }
 
       /// <inheritdoc />
@@ -63,21 +59,15 @@ namespace TextRight.Core.Editing.Commands.Text
       /// <inheritdoc />
       public override void Do(DocumentEditorContext context)
       {
-        using (var copy = _cursorHandle.Get(context))
-        {
-          var cursor = (TextBlockCursor)copy.Cursor;
-          cursor.DeleteText(1);
-        }
+        var caret = (TextCaret)_cursorHandle.GetCaret(context);
+        caret.DeleteText(1);
       }
 
       /// <inheritdoc />
       public override void Undo(DocumentEditorContext context)
       {
-        using (var copy = _cursorHandle.Get(context))
-        {
-          var cursor = (TextBlockCursor)copy.Cursor;
-          cursor.InsertText(_originalText);
-        }
+        var caret = (TextCaret)_cursorHandle.GetCaret(context);
+        caret.InsertText(_originalText);
       }
     }
   }

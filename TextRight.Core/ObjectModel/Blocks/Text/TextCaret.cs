@@ -96,7 +96,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         return new TextCaret(nextFragment, nextFragment.Buffer.GetFirstOffset());
       }
 
-      if (Fragment.Buffer.GetLastOffset() == Offset)
+      if (Fragment.Buffer.GetLastOffset().GraphemeOffset == Offset.GraphemeOffset)
         return new TextCaret(Fragment, TextOffsetHelpers.CreateAfterTextOffset(Fragment.Buffer));
 
       return Invalid;
@@ -153,7 +153,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (!IsValid)
         return BlockCaret.Invalid;
 
-      return new BlockCaret(TextCaretMover.Instance, Offset.CharOffset, Offset.GraphemeOffset, Offset.GraphemeLength);
+      return new BlockCaret(TextCaretMover.Instance, Fragment, Offset.CharOffset, Offset.GraphemeOffset, Offset.GraphemeLength);
     }
 
     /// <summary>
@@ -202,8 +202,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public static implicit operator BlockCaret(TextCaret caret)
       => caret.ToBlockCaret();
 
-    /// <summary> Implicit cast that converts the given BlockCaret to a TextCaret. </summary>
-    public static implicit operator TextCaret(BlockCaret caret)
+    /// <summary> Explicit cast that converts the given BlockCaret to a TextCaret. </summary>
+    public static explicit operator TextCaret(BlockCaret caret)
       => FromBlockCaret(caret);
 
     private class TextCaretMover : ICaretMover<TextCaret>

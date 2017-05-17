@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextRight.Core.Cursors;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Collections;
@@ -94,6 +95,18 @@ namespace TextRight.Core.Tests
       return cursor;
     }
 
+    public static BlockCaret BeginCaret(this ContentBlock block, int offset = 0)
+    {
+      var caret = ((TextBlock)block).Content.GetCaretAtBeginning();
+      while (offset > 0)
+      {
+        caret = caret.GetNextPosition();
+        offset -= 1;
+      }
+
+      return caret;
+    }
+
     /// <summary> Gets a cursor to the beginning of the block. </summary>
     public static IBlockContentCursor BeginCursor(this ContentBlock block, int offset = 0)
     {
@@ -106,6 +119,11 @@ namespace TextRight.Core.Tests
     public static TextBlockCursor AsTextCursor(this IBlockContentCursor cursor)
     {
       return (TextBlockCursor)cursor;
+    }
+
+    public static TextCaret AsTextCursor(this BlockCaret cursor)
+    {
+      return (TextCaret)cursor;
     }
 
     /// <summary> Creates a cursor handle from the given content cursor. </summary>
