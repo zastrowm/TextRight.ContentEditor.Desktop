@@ -16,6 +16,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public static readonly TextCaret Invalid
       = default(TextCaret);
 
+    public static ICaretMover<TextCaret> Factory
+      => TextCaretMover.Instance;
+
     private TextCaret(StyledTextFragment fragment, TextOffset offset)
     {
       Fragment = fragment;
@@ -210,6 +213,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       internal static readonly TextCaretMover Instance
         = new TextCaretMover();
+
+      /// <inheritdoc />
+      public TextCaret Convert(BlockCaret caret)
+        => FromBlockCaret(caret);
 
       public BlockCaret MoveForward(BlockCaret caret)
         => FromBlockCaret(caret).GetNextPosition().ToBlockCaret();

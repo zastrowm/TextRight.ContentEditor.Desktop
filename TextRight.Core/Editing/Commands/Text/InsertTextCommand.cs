@@ -66,24 +66,18 @@ namespace TextRight.Core.Editing.Commands.Text
       /// <inheritdoc />
       public override void Do(DocumentEditorContext context)
       {
-        using (var copy = _insertionPoint.Get(context))
-        {
-          var textBlockCursor = (TextBlockCursor)copy.Cursor;
-          textBlockCursor.InsertText(Text);
-
-          context.Caret.MoveTo(textBlockCursor);
-        }
+        var textCaret = _insertionPoint.GetCaret(context, TextCaret.Factory);
+        textCaret = textCaret.InsertText(Text);
+        context.Caret.MoveTo(textCaret);
       }
 
       /// <inheritdoc />
       public override void Undo(DocumentEditorContext context)
       {
-        using (var copy = _insertionPoint.Get(context))
-        {
-          var textBlockCursor = (TextBlockCursor)copy.Cursor;
-          textBlockCursor.DeleteText(Text.Length);
-          context.Caret.MoveTo(textBlockCursor);
-        }
+        // TODO graphemes?
+        var textCaret = (TextCaret)_insertionPoint.GetCaret(context);
+        textCaret = textCaret.DeleteText(Text.Length);
+        context.Caret.MoveTo(textCaret);
       }
 
       /// <inheritdoc/>

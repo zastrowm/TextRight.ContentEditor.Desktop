@@ -43,6 +43,8 @@ namespace TextRight.Core.Cursors
   public interface ICaretMover<TCaret> : ICaretMover
     where TCaret : struct, IBlockCaret, IEquatable<TCaret>
   {
-    
+    /// <summary> Convert the block caret into the specific type of caret. </summary>
+    /// <param name="caret"> The block caret to convert. </param>
+    TCaret Convert(BlockCaret caret);
   }
 }

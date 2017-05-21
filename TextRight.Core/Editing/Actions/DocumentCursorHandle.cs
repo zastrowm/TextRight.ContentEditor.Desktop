@@ -38,6 +38,16 @@ namespace TextRight.Core.Editing.Actions
       _serializedCursor = cursor.Serialize();
     }
 
+    public TCaret GetCaret<TCaret>(DocumentEditorContext context, ICaretMover<TCaret> factory)
+      where TCaret : struct, IBlockCaret, IEquatable<TCaret>
+    {
+      var genericCaret = GetCaret(context);
+      if (genericCaret.Mover != factory)
+        throw new ArgumentException($"Block cursor does not represent a cursor of type: {typeof(TCaret)}", nameof(factory));
+
+      return factory.Convert(genericCaret);
+    }
+
     public BlockCaret GetCaret(DocumentEditorContext context)
     {
       using (var copy = Get(context))
