@@ -216,21 +216,30 @@ namespace TextRight.Core.Tests.Editing
       insertion.Do(Context);
       var second =
         new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(
-          BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
+          BlockAt<TextBlock>(0).BeginCaret(insertion.Text.Length).AsTextCursor());
 
-      DidYouKnow.That(insertion.TryMerge(Context, second)).Should().BeTrue();
-      DidYouKnow.That(insertion.Text).Should().Be("Inserted Strin");
+      DidYouKnow.That(insertion.TryMerge(Context, second)).
+        Should().BeTrue();
+
+      DidYouKnow.That(insertion.Text).Should()
+        .Be("Inserted Strin");
     }
 
     [Fact]
     public void TryMerge_WithBackspace_DoesNotWorkWhenInsertionIsEmpty()
     {
+      var fakeInsertion =
+        new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(),
+                                                       "1234");
+      fakeInsertion.Do(Context);
+      Context.UndoStack.Clear();
+
       var insertion =
         new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(), "");
       insertion.Do(Context);
       var second =
         new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(
-          BlockAt<TextBlock>(0).BeginCursor(insertion.Text.Length).AsTextCursor());
+          BlockAt<TextBlock>(0).BeginCaret(4).AsTextCursor());
 
       DidYouKnow.That(insertion.TryMerge(Context, second)).Should().BeFalse();
     }

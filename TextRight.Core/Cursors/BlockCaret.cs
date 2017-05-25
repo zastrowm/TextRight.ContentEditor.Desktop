@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Cursors
 {
   /// <summary> Represents a generic caret that is pointing to content within a block. </summary>
-  public struct BlockCaret : IBlockCaret,
-                             IEquatable<BlockCaret>
+  public struct BlockCaret : IEquatable<BlockCaret>
+    // we want it to have the same api surface as other block carets, but we don't really
+    // want it to be an IBlockCaret
+#if DEBUG
+    , IBlockCaret
+#endif
+
   {
     public static readonly BlockCaret Invalid
       = default(BlockCaret);
@@ -46,9 +52,13 @@ namespace TextRight.Core.Cursors
     public bool IsAtBlockEnd
       => Mover.IsAtBlockStart(this);
 
+#if DEBUG
+
     /// <inheritdoc />
     public BlockCaret ToBlockCaret()
       => this;
+
+#endif
 
     /// <summary> True if the caret is of the specified type. </summary>
     public bool Is<TCaret>()

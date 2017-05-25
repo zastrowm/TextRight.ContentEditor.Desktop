@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using TextRight.Core.Editing.Actions;
@@ -26,27 +27,27 @@ namespace TextRight.Core.Editing.Commands.Text
     /// <inheritdoc />
     public bool CanActivate(DocumentEditorContext context)
     {
-      var cursor = context.Cursor;
-      return cursor.Is<TextBlockCursor>() && !cursor.IsAtBeginning;
+      var cursor = context.Caret.Caret;
+      return cursor.Is<TextCaret>() && !cursor.IsAtBlockStart;
     }
 
     /// <inheritdoc />
     public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      using (var copy = context.Cursor.Copy())
-      {
-        var textCursor = (TextBlockCursor)copy.Cursor;
-        actionStack.Do(new DeletePreviousCharacterAction(textCursor));
-      }
+      var caret = (TextCaret)context.Caret.Caret;
+      actionStack.Do(new DeletePreviousCharacterAction(caret));
     }
 
     /// <summary> Deletes text from the document. </summary>
     internal class DeletePreviousCharacterAction : UndoableAction
     {
-      public DeletePreviousCharacterAction(TextBlockCursor cursor)
+      public DeletePreviousCharacterAction(TextCaret caret)
       {
-        CursorHandle = new DocumentCursorHandle(cursor);
-        OriginalText = cursor.CharacterBefore.ToString();
+        Debug.Assert(caret.GetPreviousPosition().IsValid, "Caret previous position not valid");
+
+        caret = caret.GetPreviousPosition();
+        CursorHandle = new DocumentCursorHandle(caret);
+        OriginalText = caret.CharacterAfter.Text;
       }
 
       /// <summary> The location at which the character was deleted. </summary>
@@ -66,26 +67,17 @@ namespace TextRight.Core.Editing.Commands.Text
       /// <inheritdoc />
       public override void Do(DocumentEditorContext context)
       {
-        using (var copy = CursorHandle.Get(context))
-        {
-          var cursor = (TextBlockCursor)copy.Cursor;
-          cursor.MoveBackward();
-          cursor.DeleteText(1);
-          context.Caret.MoveTo(cursor);
-        }
+        var caret = (TextCaret)CursorHandle.GetCaret(context);
+        caret = caret.DeleteText(OriginalText.Length);
+        context.Caret.MoveTo(caret);
       }
 
       /// <inheritdoc />
       public override void Undo(DocumentEditorContext context)
       {
-        using (var copy = CursorHandle.Get(context))
-        {
-          var cursor = (TextBlockCursor)copy.Cursor;
-          cursor.MoveBackward();
-          cursor.InsertText(OriginalText);
-          cursor.MoveForward();
-          context.Caret.MoveTo(cursor);
-        }
+        var caret = (TextCaret)CursorHandle.GetCaret(context);
+        caret = caret.InsertText(OriginalText);
+        context.Caret.MoveTo(caret);
       }
     }
   }

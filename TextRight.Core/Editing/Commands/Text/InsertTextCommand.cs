@@ -143,7 +143,7 @@ namespace TextRight.Core.Editing.Commands.Text
             return false;
 
           var insertionPointAfterInsert = myCursor.OffsetIntoSpan + Text.Length;
-          var insertionPointAtDeletion = otherCursor.OffsetIntoSpan;
+          var insertionPointAtDeletion = otherCursor.OffsetIntoSpan + action.OriginalText.Length;
 
           if (insertionPointAfterInsert != insertionPointAtDeletion)
             return false;

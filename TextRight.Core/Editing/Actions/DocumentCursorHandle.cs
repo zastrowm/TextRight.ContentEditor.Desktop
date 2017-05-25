@@ -17,6 +17,13 @@ namespace TextRight.Core.Editing.Actions
   {
     private readonly ISerializedBlockCursor _serializedCursor;
 
+    /// <summary> TODO </summary>
+    public DocumentCursorHandle(TextCaret caret)
+      : this(new TextBlockCursor(caret))
+    {
+      
+    }
+
     /// <summary> Constructor. </summary>
     /// <param name="cursor"> The cursor that should be serialized for later use. </param>
     public DocumentCursorHandle(ReadonlyCursor cursor)
