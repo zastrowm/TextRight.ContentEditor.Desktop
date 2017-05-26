@@ -44,7 +44,7 @@ namespace TextRight.Core.Editing.Commands.Text
 
       public DeleteNextCharacterAction(TextCaret caret)
       {
-        _cursorHandle = new DocumentCursorHandle(new TextBlockCursor(caret));
+        _cursorHandle = new DocumentCursorHandle(caret);
         _originalText = caret.CharacterAfter.Text;
       }
 

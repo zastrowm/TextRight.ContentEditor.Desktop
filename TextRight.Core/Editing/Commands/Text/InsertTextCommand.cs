@@ -101,56 +101,48 @@ namespace TextRight.Core.Editing.Commands.Text
 
       private bool TryMergeWith(DocumentEditorContext context, InsertTextUndoableAction action)
       {
-        using (var myCopy = _insertionPoint.Get(context))
-        using (var otherCopy = action._insertionPoint.Get(context))
-        {
-          var myCursor = (TextBlockCursor)myCopy.Cursor;
-          var otherCursor = (TextBlockCursor)otherCopy.Cursor;
+        var myCopy = (TextCaret)_insertionPoint.GetCaret(context);
+        var otherCopy = (TextCaret)action._insertionPoint.GetCaret(context);
 
-          if (myCursor.Block != otherCursor.Block)
-            return false;
+        if (myCopy.Block != otherCopy.Block)
+          return false;
 
-          if (myCursor.Fragment != otherCursor.Fragment)
-            return false;
+        if (myCopy.Fragment != otherCopy.Fragment)
+          return false;
 
-          if (myCursor.OffsetIntoSpan + Text.Length != otherCursor.OffsetIntoSpan)
-            return false;
+        if (myCopy.Offset.GraphemeOffset + Text.Length != otherCopy.Offset.GraphemeOffset)
+          return false;
 
-          Text += action.Text;
+        Text += action.Text;
 
-          return true;
-        }
+        return true;
       }
 
       private bool TryMergeWith(DocumentEditorContext context, DeletePreviousCharacterCommand.DeletePreviousCharacterAction action)
       {
-        using (var myCopy = _insertionPoint.Get(context))
-        using (var otherCopy = action.CursorHandle.Get(context))
-        {
-          var myCursor = (TextBlockCursor)myCopy.Cursor;
-          var otherCursor = (TextBlockCursor)otherCopy.Cursor;
+        var myCopy = (TextCaret)_insertionPoint.GetCaret(context);
+        var otherCopy = (TextCaret)action.CursorHandle.GetCaret(context);
 
-          if (Text.Length == 0)
-            return false;
+        if (Text.Length == 0)
+          return false;
 
-          if (!Text.EndsWith(action.OriginalText))
-            return false;
+        if (!Text.EndsWith(action.OriginalText))
+          return false;
 
-          if (myCursor.Block != otherCursor.Block)
-            return false;
+        if (myCopy.Block != otherCopy.Block)
+          return false;
 
-          if (myCursor.Fragment != otherCursor.Fragment)
-            return false;
+        if (myCopy.Fragment != otherCopy.Fragment)
+          return false;
 
-          var insertionPointAfterInsert = myCursor.OffsetIntoSpan + Text.Length;
-          var insertionPointAtDeletion = otherCursor.OffsetIntoSpan + action.OriginalText.Length;
+        var insertionPointAfterInsert = myCopy.Offset.GraphemeOffset + Text.Length;
+        var insertionPointAtDeletion = otherCopy.Offset.GraphemeOffset + action.OriginalText.Length;
 
-          if (insertionPointAfterInsert != insertionPointAtDeletion)
-            return false;
+        if (insertionPointAfterInsert != insertionPointAtDeletion)
+          return false;
 
-          Text = Text.Remove(Text.Length - action.OriginalText.Length, action.OriginalText.Length);
-          return true;
-        }
+        Text = Text.Remove(Text.Length - action.OriginalText.Length, action.OriginalText.Length);
+        return true;
       }
 
       private bool TryMergeWith(DocumentEditorContext context, DeleteNextCharacterCommand.DeleteNextCharacterAction action)
