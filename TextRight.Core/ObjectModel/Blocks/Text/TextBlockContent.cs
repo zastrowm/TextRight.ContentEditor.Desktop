@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 using TextRight.Core.ObjectModel.Serialization;
@@ -191,76 +190,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <returns> The extracted content. </returns>
     public TextBlockContent ExtractContent(TextCaret start, TextCaret end)
       => TextBlockContentExtractor.Extract(this, start, end);
-
-    /// <summary> Extracts the content starting at the cursor and continuing to the end of the block. </summary>
-    /// <param name="cursor"> The position at which extraction should start. </param>
-    /// <returns> The fragments that have been extracted. </returns>
-    public StyledTextFragment[] ExtractContentToEnd(TextBlockCursor cursor)
-    {
-      if (cursor.IsAtEnd)
-        return Array.Empty<StyledTextFragment>();
-
-      StyledTextFragment startFragment = cursor.Fragment;
-      int offsetIntoFragment = cursor.OffsetIntoSpan;
-
-      StyledTextFragment[] elements;
-      int index;
-
-      bool isAtEndOfFragment = offsetIntoFragment == startFragment.NumberOfChars;
-
-      if (isAtEndOfFragment)
-      {
-        // we only need everything passed the fragment
-        int expectedCount = ChildCount - (startFragment.Index + 1);
-
-        elements = new StyledTextFragment[expectedCount];
-        startFragment = startFragment.Next;
-        index = 0;
-      }
-      else
-      {
-        // we only need everything passed the fragment plus part of the current fragment
-        int expectedCount = ChildCount - startFragment.Index;
-
-        elements = new StyledTextFragment[expectedCount];
-
-        string rightHalf = startFragment.GetText().Substring(offsetIntoFragment);
-
-        startFragment.RemoveCharacters(offsetIntoFragment, startFragment.NumberOfChars - offsetIntoFragment);
-
-        elements[0] = new StyledTextFragment(rightHalf);
-        startFragment = startFragment.Next;
-
-        index = 1;
-      }
-
-      // needs to be before we clear each fragment, otherwise the index will end up 
-      // being -1
-      int indexOfFirstRemovedSpan = startFragment?.Index ?? Int32.MaxValue;
-
-      while (startFragment != null)
-      {
-        ClearFragment(startFragment);
-
-        elements[index] = startFragment;
-        startFragment = startFragment.Next;
-        index += 1;
-      }
-
-      // remove all of the spans from this block now
-      for (int i = _spans.Count - 1; i >= indexOfFirstRemovedSpan; i--)
-      {
-        var fragment = _spans[i];
-        fragment.Detach();
-        _spans.RemoveAt(i);
-      }
-
-      UpdateChildrenNumbering(Math.Max(indexOfFirstRemovedSpan - 1, 0));
-
-      Debug.Assert(index == elements.Length);
-
-      return elements;
-    }
 
     public TextBlockContent Clone()
     {

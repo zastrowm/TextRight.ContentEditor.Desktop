@@ -10,9 +10,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
   public class AddableBlockCollection : RootBlockCollection,
                                         IEnumerable
   {
-    public IEnumerator GetEnumerator()
-    {
-      throw new NotImplementedException();
-    }
+    public IEnumerator GetEnumerator() 
+      => Children.GetEnumerator();
   }
 }

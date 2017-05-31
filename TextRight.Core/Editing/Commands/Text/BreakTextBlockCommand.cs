@@ -69,11 +69,10 @@ namespace TextRight.Core.Editing.Commands.Text
         {
           var blockCursor = copy.Cursor;
 
-          var newBlock = TextBlockHelperMethods.TryBreakBlock(blockCursor);
-          if (newBlock == null)
+          var caretPosition = TextBlockHelperMethods.TryBreakBlock(blockCursor);
+          if (!caretPosition.IsValid)
             return;
-
-          context.Caret.MoveTo(newBlock.GetCursor().ToBeginning());
+          context.Caret.MoveTo(caretPosition);
         }
       }
 

@@ -41,56 +41,47 @@ namespace TextRight.Core.Editing.Actions.Text
     }
 
     /// <summary> Breaks the block into two at the given location. </summary>
-    /// <param name="cursor"> The caret at which the block should be split. </param>
+    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+    /// <param name="theCursor"> The caret at which the block should be split. </param>
     /// <returns>
-    ///  The block that is the next sibling of the original block that was split
-    ///  into two.
+    ///  A caret pointing to the beginning of the block that follows the block that was split.  Will
+    ///  be TextCaret.Invalid if the block could not be split.
     /// </returns>
-    public static ContentBlock TryBreakBlock(IBlockContentCursor cursor)
+    public static TextCaret TryBreakBlock(IBlockContentCursor theCursor)
     {
-      if (cursor == null)
-        throw new ArgumentNullException(nameof(cursor));
+      if (theCursor == null)
+        throw new ArgumentNullException(nameof(theCursor));
 
-      if (!CanBreak(cursor))
-        return null;
+      var caret = ((TextBlockCursor)theCursor).ToValue();
 
-      var targetBlock = cursor.Block;
+      if (!CanBreak(caret))
+        return TextCaret.Invalid;
 
+      var targetBlock = caret.Fragment.Parent;
       var blockCollection = targetBlock.Parent;
 
-      ContentBlock secondaryBlock = null;
-
-      if (cursor.IsAtEnd)
+      if (caret.IsAtBlockEnd)
       {
-        secondaryBlock = CreateSimilarBlock(targetBlock);
+        var secondaryBlock = (TextBlock)CreateSimilarBlock(targetBlock);
         blockCollection.InsertBlockAfter(targetBlock, secondaryBlock);
+        return secondaryBlock.Content.GetCursorToEnd();
       }
-      else if (cursor.IsAtBeginning)
+
+      if (caret.IsAtBlockStart)
       {
-        secondaryBlock = targetBlock;
         blockCollection.InsertBlockBefore(targetBlock, CreateSimilarBlock(targetBlock));
-      }
-      else
-      {
-        var textBlockCursor = (TextBlockCursor)cursor;
-        var fragments = textBlockCursor.ExtractToEnd();
-
-        var newTextBlock = (TextBlock)CreateSimilarBlock(targetBlock);
-        secondaryBlock = newTextBlock;
-
-        // TODO should this be done by AppendSpan automatically?
-        StyledTextFragment fragment1 = newTextBlock.Content.Fragments.First();
-        newTextBlock.Content.RemoveSpan(fragment1);
-
-        foreach (var fragment in fragments)
-        {
-          newTextBlock.Content.AppendSpan(fragment, true);
-        }
-
-        blockCollection.InsertBlockAfter(targetBlock, secondaryBlock);
+        return targetBlock.Content.GetCaretAtBeginning();
       }
 
-      return secondaryBlock;
+      var textBlockContent = caret.Fragment.Owner;
+      var extractedContent = textBlockContent.ExtractContent(caret, textBlockContent.GetCursorToEnd());
+
+      var newTextBlock = (TextBlock)CreateSimilarBlock(targetBlock);
+
+      newTextBlock.Content = extractedContent;
+      blockCollection.InsertBlockAfter(targetBlock, newTextBlock);
+
+      return newTextBlock.Content.GetCaretAtBeginning();
     }
 
     private static ContentBlock CreateSimilarBlock(ContentBlock block)
@@ -103,7 +94,7 @@ namespace TextRight.Core.Editing.Actions.Text
     /// </summary>
     /// <param name="cursor"> The caret that specified the position. </param>
     /// <returns> true if we can break, false if not. </returns>
-    public static bool CanBreak(IBlockContentCursor cursor)
+    public static bool CanBreak(TextCaret cursor)
       => true; // TODO
   }
 }

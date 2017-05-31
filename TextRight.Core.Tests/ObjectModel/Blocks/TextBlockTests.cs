@@ -50,7 +50,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     public void Break_AtBeginning_HasNewBlock()
     {
       Initialize("abc|123");
-      var nextBlock = (TextBlock)TextBlockHelperMethods.TryBreakBlock(_cursor);
+      var nextBlock = (TextBlock)TextBlockHelperMethods.TryBreakBlock(_cursor).Block;
 
       DidYouKnow.That(nextBlock).Should().NotBeNull();
 

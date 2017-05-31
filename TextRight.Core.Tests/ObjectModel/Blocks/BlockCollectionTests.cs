@@ -35,7 +35,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       cursor.MoveToBeginning();
       cursor.Move(7); // should be after "is"
 
-      var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor);
+      var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor).Block;
 
       DidYouKnow.That(_collection.ChildCount).Should().Be(3);
       DidYouKnow.That(_collection.NthBlock(0).AsText()).Should().Be("This is");
@@ -51,7 +51,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = _collection.NthBlock(0).GetCursor();
       cursor.MoveToBeginning();
 
-      var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor);
+      var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor).Block;
 
       DidYouKnow.That(_collection.ChildCount).Should().Be(3);
       DidYouKnow.That(_collection.NthBlock(0).AsText()).Should().Be("");
@@ -67,7 +67,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var cursor = _collection.NthBlock(0).GetCursor();
       cursor.MoveToEnd();
 
-      var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor);
+      var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor).Block;
 
       DidYouKnow.That(_collection.ChildCount).Should().Be(3);
       DidYouKnow.That(_collection.NthBlock(0).AsText()).Should().Be("This is line #1");
