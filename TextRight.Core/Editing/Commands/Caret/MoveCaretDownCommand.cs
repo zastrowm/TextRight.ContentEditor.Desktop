@@ -18,9 +18,9 @@ namespace TextRight.Core.Editing.Commands.Caret
       => true;
 
     /// <inheritdoc />
-    public override bool Activate(DocumentCursor caret, CaretMovementMode movementMode)
+    public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)
     {
-      using (var current = caret.Cursor.Copy())
+      using (var current = cursor.Cursor.Copy())
       {
         if (movementMode.CurrentMode == CaretMovementMode.Mode.None)
         {
@@ -31,7 +31,7 @@ namespace TextRight.Core.Editing.Commands.Caret
 
         if (didMove)
         {
-          caret.MoveTo(current.Cursor);
+          cursor.MoveTo(current.Cursor);
           return true;
         }
 
@@ -40,7 +40,7 @@ namespace TextRight.Core.Editing.Commands.Caret
         if (previousBlock != null)
         {
           var newCursor = previousBlock.GetCaretFromTop(movementMode);
-          caret.MoveTo(newCursor);
+          cursor.MoveTo(newCursor);
 
           return true;
         }

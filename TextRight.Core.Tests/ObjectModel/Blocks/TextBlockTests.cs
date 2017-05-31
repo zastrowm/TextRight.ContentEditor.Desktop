@@ -22,9 +22,9 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       content = content.Replace("|", "");
 
       _block = new ParagraphBlock();
-      _caret = _block.Content.GetCaretAtBeginning();
+      _caret = _block.Content.GetCaretAtStart();
       _caret.InsertText(content);
-      _caret = _block.Content.GetCaretAtBeginning();
+      _caret = _block.Content.GetCaretAtStart();
 
       if (index > 0)
       {

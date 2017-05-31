@@ -15,33 +15,28 @@ namespace TextRight.Core.Editing.Commands.Caret
       => "caret.moveBackward";
 
     /// <inheritdoc />
-    public override bool Activate(DocumentCursor caret, CaretMovementMode movementMode)
+    public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)
     {
-      using (var current = caret.Cursor.Copy())
+      var caret = cursor.Caret;
+      var next = caret.MoveBackward();
+
+      // try a simply to move the cursor backwards
+      if (next.IsValid)
       {
-        var blockCursor = current.Cursor;
-        // try a simply to move the cursor backwards
-        if (blockCursor.MoveBackward())
-        {
-          caret.MoveTo(blockCursor);
-          return true;
-        }
-
-        // try get the block backward to get a cursor that looks at the end of that block
-        var block = blockCursor.Block?.Parent.GetBlockTo(BlockDirection.Backward, blockCursor.Block) as ContentBlock;
-        if (block != null)
-        {
-          using (var newCursor = block.CursorPool.GetCursorCopy(block))
-          {
-            newCursor.Cursor.MoveToEnd();
-            caret.MoveTo(newCursor.Cursor);
-            return true;
-          }
-        }
-
-        // we couldn't do it
-        return false;
+        cursor.MoveTo(next);
+        return true;
       }
+
+      // try get the block backward to get a cursor that looks at the end of that block
+      var block = caret.Block?.Parent.GetBlockTo(BlockDirection.Backward, caret.Block) as ContentBlock;
+      if (block != null)
+      {
+        cursor.MoveTo(block.GetCaretAtEnd());
+        return true;
+      }
+
+      // we couldn't do it
+      return false;
     }
   }
 }

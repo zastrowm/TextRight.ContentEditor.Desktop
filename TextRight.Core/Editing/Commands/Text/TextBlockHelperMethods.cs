@@ -62,24 +62,24 @@ namespace TextRight.Core.Editing.Actions.Text
       {
         var secondaryBlock = (TextBlock)CreateSimilarBlock(targetBlock);
         blockCollection.InsertBlockAfter(targetBlock, secondaryBlock);
-        return secondaryBlock.Content.GetCursorToEnd();
+        return secondaryBlock.Content.GetCaretAtEnd();
       }
 
       if (caret.IsAtBlockStart)
       {
         blockCollection.InsertBlockBefore(targetBlock, CreateSimilarBlock(targetBlock));
-        return targetBlock.Content.GetCaretAtBeginning();
+        return targetBlock.Content.GetCaretAtStart();
       }
 
       var textBlockContent = caret.Fragment.Owner;
-      var extractedContent = textBlockContent.ExtractContent(caret, textBlockContent.GetCursorToEnd());
+      var extractedContent = textBlockContent.ExtractContent(caret, textBlockContent.GetCaretAtEnd());
 
       var newTextBlock = (TextBlock)CreateSimilarBlock(targetBlock);
 
       newTextBlock.Content = extractedContent;
       blockCollection.InsertBlockAfter(targetBlock, newTextBlock);
 
-      return newTextBlock.Content.GetCaretAtBeginning();
+      return newTextBlock.Content.GetCaretAtStart();
     }
 
     private static ContentBlock CreateSimilarBlock(ContentBlock block)

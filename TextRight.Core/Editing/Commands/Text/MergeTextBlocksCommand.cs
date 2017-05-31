@@ -102,7 +102,7 @@ namespace TextRight.Core.Editing.Commands.Text
         _previousPath = previousBlock.GetBlockPath();
         _nextPath = nextBlock.GetBlockPath();
 
-        _endOfPreviousBlockHandle = new DocumentCursorHandle(previousBlock.Content.GetCursorToEnd());
+        _endOfPreviousBlockHandle = new DocumentCursorHandle(previousBlock.Content.GetCaretAtEnd());
       }
 
       /// <inheritdoc />

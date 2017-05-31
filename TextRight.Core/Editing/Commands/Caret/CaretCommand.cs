@@ -16,10 +16,10 @@ namespace TextRight.Core.Editing.Commands.Caret
       => false;
 
     /// <summary> Activates the given command, acting on the given caret. </summary>
-    /// <param name="caret"> The caret on which to act. </param>
+    /// <param name="cursor"> The caret on which to act. </param>
     /// <param name="movementMode"></param>
     /// <returns> true if it succeeds, false if it fails. </returns>
-    public abstract bool Activate(DocumentCursor caret, CaretMovementMode movementMode);
+    public abstract bool Activate(DocumentCursor cursor, CaretMovementMode movementMode);
 
     /// <inheritdoc />
     public abstract string Id { get; }

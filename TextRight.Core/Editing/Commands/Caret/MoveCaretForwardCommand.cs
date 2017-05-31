@@ -14,33 +14,29 @@ namespace TextRight.Core.Editing.Commands.Caret
       => "caret.moveForward";
 
     /// <inheritdoc />
-    public override bool Activate(DocumentCursor caret, CaretMovementMode movementMode)
+    public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)
     {
-      using (var current = caret.Cursor.Copy())
+      // first we try to move the cursor directly
+      var caret = cursor.Caret;
+      var next = caret.MoveForward();
+
+      // try a simply to move the cursor forwards
+      if (next.IsValid)
       {
-        // first we try to move the cursor directly
-        var blockCursor = current.Cursor;
-        if (blockCursor.MoveForward())
-        {
-          caret.MoveTo(blockCursor);
-          return true;
-        }
-
-        // try get the block backward to get a cursor that looks at the beginning of that block
-        var block = blockCursor.Block?.Parent.GetBlockTo(BlockDirection.Forward, blockCursor.Block) as ContentBlock;
-        if (block != null)
-        {
-          using (var newCursor = block.CursorPool.GetCursorCopy(block))
-          {
-            newCursor.Cursor.MoveToBeginning();
-            caret.MoveTo(newCursor.Cursor);
-            return true;
-          }
-        }
-
-        // we couldn't do it
-        return false;
+        cursor.MoveTo(next);
+        return true;
       }
+
+      // try get the block backward to get a cursor that looks at the beginning of that block
+      var block = caret.Block?.Parent.GetBlockTo(BlockDirection.Forward, caret.Block) as ContentBlock;
+      if (block != null)
+      {
+        cursor.MoveTo(block.GetCaretAtStart());
+        return true;
+      }
+
+      // we couldn't do it
+      return false;
     }
   }
 }

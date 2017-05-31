@@ -38,7 +38,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public StyledTextFragment Fragment { get; }
 
     /// <summary> The block that this cursor is associated with. </summary>
-    public Block Block
+    public TextBlock Block
       => Fragment.Parent;
 
     /// <summary> The offset into <see cref="Fragment"/> that this cursor is pointing. </summary>
@@ -222,10 +222,13 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         => FromBlockCaret(caret).GetNextPosition().ToBlockCaret();
 
       public BlockCaret MoveBackward(BlockCaret caret)
-        => FromBlockCaret(caret).GetNextPosition().ToBlockCaret();
+        => FromBlockCaret(caret).GetPreviousPosition().ToBlockCaret();
 
       public bool IsAtBlockEnd(BlockCaret caret)
         => FromBlockCaret(caret).IsAtBlockEnd;
+
+      public ContentBlock GetBlock(BlockCaret blockCaret) 
+        => FromBlockCaret(blockCaret).Block;
 
       public bool IsAtBlockStart(BlockCaret caret)
         => FromBlockCaret(caret).IsAtBlockStart;

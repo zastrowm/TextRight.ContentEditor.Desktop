@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.ObjectModel.Blocks;
 
 namespace TextRight.Core.Cursors
 {
@@ -36,6 +37,10 @@ namespace TextRight.Core.Cursors
     ///  <paramref name="caret"/> should be the same instance whose method is being invoked. </param>
     /// <returns> True if the caret is at the end of the content, false otherwise. </returns>
     bool IsAtBlockEnd(BlockCaret caret);
+
+    /// <summary> Gets the block associated with the caret. </summary>
+    /// <param name="blockCaret"> The caret associated with the block. </param>
+    ContentBlock GetBlock(BlockCaret blockCaret);
   }
 
   /// <summary> Generic interface for a caret mover. </summary>

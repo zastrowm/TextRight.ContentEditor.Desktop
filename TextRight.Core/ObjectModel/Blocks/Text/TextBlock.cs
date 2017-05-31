@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using TextRight.Core.Cursors;
 using TextRight.Core.Editing;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.ObjectModel.Serialization;
@@ -42,6 +43,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         // TODO notify others
       }
     }
+
+    /// <inheritdoc />
+    public override BlockCaret GetCaretAtStart()
+      => Content.GetCaretAtStart();
+
+    /// <inheritdoc />
+    public override BlockCaret GetCaretAtEnd()
+      => Content.GetCaretAtEnd();
 
     /// <inheritdoc />
     public override ICursorPool CursorPool
@@ -129,7 +138,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <returns> The fragments that have been extracted. </returns>
     public StyledTextFragment[] ExtractContentToEnd(TextBlockCursor cursor)
     {
-      var endCursor = cursor.Block.Content.GetCursorToEnd();
+      var endCursor = cursor.Block.Content.GetCaretAtEnd();
       return Content.ExtractContent(cursor.ToValue(), endCursor).Fragments.ToArray();
     }
 

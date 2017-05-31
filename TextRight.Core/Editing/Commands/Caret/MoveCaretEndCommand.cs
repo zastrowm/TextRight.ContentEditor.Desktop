@@ -17,12 +17,12 @@ namespace TextRight.Core.Editing.Commands.Caret
       => true;
 
     /// <inheritdoc/>
-    public override bool Activate(DocumentCursor caret, CaretMovementMode movementMode)
+    public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)
     {
-      using (var current = caret.Cursor.Copy())
+      using (var current = cursor.Cursor.Copy())
       {
         BlockCursorMover.ForwardMover.MoveCaretTowardsLineEdge(current.Cursor);
-        caret.MoveTo(current);
+        cursor.MoveTo(current);
         movementMode.SetModeToEnd();
         return true;
       }

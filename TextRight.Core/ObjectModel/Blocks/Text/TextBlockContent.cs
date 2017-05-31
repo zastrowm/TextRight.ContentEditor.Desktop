@@ -40,11 +40,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       => _spans;
 
     /// <summary> Gets a cursor that is looking at the beginning of this content. </summary>
-    public TextCaret GetCaretAtBeginning()
+    public TextCaret GetCaretAtStart()
       => TextCaret.FromBeginning(this);
 
     /// <summary> Gets a cursor that is looking at the end of this content. </summary>
-    public TextCaret GetCursorToEnd()
+    public TextCaret GetCaretAtEnd()
       => TextCaret.FromEnd(this);
 
     /// <summary> Retrieves a cursor that points at the given character. </summary>

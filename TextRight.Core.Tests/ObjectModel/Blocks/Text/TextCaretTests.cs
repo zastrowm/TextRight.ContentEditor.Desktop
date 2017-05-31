@@ -16,7 +16,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       var text = "0123456789";
       var content = CreateContent(text);
 
-      var cursor = content.GetCaretAtBeginning();
+      var cursor = content.GetCaretAtStart();
 
       DidYouKnow.That(cursor.IsAtBlockStart).Should().BeTrue();
       DidYouKnow.That(cursor.IsAtFragmentStart).Should().BeTrue();
@@ -35,7 +35,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       var text = "0123456789";
       var content = CreateContent(text);
 
-      var cursor = content.GetCursorToEnd();
+      var cursor = content.GetCaretAtEnd();
 
       DidYouKnow.That(cursor.IsAtBlockStart).Should().BeFalse();
       DidYouKnow.That(cursor.IsAtFragmentStart).Should().BeFalse();
@@ -65,7 +65,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var content = CreateContent(text);
 
-      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(index);
+      var cursor = content.GetCaretAtStart().MoveCursorForwardBy(index);
 
       DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(index);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be(expectedRightCharacter);
@@ -78,9 +78,9 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       var text = "0123456789";
       var content = CreateContent(text);
 
-      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(10);
+      var cursor = content.GetCaretAtStart().MoveCursorForwardBy(10);
 
-      DidYouKnow.That(cursor).Should().Be(content.GetCursorToEnd());
+      DidYouKnow.That(cursor).Should().Be(content.GetCaretAtEnd());
       DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(10);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('\0');
       DidYouKnow.That(cursor.GetCharacterBefore().Character).Should().Be('9');
@@ -146,7 +146,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     {
       var content = CreateContent("123", "456", "789");
 
-      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(testData.AmountToMove);
+      var cursor = content.GetCaretAtStart().MoveCursorForwardBy(testData.AmountToMove);
 
       DidYouKnow.That(cursor.IsAtFragmentStart)
                 .Should().Be(testData.IsAtFragmentStart);
@@ -169,7 +169,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
       var content = CreateContent("123", "456", "789");
 
-      var cursor = content.GetCaretAtBeginning().MoveCursorForwardBy(testData.AmountToMove);
+      var cursor = content.GetCaretAtStart().MoveCursorForwardBy(testData.AmountToMove);
 
       DidYouKnow.That(cursor.CharacterAfter.Character)
                 .Should().Be(testData.ExpectedAfterChar);
@@ -201,7 +201,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     {
       var content = CreateContent("123", "456", "789");
 
-      var cursor = content.GetCursorToEnd().MoveCursorBackwardBy(testData.AmountToMove);
+      var cursor = content.GetCaretAtEnd().MoveCursorBackwardBy(testData.AmountToMove);
 
       DidYouKnow.That(cursor.IsAtFragmentStart)
                 .Should().Be(testData.IsAtFragmentStart);
@@ -222,7 +222,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     {
       var content = CreateContent("123", "456", "789");
 
-      var cursor = content.GetCursorToEnd().MoveCursorBackwardBy(testData.AmountToMove);
+      var cursor = content.GetCaretAtEnd().MoveCursorBackwardBy(testData.AmountToMove);
 
       DidYouKnow.That(cursor.CharacterAfter.Character)
         .Should().Be(testData.ExpectedAfterChar);

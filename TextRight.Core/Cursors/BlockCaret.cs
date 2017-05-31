@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Cursors
@@ -60,10 +61,24 @@ namespace TextRight.Core.Cursors
 
 #endif
 
+    public BlockCaret MoveForward()
+      => Mover.MoveForward(this);
+
+    public BlockCaret MoveBackward()
+      => Mover.MoveBackward(this);
+
+    /// <summary> True if the BlockCaret is pointing at a potentially valid location. </summary>
+    public bool IsValid
+      => Mover != null;
+
     /// <summary> True if the caret is of the specified type. </summary>
     public bool Is<TCaret>()
       where TCaret : struct, IEquatable<TCaret>, IBlockCaret
       => Mover is ICaretMover<TCaret>;
+
+    /// <summary> The block associated with this caret. </summary>
+    public ContentBlock Block
+      => Mover?.GetBlock(this);
 
     /// <summary> The type-specific mover associated with the caret. </summary>
     public ICaretMover Mover { get; }

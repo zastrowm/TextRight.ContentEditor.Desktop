@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.Cursors;
 using TextRight.Core.Editing;
 using TextRight.Core.ObjectModel.Cursors;
 
@@ -12,6 +13,9 @@ namespace TextRight.Core.ObjectModel.Blocks
   /// </summary>
   public abstract class ContentBlock : Block
   {
+    public abstract BlockCaret GetCaretAtStart();
+    public abstract BlockCaret GetCaretAtEnd();
+
     /// <summary> The cursor pool for cursors of this block. </summary>
     public abstract ICursorPool CursorPool { get; }
 

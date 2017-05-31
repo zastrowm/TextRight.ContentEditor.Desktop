@@ -97,7 +97,7 @@ namespace TextRight.Core.Tests
 
     public static BlockCaret BeginCaret(this ContentBlock block, int offset = 0)
     {
-      var caret = ((TextBlock)block).Content.GetCaretAtBeginning();
+      var caret = ((TextBlock)block).Content.GetCaretAtStart();
       while (offset > 0)
       {
         caret = caret.GetNextPosition();
@@ -109,7 +109,7 @@ namespace TextRight.Core.Tests
 
     public static BlockCaret EndCaret(this ContentBlock block, int offset = 0)
     {
-      var caret = ((TextBlock)block).Content.GetCursorToEnd();
+      var caret = ((TextBlock)block).Content.GetCaretAtEnd();
       while (offset > 0)
       {
         caret = caret.GetPreviousPosition();

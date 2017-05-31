@@ -63,7 +63,7 @@ namespace TextRight.Editor.View.Tests
     [MemberData(nameof(MeasurementsTheoryData))]
     public void MeasurementsAreCorrect(MeasurementsData data)
     {
-      var caret = _renderer.Content.GetCaretAtBeginning()
+      var caret = _renderer.Content.GetCaretAtStart()
                            .MoveCursorForwardBy(data.Position);
       var measurement = caret.MeasureCaret(_renderer);
 
