@@ -31,9 +31,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     [Fact]
     public void VerifyBreakInMiddleOfParagraph_SplitsIntoTwo()
     {
-      var cursor = _collection.NthBlock(0).GetCursor();
-      cursor.MoveToBeginning();
-      cursor.Move(7); // should be after "is"
+      var cursor = (TextCaret)_collection.NthBlock(0).BeginCaret();
+      cursor = cursor.MoveCursorForwardBy(7); // should be after "is"
 
       var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor).Block;
 
@@ -48,8 +47,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     [Fact]
     public void BreakInBeginning_MakesNewPreviousEmptyBlock()
     {
-      var cursor = _collection.NthBlock(0).GetCursor();
-      cursor.MoveToBeginning();
+      var cursor = (TextCaret)_collection.NthBlock(0).BeginCaret();
 
       var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor).Block;
 
@@ -64,8 +62,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     [Fact]
     public void BreakAtEnd_MakesNewNextEmptyBlock()
     {
-      var cursor = _collection.NthBlock(0).GetCursor();
-      cursor.MoveToEnd();
+      var cursor = (TextCaret)_collection.NthBlock(0).EndCaret();
 
       var newBlock = TextBlockHelperMethods.TryBreakBlock(cursor).Block;
 

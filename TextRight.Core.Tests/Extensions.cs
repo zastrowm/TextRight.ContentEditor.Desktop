@@ -107,6 +107,18 @@ namespace TextRight.Core.Tests
       return caret;
     }
 
+    public static BlockCaret EndCaret(this ContentBlock block, int offset = 0)
+    {
+      var caret = ((TextBlock)block).Content.GetCursorToEnd();
+      while (offset > 0)
+      {
+        caret = caret.GetPreviousPosition();
+        offset -= 1;
+      }
+
+      return caret;
+    }
+
     /// <summary> Gets a cursor to the beginning of the block. </summary>
     public static IBlockContentCursor BeginCursor(this ContentBlock block, int offset = 0)
     {

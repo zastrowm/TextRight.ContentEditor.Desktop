@@ -42,17 +42,15 @@ namespace TextRight.Core.Editing.Actions.Text
 
     /// <summary> Breaks the block into two at the given location. </summary>
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-    /// <param name="theCursor"> The caret at which the block should be split. </param>
+    /// <param name="caret"> The caret at which the block should be split. </param>
     /// <returns>
     ///  A caret pointing to the beginning of the block that follows the block that was split.  Will
     ///  be TextCaret.Invalid if the block could not be split.
     /// </returns>
-    public static TextCaret TryBreakBlock(IBlockContentCursor theCursor)
+    public static TextCaret TryBreakBlock(TextCaret caret)
     {
-      if (theCursor == null)
-        throw new ArgumentNullException(nameof(theCursor));
-
-      var caret = ((TextBlockCursor)theCursor).ToValue();
+      if (!caret.IsValid)
+        throw new ArgumentException("invalid caret", nameof(caret));
 
       if (!CanBreak(caret))
         return TextCaret.Invalid;

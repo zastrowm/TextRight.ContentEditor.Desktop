@@ -65,32 +65,25 @@ namespace TextRight.Core.Editing.Commands.Text
       /// <inheritdoc />
       public override void Do(DocumentEditorContext context)
       {
-        using (var copy = _handle.Get(context))
-        {
-          var blockCursor = copy.Cursor;
-
-          var caretPosition = TextBlockHelperMethods.TryBreakBlock(blockCursor);
-          if (!caretPosition.IsValid)
-            return;
-          context.Caret.MoveTo(caretPosition);
-        }
+        var caret = (TextCaret)_handle.GetCaret(context);
+        var caretPosition = TextBlockHelperMethods.TryBreakBlock(caret);
+        if (!caretPosition.IsValid)
+          return;
+        context.Caret.MoveTo(caretPosition);
       }
 
       /// <inheritdoc />
       public override void Undo(DocumentEditorContext context)
       {
-        using (var copy = _handle.Get(context))
-        {
-          var blockCursor = copy.Cursor;
-          var previousBlock = blockCursor.Block;
-          var nextBlock = previousBlock.NextBlock;
+        var caret = (TextCaret)_handle.GetCaret(context);
+        var previousBlock = caret.Block;
+        var nextBlock = previousBlock.NextBlock;
 
-          TextBlockHelperMethods.MergeWithPrevious((TextBlock)nextBlock);
+        TextBlockHelperMethods.MergeWithPrevious((TextBlock)nextBlock);
 
-          // move it to where it was when we wanted to break the paragraph.  It's safer to deserialize
-          // again, as the cursor above is not guaranteed to be valid. 
-          context.Caret.MoveTo(_handle.Get(context));
-        }
+        // move it to where it was when we wanted to break the paragraph.  It's safer to deserialize
+        // again, as the cursor above is not guaranteed to be valid. 
+        context.Caret.MoveTo(_handle.Get(context));
       }
     }
   }

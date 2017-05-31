@@ -102,7 +102,7 @@ namespace TextRight.Core.Editing.Commands.Text
         _previousPath = previousBlock.GetBlockPath();
         _nextPath = nextBlock.GetBlockPath();
 
-        _endOfPreviousBlockHandle = new DocumentCursorHandle(previousBlock.GetCursor().ToEnd());
+        _endOfPreviousBlockHandle = new DocumentCursorHandle(previousBlock.Content.GetCursorToEnd());
       }
 
       /// <inheritdoc />
@@ -125,15 +125,12 @@ namespace TextRight.Core.Editing.Commands.Text
       /// <inheritdoc />
       public override void Undo(DocumentEditorContext context)
       {
-        using (var breakSpotCopy = _endOfPreviousBlockHandle.Get(context))
-        {
-          var breakSpot = breakSpotCopy.Cursor;
+        var caret = (TextCaret)_endOfPreviousBlockHandle.GetCaret(context);
 
-          TextBlockHelperMethods.TryBreakBlock((TextBlockCursor)breakSpot);
+        TextBlockHelperMethods.TryBreakBlock(caret);
 
-          context.Caret.MoveTo(_originalCaretPosition.Get(context));
-        }
-      }
+        context.Caret.MoveTo(_originalCaretPosition.Get(context));
+    }
     }
   }
 }

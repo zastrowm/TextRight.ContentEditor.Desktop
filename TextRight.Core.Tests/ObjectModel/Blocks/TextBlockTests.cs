@@ -14,7 +14,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
   {
     private TextBlock _block;
     private BlockCollection _collection;
-    private TextBlockCursor _cursor;
+    private TextCaret _caret;
 
     private void Initialize(string content)
     {
@@ -22,14 +22,13 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       content = content.Replace("|", "");
 
       _block = new ParagraphBlock();
-      _cursor = (TextBlockCursor)_block.GetCursor();
-      _cursor.MoveToBeginning();
-      ((TextBlockCursor)_cursor).InsertText(content);
-      _cursor.MoveToBeginning();
+      _caret = _block.Content.GetCaretAtBeginning();
+      _caret.InsertText(content);
+      _caret = _block.Content.GetCaretAtBeginning();
 
       if (index > 0)
       {
-        _cursor.Move(index);
+        _caret = _caret.MoveCursorForwardBy(index);
       }
 
       _collection = new AddableBlockCollection()
@@ -50,7 +49,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     public void Break_AtBeginning_HasNewBlock()
     {
       Initialize("abc|123");
-      var nextBlock = (TextBlock)TextBlockHelperMethods.TryBreakBlock(_cursor).Block;
+      var nextBlock = (TextBlock)TextBlockHelperMethods.TryBreakBlock(_caret).Block;
 
       DidYouKnow.That(nextBlock).Should().NotBeNull();
 
