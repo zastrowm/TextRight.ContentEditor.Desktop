@@ -21,11 +21,11 @@ namespace TextRight.Core.Editing.Actions
     private readonly RegisteredDescriptor _originalDescriptor;
 
     /// <summary> Constructor. </summary>
-    protected ConvertTextBlockToTextBlockAction(ReadonlyCursor cursor)
+    protected ConvertTextBlockToTextBlockAction(TextCaret caret)
     {
-      _handle = cursor;
+      _handle = new DocumentCursorHandle(caret);
 
-      var block = (TextBlock)cursor.Block;
+      var block = caret.Block;
 
       _originalDescriptor = block.DescriptorHandle;
       _originalProperties = block.SerializeProperties();
@@ -36,24 +36,23 @@ namespace TextRight.Core.Editing.Actions
     /// <inheritdoc />
     public override void Do(DocumentEditorContext context)
     {
-      using (var copy = _handle.Get(context))
+      var caret = (TextCaret)_handle.GetCaret(context);
+
+      var block = caret.Block;
+
+      var destinationDescriptor = GetDestinationDescriptor();
+
+      // optimization; if it's already the correct block type, we just have to change it in-place
+      if (block.DescriptorHandle == destinationDescriptor)
       {
-        var block = copy.Block;
+        MakeChangesTo((TBlock)block);
+      }
+      else
+      {
+        var newBlock = (TBlock)destinationDescriptor.Descriptor.CreateInstance();
+        MakeChangesTo(newBlock);
 
-        var destinationDescriptor = GetDestinationDescriptor();
-
-        // optimization; if it's already the correct block type, we just have to change it in-place
-        if (block.DescriptorHandle == destinationDescriptor)
-        {
-          MakeChangesTo((TBlock)block);
-        }
-        else
-        {
-          var newBlock = (TBlock)destinationDescriptor.Descriptor.CreateInstance();
-          MakeChangesTo(newBlock);
-
-          Replace(context,(TextBlock)block,newBlock);
-        }
+        Replace(context, block,newBlock);
       }
     }
 
@@ -64,24 +63,23 @@ namespace TextRight.Core.Editing.Actions
     /// <inheritdoc />
     public override void Undo(DocumentEditorContext context)
     {
-      using (var copy = _handle.Get(context))
-      {
-        var block = copy.Block;
+      var caret = (TextCaret)_handle.GetCaret(context);
 
-        // optimization; if it was originally a block of the same type, we can just deserialize
-        // but leave it in-place
-        if (block.DescriptorHandle == _originalDescriptor)
-        {
-          var originalBlock = (TextBlock)block;
-          originalBlock.DeserializeProperties(_originalProperties);
-        }
-        else
-        {
-          // otherwise we have to re-create it
-          TextBlock original = (TextBlock)_originalDescriptor.CreateInstance();
-          original.DeserializeProperties(_originalProperties);
-          Replace(context, (TextBlock)copy.Block, original);
-        }
+      var block = caret.Block;
+
+      // optimization; if it was originally a block of the same type, we can just deserialize
+      // but leave it in-place
+      if (block.DescriptorHandle == _originalDescriptor)
+      {
+        var originalBlock = block;
+        originalBlock.DeserializeProperties(_originalProperties);
+      }
+      else
+      {
+        // otherwise we have to re-create it
+        TextBlock original = (TextBlock)_originalDescriptor.CreateInstance();
+        original.DeserializeProperties(_originalProperties);
+        Replace(context, caret.Block, original);
       }
     }
 

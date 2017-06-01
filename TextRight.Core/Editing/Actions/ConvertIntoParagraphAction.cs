@@ -10,8 +10,8 @@ namespace TextRight.Core.Editing.Actions
   /// <summary> Converts a TextBlock into a normal paragraph. </summary>
   public class ConvertIntoParagraphAction : ConvertTextBlockToTextBlockAction<ParagraphBlock>
   {
-    public ConvertIntoParagraphAction(ReadonlyCursor cursor)
-      : base(cursor)
+    public ConvertIntoParagraphAction(TextCaret caret)
+      : base(caret)
     {
     }
 

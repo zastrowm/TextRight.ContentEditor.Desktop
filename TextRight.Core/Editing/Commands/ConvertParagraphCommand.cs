@@ -32,7 +32,7 @@ namespace TextRight.Core.Editing.Commands
     /// <inheritdoc/>
     public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      actionStack.Do(new ConvertIntoParagraphAction(context.Cursor));
+      actionStack.Do(new ConvertIntoParagraphAction((TextCaret)context.Caret.Caret));
     }
   }
 }

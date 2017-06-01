@@ -318,7 +318,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <summary> The cursor's serialized data. </summary>
-    private class SerializedCursor : BaseSerializedCursor<TextBlockCursor>
+    public class SerializedCursor : BaseSerializedCursor<TextBlockCursor>
     {
       private readonly int _spanId;
       private readonly int _offset;

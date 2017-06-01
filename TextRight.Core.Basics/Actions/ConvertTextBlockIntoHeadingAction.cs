@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TextRight.Core.Blocks;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Actions
 {
@@ -14,8 +15,8 @@ namespace TextRight.Core.Actions
     private readonly int _level;
 
     /// <summary> Constructor. </summary>
-    public ConvertTextBlockIntoHeadingAction(ReadonlyCursor cursor, int level)
-      : base(cursor)
+    public ConvertTextBlockIntoHeadingAction(TextCaret caret, int level)
+      : base(caret)
     {
       _level = level;
     }

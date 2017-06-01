@@ -6,6 +6,7 @@ using TextRight.Core.Actions;
 using TextRight.Core.Blocks;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Commands.Text;
+using TextRight.Core.ObjectModel.Blocks.Text;
 using Xunit;
 
 namespace TextRight.Core.Tests.Editing
@@ -25,7 +26,7 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new ConvertTextBlockIntoHeadingAction(Context.Caret.Cursor, 0),
+                       () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 0),
                      });
 
       var heading = Document.Root.FirstBlock.As<HeadingBlock>();
@@ -41,14 +42,14 @@ namespace TextRight.Core.Tests.Editing
     {
       DoAll(new Func<UndoableAction>[]
             {
-              () => new ConvertTextBlockIntoHeadingAction(Context.Caret.Cursor, 0),
+              () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 0),
             });
 
       var heading = Document.Root.FirstBlock.As<HeadingBlock>();
 
       DoAll(new Func<UndoableAction>[]
             {
-              () => new ConvertTextBlockIntoHeadingAction(Context.Caret.Cursor, 3),
+              () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 3),
             });
 
       DidYouKnow.That(heading).Should().BeSameAs(Document.Root.FirstBlock);
@@ -60,8 +61,8 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new ConvertTextBlockIntoHeadingAction(Context.Caret.Cursor, 0),
-                       () => new ConvertTextBlockIntoHeadingAction(Context.Caret.Cursor, 3),
+                       () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 0),
+                       () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 3),
                      });
 
       it.VerifyUndo();

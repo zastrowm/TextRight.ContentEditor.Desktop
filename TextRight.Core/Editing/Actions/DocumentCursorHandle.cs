@@ -19,9 +19,8 @@ namespace TextRight.Core.Editing.Actions
 
     /// <summary> TODO </summary>
     public DocumentCursorHandle(TextCaret caret)
-      : this(new TextBlockCursor(caret))
     {
-      
+      _serializedCursor = new TextBlockCursor(caret).Serialize();
     }
 
     /// <summary> Constructor. </summary>

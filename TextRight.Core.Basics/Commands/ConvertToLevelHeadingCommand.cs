@@ -47,7 +47,7 @@ namespace TextRight.Core.Commands
     /// <inheritdoc/>
     public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      actionStack.Do(new ConvertTextBlockIntoHeadingAction(context.Cursor, _level));
+      actionStack.Do(new ConvertTextBlockIntoHeadingAction((TextCaret)context.Caret.Caret, _level));
     }
   }
 }
