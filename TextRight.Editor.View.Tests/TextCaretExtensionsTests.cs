@@ -65,7 +65,7 @@ namespace TextRight.Editor.View.Tests
     {
       var caret = _renderer.Content.GetCaretAtStart()
                            .MoveCursorForwardBy(data.Position);
-      var measurement = caret.MeasureCaret(_renderer);
+      var measurement = _renderer.MeasureCaret(caret);
 
       DidYouKnow.That(measurement).ShouldBeEquivalentTo(data.Measurement, data.Reason);
     }

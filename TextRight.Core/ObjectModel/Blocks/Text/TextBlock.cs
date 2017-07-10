@@ -23,6 +23,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
                 {
                   Owner = this
                 };
+
+      (var x, var y) = (Content, this);
     }
 
     /// <summary> The textual content within the block </summary>

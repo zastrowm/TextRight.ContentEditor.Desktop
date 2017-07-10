@@ -13,14 +13,14 @@ namespace TextRight.Editor.View.Blocks
   public static class TextCaretExtensions
   {
     /// <summary> Gets the position of a caret. </summary>
-    /// <param name="cursor"> The caret to measure. </param>
     /// <param name="associatedRenderer"> The renderer that should be queried for measuring. </param>
+    /// <param name="cursor"> The caret to measure. </param>
     /// <returns>
     ///  A MeasuredRectangle representing the caret position of the <see cref="cursor"/> that should
     ///  be rendered if the text was to be inserted into the document at the given location.
     /// </returns>
     [Pure]
-    public static MeasuredRectangle MeasureCaret(this TextCaret cursor, ITextBlockRenderer associatedRenderer)
+    public static MeasuredRectangle MeasureCaret(this ITextBlockRenderer associatedRenderer, TextCaret cursor)
     {
       if (cursor.IsAtBlockEnd && cursor.IsAtBlockStart)
       {
@@ -39,7 +39,6 @@ namespace TextRight.Editor.View.Blocks
       //   character, as that's where the character will most likely show up if the user types.
       // Of course, if we're at the end of the block, we can't measure the next character, so we have
       // to measure the previous character. 
-
 
       bool shouldMeasureNext;
 
