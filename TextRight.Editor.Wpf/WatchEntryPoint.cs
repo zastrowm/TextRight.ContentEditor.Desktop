@@ -1,41 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Xml.Linq;
+using Guapr.ClientHosting;
 using TextRight.Editor.Wpf;
-using WpfHosting;
 
 [assembly: HostedTargetType(typeof(WatchEntryPoint))]
 
 namespace TextRight.Editor.Wpf
 {
-  public class WatchEntryPoint : HostedEntryPoint
+  internal class WatchEntryPoint : HostedEntryPoint<DocumentEditor, WatchEntryPoint.State>
   {
-    /// <inheritdoc/>
-    public override FrameworkElement Initialize(Dictionary<string, string> configuration)
+    protected override DocumentEditor Startup(IEntryPointStartupApi startupApi, State data)
     {
       var editor = new DocumentEditor();
 
-      string originalText;
-      if (configuration.TryGetValue("document", out originalText))
+      data = data ?? new State();
+
+      var sessionDoc = Path.Combine(startupApi.StateDirectory.FullName, data.DocumentPath);
+      if (File.Exists(sessionDoc))
       {
-        DevLoader.LoadInto(XElement.Parse(originalText), editor.EditorContext);
+        DevLoader.LoadInto(XElement.Load(sessionDoc), editor.EditorContext);
       }
 
       return editor;
     }
 
-    /// <inheritdoc/>
-    public override void Shutdown(FrameworkElement originalInstance, Dictionary<string, string> configuration)
+    protected override State Shutdown(DocumentEditor gui, IEntryPointShutdownApi shutdownApi)
     {
-      var editor = (DocumentEditor)originalInstance;
+      var doc = DevLoader.SaveIntoElement(gui.EditorContext);
+      doc.Save(Path.Combine(shutdownApi.StateDirectory.FullName, "document.xml"));
+      return new State();
+    }
 
-      var doc = DevLoader.SaveIntoElement(editor.EditorContext);
-      var text = doc.ToString();
-
-      configuration["document"] = text;
+    public class State
+    {
+      public string DocumentPath { get; set; }
+        = "document.xml";
     }
   }
 }
