@@ -200,9 +200,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TextRight.Core.Basics\TextRight.Core.Basics.csproj">
       <Project>{733F902F-A277-49BE-923D-62613EAE315D}</Project>
       <Name>TextRight.Core.Basics</Name>
