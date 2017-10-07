@@ -193,11 +193,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return new TextCaret(fragment, offset.GetValueOrDefault());
     }
 
-    /// <inheritdoc />
+    /// <summary />
     public static bool operator ==(TextCaret left, TextCaret right)
       => left.Equals(right);
 
-    /// <inheritdoc />
+    /// <summary />
     public static bool operator !=(TextCaret left, TextCaret right)
       => !left.Equals(right);
 
