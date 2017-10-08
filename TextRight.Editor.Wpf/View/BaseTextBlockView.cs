@@ -6,6 +6,7 @@ using System.Windows.Media;
 using TextRight.Core;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.Utilities;
 
 namespace TextRight.Editor.Wpf.View
@@ -13,7 +14,8 @@ namespace TextRight.Editor.Wpf.View
   /// <summary> Shared view representation for subclasses of <see cref="TextBlock"/> </summary>
   public abstract class BaseTextBlockView : FrameworkElement,
                                             IOffsetBasedItem,
-                                            ITextBlockView
+                                            ITextBlockView,
+                                            ILineBasedRenderer
   {
     private readonly DocumentEditorContextView _root;
     private readonly TextBlock _block;
@@ -100,6 +102,25 @@ namespace TextRight.Editor.Wpf.View
       return rect;
     }
 
+    /// <summary> Measures the character at the given index for the given fragment. </summary>
+    /// <returns> The size of the character. </returns>
+    public MeasuredRectangle MeasureCharacter(TextCaret caret)
+    {
+      Revalidate();
+
+      if (!IsValidForMeasuring)
+        return MeasuredRectangle.Invalid;
+
+      var rect = _renderer.MeasureCharacter(caret);
+      if (!rect.IsValid)
+        return rect;
+
+      rect.X += _cachedOffset.X;
+      rect.Y += _cachedOffset.Y;
+
+      return rect;
+    }
+
     /// <inheritdoc />
     public MeasuredRectangle MeasureBounds()
     {
@@ -117,13 +138,8 @@ namespace TextRight.Editor.Wpf.View
              };
     }
 
-    public MeasuredRectangle Measure(StyledTextFragment fragment, TextOffset offset)
-    {
-      var targetFragment = fragment.Target as StyledStyledTextSpanView;
-
-      // TODO GRAPHEME
-      return MeasureCharacter(targetFragment, offset.CharOffset);
-    }
+    public MeasuredRectangle Measure(TextCaret caret) 
+      => MeasureCharacter(caret);
 
     /// <summary> Removes the given span from the TextBlockView. </summary>
     public void MarkRemoved(StyledStyledTextSpanView toRemove)
@@ -196,6 +212,30 @@ namespace TextRight.Editor.Wpf.View
       // TODO do we have to do both 
       InvalidateMeasure();
       InvalidateVisual();
+    }
+
+    public ITextLine FirstTextLine
+    {
+      get
+      {
+        Revalidate();
+        return ((ILineBasedRenderer)_renderer.CachedLines).FirstTextLine;
+      }
+    }
+
+    public ITextLine LastTextLine
+    {
+      get
+      {
+        Revalidate();
+        return ((ILineBasedRenderer)_renderer.CachedLines).LastTextLine;
+      }
+    }
+
+    public ITextLine GetLineFor(TextCaret caret)
+    {
+      Revalidate();
+      return ((ILineBasedRenderer)_renderer.CachedLines).GetLineFor(caret);
     }
   }
 }

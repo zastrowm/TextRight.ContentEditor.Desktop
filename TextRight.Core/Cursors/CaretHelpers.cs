@@ -8,6 +8,30 @@ namespace TextRight.Core.Cursors
   /// <summary> Helper methods for interacting with carets.D </summary>
   public static class CaretHelpers
   {
+    public static bool TryMoveForward(ref BlockCaret caret)
+    {
+      BlockCaret maybe = caret.MoveForward();
+      if (maybe.IsValid)
+      {
+        caret = maybe;
+        return true;
+      }
+
+      return false;
+    }
+
+    public static bool TryMoveBackward(ref BlockCaret caret)
+    {
+      BlockCaret maybe = caret.MoveBackward();
+      if (maybe.IsValid)
+      {
+        caret = maybe;
+        return true;
+      }
+
+      return false;
+    }
+
     public static bool TryMoveForward(ref TextCaret caret)
     {
       TextCaret maybe = caret.GetNextPosition();

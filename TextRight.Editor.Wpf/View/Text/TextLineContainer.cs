@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media.TextFormatting;
@@ -16,6 +17,7 @@ namespace TextRight.Editor.Wpf.View
     public TextLineContainer(Point point,
                              TextLine line,
                              int characterStartIndex,
+                             TextOffset offset,
                              StyledTextFragment fragment,
                              int fragmentOffset)
     {
@@ -25,12 +27,16 @@ namespace TextRight.Editor.Wpf.View
       FragmentOffset = fragmentOffset;
       Point = point;
 
+      Debug.Assert(characterStartIndex == offset.CharOffset);
+      Offset = offset;
+
       // TODO GRAPHEME
       NumberOfCaretPositions = Line.Length;
     }
 
     public TextLine Line { get; }
     public int CharacterStartIndex { get; }
+    public TextOffset Offset { get; }
 
     public StyledTextFragment Fragment { get; }
     public int FragmentOffset { get; }

@@ -126,8 +126,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <inheritdoc />
-    public TextUnit GetCharacterAt(int position)
-      => new TextUnit(_text[position]);
+    public TextUnit GetCharacterAt(TextOffset offset)
+      => new TextUnit(_text[offset.CharOffset]);
 
     /// <inheritdoc />
     public int NumberOfChars

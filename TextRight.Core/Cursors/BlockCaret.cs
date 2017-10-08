@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.Utilities;
 
 namespace TextRight.Core.Cursors
 {
@@ -67,6 +68,9 @@ namespace TextRight.Core.Cursors
     public BlockCaret MoveBackward()
       => Mover.MoveBackward(this);
 
+    public MeasuredRectangle Measure()
+      => Mover.Measure(this);
+
     /// <summary> True if the BlockCaret is pointing at a potentially valid location. </summary>
     public bool IsValid
       => Mover != null;
@@ -75,6 +79,18 @@ namespace TextRight.Core.Cursors
     public bool Is<TCaret>()
       where TCaret : struct, IEquatable<TCaret>, IBlockCaret
       => Mover is ICaretMover<TCaret>;
+
+    /// <summary> Cast the caret into the given caret type. </summary>
+    public TCaret As<TCaret>()
+      where TCaret : struct, IEquatable<TCaret>, IBlockCaret
+    {
+      if (Mover is ICaretMover<TCaret> typedMover)
+      {
+        return typedMover.Convert(this);
+      }
+
+      throw new ArgumentException($"Caret is not of type {typeof(TCaret)}");
+    }
 
     /// <summary> The block associated with this caret. </summary>
     public ContentBlock Block

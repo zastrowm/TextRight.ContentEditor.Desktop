@@ -20,6 +20,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <returns> A MeasuredRectangle representing the area required to display the block. </returns>
     MeasuredRectangle MeasureBounds();
 
-    MeasuredRectangle Measure(StyledTextFragment fragment, TextOffset offset);
+    MeasuredRectangle Measure(TextCaret caret);
   }
 }

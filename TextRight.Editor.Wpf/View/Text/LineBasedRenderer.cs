@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.Utilities;
+using TextRight.Editor.View.Blocks;
 
 namespace TextRight.Editor.Wpf.View
 {
@@ -29,11 +31,29 @@ namespace TextRight.Editor.Wpf.View
 
     public ITextLine GetLineFor(TextCaret caret)
     {
-      // TODO
-      throw new NotImplementedException();
+      var line = FirstTextLine;
+
+      int totalLengthThusFar = 0;
+      int characterIndex = TextBlockUtils.GetCharacterIndex(caret);
+
+      // NOTE - we need to pass it index into the larger text string.  Not sure if that's the underlying 
+      // string or a some other buffer (The TextRun?, the Paragraph?)
+      while (line != null)
+      {
+        totalLengthThusFar += line.NumberOfCaretPositions;
+
+        if (characterIndex < totalLengthThusFar)
+        {
+          return line;
+        }
+
+        line = line.Next;
+      }
+
+      return null;
     }
 
-    private class LineImplementation : ITextLine
+    internal class LineImplementation : ITextLine
     {
       private readonly LineBasedRenderer _owner;
       private readonly int _index;
@@ -72,29 +92,33 @@ namespace TextRight.Editor.Wpf.View
 
       private TextBounds[] _cachedLineBounds;
 
+      private static readonly Pen DebugBorderPen
+        = new Pen(new SolidColorBrush(Color.FromArgb(126,0,83,252)),.5);
+
+      internal void DebugDraw(DrawingContext drawingContext)
+      {
+        var container = GetContainer();
+
+        var bounds = GetCachedLineBounds(container);
+        for (var index = 0; index < bounds.Length; index++)
+        {
+          var rect = bounds[index].Rectangle;
+          rect.Y += container.Point.Y;
+          drawingContext.DrawRectangle(null, DebugBorderPen, rect);
+        }
+      }
+
       public MeasuredRectangle GetMeasurement(TextCaret caret)
       {
         // TODO is this the right offset to use with fragments?
-        
-        // TODO graphemes
-        int offset = caret.Offset.CharOffset;
-
         var container = GetContainer();
 
-        if (_cachedLineBounds == null)
-        {
-          int startIndex = container.CharacterStartIndex;
-          int length = container.Line.Length;
+        var lineBounds = GetCachedLineBounds(container);
+        int indexIntoLineBounds = caret.Offset.GraphemeOffset - container.Offset.GraphemeOffset;
 
-          _cachedLineBounds = new TextBounds[length];
+        Console.WriteLine($"Index: {indexIntoLineBounds}");
 
-          for (int i = 0; i < length; i++)
-          {
-            _cachedLineBounds[i] = container.Line.GetTextBounds(startIndex + i, 1)[0];
-          }
-        }
-
-        var bounds = _cachedLineBounds[offset - container.CharacterStartIndex];
+        var bounds = lineBounds[indexIntoLineBounds];
         return new MeasuredRectangle()
                {
                  X = bounds.Rectangle.X,
@@ -102,6 +126,70 @@ namespace TextRight.Editor.Wpf.View
                  Width = bounds.Rectangle.Width,
                  Height = bounds.Rectangle.Height
                };
+      }
+
+      private TextBounds[] GetCachedLineBounds(TextLineContainer container)
+      {
+        if (_cachedLineBounds == null)
+        {
+          var iterator = TextCaret.FromOffset(container.Fragment, container.Offset.GraphemeOffset);
+
+          var sizes = new List<TextBounds>();
+
+          var desiredCharOffset = container.Offset.CharOffset + container.Line.Length;
+          while (iterator.IsValid && iterator.Offset.CharOffset != desiredCharOffset)
+          {
+            sizes.Add(container.Line.GetTextBounds(iterator.Offset.CharOffset, 1)[0]);
+
+            iterator = iterator.GetNextPosition();
+          }
+
+          _cachedLineBounds = sizes.ToArray();
+        }
+
+
+        return _cachedLineBounds;
+      }
+
+      TextCaret ITextLine.FindClosestTo(double xPosition)
+      {
+        var container = GetContainer();
+        var lineBounds = GetCachedLineBounds(container);
+
+        int absoluteOffset = container.CharacterStartIndex;
+
+        // account for line indent
+        xPosition -= _owner.Offset.X;
+
+        double DistanceTo(TextCaret caretToMeasure)
+          => Math.Abs(xPosition - caretToMeasure.Measure().X);
+
+        // TODO grapheme
+        var caret = TextCaret.FromOffset(container.Fragment, absoluteOffset);
+
+        var closest = (
+            caret: caret,
+            index: 0,
+            distance: DistanceTo(caret)
+          );
+
+        for (int i = 1; i < lineBounds.Length; i++)
+        {
+          caret = caret.GetNextPosition();
+          var diff = DistanceTo(caret);
+
+          if (diff <= closest.distance)
+          {
+            closest = (caret, i, diff);
+          }
+          else
+          {
+            // we're getting bigger
+            break;
+          }
+        }
+
+        return closest.caret;
       }
 
       /// <inheritdoc />

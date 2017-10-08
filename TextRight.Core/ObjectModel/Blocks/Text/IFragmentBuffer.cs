@@ -21,7 +21,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> Gets the character at the given position. </summary>
     /// <param name="position"> The index within the span for the character to retrieve. </param>
     /// <returns> The character at the given index. </returns>
-    TextUnit GetCharacterAt(int position);
+    TextUnit GetCharacterAt(TextOffset position);
 
     /// <summary> The number of characters in the TextSpan. </summary>
     int NumberOfChars { get; }

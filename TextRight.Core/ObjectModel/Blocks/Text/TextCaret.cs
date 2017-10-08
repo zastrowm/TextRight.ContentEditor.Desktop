@@ -75,7 +75,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       get
       {
         if (!IsAtBlockEnd)
-          return Fragment.Buffer.GetCharacterAt(Offset.GraphemeOffset);
+          return Fragment.Buffer.GetCharacterAt(Offset);
 
         return TextUnit.Default;
       }
@@ -184,7 +184,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (IsAtBlockEnd || Fragment.Owner?.Target == null)
         return MeasuredRectangle.Invalid;
 
-      return Fragment.Owner.Target.Measure(Fragment, GetPreviousPosition().Offset);
+      return Fragment.Owner.Target.Measure(this);
     }
 
     private MeasuredRectangle MeasureBackward()
@@ -192,7 +192,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (IsAtBlockStart || Fragment.Owner?.Target == null)
         return MeasuredRectangle.Invalid;
 
-      return Fragment.Owner.Target.Measure(Fragment, GetPreviousPosition().Offset);
+      return Fragment.Owner.Target.Measure(GetPreviousPosition());
     }
 
     /// <summary>

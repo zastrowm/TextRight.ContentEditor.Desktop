@@ -13,7 +13,7 @@ namespace TextRight.Editor.Wpf.View
     public StyledTextRunProperties()
     {
       Typeface = new Typeface("Tahoma");
-      FontRenderingEmSize = FontHintingEmSize = 16;
+      FontRenderingEmSize = FontHintingEmSize = 24;
       TextDecorations = new TextDecorationCollection();
       ForegroundBrush = new SolidColorBrush() { Color = Colors.Black };
       BackgroundBrush = new SolidColorBrush() { Color = Colors.White };

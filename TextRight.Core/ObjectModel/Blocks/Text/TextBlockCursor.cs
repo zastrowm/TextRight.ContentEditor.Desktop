@@ -79,11 +79,20 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <summary> Get the character after the current cursor position. </summary>
     public char CharacterAfter
-      => OffsetIntoSpan != Fragment.NumberOfChars ? Fragment.Buffer.GetCharacterAt(OffsetIntoSpan).Character : NullCharacter;
+      => ToValue().CharacterAfter.Character;
 
     /// <summary> Get the character before the current cursor position. </summary>
     public char CharacterBefore
-      => OffsetIntoSpan != 0 ? Fragment.Buffer.GetCharacterAt(OffsetIntoSpan - 1).Character : NullCharacter;
+    {
+      get
+      {
+        var previousPosition = ToValue().GetPreviousPosition();
+        if (previousPosition.IsValid)
+          return previousPosition.CharacterAfter.Character;
+
+        return NullCharacter;
+      }
+    }
 
     /// <inheritdoc />
     public override void MoveToBeginning()
@@ -138,39 +147,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       get { return OffsetIntoSpan == 0; }
     }
 
-    private MeasuredRectangle MeasureForward()
-    {
-      if (IsAtEnd || Fragment.Target == null)
-        return MeasuredRectangle.Invalid;
-
-      return Fragment.Target.Measure(OffsetIntoSpan);
-    }
-
-    private MeasuredRectangle MeasureBackward()
-    {
-      if (IsAtBeginning || Fragment.Target == null)
-        return MeasuredRectangle.Invalid;
-
-      return Fragment.Target.Measure(OffsetIntoSpan - 1);
-    }
-
     /// <inheritdoc />
     public override MeasuredRectangle MeasureCursorPosition()
     {
-      if (IsAtEnd && IsAtBeginning)
-      {
-        // if it's empty, there is no character to measure
-        return Block.GetBounds().FlattenLeft();
-      }
-
-      // we want to measure the next character unless the previous character was
-      // a space (as the text will most likely appear on the next line anyways) 
-      bool shouldMeasureNext = IsAtBeginning
-                               || (!IsAtEnd && CharacterBefore == ' ');
-
-      return shouldMeasureNext
-        ? MeasureForward().FlattenLeft()
-        : MeasureBackward().FlattenRight();
+      return ToValue().Measure();
     }
 
     /// <inheritdoc />

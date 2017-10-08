@@ -12,7 +12,7 @@ namespace TextRight.Editor.Wpf.View
     {
       FlowDirection = FlowDirection.LeftToRight;
       TextAlignment = TextAlignment.Left;
-      LineHeight = 20;
+      LineHeight = 0; // AUTO
       FirstLineInParagraph = isFirst;
       DefaultTextRunProperties = new StyledTextRunProperties();
       TextWrapping = TextWrapping.Wrap;

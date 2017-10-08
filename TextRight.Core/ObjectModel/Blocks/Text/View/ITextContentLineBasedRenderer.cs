@@ -30,6 +30,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text.View
     ITextLine Next { get; }
     ITextLine Previous { get; }
 
+    TextCaret FindClosestTo(double xPosition);
+
     ILineIterator GetLineStart();
     ILineIterator GetLineEnd();
     MeasuredRectangle GetMeasurement(TextCaret caret);
