@@ -193,16 +193,10 @@ namespace TextRight.Editor.Wpf.View
         var container = GetContainer();
         var lineBounds = GetCachedLineBounds(container);
 
-        int absoluteOffset = container.CharacterStartIndex;
-
-        // account for line indent
-        xPosition -= _owner.Offset.X;
-
         double DistanceTo(TextCaret caretToMeasure)
-          => Math.Abs(xPosition - caretToMeasure.Measure().X);
+          => Math.Abs(xPosition - caretToMeasure.Measure().Left);
 
-        // TODO grapheme
-        var caret = TextCaret.FromOffset(container.Fragment, absoluteOffset);
+        var caret = TextCaret.FromOffset(container.Fragment, container.Offset.GraphemeOffset);
 
         var closest = (
             caret: caret,

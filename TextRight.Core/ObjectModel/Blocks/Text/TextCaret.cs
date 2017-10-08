@@ -225,8 +225,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public static TextCaret FromOffset(StyledTextFragment fragment, int graphemeIndex)
     {
       // TODO validate
-      var offset = fragment.Buffer.GetOffsetToGraphemeIndex(graphemeIndex);
-      return new TextCaret(fragment, offset.GetValueOrDefault());
+      return FromOffset(fragment, fragment.Buffer.GetOffsetToGraphemeIndex(graphemeIndex).GetValueOrDefault());
+    }
+
+    // <summary> Gets a cursor that is looking at the grapheme at the given index. </summary>
+    public static TextCaret FromOffset(StyledTextFragment fragment, TextOffset offset)
+    {
+      // TODO validate
+      return new TextCaret(fragment, offset);
     }
 
     /// <summary />
