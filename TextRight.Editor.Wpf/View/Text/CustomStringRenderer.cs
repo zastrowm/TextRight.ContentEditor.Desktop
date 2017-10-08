@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -12,26 +13,13 @@ using TextRight.Editor.View.Blocks;
 
 namespace TextRight.Editor.Wpf.View
 {
-  internal class LineRenderer : List<TextLineContainer>
-  {
-    private readonly IOffsetBasedItem _parent;
-
-    public LineRenderer(IOffsetBasedItem parent)
-    {
-      _parent = parent;
-    }
-
-    public Point Offset
-      => _parent.Offset;
-  }
-
   /// <summary> Responsible for rendering data within a textblock. </summary>
   public class CustomStringRenderer
   {
     private readonly IOffsetBasedItem _parent;
     private readonly TextBlock _block;
     private readonly List<StyledStyledTextSpanView> _spans;
-    private readonly LineRenderer _cachedLines;
+    private readonly LineBasedRenderer _cachedLinesBased;
     private bool _isDirty = true;
     private double _restrictedWidth;
     private double _height;
@@ -44,7 +32,7 @@ namespace TextRight.Editor.Wpf.View
       _block = block;
       _spans = spans;
       _restrictedWidth = 100;
-      _cachedLines = new LineRenderer(parent);
+      _cachedLinesBased = new LineBasedRenderer(parent);
 
       _textSource = new BlockBasedTextSource(_block);
       _textFormatter = TextFormatter.Create(TextFormattingMode.Display);
@@ -76,7 +64,7 @@ namespace TextRight.Editor.Wpf.View
     {
       RecalculateIfDirty();
 
-      foreach (var line in _cachedLines)
+      foreach (var line in _cachedLinesBased)
       {
         // Draw the formatted text into the drawing context.
         line.Line.Draw(drawingContext, line.Point, InvertAxes.None);
@@ -88,13 +76,13 @@ namespace TextRight.Editor.Wpf.View
     {
       if (_isDirty)
       {
-        foreach (var it in _cachedLines)
+        foreach (var it in _cachedLinesBased)
         {
           it.Line.Dispose();
         }
 
-        _cachedLines.Clear();
-        _height = GetLinesToDraw(_cachedLines);
+        _cachedLinesBased.Clear();
+        _height = GetLinesToDraw(_cachedLinesBased);
         _isDirty = false;
       }
     }
@@ -146,11 +134,11 @@ namespace TextRight.Editor.Wpf.View
 
     private (TextLineContainer line, int numCharactersBefore) GetLineForYPosition(double y)
     {
-      TextLineContainer currentLine = _cachedLines[0];
+      TextLineContainer currentLine = _cachedLinesBased[0];
 
       int numberOfCharactersBeforeLine = 0;
 
-      foreach (var lineInfo in _cachedLines)
+      foreach (var lineInfo in _cachedLinesBased)
       {
         currentLine = lineInfo;
 
@@ -171,21 +159,22 @@ namespace TextRight.Editor.Wpf.View
 
       int characterIndex = TextBlockUtils.GetCharacterIndex(cursor);
 
-      int totalLength = 0;
-      foreach (var item in _cachedLines)
+      var line = _cachedLinesBased.FirstTextLine;
+
+      int totalLengthThusFar = 0;
+
+      // NOTE - we need to pass it index into the larger text string.  Not sure if that's the underlying 
+      // string or a some other buffer (The TextRun?, the Paragraph?)
+      while (line != null)
       {
-        totalLength += item.Line.Length;
-        if (characterIndex < totalLength)
+        totalLengthThusFar += line.NumberOfCaretPositions;
+
+        if (characterIndex < totalLengthThusFar)
         {
-          var bounds = item.Line.GetTextBounds(characterIndex, 1)[0];
-          return new MeasuredRectangle()
-                 {
-                   X = bounds.Rectangle.X,
-                   Y = bounds.Rectangle.Y + item.Point.Y,
-                   Width = bounds.Rectangle.Width,
-                   Height = bounds.Rectangle.Height
-                 };
+          return line.GetMeasurement(cursor);
         }
+
+        line = line.Next;
       }
 
       return MeasuredRectangle.Invalid;
@@ -193,10 +182,7 @@ namespace TextRight.Editor.Wpf.View
 
     private double GetLinesToDraw(List<TextLineContainer> linesToDraw)
     {
-      // Create a TextFormatter object.
-      int textStorePosition = 0;
-
-      var textLength = GetTotalTextLength();
+      var textLengthInChars = GetTotalTextLength();
       Point currentLinePosition = new Point();
 
       double maxWidth = 0;
@@ -205,14 +191,16 @@ namespace TextRight.Editor.Wpf.View
       StyledTextFragment currentFragment = _block.Content.FirstFragment;
       int currentFragmentOffset = 0;
 
+      int textStorePositionInChars = 0;
+
       // Format each line of text from the text store and draw it.
-      while (textStorePosition < textLength)
+      while (textStorePositionInChars < textLengthInChars)
       {
         // OPTIMIZE we could just re-format the lines that changed, not everything
         // (if the change was text being added/removed)
 
         // TODO when we switch length to be graphemes, this will have to change
-        while (textStorePosition > currentFragmentOffset + currentFragment.NumberOfChars)
+        while (textStorePositionInChars > currentFragmentOffset + currentFragment.NumberOfChars)
         {
           currentFragmentOffset += currentFragment.NumberOfChars;
           currentFragment = currentFragment.Next;
@@ -221,15 +209,15 @@ namespace TextRight.Editor.Wpf.View
         // Create a textline from the text store using the TextFormatter object.
         TextLine myTextLine = _textFormatter.FormatLine(
           _textSource,
-          textStorePosition,
+          textStorePositionInChars,
           _restrictedWidth,
           new GenericTextParagraphProperties(isFirst),
           null);
 
-        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, textStorePosition, currentFragment, currentFragmentOffset));
+        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, textStorePositionInChars, currentFragment, currentFragmentOffset));
 
         // Update the index position in the text store.
-        textStorePosition += myTextLine.Length;
+        textStorePositionInChars += myTextLine.Length;
 
         // Update the line position coordinate for the displayed line.
         currentLinePosition.Y += myTextLine.Height;

@@ -73,6 +73,7 @@
     <Compile Include="View\ListItemBlockView.cs" />
     <Compile Include="View\ParagraphView.cs" />
     <Compile Include="View\Text\BlockBasedTextSource.cs" />
+    <Compile Include="View\Text\LineBasedRenderer.cs" />
     <Compile Include="View\Text\TextLineContainer.cs" />
     <Compile Include="View\Text\GenericTextParagraphProperties.cs" />
     <Compile Include="View\Text\StyledStyledTextSpanView.cs" />

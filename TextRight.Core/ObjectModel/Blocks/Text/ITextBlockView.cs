@@ -19,5 +19,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> Returns the area consumed by the block. </summary>
     /// <returns> A MeasuredRectangle representing the area required to display the block. </returns>
     MeasuredRectangle MeasureBounds();
+
+    MeasuredRectangle Measure(StyledTextFragment fragment, TextOffset offset);
   }
 }

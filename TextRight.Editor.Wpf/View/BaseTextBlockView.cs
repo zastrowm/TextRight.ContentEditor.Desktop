@@ -117,6 +117,14 @@ namespace TextRight.Editor.Wpf.View
              };
     }
 
+    public MeasuredRectangle Measure(StyledTextFragment fragment, TextOffset offset)
+    {
+      var targetFragment = fragment.Target as StyledStyledTextSpanView;
+
+      // TODO GRAPHEME
+      return MeasureCharacter(targetFragment, offset.CharOffset);
+    }
+
     /// <summary> Removes the given span from the TextBlockView. </summary>
     public void MarkRemoved(StyledStyledTextSpanView toRemove)
     {

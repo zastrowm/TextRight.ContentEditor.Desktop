@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using TextRight.Core.Cursors;
+using TextRight.Core.Utilities;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
@@ -159,6 +160,41 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return new BlockCaret(TextCaretMover.Instance, Fragment, Offset.CharOffset, Offset.GraphemeOffset, Offset.GraphemeLength);
     }
 
+    /// <inheritdoc />
+    public MeasuredRectangle Measure()
+    {
+      if (IsAtBlockStart && IsAtBlockEnd)
+      {
+        // if it's empty, there is no character to measure
+        return Block.GetBounds().FlattenLeft();
+      }
+
+      // we want to measure the next character unless the previous character was
+      // a space (as the text will most likely appear on the next line anyways) 
+      bool shouldMeasureNext = IsAtBlockStart
+                               || (!IsAtBlockStart && GetPreviousPosition().CharacterAfter.Character == ' ');
+
+      return shouldMeasureNext
+        ? MeasureForward().FlattenLeft()
+        : MeasureBackward().FlattenRight();
+    }
+
+    private MeasuredRectangle MeasureForward()
+    {
+      if (IsAtBlockEnd || Fragment.Owner?.Target == null)
+        return MeasuredRectangle.Invalid;
+
+      return Fragment.Owner.Target.Measure(Fragment, GetPreviousPosition().Offset);
+    }
+
+    private MeasuredRectangle MeasureBackward()
+    {
+      if (IsAtBlockStart || Fragment.Owner?.Target == null)
+        return MeasuredRectangle.Invalid;
+
+      return Fragment.Owner.Target.Measure(Fragment, GetPreviousPosition().Offset);
+    }
+
     /// <summary>
     ///  Converts the given caret into a TextCaret, assuming that the BlockCaret is pointing at text
     ///  content.
@@ -232,6 +268,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       public bool IsAtBlockStart(BlockCaret caret)
         => FromBlockCaret(caret).IsAtBlockStart;
+
+      public MeasuredRectangle Measure(BlockCaret blockCaret)
+        => FromBlockCaret(blockCaret).Measure();
     }
   }
 }

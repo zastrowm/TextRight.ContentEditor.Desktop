@@ -78,10 +78,10 @@ namespace TextRight.Editor.Wpf.View
 
       _keyCommands = keyboardShortcutCollection;
 
-      InsertText("This is an example of a document within the editor.  It has many features that extend onto " +
+      InsertText("This is an example of a document within the editor. జో It has many features that extend onto " +
                  "multiple lines enough that we can start to create paragraphs.  Don't also forget" +
                  "about X & Y and those other things that extend the line length for the X-Files.  " +
-                 "Isn't that great");
+                 "Isn't that great? జో");
 
       ((IContextualCommand)new BreakTextBlockCommand()).Activate(_editor, _editor.UndoStack);
 

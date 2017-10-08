@@ -144,20 +144,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return Content.ExtractContent(cursor.ToValue(), endCursor).Fragments.ToArray();
     }
 
-    /// <summary> Move the fragments and text from this block into the other block. </summary>
-    /// <param name="otherBlock"> The block into which the content should be moved. </param>
-    public void MoveTextInto(TextBlock otherBlock)
-    {
-      // TODO we could optimize this
-      using (var copy = GetCursorCopy())
-      {
-        var cursor = (TextBlockCursor)copy.Cursor;
-        cursor.MoveToBeginning();
-        var extracted = cursor.ExtractToEnd();
-        otherBlock.Content.AppendAll(extracted);
-      }
-    }
-
     /// <inheritdoc />
     public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode)
     {

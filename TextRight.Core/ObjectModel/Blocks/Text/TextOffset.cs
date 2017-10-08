@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
+  [DebuggerDisplay("Char={CharOffset}, Grapheme={GraphemeOffset}, Length={GraphemeLength}")]
   public struct TextOffset : IEquatable<TextOffset>
   {
     public TextOffset(int charOffset, int graphemeOffset, int graphemeLength)

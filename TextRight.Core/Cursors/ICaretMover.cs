@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.Utilities;
 
 namespace TextRight.Core.Cursors
 {
@@ -41,6 +42,10 @@ namespace TextRight.Core.Cursors
     /// <summary> Gets the block associated with the caret. </summary>
     /// <param name="blockCaret"> The caret associated with the block. </param>
     ContentBlock GetBlock(BlockCaret blockCaret);
+
+    /// <summary> Returns a rectangle that represents the caret position at the given location. </summary>
+    /// <param name="blockCaret"> The caret position that should be measured. </param>
+    MeasuredRectangle Measure(BlockCaret blockCaret);
   }
 
   /// <summary> Generic interface for a caret mover. </summary>

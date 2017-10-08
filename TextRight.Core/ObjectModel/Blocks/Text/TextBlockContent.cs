@@ -10,7 +10,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   ///  Contains various <see cref="StyledTextFragment"/> parts that is presumed to be part of a
   ///  larger block.
   /// </summary>
-  public sealed class TextBlockContent
+  public sealed class TextBlockContent : IDocumentItem<ITextBlockView>
   {
     private readonly List<StyledTextFragment> _spans;
 
@@ -220,6 +220,18 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
                      select new StyledTextFragment(text);
 
       AppendAll(allSpans);
+    }
+
+    /// <inheritdoc />
+    IDocumentItemView IDocumentItem.DocumentItemView
+      => Target;
+
+    /// <inheritdoc />
+    public ITextBlockView Target
+    {
+      get => ((IDocumentItem<ITextBlockView>)Owner).Target;
+      // TODO
+      set => throw new NotImplementedException();
     }
   }
 }
