@@ -23,34 +23,28 @@ namespace TextRight.Editor.Wpf.View
     public Point Offset
       => _parent.Offset;
 
-    public ITextLine FirstTextLine
+    ITextLine ILineBasedRenderer.FirstTextLine
+      => FirstTextLine;
+
+    public LineImplementation FirstTextLine
       => new LineImplementation(this, 0);
 
-    public ITextLine LastTextLine
+    ITextLine ILineBasedRenderer.LastTextLine
+      => LastTextLine;
+
+    public LineImplementation LastTextLine
       => new LineImplementation(this, this.Count - 1);
 
     public ITextLine GetLineFor(TextCaret caret)
     {
       var line = FirstTextLine;
 
-      int totalLengthThusFar = 0;
-      int characterIndex = TextBlockUtils.GetCharacterIndex(caret);
-
       // NOTE - we need to pass it index into the larger text string.  Not sure if that's the underlying 
       // string or a some other buffer (The TextRun?, the Paragraph?)
-      while (line != null)
-      {
-        totalLengthThusFar += line.NumberOfCaretPositions;
-
-        if (characterIndex < totalLengthThusFar)
-        {
-          return line;
-        }
-
+      while (line.Next != null && line.Next.GetContainer().Offset.GraphemeOffset <= caret.Offset.GraphemeOffset)
         line = line.Next;
-      }
 
-      return null;
+      return line;
     }
 
     internal class LineImplementation : ITextLine
@@ -64,7 +58,50 @@ namespace TextRight.Editor.Wpf.View
         _index = index;
       }
 
-      private TextLineContainer GetContainer()
+
+      ITextLine ITextLine.Next
+        => Next;
+
+      ITextLine ITextLine.Previous 
+        => Previous;
+
+      /// <inheritdoc />
+      public LineImplementation Next
+      {
+        get
+        {
+          if (_index < _owner.Count - 1)
+            return new LineImplementation(_owner, _index + 1);
+
+          return null;
+        }
+      }
+
+      /// <inheritdoc />
+      public LineImplementation Previous
+      {
+        get
+        {
+          if (_index > 0)
+            return new LineImplementation(_owner, _index - 1);
+
+          return null;
+        }
+      }
+
+      /// <inheritdoc />
+      public ILineIterator GetLineStart()
+      {
+        throw new NotImplementedException();
+      }
+
+      /// <inheritdoc />
+      public ILineIterator GetLineEnd()
+      {
+        throw new NotImplementedException();
+      }
+
+      internal TextLineContainer GetContainer()
         => _owner[_index];
 
       /// <inheritdoc />
@@ -190,42 +227,6 @@ namespace TextRight.Editor.Wpf.View
         }
 
         return closest.caret;
-      }
-
-      /// <inheritdoc />
-      public ITextLine Next
-      {
-        get
-        {
-          if (_index <= _owner.Count - 1)
-            return new LineImplementation(_owner, _index + 1);
-
-          return null;
-        }
-      }
-
-      /// <inheritdoc />
-      public ITextLine Previous
-      {
-        get
-        {
-          if (_index > 0)
-            return new LineImplementation(_owner, _index - 1);
-
-          return null;
-        }
-      }
-
-      /// <inheritdoc />
-      public ILineIterator GetLineStart()
-      {
-        throw new NotImplementedException();
-      }
-
-      /// <inheritdoc />
-      public ILineIterator GetLineEnd()
-      {
-        throw new NotImplementedException();
       }
     }
   }

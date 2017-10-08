@@ -78,7 +78,7 @@ namespace TextRight.Editor.Wpf.View
 
         if (shouldShowDebugView)
         {
-          ((LineBasedRenderer.LineImplementation)textLine).DebugDraw(drawingContext);
+          textLine.DebugDraw(drawingContext);
         }
 
         textLine = textLine.Next;
