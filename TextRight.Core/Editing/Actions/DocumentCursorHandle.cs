@@ -17,28 +17,25 @@ namespace TextRight.Core.Editing.Actions
   {
     private readonly ISerializedBlockCaret _serializedCursor;
 
-
-    /// <summary> TODO </summary>
+    /// <summary> Constructor. </summary>
+    /// <param name="caret"> The caret that should be saved for later usage. </param>
     public DocumentCursorHandle(BlockCaret caret)
     {
       _serializedCursor = caret.Serialize();
     }
 
-    public TCaret GetCaret<TCaret>(DocumentEditorContext context, ICaretMover<TCaret> factory)
-      where TCaret : struct, IBlockCaret, IEquatable<TCaret>
-    {
-      var genericCaret = GetCaret(context);
-      if (genericCaret.Mover != factory)
-        throw new ArgumentException($"Block cursor does not represent a cursor of type: {typeof(TCaret)}", nameof(factory));
-
-      return factory.Convert(genericCaret);
-    }
-
+    /// <summary> Deserializes the caret so that it can be reused. </summary>
+    /// <param name="context"> The context which can be used to deserialize the caret. </param>
+    /// <returns> The caret. </returns>
     public BlockCaret GetCaret(DocumentEditorContext context)
-      => _serializedCursor.Deserialize(context);
+    {
+      // TODO if we're at the same revision # as when we created the cursor, we don't have to
+      // deserialize we can use the original cursor. 
+      // 
+      // you know.  Like the documentation on the class says :: )
 
-    public BlockCaret Get(DocumentEditorContext context)
-      => GetCaret(context);
+      return _serializedCursor.Deserialize(context);
+    }
 
     /// <summary>
     ///  Implicit cast that converts the given DocumentCursor to a DocumentCursorHandle.

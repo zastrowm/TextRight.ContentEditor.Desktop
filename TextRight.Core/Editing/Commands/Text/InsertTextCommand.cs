@@ -65,7 +65,7 @@ namespace TextRight.Core.Editing.Commands.Text
       /// <inheritdoc />
       public override void Do(DocumentEditorContext context)
       {
-        var textCaret = _insertionPoint.GetCaret(context, TextCaret.Factory);
+        var textCaret = _insertionPoint.GetCaret(context).As<TextCaret>();
         textCaret = textCaret.InsertText(Text);
         context.Selection.MoveTo(textCaret);
       }

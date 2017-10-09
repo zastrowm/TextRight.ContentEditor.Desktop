@@ -92,7 +92,7 @@ namespace TextRight.Core.Cursors
         return typedMover.Convert(this);
       }
 
-      throw new ArgumentException($"Caret is not of type {typeof(TCaret)}");
+      throw new ArgumentException($"Block caret does not represent a cursor of type: {typeof(TCaret)}");
     }
 
     public bool TryCast<TCaret>(out TCaret caret) 

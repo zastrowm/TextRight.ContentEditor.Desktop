@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
+using TextRight.Core.Cursors;
 using TextRight.Core.Editing;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.Editing.Commands;
@@ -83,7 +84,7 @@ namespace TextRight.Core.Tests.Editing
                var fake = new FakeActionStack();
                var command = new TCommand();
                var handle = handleGetter.Invoke();
-               Context.Selection.MoveTo(handle.Get(Context));
+               Context.Selection.MoveTo(handle.GetCaret(Context));
                command.Activate(Context, fake);
                return fake.Action;
              };
@@ -99,7 +100,7 @@ namespace TextRight.Core.Tests.Editing
                var fake = new FakeActionStack();
                var command = new TCommand();
                var handle = handleGetter.Invoke();
-               Context.Selection.MoveTo(handle.Get(Context));
+               Context.Selection.MoveTo(handle.GetCaret(Context));
                command.Activate(Context, fake, argument);
                return fake.Action;
              };
