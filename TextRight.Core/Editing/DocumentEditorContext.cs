@@ -35,7 +35,7 @@ namespace TextRight.Core.Editing
 
       var cursor = ((ContentBlock)Document.Root.FirstBlock).GetCaretAtStart();
 
-      Caret = new DocumentCursor(Document, cursor);
+      Selection = new DocumentSelection(Document, cursor);
       CaretMovementMode = new CaretMovementMode();
 
       UndoStack = new ActionStack(this, new StandardMergePolicy());
@@ -45,10 +45,14 @@ namespace TextRight.Core.Editing
     public DocumentOwner Document { get; }
 
     /// <summary> The Caret's current position. </summary>
-    public DocumentCursor Caret { get; }
+    public DocumentSelection Selection { get; }
 
-    public BlockCaret Cursor
-      => Caret.Caret;
+    /// <summary> The position of the current caret. </summary>
+    public BlockCaret Caret
+    {
+      get => Selection.Start;
+      set => Selection.MoveTo(value);
+    }
 
     /// <summary> Movement information about the caret. </summary>
     public CaretMovementMode CaretMovementMode { get; }
@@ -63,8 +67,8 @@ namespace TextRight.Core.Editing
     /// <summary> True if the current selection should be extended. </summary>
     public bool IsSelectionExtendActive
     {
-      get { return Caret.ShouldExtendSelection; }
-      set { Caret.ShouldExtendSelection = value; }
+      get => Selection.ShouldExtendSelection;
+      set => Selection.ShouldExtendSelection = value;
     }
 
     /// <summary> The stack of actions that can be undone. </summary>

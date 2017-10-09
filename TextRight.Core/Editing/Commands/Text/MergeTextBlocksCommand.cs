@@ -19,7 +19,7 @@ namespace TextRight.Core.Editing.Commands.Text
     /// <inheritdoc />
     public string GetName(DocumentEditorContext context)
     {
-      if (context.Cursor.IsAtBlockStart)
+      if (context.Caret.IsAtBlockStart)
         return "Merge paragraph backwards";
       else
         return "Merge paragraph forwards";
@@ -51,7 +51,7 @@ namespace TextRight.Core.Editing.Commands.Text
         return;
       }
 
-      actionStack.Do(new MergeTextBlockAction(previous, next, context.Caret));
+      actionStack.Do(new MergeTextBlockAction(previous, next, context.Selection));
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace TextRight.Core.Editing.Commands.Text
     /// </summary>
     private bool TryGetTextBlocks(DocumentEditorContext context, out TextBlock previous, out TextBlock next)
     {
-      var cursor = context.Cursor;
+      var cursor = context.Caret;
 
       if (cursor.IsAtBlockStart && cursor.Block.PreviousBlock != null)
       {
@@ -119,7 +119,7 @@ namespace TextRight.Core.Editing.Commands.Text
         var next = _nextPath.Get(context.Document);
 
         TextBlockHelperMethods.MergeWithPrevious((TextBlock)next);
-        context.Caret.MoveTo(_endOfPreviousBlockHandle.Get(context));
+        context.Selection.MoveTo(_endOfPreviousBlockHandle.Get(context));
       }
 
       /// <inheritdoc />
@@ -129,7 +129,7 @@ namespace TextRight.Core.Editing.Commands.Text
 
         TextBlockHelperMethods.TryBreakBlock(caret);
 
-        context.Caret.MoveTo(_originalCaretPosition.Get(context));
+        context.Selection.MoveTo(_originalCaretPosition.Get(context));
     }
     }
   }

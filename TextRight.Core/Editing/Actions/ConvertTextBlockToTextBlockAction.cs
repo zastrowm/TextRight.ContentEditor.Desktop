@@ -92,7 +92,7 @@ namespace TextRight.Core.Editing.Actions
     {
       newBlock.Content = blockToReplace.Content;
       blockToReplace.Parent.Replace(blockToReplace, newBlock);
-      context.Caret.MoveTo(_handle, context);
+      context.Selection.MoveTo(_handle, context);
     }
   }
 }

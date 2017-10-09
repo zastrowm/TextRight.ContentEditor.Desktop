@@ -30,7 +30,7 @@ namespace TextRight.Core.Editing.Commands.Text
     /// <inheritdoc />
     bool IContextualCommand.CanActivate(DocumentEditorContext context)
     {
-      var textBlock = context.Cursor.Block as TextBlock;
+      var textBlock = context.Caret.Block as TextBlock;
       // TODO check if the parent collection allows multiple children
       return textBlock != null;
     }
@@ -39,7 +39,7 @@ namespace TextRight.Core.Editing.Commands.Text
     void IContextualCommand.Activate(DocumentEditorContext context, IActionStack actionStack)
     {
       // TODO delete any text that is selected
-      actionStack.Do(new BreakTextBlockAction(context.Caret));
+      actionStack.Do(new BreakTextBlockAction(context.Selection));
     }
 
     /// <summary> Breaks a paragraph at the given caret location. </summary>
@@ -69,7 +69,7 @@ namespace TextRight.Core.Editing.Commands.Text
         var caretPosition = TextBlockHelperMethods.TryBreakBlock(caret);
         if (!caretPosition.IsValid)
           return;
-        context.Caret.MoveTo(caretPosition);
+        context.Selection.MoveTo(caretPosition);
       }
 
       /// <inheritdoc />
@@ -83,7 +83,7 @@ namespace TextRight.Core.Editing.Commands.Text
 
         // move it to where it was when we wanted to break the paragraph.  It's safer to deserialize
         // again, as the cursor above is not guaranteed to be valid. 
-        context.Caret.MoveTo(_handle, context);
+        context.Selection.MoveTo(_handle, context);
       }
     }
   }

@@ -15,14 +15,14 @@ namespace TextRight.Editor.Wpf.View
   /// <summary> The visual representation of a DocumentCursor. </summary>
   public class DocumentCursorView
   {
-    private readonly DocumentCursor _cursor;
+    private readonly DocumentSelection _cursor;
     private readonly PointCollection _pointCollection;
     private readonly Polygon _polygon;
     private readonly Rectangle _rectangle;
     private bool _isDirty;
 
     /// <summary> Default constructor. </summary>
-    public DocumentCursorView(DocumentCursor cursor)
+    public DocumentCursorView(DocumentSelection cursor)
     {
       _cursor = cursor;
       _cursor.CursorMoved += InvalidateCursor;
@@ -87,7 +87,7 @@ namespace TextRight.Editor.Wpf.View
 
       _isDirty = true;
 
-      var start = _cursor.Caret.Measure();
+      var start = _cursor.Start.Measure();
       if (!start.IsValid)
       {
         // it's possible that we haven't had a new-layout yet, in which case we need to wait until the next tick
@@ -123,7 +123,7 @@ namespace TextRight.Editor.Wpf.View
     private void UpdateSelectionPolygon(MeasuredRectangle caretPosition)
     {
       MeasuredRectangle start = caretPosition;
-      var end = _cursor.SelectionStart.Measure();
+      var end = _cursor.End.Measure();
 
       if (MeasuredRectangle.AreInline(start, end))
       {
@@ -184,8 +184,8 @@ namespace TextRight.Editor.Wpf.View
     private void DrawSpanningSelection(MeasuredRectangle start, MeasuredRectangle end)
     {
       // TODO we really should go line-by-line or block-by-block as needed
-      var startBlockRect = _cursor.Caret.Block.GetBounds();
-      var endBlockRect = _cursor.SelectionStart.Block.GetBounds();
+      var startBlockRect = _cursor.Start.Block.GetBounds();
+      var endBlockRect = _cursor.End.Block.GetBounds();
 
       double maxRight = Math.Max(startBlockRect.Right, endBlockRect.Right);
       double maxLeft = Math.Max(startBlockRect.Left, endBlockRect.Left);

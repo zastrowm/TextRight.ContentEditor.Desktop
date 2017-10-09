@@ -31,7 +31,7 @@ namespace TextRight.Editor.Wpf
         mode.SetModeToEnd();
 
         editorContext.Document.Root.Deserialize(serializationContext, node.Children.First());
-        editorContext.Caret.MoveTo(
+        editorContext.Selection.MoveTo(
                        editorContext.Document.Root.GetCaretFromBottom(mode));
       }
       catch (Exception)

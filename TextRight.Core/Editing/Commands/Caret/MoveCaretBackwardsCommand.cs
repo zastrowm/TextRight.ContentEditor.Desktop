@@ -15,9 +15,9 @@ namespace TextRight.Core.Editing.Commands.Caret
       => "caret.moveBackward";
 
     /// <inheritdoc />
-    public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)
+    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode)
     {
-      var caret = cursor.Caret;
+      var caret = cursor.Start;
       var next = caret.MoveBackward();
 
       // try a simply to move the cursor backwards

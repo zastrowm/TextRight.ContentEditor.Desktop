@@ -25,14 +25,14 @@ namespace TextRight.Core.Editing.Commands
     /// <inheritdoc/>
     public bool CanActivate(DocumentEditorContext context)
     {
-      var block = context.Cursor.Block;
+      var block = context.Caret.Block;
       return (block is TextBlock) && !(block is ParagraphBlock);
     }
 
     /// <inheritdoc/>
     public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      actionStack.Do(new ConvertIntoParagraphAction((TextCaret)context.Caret.Caret));
+      actionStack.Do(new ConvertIntoParagraphAction((TextCaret)context.Selection.Start));
     }
   }
 }

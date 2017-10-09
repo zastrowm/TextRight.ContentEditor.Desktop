@@ -17,12 +17,12 @@ namespace TextRight.Core.Editing.Commands.Caret
 
     /// <inheritdoc/>
     public override bool CanActivate(DocumentEditorContext context)
-      => context.Caret.Caret.TryCast<TextCaret>(out var textCaret) && !textCaret.IsAtBlockEnd;
+      => context.Selection.Start.TryCast<TextCaret>(out var textCaret) && !textCaret.IsAtBlockEnd;
 
     /// <inheritdoc/>
-    public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)
+    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode)
     {
-      var original = (TextCaret)cursor.Caret;
+      var original = (TextCaret)cursor.Start;
       var newPosition = TextBlockMove(original);
       if (original != newPosition)
       {

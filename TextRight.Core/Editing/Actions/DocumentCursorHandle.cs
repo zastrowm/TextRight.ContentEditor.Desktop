@@ -43,9 +43,9 @@ namespace TextRight.Core.Editing.Actions
     /// <summary>
     ///  Implicit cast that converts the given DocumentCursor to a DocumentCursorHandle.
     /// </summary>
-    public static implicit operator DocumentCursorHandle(DocumentCursor cursor)
+    public static implicit operator DocumentCursorHandle(DocumentSelection cursor)
     {
-      return new DocumentCursorHandle(cursor.Caret);
+      return new DocumentCursorHandle(cursor.Start);
     }
   }
 
@@ -55,7 +55,7 @@ namespace TextRight.Core.Editing.Actions
     /// <summary>
     ///  Moves to he cursor to point to the location given by <paramref name="handle"/>.
     /// </summary>
-    public static void MoveTo(this DocumentCursor cursor, DocumentCursorHandle handle, DocumentEditorContext context)
+    public static void MoveTo(this DocumentSelection cursor, DocumentCursorHandle handle, DocumentEditorContext context)
       => cursor.MoveTo(handle.GetCaret(context));
   }
 }

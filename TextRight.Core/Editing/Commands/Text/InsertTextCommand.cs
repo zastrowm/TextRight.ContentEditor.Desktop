@@ -26,14 +26,14 @@ namespace TextRight.Core.Editing.Commands.Text
     bool IContextualCommand<string>.CanActivate(DocumentEditorContext context, string text)
     {
       // TODO what else to check
-      return context.Caret.Caret.TryCast(out TextCaret textCaret);
+      return context.Selection.Start.TryCast(out TextCaret textCaret);
     }
 
     /// <inheritdoc />
     void IContextualCommand<string>.Activate(DocumentEditorContext context, IActionStack actionStack, string text)
     {
       // TODO delete any text that is selected
-      actionStack.Do(new InsertTextUndoableAction(context.Caret, text));
+      actionStack.Do(new InsertTextUndoableAction(context.Selection, text));
     }
 
     /// <summary> Inserts text at the specified location. </summary>
@@ -67,7 +67,7 @@ namespace TextRight.Core.Editing.Commands.Text
       {
         var textCaret = _insertionPoint.GetCaret(context, TextCaret.Factory);
         textCaret = textCaret.InsertText(Text);
-        context.Caret.MoveTo(textCaret);
+        context.Selection.MoveTo(textCaret);
       }
 
       /// <inheritdoc />
@@ -76,7 +76,7 @@ namespace TextRight.Core.Editing.Commands.Text
         // TODO graphemes?
         var textCaret = (TextCaret)_insertionPoint.GetCaret(context);
         textCaret = textCaret.DeleteText(Text.Length);
-        context.Caret.MoveTo(textCaret);
+        context.Selection.MoveTo(textCaret);
       }
 
       /// <inheritdoc/>

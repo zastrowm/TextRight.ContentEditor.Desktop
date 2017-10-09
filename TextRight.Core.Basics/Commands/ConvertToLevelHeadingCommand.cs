@@ -38,7 +38,7 @@ namespace TextRight.Core.Commands
     /// <inheritdoc/>
     public bool CanActivate(DocumentEditorContext context)
     {
-      var block = context.Cursor.Block;
+      var block = context.Caret.Block;
       var headingBlock = block as HeadingBlock;
 
       return (headingBlock != null && headingBlock.HeadingLevel != _level) || block is ParagraphBlock;
@@ -47,7 +47,7 @@ namespace TextRight.Core.Commands
     /// <inheritdoc/>
     public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      actionStack.Do(new ConvertTextBlockIntoHeadingAction((TextCaret)context.Caret.Caret, _level));
+      actionStack.Do(new ConvertTextBlockIntoHeadingAction((TextCaret)context.Selection.Start, _level));
     }
   }
 }

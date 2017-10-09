@@ -17,7 +17,7 @@ namespace TextRight.Core.Tests.Editing
     {
       return new Func<UndoableAction>[]
              {
-               FromCommand<InsertTextCommand, string>(() => Context.Caret, "This is the text"),
+               FromCommand<InsertTextCommand, string>(() => Context.Selection, "This is the text"),
              };
     }
 
@@ -26,7 +26,7 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 0),
+                       () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Selection.Start, 0),
                      });
 
       var heading = Document.Root.FirstBlock.As<HeadingBlock>();
@@ -42,14 +42,14 @@ namespace TextRight.Core.Tests.Editing
     {
       DoAll(new Func<UndoableAction>[]
             {
-              () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 0),
+              () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Selection.Start, 0),
             });
 
       var heading = Document.Root.FirstBlock.As<HeadingBlock>();
 
       DoAll(new Func<UndoableAction>[]
             {
-              () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 3),
+              () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Selection.Start, 3),
             });
 
       DidYouKnow.That(heading).Should().BeSameAs(Document.Root.FirstBlock);
@@ -61,8 +61,8 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 0),
-                       () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Caret.Caret, 3),
+                       () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Selection.Start, 0),
+                       () => new ConvertTextBlockIntoHeadingAction((TextCaret)Context.Selection.Start, 3),
                      });
 
       it.VerifyUndo();

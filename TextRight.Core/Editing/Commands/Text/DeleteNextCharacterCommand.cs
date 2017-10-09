@@ -26,14 +26,14 @@ namespace TextRight.Core.Editing.Commands.Text
     /// <inheritdoc />
     public bool CanActivate(DocumentEditorContext context)
     {
-      var cursor = context.Caret.Caret;
+      var cursor = context.Selection.Start;
       return cursor.Is<TextCaret>() && !cursor.IsAtBlockEnd;
     }
 
     /// <inheritdoc />
     public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      actionStack.Do(new DeleteNextCharacterAction((TextCaret)context.Caret.Caret));
+      actionStack.Do(new DeleteNextCharacterAction((TextCaret)context.Selection.Start));
     }
 
     /// <summary> Deletes text from the document. </summary>

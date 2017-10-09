@@ -14,10 +14,10 @@ namespace TextRight.Core.Editing.Commands.Caret
       => "caret.moveForward";
 
     /// <inheritdoc />
-    public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)
+    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode)
     {
       // first we try to move the cursor directly
-      var caret = cursor.Caret;
+      var caret = cursor.Start;
       var next = caret.MoveForward();
 
       // try a simply to move the cursor forwards

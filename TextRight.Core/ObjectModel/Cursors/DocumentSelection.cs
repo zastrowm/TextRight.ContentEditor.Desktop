@@ -8,15 +8,15 @@ using TextRight.Core.ObjectModel.Blocks.Text;
 namespace TextRight.Core.ObjectModel.Cursors
 {
   /// <summary> Holds a specific spot in the document. </summary>
-  public sealed class DocumentCursor
+  public sealed class DocumentSelection
   {
-    private BlockCaret _startCaret;
-    private BlockCaret _endCaret;
+    private BlockCaret _caretEnd;
+    private BlockCaret _caretStart;
 
     /// <summary> Constructor. </summary>
     /// <param name="owner"> The Document that owns the given cursor. </param>
     /// <param name="blockCaret"> The block cursor. </param>
-    public DocumentCursor(DocumentOwner owner, BlockCaret blockCaret)
+    public DocumentSelection(DocumentOwner owner, BlockCaret blockCaret)
     {
       Owner = owner;
       MoveTo(blockCaret);
@@ -26,35 +26,36 @@ namespace TextRight.Core.ObjectModel.Cursors
     public DocumentOwner Owner { get; }
 
     /// <summary>
-    ///  True if Moving using MoveTo should keep <see cref="SelectionStart"/> at its current position,
+    ///  True if Moving using MoveTo should keep <see cref="End"/> at its current position,
     ///  false if it should move it to match the new cursor position.
     /// </summary>
     public bool ShouldExtendSelection { get; set; }
 
     /// <summary> True if a selection is active, false if it's a simple cursor. </summary>
     public bool HasSelection
-      => _startCaret != _endCaret;
+      => _caretEnd != _caretStart;
 
     /// <summary> Move to the given caret location. </summary>
     /// <param name="blockCaret"> The block caret. </param>
     public void MoveTo(BlockCaret blockCaret)
     {
-      _endCaret = blockCaret;
+      _caretStart = blockCaret;
 
       if (!ShouldExtendSelection)
       {
-        _startCaret = blockCaret;
+        _caretEnd = blockCaret;
       }
 
       CursorMoved?.Invoke(this, EventArgs.Empty);
     }
 
-    /// <summary> The current caret position. </summary>
-    public BlockCaret Caret
-      => _endCaret;
+    /// <summary> The starting position of the selection. </summary>
+    public BlockCaret Start
+      => _caretStart;
 
-    public BlockCaret SelectionStart
-      => _startCaret;
+    /// <summary> The ending position of the selection. </summary>
+    public BlockCaret End
+      => _caretEnd;
 
     /// <summary> Invoked when the cursor has moved. </summary>
     public event EventHandler CursorMoved;
@@ -62,6 +63,6 @@ namespace TextRight.Core.ObjectModel.Cursors
     /// <summary> Checks if the caret is of the given type. </summary>
     public bool Is<T>()
       where T : struct, IEquatable<T>, IBlockCaret
-      => Caret.Is<T>();
+      => Start.Is<T>();
   }
 }

@@ -19,7 +19,7 @@ namespace TextRight.Core.Editing.Commands.Caret
     /// <param name="cursor"> The caret on which to act. </param>
     /// <param name="movementMode"></param>
     /// <returns> true if it succeeds, false if it fails. </returns>
-    public abstract bool Activate(DocumentCursor cursor, CaretMovementMode movementMode);
+    public abstract bool Activate(DocumentSelection cursor, CaretMovementMode movementMode);
 
     /// <inheritdoc />
     public abstract string Id { get; }
@@ -39,7 +39,7 @@ namespace TextRight.Core.Editing.Commands.Caret
     /// <inheritdoc/>
     public virtual void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      Activate(context.Caret, context.CaretMovementMode);
+      Activate(context.Selection, context.CaretMovementMode);
       if (!ShouldPreserveCaretMovementMode)
       {
         context.CaretMovementMode.SetModeToNone();

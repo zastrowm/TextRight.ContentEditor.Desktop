@@ -27,14 +27,14 @@ namespace TextRight.Core.Editing.Commands.Text
     /// <inheritdoc />
     public bool CanActivate(DocumentEditorContext context)
     {
-      var cursor = context.Caret.Caret;
+      var cursor = context.Selection.Start;
       return cursor.Is<TextCaret>() && !cursor.IsAtBlockStart;
     }
 
     /// <inheritdoc />
     public void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      var caret = (TextCaret)context.Caret.Caret;
+      var caret = (TextCaret)context.Selection.Start;
       actionStack.Do(new DeletePreviousCharacterAction(caret));
     }
 
@@ -69,7 +69,7 @@ namespace TextRight.Core.Editing.Commands.Text
       {
         var caret = (TextCaret)CursorHandle.GetCaret(context);
         caret = caret.DeleteText(OriginalText.Length);
-        context.Caret.MoveTo(caret);
+        context.Selection.MoveTo(caret);
       }
 
       /// <inheritdoc />
@@ -77,7 +77,7 @@ namespace TextRight.Core.Editing.Commands.Text
       {
         var caret = (TextCaret)CursorHandle.GetCaret(context);
         caret = caret.InsertText(OriginalText);
-        context.Caret.MoveTo(caret);
+        context.Selection.MoveTo(caret);
       }
     }
   }

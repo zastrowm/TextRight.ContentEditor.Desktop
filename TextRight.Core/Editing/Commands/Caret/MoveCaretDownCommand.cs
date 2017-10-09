@@ -20,12 +20,12 @@ namespace TextRight.Core.Editing.Commands.Caret
       => true;
 
     public override bool CanActivate(DocumentEditorContext context)
-      => context.Caret.Is<TextCaret>();
+      => context.Selection.Is<TextCaret>();
 
     /// <inheritdoc />
-    public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)
+    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode)
     {
-      var textCaret = cursor.Caret.As<TextCaret>();
+      var textCaret = cursor.Start.As<TextCaret>();
 
       double desiredPosition = UpdateMovementMode(movementMode, textCaret);
 

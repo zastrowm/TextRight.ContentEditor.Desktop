@@ -57,7 +57,7 @@ namespace TextRight.Editor.Wpf.View
 
       _editor = editor;
 
-      _cursorView = new DocumentCursorView(_editor.Caret);
+      _cursorView = new DocumentCursorView(_editor.Selection);
       _cursorView.Attach(this);
 
       // clear out the existing content
@@ -190,7 +190,7 @@ namespace TextRight.Editor.Wpf.View
       if (_editor.Target?.GetBlockFor(point) is IDocumentItem block)
       {
         var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
-        _editor.Caret.MoveTo(caret);
+        _editor.Selection.MoveTo(caret);
       }
 
       // TODO, do something with mouse events

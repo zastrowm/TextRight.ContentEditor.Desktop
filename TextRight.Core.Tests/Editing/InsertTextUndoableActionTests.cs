@@ -17,15 +17,15 @@ namespace TextRight.Core.Tests.Editing
     {
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       FromCommand<InsertTextCommand, string>(() => Context.Caret, "The text"),
+                       FromCommand<InsertTextCommand, string>(() => Context.Selection, "The text"),
                      });
 
       var textBlock = Document.Root.FirstBlock as TextBlock;
       DidYouKnow.That(textBlock).Should().NotBeNull();
 
       DidYouKnow.That(textBlock.AsText()).Should().Be("The text");
-      DidYouKnow.That(Context.Cursor.Block).Should().Be(textBlock);
-      DidYouKnow.That(Context.Cursor.IsAtBlockEnd).Should().BeTrue();
+      DidYouKnow.That(Context.Caret.Block).Should().Be(textBlock);
+      DidYouKnow.That(Context.Caret.IsAtBlockEnd).Should().BeTrue();
 
       it.VerifyUndo();
     }
