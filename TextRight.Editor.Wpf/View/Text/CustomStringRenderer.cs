@@ -15,7 +15,8 @@ using TextRight.Editor.View.Blocks;
 namespace TextRight.Editor.Wpf.View
 {
   /// <summary> Responsible for rendering data within a textblock. </summary>
-  internal class CustomStringRenderer
+  // TODO optimize so that we actually sometimes keep TextLineRender around
+  internal class CustomStringRenderer : ILineBasedRenderer, IOffsetBasedItem
   {
     private readonly IOffsetBasedItem _parent;
     private readonly TextBlock _block;
@@ -32,13 +33,13 @@ namespace TextRight.Editor.Wpf.View
       _block = block;
       _spans = spans;
       _restrictedWidth = 100;
-      CachedLines = new LineBasedRenderer(parent);
+      CachedLines = new List<TextLineContainer>();
 
       _textSource = new BlockBasedTextSource(_block);
       _textFormatter = TextFormatter.Create(TextFormattingMode.Display);
     }
 
-    public LineBasedRenderer CachedLines { get; }
+    public List<TextLineContainer> CachedLines { get; }
 
     /// <summary> The maximum width of the lines in this renderer </summary>
     public double MaxWidth { get; private set; }
@@ -62,6 +63,35 @@ namespace TextRight.Editor.Wpf.View
       // ReSharper restore CompareOfFloatsByEqualityOperator
     }
 
+    /// <summary />
+    public TextLineRender FirstTextLine
+      => new TextLineRender(this, 0);
+
+    /// <summary />
+    public TextLineRender LastTextLine
+      => new TextLineRender(this, CachedLines.Count - 1);
+
+    /// <inheritdoc />
+    ITextLine ILineBasedRenderer.FirstTextLine
+      => FirstTextLine;
+
+    /// <inheritdoc />
+    ITextLine ILineBasedRenderer.LastTextLine
+      => LastTextLine;
+
+    /// <inheritdoc />
+    public ITextLine GetLineFor(TextCaret caret)
+    {
+      var line = FirstTextLine;
+
+      // NOTE - we need to pass it index into the larger text string.  Not sure if that's the underlying 
+      // string or a some other buffer (The TextRun?, the Paragraph?)
+      while (line.Next != null && line.Next.GetContainer().Offset.GraphemeOffset <= caret.Offset.GraphemeOffset)
+        line = line.Next;
+
+      return line;
+    }
+
     internal void Render(DrawingContext drawingContext)
     {
       RecalculateIfDirty();
@@ -69,7 +99,7 @@ namespace TextRight.Editor.Wpf.View
       bool shouldShowDebugView = true;
 
       // TODO refactor
-      var textLine = CachedLines.FirstTextLine;
+      var textLine = FirstTextLine;
 
       foreach (var cachedLine in CachedLines)
       {
@@ -161,7 +191,7 @@ namespace TextRight.Editor.Wpf.View
           break;
         }
 
-        numberOfCharactersBeforeLine += currentLine.CharacterStartIndex;
+        numberOfCharactersBeforeLine += currentLine.Offset.CharOffset;
       }
 
       return (currentLine, numberOfCharactersBeforeLine);
@@ -171,7 +201,7 @@ namespace TextRight.Editor.Wpf.View
     {
       RecalculateIfDirty();
 
-      return CachedLines.GetLineFor(caret)?.GetMeasurement(caret)
+      return GetLineFor(caret)?.GetMeasurement(caret)
              ?? MeasuredRectangle.Invalid;
     }
 
@@ -212,7 +242,7 @@ namespace TextRight.Editor.Wpf.View
           new GenericTextParagraphProperties(isFirst),
           null);
 
-        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, textStorePositionInChars, caret.Offset, currentFragment, currentFragmentOffset));
+        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, caret.Offset, currentFragment));
 
         // Update the index position in the text store.
         textStorePositionInChars += myTextLine.Length;

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Serialization;
+using TextRight.Core.Utilities;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {

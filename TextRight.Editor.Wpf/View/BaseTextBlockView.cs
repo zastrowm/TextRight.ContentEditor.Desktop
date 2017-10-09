@@ -214,28 +214,22 @@ namespace TextRight.Editor.Wpf.View
       InvalidateVisual();
     }
 
-    public ITextLine FirstTextLine
-    {
-      get
-      {
-        Revalidate();
-        return ((ILineBasedRenderer)_renderer.CachedLines).FirstTextLine;
-      }
-    }
-
-    public ITextLine LastTextLine
-    {
-      get
-      {
-        Revalidate();
-        return ((ILineBasedRenderer)_renderer.CachedLines).LastTextLine;
-      }
-    }
-
-    public ITextLine GetLineFor(TextCaret caret)
+    private ILineBasedRenderer RevalidateAndGetRenderer()
     {
       Revalidate();
-      return ((ILineBasedRenderer)_renderer.CachedLines).GetLineFor(caret);
+      return _renderer;
     }
+
+    /// <inheritdoc />
+    public ITextLine FirstTextLine 
+      => RevalidateAndGetRenderer().FirstTextLine;
+
+    /// <inheritdoc />
+    public ITextLine LastTextLine 
+      => RevalidateAndGetRenderer().LastTextLine;
+
+    /// <inheritdoc />
+    public ITextLine GetLineFor(TextCaret caret) 
+      => RevalidateAndGetRenderer().GetLineFor(caret);
   }
 }

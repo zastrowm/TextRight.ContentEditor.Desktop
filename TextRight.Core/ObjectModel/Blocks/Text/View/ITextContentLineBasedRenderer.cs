@@ -22,7 +22,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text.View
 
   public interface ITextLine
   {
-    int NumberOfCaretPositions { get; }
     double Height { get; }
 
     MeasuredRectangle GetBounds();
@@ -32,17 +31,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text.View
 
     TextCaret FindClosestTo(double xPosition);
 
-    ILineIterator GetLineStart();
-    ILineIterator GetLineEnd();
     MeasuredRectangle GetMeasurement(TextCaret caret);
-  }
-
-  public interface ILineIterator
-  {
-    bool MoveNext();
-    bool MovePrevious();
-
-    TextCaret Caret { get; }
-    MeasuredRectangle Measurement { get; }
   }
 }

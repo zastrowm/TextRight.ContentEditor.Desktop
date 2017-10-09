@@ -149,7 +149,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <inheritdoc />
     public override BlockCaret GetCaretFromTop(CaretMovementMode movementMode)
     {
-      var caret = Content.GetCaretAtEnd();
+      var caret = Content.GetCaretAtStart();
 
       switch (movementMode.CurrentMode)
       {
