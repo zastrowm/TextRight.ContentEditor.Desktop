@@ -71,6 +71,9 @@ namespace TextRight.Core.Cursors
     public MeasuredRectangle Measure()
       => Mover.Measure(this);
 
+    public ISerializedBlockCaret Serialize()
+      => Mover.Serialize(this);
+
     /// <summary> True if the BlockCaret is pointing at a potentially valid location. </summary>
     public bool IsValid
       => Mover != null;

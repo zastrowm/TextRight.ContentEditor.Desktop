@@ -15,33 +15,13 @@ namespace TextRight.Core.Editing.Actions
   /// </summary>
   public class DocumentCursorHandle
   {
-    private readonly ISerializedBlockCursor _serializedCursor;
+    private readonly ISerializedBlockCaret _serializedCursor;
+
 
     /// <summary> TODO </summary>
-    public DocumentCursorHandle(TextCaret caret)
+    public DocumentCursorHandle(BlockCaret caret)
     {
-      _serializedCursor = new TextBlockCursor(caret).Serialize();
-    }
-
-    /// <summary> Constructor. </summary>
-    /// <param name="cursor"> The cursor that should be serialized for later use. </param>
-    public DocumentCursorHandle(ReadonlyCursor cursor)
-    {
-      _serializedCursor = cursor.Serialize();
-    }
-
-    /// <summary> Constructor. </summary>
-    /// <param name="cursor"> The cursor that should be serialized for later use. </param>
-    public DocumentCursorHandle(DocumentCursor cursor)
-    {
-      _serializedCursor = cursor.Cursor.Serialize();
-    }
-
-    /// <summary> Constructor. </summary>
-    /// <param name="cursor"> The cursor that should be serialized for later use. </param>
-    public DocumentCursorHandle(IBlockContentCursor cursor)
-    {
-      _serializedCursor = cursor.Serialize();
+      _serializedCursor = caret.Serialize();
     }
 
     public TCaret GetCaret<TCaret>(DocumentEditorContext context, ICaretMover<TCaret> factory)
@@ -55,40 +35,17 @@ namespace TextRight.Core.Editing.Actions
     }
 
     public BlockCaret GetCaret(DocumentEditorContext context)
-    {
-      using (var copy = Get(context))
-      {
-        return ((TextBlockCursor)copy.Cursor).ToValue();
-      }
-    }
+      => _serializedCursor.Deserialize(context);
 
-    /// <summary>
-    ///  Retrieves a live cursor which can be used to perform operations on the document.
-    /// </summary>
-    /// <param name="context"> The context for which the cursor is valid. </param>
-    /// <returns> A DocumentCursor. </returns>
-    public CursorCopy Get(DocumentEditorContext context)
-    {
-      // TODO if we're at the same revision # as when we created the cursor, we don't have to
-      // deserialize we can use the original cursor. 
-      var blockCursor = _serializedCursor.Deserialize(context.Document);
-      return blockCursor;
-    }
+    public BlockCaret Get(DocumentEditorContext context)
+      => GetCaret(context);
 
     /// <summary>
     ///  Implicit cast that converts the given DocumentCursor to a DocumentCursorHandle.
     /// </summary>
     public static implicit operator DocumentCursorHandle(DocumentCursor cursor)
     {
-      return new DocumentCursorHandle(cursor);
-    }
-
-    /// <summary>
-    ///  Implicit cast that converts the given DocumentCursor to a DocumentCursorHandle.
-    /// </summary>
-    public static implicit operator DocumentCursorHandle(ReadonlyCursor cursor)
-    {
-      return new DocumentCursorHandle(cursor);
+      return new DocumentCursorHandle(cursor.Caret);
     }
   }
 
@@ -99,11 +56,6 @@ namespace TextRight.Core.Editing.Actions
     ///  Moves to he cursor to point to the location given by <paramref name="handle"/>.
     /// </summary>
     public static void MoveTo(this DocumentCursor cursor, DocumentCursorHandle handle, DocumentEditorContext context)
-    {
-      using (var copy = handle.Get(context))
-      {
-        cursor.MoveTo(copy);
-      }
-    }
+      => cursor.MoveTo(handle.GetCaret(context));
   }
 }

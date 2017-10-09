@@ -83,7 +83,7 @@ namespace TextRight.Core.Editing.Commands.Text
 
         // move it to where it was when we wanted to break the paragraph.  It's safer to deserialize
         // again, as the cursor above is not guaranteed to be valid. 
-        context.Caret.MoveTo(_handle.Get(context));
+        context.Caret.MoveTo(_handle, context);
       }
     }
   }

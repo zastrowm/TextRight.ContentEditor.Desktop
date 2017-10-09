@@ -88,11 +88,9 @@ namespace TextRight.Core.Tests
     }
 
     /// <summary> Gets a cursor to the end of the block. </summary>
-    public static IBlockContentCursor EndCursor(this ContentBlock block, int offset = 0)
+    public static BlockCaret EndCursor(this ContentBlock block, int offset = 0)
     {
-      var cursor = new TextBlockCursor((TextBlock)block).ToEnd();
-      cursor.Move(offset);
-      return cursor;
+      return block.GetCaretAtEnd();
     }
 
     public static BlockCaret BeginCaret(this ContentBlock block, int offset = 0)
@@ -120,12 +118,8 @@ namespace TextRight.Core.Tests
     }
 
     /// <summary> Gets a cursor to the beginning of the block. </summary>
-    public static IBlockContentCursor BeginCursor(this ContentBlock block, int offset = 0)
-    {
-      var cursor = block.GetCursor().ToBeginning();
-      cursor.Move(offset);
-      return cursor;
-    }
+    public static BlockCaret BeginCursor(this ContentBlock block, int offset = 0)
+      => block.BeginCaret(offset);
 
     /// <summary> Cast the given cursor to a TextBlockCursor. </summary>
     public static TextBlockCursor AsTextCursor(this IBlockContentCursor cursor)
@@ -139,8 +133,12 @@ namespace TextRight.Core.Tests
     }
 
     /// <summary> Creates a cursor handle from the given content cursor. </summary>
-    public static DocumentCursorHandle ToHandle(this IBlockContentCursor cursor)
-      => new DocumentCursorHandle(cursor);
+    public static DocumentCursorHandle ToHandle(this TextCaret caret)
+      => new DocumentCursorHandle(caret);
+
+    /// <summary> Creates a cursor handle from the given content cursor. </summary>
+    public static DocumentCursorHandle ToHandle(this BlockCaret caret)
+      => new DocumentCursorHandle(caret);
 
     /// <summary>
     ///  Move the block cursor the correct number of units forward or backward.

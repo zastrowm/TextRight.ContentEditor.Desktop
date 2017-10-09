@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using TextRight.Core.Cursors;
+using TextRight.Core.Editing;
 using TextRight.Core.Utilities;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
@@ -235,6 +236,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return new TextCaret(fragment, offset);
     }
 
+    /// <summary> Gets an object that holds the serialized data for this caret. </summary>
+    private ISerializedBlockCaret Serialize()
+      => new SerializedData(this);
+
     /// <summary />
     public static bool operator ==(TextCaret left, TextCaret right)
       => left.Equals(right);
@@ -250,6 +255,27 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> Explicit cast that converts the given BlockCaret to a TextCaret. </summary>
     public static explicit operator TextCaret(BlockCaret caret)
       => FromBlockCaret(caret);
+
+    private class SerializedData : ISerializedBlockCaret
+    {
+      private readonly int _spanIndex;
+      private readonly int _graphemeOffset;
+      private readonly BlockPath _pathToBlock;
+
+      public SerializedData(TextCaret caret)
+      {
+        _spanIndex = caret.Fragment.Index;
+        _graphemeOffset = caret.Offset.GraphemeOffset;
+        _pathToBlock = caret.Block.GetBlockPath();
+      }
+
+      public BlockCaret Deserialize(DocumentEditorContext context)
+      {
+        var block = _pathToBlock.Get(context.Document);
+        var fragment = ((TextBlock)block).Content.GetSpanAtIndex(_spanIndex);
+        return TextCaret.FromOffset(fragment, _graphemeOffset);
+      }
+    }
 
     private class TextCaretMover : ICaretMover<TextCaret>
     {
@@ -277,6 +303,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       public MeasuredRectangle Measure(BlockCaret blockCaret)
         => FromBlockCaret(blockCaret).Measure();
+
+      public ISerializedBlockCaret Serialize(BlockCaret caret)
+        => FromBlockCaret(caret).Serialize();
     }
   }
 }

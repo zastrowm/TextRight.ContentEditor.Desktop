@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.ObjectModel.Blocks;
 
 namespace TextRight.Core.Cursors
 {

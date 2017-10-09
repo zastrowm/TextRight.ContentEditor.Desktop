@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.Editing;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.Utilities;
 
@@ -46,6 +47,16 @@ namespace TextRight.Core.Cursors
     /// <summary> Returns a rectangle that represents the caret position at the given location. </summary>
     /// <param name="blockCaret"> The caret position that should be measured. </param>
     MeasuredRectangle Measure(BlockCaret blockCaret);
+
+    /// <summary> Serializes the data in this caret so that it can be restored later. </summary>
+    ISerializedBlockCaret Serialize(BlockCaret caret);
+  }
+
+  /// <summary> Interface for serialized block caret. </summary>
+  public interface ISerializedBlockCaret
+  {
+    /// <summary> Deserializes the stored data back into a caret. </summary>
+    BlockCaret Deserialize(DocumentEditorContext context);
   }
 
   /// <summary> Generic interface for a caret mover. </summary>
