@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.Cursors;
-using TextRight.Core.Editing;
 using TextRight.Core.ObjectModel.Cursors;
 
 namespace TextRight.Core.ObjectModel.Blocks
@@ -40,17 +39,6 @@ namespace TextRight.Core.ObjectModel.Blocks
     internal IBlockContentCursor CreateCursor()
     {
       return CreateCursorOverride();
-    }
-
-    /// <summary> Retrieves a cursor closest to the given point in the block. </summary>
-    /// <param name="point"> The point . </param>
-    /// <returns> The cursor for. </returns>
-    public virtual IBlockContentCursor GetCursorFor(DocumentPoint point)
-    {
-      // slow, inefficient mode
-      var start = GetCursor().ToBeginning();
-      BlockCursorMover.ForwardMover.MoveTowardsPoint(start, point);
-      return start;
     }
   }
 }

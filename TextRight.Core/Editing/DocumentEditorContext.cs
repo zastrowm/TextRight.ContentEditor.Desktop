@@ -70,19 +70,5 @@ namespace TextRight.Core.Editing
 
     /// <summary> The stack of actions that can be undone. </summary>
     public ActionStack UndoStack { get; }
-
-    public void HandleMouseDown(DocumentPoint point)
-    {
-      if (Target == null)
-        return;
-
-      var block = Target.GetBlockFor(point) as ContentBlock;
-
-      if (block != null)
-      {
-        var newCursor = block.GetCursorFor(point);
-        Caret.MoveTo(newCursor);
-      }
-    }
   }
 }

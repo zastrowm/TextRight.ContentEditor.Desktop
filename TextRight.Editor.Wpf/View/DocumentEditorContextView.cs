@@ -186,13 +186,11 @@ namespace TextRight.Editor.Wpf.View
 
       var position = e.GetPosition(this);
       var point = new DocumentPoint(position.X, position.Y);
-      _editor.HandleMouseDown(point);
 
-      var block = _editor.Target?.GetBlockFor(point) as IDocumentItem;
-      if (block != null)
+      if (_editor.Target?.GetBlockFor(point) is IDocumentItem block)
       {
-        var cursor = (block.DocumentItemView as BaseTextBlockView).GetCursor(point);
-        _editor.Caret.MoveTo(new TextBlockCursor(cursor));
+        var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
+        _editor.Caret.MoveTo(caret);
       }
 
       // TODO, do something with mouse events

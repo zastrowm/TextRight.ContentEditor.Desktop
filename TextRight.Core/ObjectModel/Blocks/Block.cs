@@ -103,9 +103,9 @@ namespace TextRight.Core.ObjectModel.Blocks
     ///  text on the first line in the text block.
     /// </summary>
     /// <seealso cref="GetCaretFromTop"/>
-    /// <param name="caretMovementMode"> The caret movement mode. </param>
+    /// <param name="movementMode"> The caret movement mode. </param>
     /// <returns> The given caret. </returns>
-    public abstract IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode);
+    public abstract IBlockContentCursor GetCaretFromBottom(CaretMovementMode movementMode);
 
     /// <summary>
     ///  Retrieves a caret within the block that represents the given
@@ -113,8 +113,8 @@ namespace TextRight.Core.ObjectModel.Blocks
     ///  the bottom of the block.
     /// </summary>
     /// <seealso cref="GetCaretFromTop"/>
-    /// <param name="caretMovementMode"> The caret movement mode. </param>
+    /// <param name="movementMode"> The caret movement mode. </param>
     /// <returns> The given caret. </returns>
-    public abstract IBlockContentCursor GetCaretFromTop(CaretMovementMode caretMovementMode);
+    public abstract IBlockContentCursor GetCaretFromTop(CaretMovementMode movementMode);
   }
 }

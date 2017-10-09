@@ -96,15 +96,15 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     }
 
     /// <inheritdoc />
-    public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode caretMovementMode)
+    public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode movementMode)
     {
-      return LastBlock.GetCaretFromBottom(caretMovementMode);
+      return LastBlock.GetCaretFromBottom(movementMode);
     }
 
     /// <inheritdoc />
-    public override IBlockContentCursor GetCaretFromTop(CaretMovementMode caretMovementMode)
+    public override IBlockContentCursor GetCaretFromTop(CaretMovementMode movementMode)
     {
-      return LastBlock.GetCaretFromTop(caretMovementMode);
+      return LastBlock.GetCaretFromTop(movementMode);
     }
   }
 
