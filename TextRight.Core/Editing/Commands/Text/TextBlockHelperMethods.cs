@@ -25,15 +25,14 @@ namespace TextRight.Core.Editing.Actions.Text
 
       var collection = textBlock.Parent;
 
-      var cursor = textBlock.GetTextCursor();
-      cursor.MoveToBeginning();
+      var caret = (TextCaret)textBlock.GetCaretAtStart();
 
       var previous = textBlock.PreviousBlock as TextBlock;
       if (previous == null)
         return false;
 
-      var fragments = cursor.ExtractToEnd();
-      previous.Content.AppendAll(fragments);
+      var contentToMerge = textBlock.Content.ExtractContent(caret, (TextCaret)textBlock.GetCaretAtEnd());
+      previous.Content.AppendAll(contentToMerge.Fragments);
 
       collection.RemoveBlock(textBlock);
 

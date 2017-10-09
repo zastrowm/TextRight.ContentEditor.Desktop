@@ -16,10 +16,8 @@ namespace TextRight.Core.Editing.Commands.Caret
       => "caret.moveForwardByWord";
 
     /// <inheritdoc/>
-    public override bool CanActivate(DocumentEditorContext context)
-    {
-      return context.Caret.Cursor.Block is TextBlock && !context.Caret.Cursor.IsAtEnd;
-    }
+    public override bool CanActivate(DocumentEditorContext context) 
+      => context.Caret.Caret.TryCast<TextCaret>(out var caret) && !caret.IsAtBlockEnd;
 
     /// <inheritdoc/>
     public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)

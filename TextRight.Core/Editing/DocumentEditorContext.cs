@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using TextRight.Core.Cursors;
 using TextRight.Core.Editing.Actions;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
@@ -32,8 +33,7 @@ namespace TextRight.Core.Editing
     {
       Document = owner;
 
-      var cursor = ((ContentBlock)Document.Root.FirstBlock).GetCursor();
-      cursor.MoveToBeginning();
+      var cursor = ((ContentBlock)Document.Root.FirstBlock).GetCaretAtStart();
 
       Caret = new DocumentCursor(Document, cursor);
       CaretMovementMode = new CaretMovementMode();
@@ -47,9 +47,8 @@ namespace TextRight.Core.Editing
     /// <summary> The Caret's current position. </summary>
     public DocumentCursor Caret { get; }
 
-    /// <summary> A readonly representation of a block cursor. </summary>
-    public ReadonlyCursor Cursor
-      => Caret.Cursor;
+    public BlockCaret Cursor
+      => Caret.Caret;
 
     /// <summary> Movement information about the caret. </summary>
     public CaretMovementMode CaretMovementMode { get; }

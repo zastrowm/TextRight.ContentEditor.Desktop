@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.ObjectModel.Serialization;
 using TextRight.Core.Utilities;
@@ -96,16 +97,12 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     }
 
     /// <inheritdoc />
-    public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode movementMode)
-    {
-      return LastBlock.GetCaretFromBottom(movementMode);
-    }
+    public override BlockCaret GetCaretFromBottom(CaretMovementMode movementMode) 
+      => LastBlock.GetCaretFromBottom(movementMode);
 
     /// <inheritdoc />
-    public override IBlockContentCursor GetCaretFromTop(CaretMovementMode movementMode)
-    {
-      return LastBlock.GetCaretFromTop(movementMode);
-    }
+    public override BlockCaret GetCaretFromTop(CaretMovementMode movementMode) 
+      => LastBlock.GetCaretFromTop(movementMode);
   }
 
   /// <summary> Holds the view representation of the BlockCollection. </summary>

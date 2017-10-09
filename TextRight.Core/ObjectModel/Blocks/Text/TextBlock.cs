@@ -55,16 +55,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public override BlockCaret GetCaretAtEnd()
       => Content.GetCaretAtEnd();
 
-    /// <inheritdoc />
-    public override ICursorPool CursorPool
-      => TextBlockCursor.CursorPool;
-
-    /// <inheritdoc />
-    protected override IBlockContentCursor CreateCursorOverride()
-    {
-      return new TextBlockCursor(this);
-    }
-
     /// <summary>
     ///  Serializes the properties of the given text block into a chunk of data that can be stored for
     ///  later use.
@@ -113,9 +103,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
                                                StyledTextFragment next);
 
 
-    public TextBlockCursor GetTextCursor()
-      => new TextBlockCursor(this);
-
     /// <inheritdoc/>
     public override Block Clone()
     {
@@ -136,17 +123,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       Content.Deserialize(context, node);
     }
 
-    /// <summary> Extracts the content starting at the cursor and continuing to the end of the block. </summary>
-    /// <param name="cursor"> The position at which extraction should start. </param>
-    /// <returns> The fragments that have been extracted. </returns>
-    public StyledTextFragment[] ExtractContentToEnd(TextBlockCursor cursor)
-    {
-      var endCursor = cursor.Block.Content.GetCaretAtEnd();
-      return Content.ExtractContent(cursor.ToValue(), endCursor).Fragments.ToArray();
-    }
-
     /// <inheritdoc />
-    public override IBlockContentCursor GetCaretFromBottom(CaretMovementMode movementMode)
+    public override BlockCaret GetCaretFromBottom(CaretMovementMode movementMode)
     {
       var caret = Content.GetCaretAtEnd();
 
@@ -165,11 +143,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
           throw new ArgumentOutOfRangeException();
       }
 
-      return new TextBlockCursor(caret);
+      return caret;
     }
 
     /// <inheritdoc />
-    public override IBlockContentCursor GetCaretFromTop(CaretMovementMode movementMode)
+    public override BlockCaret GetCaretFromTop(CaretMovementMode movementMode)
     {
       var caret = Content.GetCaretAtEnd();
 
@@ -188,7 +166,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
           throw new ArgumentOutOfRangeException();
       }
 
-      return new TextBlockCursor(caret);
+      return caret;
     }
 
     private TextCaret MoveCaretTowardsPosition(TextCaret caret, double position)

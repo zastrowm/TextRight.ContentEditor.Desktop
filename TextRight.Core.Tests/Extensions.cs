@@ -121,12 +121,6 @@ namespace TextRight.Core.Tests
     public static BlockCaret BeginCursor(this ContentBlock block, int offset = 0)
       => block.BeginCaret(offset);
 
-    /// <summary> Cast the given cursor to a TextBlockCursor. </summary>
-    public static TextBlockCursor AsTextCursor(this IBlockContentCursor cursor)
-    {
-      return (TextBlockCursor)cursor;
-    }
-
     public static TextCaret AsTextCursor(this BlockCaret cursor)
     {
       return (TextCaret)cursor;
@@ -139,23 +133,5 @@ namespace TextRight.Core.Tests
     /// <summary> Creates a cursor handle from the given content cursor. </summary>
     public static DocumentCursorHandle ToHandle(this BlockCaret caret)
       => new DocumentCursorHandle(caret);
-
-    /// <summary>
-    ///  Move the block cursor the correct number of units forward or backward.
-    /// </summary>
-    public static void Move(this IBlockContentCursor cursor, int amount)
-    {
-      while (amount > 0)
-      {
-        cursor.MoveForward();
-        amount--;
-      }
-
-      while (amount < 0)
-      {
-        cursor.MoveBackward();
-        amount++;
-      }
-    }
   }
 }

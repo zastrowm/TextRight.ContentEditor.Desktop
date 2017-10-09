@@ -87,7 +87,7 @@ namespace TextRight.Editor.Wpf.View
 
       _isDirty = true;
 
-      var start = _cursor.Cursor.MeasureCursorPosition();
+      var start = _cursor.Caret.Measure();
       if (!start.IsValid)
       {
         // it's possible that we haven't had a new-layout yet, in which case we need to wait until the next tick
@@ -123,7 +123,7 @@ namespace TextRight.Editor.Wpf.View
     private void UpdateSelectionPolygon(MeasuredRectangle caretPosition)
     {
       MeasuredRectangle start = caretPosition;
-      var end = _cursor.SelectionStart.MeasureCursorPosition();
+      var end = _cursor.SelectionStart.Measure();
 
       if (MeasuredRectangle.AreInline(start, end))
       {
@@ -184,7 +184,7 @@ namespace TextRight.Editor.Wpf.View
     private void DrawSpanningSelection(MeasuredRectangle start, MeasuredRectangle end)
     {
       // TODO we really should go line-by-line or block-by-block as needed
-      var startBlockRect = _cursor.Cursor.Block.GetBounds();
+      var startBlockRect = _cursor.Caret.Block.GetBounds();
       var endBlockRect = _cursor.SelectionStart.Block.GetBounds();
 
       double maxRight = Math.Max(startBlockRect.Right, endBlockRect.Right);

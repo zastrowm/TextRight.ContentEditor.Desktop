@@ -17,9 +17,7 @@ namespace TextRight.Core.Editing.Commands.Caret
 
     /// <inheritdoc/>
     public override bool CanActivate(DocumentEditorContext context)
-    {
-      return context.Caret.Cursor.Block is TextBlock && !context.Caret.Cursor.IsAtBeginning;
-    }
+      => context.Caret.Caret.TryCast<TextCaret>(out var textCaret) && !textCaret.IsAtBlockEnd;
 
     /// <inheritdoc/>
     public override bool Activate(DocumentCursor cursor, CaretMovementMode movementMode)

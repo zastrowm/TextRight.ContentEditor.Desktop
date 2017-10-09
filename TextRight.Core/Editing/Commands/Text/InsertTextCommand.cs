@@ -25,9 +25,8 @@ namespace TextRight.Core.Editing.Commands.Text
     /// <inheritdoc />
     bool IContextualCommand<string>.CanActivate(DocumentEditorContext context, string text)
     {
-      var textBlock = context.Cursor.Block as TextBlock;
       // TODO what else to check
-      return textBlock != null;
+      return context.Caret.Caret.TryCast(out TextCaret textCaret);
     }
 
     /// <inheritdoc />

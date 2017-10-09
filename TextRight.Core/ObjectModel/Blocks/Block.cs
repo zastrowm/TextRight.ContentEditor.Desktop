@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.ObjectModel.Serialization;
@@ -105,7 +106,7 @@ namespace TextRight.Core.ObjectModel.Blocks
     /// <seealso cref="GetCaretFromTop"/>
     /// <param name="movementMode"> The caret movement mode. </param>
     /// <returns> The given caret. </returns>
-    public abstract IBlockContentCursor GetCaretFromBottom(CaretMovementMode movementMode);
+    public abstract BlockCaret GetCaretFromBottom(CaretMovementMode movementMode);
 
     /// <summary>
     ///  Retrieves a caret within the block that represents the given
@@ -115,6 +116,6 @@ namespace TextRight.Core.ObjectModel.Blocks
     /// <seealso cref="GetCaretFromTop"/>
     /// <param name="movementMode"> The caret movement mode. </param>
     /// <returns> The given caret. </returns>
-    public abstract IBlockContentCursor GetCaretFromTop(CaretMovementMode movementMode);
+    public abstract BlockCaret GetCaretFromTop(CaretMovementMode movementMode);
   }
 }

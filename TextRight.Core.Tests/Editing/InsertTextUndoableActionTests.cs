@@ -25,7 +25,7 @@ namespace TextRight.Core.Tests.Editing
 
       DidYouKnow.That(textBlock.AsText()).Should().Be("The text");
       DidYouKnow.That(Context.Cursor.Block).Should().Be(textBlock);
-      DidYouKnow.That(Context.Cursor.IsAtEnd).Should().BeTrue();
+      DidYouKnow.That(Context.Cursor.IsAtBlockEnd).Should().BeTrue();
 
       it.VerifyUndo();
     }
@@ -169,7 +169,7 @@ namespace TextRight.Core.Tests.Editing
     [Fact]
     public void TryMerge_DoesNotMergeWhenNotNextToEachother()
     {
-      BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
+      BlockAt<TextBlock>(0).GetCaretAtStart().AsTextCursor().InsertText("This is text");
 
       var first =
         new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
@@ -182,7 +182,7 @@ namespace TextRight.Core.Tests.Editing
     [Fact]
     public void TryMerge_WithSelf_Fails()
     {
-      BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
+      BlockAt<TextBlock>(0).GetCaretAtStart().AsTextCursor().InsertText("This is text");
 
       var self = new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor(1).ToHandle(), "One");
 
@@ -192,7 +192,7 @@ namespace TextRight.Core.Tests.Editing
     [Fact]
     public void TryMerge_WorksOnLargerStrings()
     {
-      BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
+      BlockAt<TextBlock>(0).GetCaretAtStart().AsTextCursor().InsertText("This is text");
 
       var first =
         new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(),
@@ -208,7 +208,7 @@ namespace TextRight.Core.Tests.Editing
     [Fact]
     public void TryMerge_WithBackspaceAction_Works()
     {
-      BlockAt<TextBlock>(0).GetTextCursor().ToBeginning().InsertText("This is text");
+      BlockAt<TextBlock>(0).GetCaretAtStart().AsTextCursor().InsertText("This is text");
 
       var insertion =
         new InsertTextCommand.InsertTextUndoableAction(BlockAt<TextBlock>(0).BeginCursor().ToHandle(),

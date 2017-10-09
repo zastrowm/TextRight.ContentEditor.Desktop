@@ -52,7 +52,7 @@ namespace TextRight.Core.Cursors
 
     /// <inheritdoc />
     public bool IsAtBlockEnd
-      => Mover.IsAtBlockStart(this);
+      => Mover.IsAtBlockEnd(this);
 
 #if DEBUG
 
@@ -93,6 +93,19 @@ namespace TextRight.Core.Cursors
       }
 
       throw new ArgumentException($"Caret is not of type {typeof(TCaret)}");
+    }
+
+    public bool TryCast<TCaret>(out TCaret caret) 
+      where TCaret : struct, IBlockCaret, IEquatable<TCaret>
+    {
+      if (Mover is ICaretMover<TCaret> typedMover)
+      {
+        caret = typedMover.Convert(this);
+        return true;
+      }
+
+      caret = default(TCaret);
+      return false;
     }
 
     /// <summary> The block associated with this caret. </summary>

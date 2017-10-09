@@ -15,8 +15,9 @@ namespace TextRight.Core.Tests.Serialization
     public void Verify_Serialization()
     {
       var paragraph = new HeadingBlock();
-      var cursor = paragraph.GetTextCursor().ToBeginning();
-      cursor.InsertText("This is some of the text");
+      var caret = (TextCaret)paragraph.GetCaretAtStart();
+
+      caret.InsertText("This is some of the text");
       paragraph.Content.AppendSpan(new StyledTextFragment("Some additional text"));
 
       var descriptorsLookup = new DescriptorsLookup(HeadingBlock.DescriptorInstance.Descriptor);
