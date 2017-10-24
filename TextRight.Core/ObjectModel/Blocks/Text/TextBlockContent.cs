@@ -11,7 +11,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   ///  Contains various <see cref="StyledTextFragment"/> parts that is presumed to be part of a
   ///  larger block.
   /// </summary>
-  public sealed class TextBlockContent : IDocumentItem<ITextBlockView>
+  public sealed class TextBlockContent : EventEmitter, IDocumentItem<ITextBlockContentView>
   {
     private readonly List<StyledTextFragment> _spans;
 
@@ -23,6 +23,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     public TextBlock Owner { get; internal set; }
+
+    /// <inheritdoc />
+    protected override EventEmitter ParentEmitter
+      => Owner;
 
     /// <summary> The number of fragments contained in this block. </summary>
     public int ChildCount
@@ -94,7 +98,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       _spans.Add(fragment);
       UpdateChildrenNumbering(Math.Max(fragment.Index - 1, 0));
 
-      Owner?.OnFragmentInserted(fragment.Previous, fragment, fragment.Next);
+      FireEvent(new StyledTextFragmentInsertedEventArgs(fragment.Previous, fragment, fragment.Next));
     }
 
     /// <summary> Appends all fragments to the text block.  </summary>
@@ -115,6 +119,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public void RemoveSpan(StyledTextFragment fragment)
     {
       var originalIndex = fragment.Index;
+      var removedArgs = new StyledTextFragmentRemovedEventArgs(fragment.Previous, fragment, fragment.Next);
 
       _spans.RemoveAt(fragment.Index);
       ClearFragment(fragment);
@@ -132,7 +137,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       {
         AppendSpan(new StyledTextFragment(""));
       }
+
       // TODO remove child from element tree
+      FireEvent(removedArgs);
     }
 
     /// <summary> Remove all of the given fragments from this text block. </summary>
@@ -228,11 +235,71 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       => Target;
 
     /// <inheritdoc />
-    public ITextBlockView Target
+    public ITextBlockContentView Target { get; set; }
+
+    /// <summary> Notifies listeners that the given fragment has changed. </summary>
+    internal void NotifyChanged(StyledTextFragment fragment)
     {
-      get => ((IDocumentItem<ITextBlockView>)Owner).Target;
-      // TODO
-      set => throw new NotImplementedException();
+      FireEvent(new TextFragmentChangedEventArgs(fragment));
+    }
+
+    /// <summary> EventArgs for when a StyledTextFragment is inserted into a <see cref="TextBlockContent"/> </summary>
+    public class StyledTextFragmentInsertedEventArgs : EventEmitterArgs<ITextBlockContentEventListener>
+    {
+      public StyledTextFragmentInsertedEventArgs(
+        StyledTextFragment previousFragment,
+        StyledTextFragment insertedFragment,
+        StyledTextFragment nextFragment)
+      {
+        PreviousFragment = previousFragment;
+        InsertedFragment = insertedFragment;
+        NextFragment = nextFragment;
+      }
+
+      public StyledTextFragment PreviousFragment { get; }
+      public StyledTextFragment InsertedFragment { get; }
+      public StyledTextFragment NextFragment { get; }
+
+      /// <inheritdoc />
+      protected override void Handle(object sender, ITextBlockContentEventListener listener) 
+        => listener.NotifyFragmentInserted(PreviousFragment, InsertedFragment, NextFragment);
+    }
+
+    /// <summary> EventArgs for when a StyledTextFragment is removed from a <see cref="TextBlockContent"/> </summary>
+    public class StyledTextFragmentRemovedEventArgs : EventEmitterArgs<ITextBlockContentEventListener>
+    {
+      public StyledTextFragmentRemovedEventArgs(
+        StyledTextFragment previousFragment,
+        StyledTextFragment removeFragment,
+        StyledTextFragment nextFragment)
+      {
+        PreviousFragment = previousFragment;
+        RemoveFragment = removeFragment;
+        NextFragment = nextFragment;
+      }
+
+      public StyledTextFragment PreviousFragment { get; }
+      public StyledTextFragment RemoveFragment { get; }
+      public StyledTextFragment NextFragment { get; }
+
+      /// <inheritdoc />
+      protected override void Handle(object sender, ITextBlockContentEventListener listener)
+        => listener.NotifyFragmentInserted(PreviousFragment, RemoveFragment, NextFragment);
+    }
+
+    /// <summary> EventArgs for when the text inside of a StyledTextFragment is changed. </summary>
+    public class TextFragmentChangedEventArgs : EventEmitterArgs<ITextBlockContentEventListener>
+    {
+      public TextFragmentChangedEventArgs(StyledTextFragment changedFragment)
+      {
+        ChangedFragment = changedFragment;
+      }
+
+      public StyledTextFragment ChangedFragment { get; }
+
+      /// <inheritdoc />
+      protected override void Handle(object sender, ITextBlockContentEventListener listener)
+        => listener.NotifyTextChanged(ChangedFragment);
     }
   }
 }

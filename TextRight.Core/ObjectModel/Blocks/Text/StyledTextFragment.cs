@@ -7,19 +7,12 @@ using TextRight.Core.Utilities;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
-  /// <summary> Hosts the view for the TextSpan. </summary>
-  public interface IStyledTextSpanView : IDocumentItemView
+
+  /// <summary> A node within a larger document. </summary>
+  public abstract class DocumentNode : IDocumentItem
   {
-    /// <summary> Invoked when the TextSpan's text changes. </summary>
-    /// <param name="fragment"> The span whose text has changed. </param>
-    void TextUpdated(StyledTextFragment fragment);
-
-    /// <summary> Measures the text at the given location. </summary>
-    /// <param name="offset"> The offset at which the text should be measured. </param>
-    MeasuredRectangle Measure(int offset);
-
-    /// <summary> Notifies the view that the representation is detached from the original TextBlock. </summary>
-    void Detach();
+    /// <summary> The view associated with the item. </summary>
+    public IDocumentItemView DocumentItemView { get; set; }
   }
 
   /// <summary>
@@ -27,9 +20,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   ///  associated with it.
   /// </summary>
   [DebuggerDisplay("StyledTextFragment(text={GetText()}, Index={Index})")]
-  public class StyledTextFragment : IViewableObject<IStyledTextSpanView>,
-                                    IEquatable<StyledTextFragment>,
-                                    IDocumentItem<IStyledTextSpanView>
+  public class StyledTextFragment : DocumentNode, IEquatable<StyledTextFragment>
   {
     private readonly string _styleId;
     internal IFragmentBuffer _buffer;
@@ -88,26 +79,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return new StyledTextFragment(_buffer.GetText());
     }
 
-    /// <summary>
-    ///  The object that receives all notifications of changes from this instance.
-    /// </summary>
-    public IStyledTextSpanView Target { get; set; }
-
-    /// <inheritdoc />
-    IDocumentItemView IDocumentItem.DocumentItemView
-      => Target;
-
     /// <summary> Appends the text in this span to the given string builder. </summary>
     /// <param name="builder"> The builder to which the text in this fragment should be appended. </param>
     public void AppendTo(StringBuilder builder)
     {
       _buffer.AppendTo(builder);
-    }
-
-    /// <summary> Detach the fragment from any views. </summary>
-    public void Detach()
-    {
-      Target?.Detach();
     }
 
     /// <inheritdoc />
@@ -148,7 +124,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public void InsertText(string text, int offsetIntoSpan)
     {
       _buffer.InsertText(offsetIntoSpan, text);
-      Target?.TextUpdated(this);
+      Owner?.NotifyChanged(this);
     }
 
     /// <summary> Removes the given number of characters. </summary>
@@ -157,7 +133,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public void RemoveCharacters(int offsetIntoSpan, int numberOfCharactersToRemove)
     {
       _buffer.DeleteText(offsetIntoSpan, numberOfCharactersToRemove);
-      Target?.TextUpdated(this);
+      Owner?.NotifyChanged(this);
     }
 
     /// <summary> Retrieves the text within the fragment. </summary>

@@ -11,7 +11,7 @@ namespace TextRight.Editor.Wpf.View
 {
   /// <summary />
   public class HeadingBlockView : BaseTextBlockView,
-                                  IHeadingBlockView
+                                  HeadingBlock.IHeadingBlockListener
   {
     private readonly HeadingBlock _block;
 
@@ -20,7 +20,6 @@ namespace TextRight.Editor.Wpf.View
     {
       _block = block;
       _block.Target = this;
-
       Margin = new Thickness(10);
 
       SyncTextSize();
@@ -30,7 +29,6 @@ namespace TextRight.Editor.Wpf.View
     private void SyncTextSize()
     {
       //Text.TextFontSize = 20 - _block.HeadingLevel * 2;
-
       InvalidateMeasure();
     }
 
@@ -38,8 +36,7 @@ namespace TextRight.Editor.Wpf.View
     public override IDocumentItem DocumentItem
       => _block;
 
-    /// <inheritdoc/>
-    public void NotifyLevelChanged()
+    void HeadingBlock.IHeadingBlockListener.NotifyLevelChanged(int oldLevel, int newLevel)
     {
       SyncTextSize();
     }

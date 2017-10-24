@@ -77,7 +77,6 @@
     <Compile Include="View\Text\TextLineRender.cs" />
     <Compile Include="View\Text\TextLineContainer.cs" />
     <Compile Include="View\Text\GenericTextParagraphProperties.cs" />
-    <Compile Include="View\Text\StyledStyledTextSpanView.cs" />
     <Compile Include="View\Text\CustomStringRenderer.cs" />
     <Compile Include="View\Text\StyledTextRunProperties.cs" />
     <Compile Include="View\VerticalBlockCollectionView.cs" />

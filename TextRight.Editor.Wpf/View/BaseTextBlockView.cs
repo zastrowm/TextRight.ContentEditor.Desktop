@@ -14,12 +14,12 @@ namespace TextRight.Editor.Wpf.View
   /// <summary> Shared view representation for subclasses of <see cref="TextBlock"/> </summary>
   public abstract class BaseTextBlockView : FrameworkElement,
                                             IOffsetBasedItem,
-                                            ITextBlockView,
-                                            ILineBasedRenderer
+                                            ITextBlockContentView,
+                                            ITextBlockContentEventListener,
+                                            TextBlock.ITextBlockListener
   {
     private readonly DocumentEditorContextView _root;
     private readonly TextBlock _block;
-    private readonly List<StyledStyledTextSpanView> _spans;
     private readonly CustomStringRenderer _renderer;
 
     private ChangeIndex _cachedIndex;
@@ -32,13 +32,11 @@ namespace TextRight.Editor.Wpf.View
     {
       _root = root;
       _block = block;
-      _spans = new List<StyledStyledTextSpanView>();
-      _renderer = new CustomStringRenderer(this, block, _spans);
+      _renderer = new CustomStringRenderer(this, block);
 
-      foreach (var span in block.Content.Fragments)
-      {
-        _spans.Add(new StyledStyledTextSpanView(this, span));
-      }
+      _block.SubscribeListener(this);
+
+      TextBlockChanged(null, _block.Content);
 
       RecreateText();
     }
@@ -81,28 +79,6 @@ namespace TextRight.Editor.Wpf.View
       => IsMeasureValid && _root.IsLayoutValid;
 
     /// <summary> Measures the character at the given index for the given fragment. </summary>
-    /// <param name="fragment"> The fragment that owns the character. </param>
-    /// <param name="characterIndex"> The index of the character to measure. </param>
-    /// <returns> The size of the character. </returns>
-    public MeasuredRectangle MeasureCharacter(StyledStyledTextSpanView fragment, int characterIndex)
-    {
-      Revalidate();
-
-      if (!IsValidForMeasuring)
-        return MeasuredRectangle.Invalid;
-
-      var cursor = TextCaret.FromOffset((StyledTextFragment)fragment.DocumentItem, characterIndex);
-      var rect = _renderer.MeasureCharacter(cursor);
-      if (!rect.IsValid)
-        return rect;
-
-      rect.X += _cachedOffset.X;
-      rect.Y += _cachedOffset.Y;
-
-      return rect;
-    }
-
-    /// <summary> Measures the character at the given index for the given fragment. </summary>
     /// <returns> The size of the character. </returns>
     public MeasuredRectangle MeasureCharacter(TextCaret caret)
     {
@@ -138,16 +114,8 @@ namespace TextRight.Editor.Wpf.View
              };
     }
 
-    public MeasuredRectangle Measure(TextCaret caret) 
+    public MeasuredRectangle Measure(TextCaret caret)
       => MeasureCharacter(caret);
-
-    /// <summary> Removes the given span from the TextBlockView. </summary>
-    public void MarkRemoved(StyledStyledTextSpanView toRemove)
-    {
-      _spans.Remove(toRemove);
-
-      RecreateText();
-    }
 
     /// <summary> Invoked by a child fragment when the fragment's text has changed. </summary>
     /// <param name="fragment"> The fragment that changed. </param>
@@ -157,27 +125,10 @@ namespace TextRight.Editor.Wpf.View
     }
 
     /// <inheritdoc />
-    public void NotifyBlockInserted(StyledTextFragment previousSibling,
-                                    StyledTextFragment newFragment,
-                                    StyledTextFragment nextSibling)
+    public void NotifyFragmentInserted(StyledTextFragment previousSibling,
+                                       StyledTextFragment newFragment,
+                                       StyledTextFragment nextSibling)
     {
-      var newView = new StyledStyledTextSpanView(this, newFragment);
-
-      var previousSpanView = previousSibling?.Target as StyledStyledTextSpanView;
-      var nextSpanView = nextSibling?.Target as StyledStyledTextSpanView;
-      if (previousSpanView != null)
-      {
-        _spans.Insert(previousSibling.Index + 1, newView);
-      }
-      else if (nextSpanView != null)
-      {
-        _spans.Insert(nextSibling.Index, newView);
-      }
-      else
-      {
-        _spans.Add(newView);
-      }
-
       RecreateText();
     }
 
@@ -214,22 +165,44 @@ namespace TextRight.Editor.Wpf.View
       InvalidateVisual();
     }
 
-    private ILineBasedRenderer RevalidateAndGetRenderer()
+    private CustomStringRenderer RevalidateAndGetRenderer()
     {
       Revalidate();
       return _renderer;
     }
 
     /// <inheritdoc />
-    public ITextLine FirstTextLine 
+    public ITextLine FirstTextLine
       => RevalidateAndGetRenderer().FirstTextLine;
 
     /// <inheritdoc />
-    public ITextLine LastTextLine 
+    public ITextLine LastTextLine
       => RevalidateAndGetRenderer().LastTextLine;
 
     /// <inheritdoc />
-    public ITextLine GetLineFor(TextCaret caret) 
+    public ITextLine GetLineFor(TextCaret caret)
       => RevalidateAndGetRenderer().GetLineFor(caret);
+
+    void ITextBlockContentEventListener.NotifyFragmentRemoved(StyledTextFragment previousSibling,
+                                                              StyledTextFragment removedFragment,
+                                                              StyledTextFragment nextSibling)
+    {
+      RecreateText();
+    }
+
+    void ITextBlockContentEventListener.NotifyTextChanged(StyledTextFragment changedFragment)
+    {
+      RecreateText();
+    }
+
+    public void TextBlockChanged(TextBlockContent oldContent, TextBlockContent newContent)
+    {
+      if (oldContent?.Target == this)
+      {
+        oldContent.Target = null;
+      }
+
+      newContent.Target = this;
+    }
   }
 }

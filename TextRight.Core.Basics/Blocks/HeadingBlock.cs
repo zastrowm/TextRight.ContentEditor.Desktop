@@ -10,17 +10,8 @@ using TextRight.Core.ObjectModel.Serialization;
 
 namespace TextRight.Core.Blocks
 {
-  /// <summary> View interface for <see cref="HeadingBlock"/> </summary>
-  public interface IHeadingBlockView : ITextBlockView
-  {
-    /// <summary>
-    ///  Indicates that the heading level of the associated heading-block has changed.
-    /// </summary>
-    void NotifyLevelChanged();
-  }
-
   /// <summary> A block that holds text formatted as a heading. </summary>
-  public sealed class HeadingBlock : TextBlockBase<IHeadingBlockView>
+  public sealed class HeadingBlock : TextBlock, IDocumentItem<IContentBlockView>
   {
     private int _headingLevel;
 
@@ -39,9 +30,49 @@ namespace TextRight.Core.Blocks
       get => _headingLevel;
       set
       {
+        if (_headingLevel == value)
+          return;
+
+        int oldLevel = _headingLevel;
         _headingLevel = value;
-        Target?.NotifyLevelChanged();
+
+        FireEvent(new HeadingLevelChangedEventArgs(oldLevel, value));
       }
+    }
+
+    /// <inheritdoc/>
+    public IContentBlockView Target { get; set; }
+
+    /// <inheritdoc/>
+    protected override IContentBlockView ContentBlockView
+      => Target;
+
+    /// <summary> Invoked when the heading level changes. </summary>
+    public class HeadingLevelChangedEventArgs : EventEmitterArgs<IHeadingBlockListener>
+    {
+      public HeadingLevelChangedEventArgs(int oldLevel, int newLevel)
+      {
+        OldLevel = oldLevel;
+        NewLevel = newLevel;
+      }
+
+      public int OldLevel { get; }
+
+      public int NewLevel { get; }
+
+      protected override void Handle(object sender, IHeadingBlockListener reciever)
+      {
+        reciever.NotifyLevelChanged(OldLevel, NewLevel);
+      }
+    }
+
+    /// <summary> View interface for <see cref="HeadingBlock"/> </summary>
+    public interface IHeadingBlockListener : IEventListener
+    {
+      /// <summary>
+      ///  Indicates that the heading level of the associated heading-block has changed.
+      /// </summary>
+      void NotifyLevelChanged(int oldLevel, int newLevel);
     }
 
     /// <summary> BlockDescriptor for <see cref="HeadingBlock"/>. </summary>

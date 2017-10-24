@@ -16,22 +16,20 @@ namespace TextRight.Editor.Wpf.View
 {
   /// <summary> Responsible for rendering data within a textblock. </summary>
   // TODO optimize so that we actually sometimes keep TextLineRender around
-  internal class CustomStringRenderer : ILineBasedRenderer, IOffsetBasedItem
+  internal class CustomStringRenderer : IOffsetBasedItem
   {
     private readonly IOffsetBasedItem _parent;
     private readonly TextBlock _block;
-    private readonly List<StyledStyledTextSpanView> _spans;
     private bool _isDirty = true;
     private double _restrictedWidth;
     private double _height;
-    private BlockBasedTextSource _textSource;
-    private TextFormatter _textFormatter;
+    private readonly BlockBasedTextSource _textSource;
+    private readonly TextFormatter _textFormatter;
 
-    public CustomStringRenderer(IOffsetBasedItem parent, TextBlock block, List<StyledStyledTextSpanView> spans)
+    public CustomStringRenderer(IOffsetBasedItem parent, TextBlock block)
     {
       _parent = parent;
       _block = block;
-      _spans = spans;
       _restrictedWidth = 100;
       CachedLines = new List<TextLineContainer>();
 
@@ -70,14 +68,6 @@ namespace TextRight.Editor.Wpf.View
     /// <summary />
     public TextLineRender LastTextLine
       => new TextLineRender(this, CachedLines.Count - 1);
-
-    /// <inheritdoc />
-    ITextLine ILineBasedRenderer.FirstTextLine
-      => FirstTextLine;
-
-    /// <inheritdoc />
-    ITextLine ILineBasedRenderer.LastTextLine
-      => LastTextLine;
 
     /// <inheritdoc />
     public ITextLine GetLineFor(TextCaret caret)
@@ -267,9 +257,10 @@ namespace TextRight.Editor.Wpf.View
     private int GetTotalTextLength()
     {
       int textLength = 0;
-      foreach (var s in _spans)
+
+      foreach (var s in _block.Content.Fragments)
       {
-        textLength += ((StyledTextFragment)s.DocumentItem).NumberOfChars;
+        textLength += s.NumberOfChars;
       }
       return textLength;
     }

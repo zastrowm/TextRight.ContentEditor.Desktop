@@ -13,7 +13,7 @@ namespace TextRight.Core.ObjectModel.Blocks
   ///  Represents the base class for both <see cref="BlockCollection"/> and
   ///  <see cref="ContentBlock"/>.
   /// </summary>
-  public abstract class Block
+  public abstract class Block : EventEmitter
   {
     /// <summary> Default constructor. </summary>
     internal Block()
@@ -29,6 +29,10 @@ namespace TextRight.Core.ObjectModel.Blocks
     ///   The block that owns this block.
     /// </summary>
     public BlockCollection Parent { get; set; }
+
+    /// <inheritdoc />
+    protected override EventEmitter ParentEmitter
+      => Parent;
 
     /// <summary> True if the block is the first child of the parent collection. </summary>
     public bool IsFirst
@@ -48,10 +52,8 @@ namespace TextRight.Core.ObjectModel.Blocks
 
     /// <summary> Get the path down to this block in the document. </summary>
     /// <returns> The path to the block in the hierarchy. </returns>
-    public BlockPath GetBlockPath()
-    {
-      return new BlockPath(this);
-    }
+    public BlockPath GetBlockPath() 
+      => new BlockPath(this);
 
     /// <summary> Gets a handle to the descriptor for this specific block type. </summary>
     public abstract RegisteredDescriptor DescriptorHandle { get; }

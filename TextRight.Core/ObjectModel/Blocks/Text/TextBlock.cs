@@ -13,25 +13,23 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
   /// </summary>
-  public abstract class TextBlock : ContentBlock
+  public abstract class TextBlock : ContentBlock, IDocumentItem
   {
     private TextBlockContent _content;
 
     /// <summary> Default constructor. </summary>
-    internal TextBlock()
+    public TextBlock()
     {
       Content = new TextBlockContent()
                 {
                   Owner = this
                 };
-
-      (var x, var y) = (Content, this);
     }
 
     /// <summary> The textual content within the block </summary>
     public TextBlockContent Content
     {
-      get { return _content; }
+      get => _content;
       set
       {
         var theValue = value ?? new TextBlockContent();
@@ -40,12 +38,18 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
           theValue.Owner = null;
         }
 
+        var oldValue = _content;
+
         theValue.Owner = this;
         _content = value;
 
-        // TODO notify others
+        FireEvent(new TextSourceChangedEventArgs(oldValue, value));
       }
     }
+
+    /// <inheritdoc />
+    IDocumentItemView IDocumentItem.DocumentItemView
+      => ContentBlockView;
 
     /// <inheritdoc />
     public override BlockCaret GetCaretAtStart()
@@ -93,15 +97,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       DescriptorHandle.Descriptor.DefaultPropertySerializer.Write(this, writer);
     }
-
-    /// <summary> Invoked when a new fragment is inserted into the textblock. </summary>
-    /// <param name="previous"> The fragment that precedes the inserted fragment, can be null. </param>
-    /// <param name="fragment"> The fragment that was inserted. </param>
-    /// <param name="next"> The fragment that follows the inserted fragment, can be null. </param>
-    protected internal abstract void OnFragmentInserted(StyledTextFragment previous,
-                                               StyledTextFragment fragment,
-                                               StyledTextFragment next);
-
 
     /// <inheritdoc/>
     public override Block Clone()
@@ -171,10 +166,39 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     private TextCaret MoveCaretTowardsPosition(TextCaret caret, double position)
     {
-      if (!(caret.Fragment.Owner.Target is ILineBasedRenderer lineBasedRenderer))
+      if (caret.Fragment.Owner.Target == null)
         return caret;
 
-      return lineBasedRenderer.GetLineFor(caret).FindClosestTo(position);
+      return caret.Fragment.Owner.Target.GetLineFor(caret).FindClosestTo(position);
+    }
+
+    /// <summary> Listens to events on the TextBlock. </summary>
+    public interface ITextBlockListener : IEventListener
+    {
+      /// <summary> Invoked when the TextBlock content of the TextBlock has changed. </summary>
+      void TextBlockChanged(TextBlockContent oldContent, TextBlockContent newContent);
+    }
+
+    /// <summary> Event Args for when the TextSource changes on a TextBlock. </summary>
+    public class TextSourceChangedEventArgs : EventEmitterArgs<ITextBlockListener>
+    {
+      public TextSourceChangedEventArgs(TextBlockContent oldContent, TextBlockContent newContent)
+      {
+        OldContent = oldContent;
+        NewContent = newContent;
+      }
+
+      /// <summary> The old TextBlockContent.  Might already be assigned to a different TextBlock. </summary>
+      public TextBlockContent OldContent { get; }
+
+      /// <summary> The new TextBlockContent that is currently assigned. </summary>
+      public TextBlockContent NewContent { get; }
+
+      /// <inheritdoc />
+      protected override void Handle(object sender, ITextBlockListener reciever)
+      {
+        reciever.TextBlockChanged(OldContent, NewContent);
+      }
     }
   }
 }

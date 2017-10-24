@@ -27,10 +27,10 @@ namespace TextRight.Core.Editing.Commands.Caret
       var textCaret = cursor.Start.As<TextCaret>();
 
       movementMode.SetModeToEnd();
-      if (!(textCaret.Fragment.Owner.Target is ILineBasedRenderer lineBasedRenderer))
+      if (textCaret.Fragment.Owner.Target == null)
         return false;
 
-      textCaret = lineBasedRenderer.GetLineFor(textCaret).FindClosestTo(double.MaxValue);
+      textCaret = textCaret.Fragment.Owner.Target.GetLineFor(textCaret).FindClosestTo(double.MaxValue);
       cursor.MoveTo(textCaret);
       return true;
     }
