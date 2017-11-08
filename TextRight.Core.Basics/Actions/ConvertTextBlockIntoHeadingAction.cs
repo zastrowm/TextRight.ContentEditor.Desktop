@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TextRight.Core.Blocks;
-using TextRight.Core.Editing.Actions;
+using TextRight.Core.Actions;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 

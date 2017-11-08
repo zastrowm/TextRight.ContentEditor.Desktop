@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using TextRight.Core.Actions;
 using TextRight.Core.Cursors;
-using TextRight.Core.Editing.Actions;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
-using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.Core.Editing
+namespace TextRight.Core
 {
   public interface IDocumentEditorView : IDocumentItemView
   {

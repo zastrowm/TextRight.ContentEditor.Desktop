@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TextRight.Core.Editing;
-using TextRight.Core.Editing.Commands;
+using TextRight.Core;
+using TextRight.Core.Commands;
 
 namespace TextRight.Editor.Wpf.View
 {

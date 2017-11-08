@@ -4,15 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
-using TextRight.Core.Cursors;
-using TextRight.Core.Editing;
-using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Commands;
+using TextRight.Core.Actions;
+using TextRight.Core.Commands;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Serialization;
 
-namespace TextRight.Core.Tests.Editing
+namespace TextRight.Core.Tests
 {
   /// <summary>
   ///  Sets up a test framework for verifying that an undo action leaves the document in the same

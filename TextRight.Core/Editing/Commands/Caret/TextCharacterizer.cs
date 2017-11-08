@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.Core.Editing.Commands.Caret
+namespace TextRight.Core.Commands.Caret
 {
   /// <summary> Characterizes text into Letter, punctuation, or letter.  Used when navigating text by words. </summary>
   internal static class TextCharacterizer

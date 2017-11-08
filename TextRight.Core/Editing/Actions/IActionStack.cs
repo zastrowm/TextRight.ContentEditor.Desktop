@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.Core.Editing.Actions
+namespace TextRight.Core.Actions
 {
   /// <summary> Interface for <see cref="ActionStack"/> to facilitate testing. </summary>
   public interface IActionStack

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.Core.Editing.Commands;
+using TextRight.Core.Commands;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.ObjectModel.Blocks.Collections

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using TextRight.Core;
 using TextRight.Core.Blocks;
-using TextRight.Core.Editing;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.ObjectModel.Serialization;

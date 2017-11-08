@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks.Text;
-using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.Core.Editing.Commands.Caret
+namespace TextRight.Core.Commands.Caret
 {
   /// <summary> Moves the caret to the end of the current line. </summary>
   public class MoveCaretEndCommand : CaretCommand

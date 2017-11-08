@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.Cursors;
-using TextRight.Core.ObjectModel.Blocks;
-using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.Core.Editing.Actions
+namespace TextRight.Core.Actions
 {
   /// <summary>
   ///  Holds a cursor that can be saved and restored at a later point, yet optimized so that if the

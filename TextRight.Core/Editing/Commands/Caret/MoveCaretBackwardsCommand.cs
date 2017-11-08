@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.Core.Editing.Commands.Caret
+namespace TextRight.Core.Commands.Caret
 {
   /// <summary> Moves the caret backwards. </summary>
   public class MoveCaretBackwardCommand : CaretCommand

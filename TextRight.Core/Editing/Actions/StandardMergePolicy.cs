@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.Core.Editing.Actions
+namespace TextRight.Core.Actions
 {
   /// <summary> Will report to merge actions if they occur within the given timespan, defaulting to .75 seconds. </summary>
   public class StandardMergePolicy : IActionStackMergePolicy

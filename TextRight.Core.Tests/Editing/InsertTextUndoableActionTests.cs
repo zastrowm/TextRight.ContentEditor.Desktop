@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Commands.Text;
-using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.Actions;
+using TextRight.Core.Commands.Text;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using Xunit;
 
-namespace TextRight.Core.Tests.Editing
+namespace TextRight.Core.Tests
 {
   public class InsertTextUndoableActionTests : UndoBasedTest
   {

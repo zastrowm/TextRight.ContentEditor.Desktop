@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Actions.Text;
-using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.Actions;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.Core.Editing.Commands.Text
+namespace TextRight.Core.Commands.Text
 {
   /// <summary> Breaks a text-block into two. </summary>
   public class BreakTextBlockCommand : IContextualCommand

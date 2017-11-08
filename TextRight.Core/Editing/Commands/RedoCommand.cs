@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.Core.Editing.Actions;
+using TextRight.Core.Actions;
 
-namespace TextRight.Core.Editing.Commands
+namespace TextRight.Core.Commands
 {
   /// <summary> Redos a previously undone action. </summary>
   public class RedoCommand : IContextualCommand

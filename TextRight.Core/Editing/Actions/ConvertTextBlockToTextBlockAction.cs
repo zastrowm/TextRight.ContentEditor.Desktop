@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.Core.Editing.Actions;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Serialization;
 
-namespace TextRight.Core.Editing.Actions
+namespace TextRight.Core.Actions
 {
   /// <summary>
   ///  Base class for an action that converts a TextBlock to the given type of TextBlock.

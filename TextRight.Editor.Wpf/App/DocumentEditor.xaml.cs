@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using TextRight.Core.Editing;
+using TextRight.Core;
 using TextRight.Editor.Wpf.View;
 
 namespace TextRight.Editor.Wpf

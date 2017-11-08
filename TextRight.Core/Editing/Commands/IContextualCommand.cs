@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.Core.Editing.Actions;
+using TextRight.Core.Actions;
 
-namespace TextRight.Core.Editing.Commands
+namespace TextRight.Core.Commands
 {
   /// <summary>
   ///  An command that can be executed when certain conditions are present.  The basis for all

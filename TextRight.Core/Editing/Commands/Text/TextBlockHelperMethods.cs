@@ -4,7 +4,7 @@ using System.Linq;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.Core.Editing.Actions.Text
+namespace TextRight.Core.Commands.Text
 {
   /// <summary> Helper methods for manipulating TextBlocks </summary>
   internal static class TextBlockHelperMethods

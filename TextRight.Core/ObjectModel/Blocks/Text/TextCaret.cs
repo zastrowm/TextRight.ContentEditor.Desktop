@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using TextRight.Core.Cursors;
-using TextRight.Core.Editing;
 using TextRight.Core.Utilities;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text

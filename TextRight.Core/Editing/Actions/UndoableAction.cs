@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.Core.Editing.Commands;
+using TextRight.Core.Commands;
 
-namespace TextRight.Core.Editing.Actions
+namespace TextRight.Core.Actions
 {
   /// <summary>
   ///  An action that can be executed and then undone if required. Acts on a snapshot of a document

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.Core.Editing.Actions;
+using TextRight.Core.Actions;
 using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.Core.Editing.Commands.Caret
+namespace TextRight.Core.Commands.Caret
 {
   /// <summary> A command which modifies a caret. </summary>
   public abstract class CaretCommand : IContextualCommand

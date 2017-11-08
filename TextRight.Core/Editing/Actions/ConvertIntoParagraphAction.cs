@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
-using TextRight.Core.ObjectModel.Serialization;
 
-namespace TextRight.Core.Editing.Actions
+namespace TextRight.Core.Actions
 {
   /// <summary> Converts a TextBlock into a normal paragraph. </summary>
   public class ConvertIntoParagraphAction : ConvertTextBlockToTextBlockAction<ParagraphBlock>

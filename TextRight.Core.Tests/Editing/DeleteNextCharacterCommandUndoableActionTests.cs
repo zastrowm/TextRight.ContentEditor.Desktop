@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Commands.Text;
+using TextRight.Core.Actions;
+using TextRight.Core.Commands.Text;
 using Xunit;
 
-namespace TextRight.Core.Tests.Editing
+namespace TextRight.Core.Tests
 {
   public class DeleteNextCharacterCommandUndoableActionTests : UndoBasedTest
   {

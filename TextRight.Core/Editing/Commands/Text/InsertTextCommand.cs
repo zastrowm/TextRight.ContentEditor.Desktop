@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.Actions;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.Core.Editing.Commands.Text
+namespace TextRight.Core.Commands.Text
 {
   /// <summary> Inserts the provided text into the document. </summary>
   public class InsertTextCommand : IContextualCommand<string>

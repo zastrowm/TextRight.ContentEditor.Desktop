@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using TextRight.Core.Cursors;
-using TextRight.Core.Editing.Actions;
-using TextRight.Core.Editing.Actions.Text;
+using TextRight.Core.Actions;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.Core.Editing.Commands.Text
+namespace TextRight.Core.Commands.Text
 {
   /// <summary> Merges two text blocks together so that they form a single text block. </summary>
   public class MergeTextBlocksCommand : IContextualCommand
