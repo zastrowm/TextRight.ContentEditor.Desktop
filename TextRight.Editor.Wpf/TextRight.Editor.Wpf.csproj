@@ -1,147 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1A4B7968-1C46-41FF-A49E-3758925B4EE2}</ProjectGuid>
+    <TargetFramework>net471</TargetFramework>
+    <ApplicationIcon />
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TextRight.Editor.Wpf</RootNamespace>
-    <AssemblyName>TextRight.Editor.Wpf</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <TargetFrameworkProfile />
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <StartupObject />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="keyboard.trcfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="keyboard.trcfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="11.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TextRight.Core.Basics\TextRight.Core.Basics.csproj" />
+    <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj" />
+    <ProjectReference Include="..\TextRight.Editor.View\TextRight.Editor.View.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="Guapr.ClientHosting">
       <HintPath>..\..\..\WpfWatcher\.bin\Debug\Guapr.ClientHosting\Guapr.ClientHosting.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    <Reference Include="PresentationCore">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\PresentationCore.dll</HintPath>
     </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\WindowsBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="App\DocumentEditor.xaml.cs" />
-    <Compile Include="DevLoader.cs" />
-    <Compile Include="Serialization\XmlNodeSerializer.cs" />
-    <Compile Include="View\BaseTextBlockView.cs" />
-    <Compile Include="View\DocumentCursorView.cs" />
-    <Compile Include="View\DocumentEditorContextView.cs" />
-    <Compile Include="View\HeadingBlockView.cs" />
-    <Compile Include="View\IOffsetBasedItem.cs" />
-    <Compile Include="View\KeyboardShortcutCollection.cs" />
-    <Compile Include="View\ListItemBlockView.cs" />
-    <Compile Include="View\ParagraphView.cs" />
-    <Compile Include="View\Text\BlockBasedTextSource.cs" />
-    <Compile Include="View\Text\DebugColors.cs" />
-    <Compile Include="View\Text\TextLineRender.cs" />
-    <Compile Include="View\Text\TextLineContainer.cs" />
-    <Compile Include="View\Text\GenericTextParagraphProperties.cs" />
-    <Compile Include="View\Text\CustomStringRenderer.cs" />
-    <Compile Include="View\Text\StyledTextRunProperties.cs" />
-    <Compile Include="View\VerticalBlockCollectionView.cs" />
-    <Compile Include="View\ViewFactory.cs" />
-    <Compile Include="WatchEntryPoint.cs" />
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <DotNetCliToolReference Include="Microsoft.Dotnet.Watcher.Tools" Version="2.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Content Include="keyboard.trcfg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TextRight.Core.Basics\TextRight.Core.Basics.csproj">
-      <Project>{733F902F-A277-49BE-923D-62613EAE315D}</Project>
-      <Name>TextRight.Core.Basics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj">
-      <Project>{424db80d-6350-4339-a5d8-ccf4e66fe16a}</Project>
-      <Name>TextRight.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TextRight.Editor.View\TextRight.Editor.View.csproj">
-      <Project>{35967BA4-B64D-4731-A3B6-AA9C220061DA}</Project>
-      <Name>TextRight.Editor.View</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

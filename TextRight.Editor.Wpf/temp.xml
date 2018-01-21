@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Block type="temp/document">
+  <Block type="RootCollection">
+    <Block type="paragraph">
+      <Block type="temp/fragment">
+        <Attribute key="Body" value="This is an example of a document within the editor. జో It has many features that extend onto multiple lines enough that we can start to create paragraphs.  Don't also forgetabout X &amp; Y and those other things that extend the line length for the X-Files.  Isn't that great? జో" />
+      </Block>
+    </Block>
+    <Block type="paragraph">
+      <Block type="temp/fragment">
+        <Attribute key="Body" value="Another paragraph with addition text sits here, right where you need it to be." />
+      </Block>
+    </Block>
+  </Block>
+</Block>
