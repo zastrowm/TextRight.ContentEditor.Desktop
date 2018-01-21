@@ -43,7 +43,7 @@ namespace TextRight.Editor.Wpf.View
                           },
                    Points = _pointCollection
                  };
-      Panel.SetZIndex(_rectangle, 10);
+      Panel.SetZIndex(_polygon, 10);
 
       _pointCollection = new PointCollection()
                          {
