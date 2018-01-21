@@ -65,21 +65,23 @@ namespace TextRight.Editor.Wpf.View
       _isDirty = true;
     }
 
-    /// <summary> Attaches the view to the given editor. </summary>
-    /// <param name="editor"> The editor to which the view should be attached.. </param>
-    public void Attach(DocumentEditorContextView editor)
-    {
-      editor.Children.Add(_polygon);
-      editor.Children.Add(_rectangle);
-    }
+    /// <summary> The visual that represents the caret. </summary>
+    public FrameworkElement CaretElement
+      => _rectangle;
 
-    /// <inheritdoc/>
+    /// <summary> The visual that represents the selection. </summary>
+    public FrameworkElement SelectionElement
+      => _polygon;
+
+    /// <summary> Refreshes the caret position if the position is stale. </summary>
     public void Refresh()
     {
       Refresh(false);
     }
 
-    /// <inheritdoc />
+    /// <summary> Refreshes the caret so that it's redrawn. </summary>
+    /// <param name="shouldForce"> True to force the caret to refresh its position.  False if it
+    ///  should only be refreshed if the value is stale. </param>
     public void Refresh(bool shouldForce)
     {
       if (!shouldForce && !_isDirty)

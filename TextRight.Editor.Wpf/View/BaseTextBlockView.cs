@@ -151,7 +151,7 @@ namespace TextRight.Editor.Wpf.View
 
       // TODO see if there is a faster way of doing this
       // TODO do we have to mark changed in RecreateText()?
-      _cachedOffset = TransformToAncestor(_root).Transform(new Point(0, 0));
+      _cachedOffset = TransformToAncestor(_root.RootVisual).Transform(new Point(0, 0));
     }
 
     /// <summary> Recreates the FormmatedText due to a text-change event. </summary>

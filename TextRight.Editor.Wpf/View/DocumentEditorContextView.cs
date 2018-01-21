@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,7 +31,7 @@ namespace TextRight.Editor.Wpf.View
   {
     private readonly VerticalBlockCollectionView _blockCollectionView;
     private readonly DocumentEditorContext _editor;
-    private readonly ScrollViewer _rootView;
+    private readonly ScrollViewer _scrollView;
     private readonly DocumentCursorView _cursorView;
     private readonly KeyboardShortcutCollection _keyCommands;
 
@@ -57,21 +58,33 @@ namespace TextRight.Editor.Wpf.View
       _editor = editor;
 
       _cursorView = new DocumentCursorView(_editor.Selection);
-      _cursorView.Attach(this);
 
       // clear out the existing content
-      _blockCollectionView = new VerticalBlockCollectionView(this, _editor.Document.Root);
+      _blockCollectionView = new VerticalBlockCollectionView(this, _editor.Document.Root)
+                             {
+                               Background = Brushes.White,
+                             };
 
-      _rootView = new ScrollViewer()
-                  {
-                    Content = _blockCollectionView,
-                  };
+      _scrollView = new ScrollViewer();
+      Children.Add(_scrollView);
 
-      Children.Add(_rootView);
+      SetTop(_scrollView, 0);
+      SetLeft(_scrollView, 0);
+      SetZIndex(_scrollView, 0);
 
-      SetTop(_rootView, 0);
-      SetLeft(_rootView, 0);
-      SetZIndex(_rootView, 0);
+      // use a grid simply because it's convenient.  What we really need is a canvas (for absolute
+      // positioning) that overlays the content of the scroll viewer. 
+      var layoutGrid = new Grid();
+      _scrollView.Content = layoutGrid;
+
+      // simply add the content in
+      layoutGrid.Children.Add(_blockCollectionView);
+
+      var layoutAbsolute = new Canvas();
+      layoutGrid.Children.Add(layoutAbsolute);
+      UIElementCollection parentCollection = layoutAbsolute.Children;
+      parentCollection.Add(_cursorView.CaretElement);
+      parentCollection.Add(_cursorView.SelectionElement);
 
       var keyboardShortcutCollection = ConfigureCommands();
 
@@ -95,6 +108,8 @@ namespace TextRight.Editor.Wpf.View
       //cursor.InsertText("A list item");
 
       _editor.UndoStack.Clear();
+
+      _blockCollectionView.PreviewMouseDown += HandlePreviewMouseDown;
     }
 
     /// <summary>
@@ -124,6 +139,13 @@ namespace TextRight.Editor.Wpf.View
     public IDocumentItem DocumentItem
       => _editor;
 
+    /// <summary>
+    ///  The visual that serves as the root of where carets are measured from.  This visual hosts all
+    ///  content of the document.
+    /// </summary>
+    public Visual RootVisual
+      => _blockCollectionView;
+
     public new void Focus()
     {
       base.Focus();
@@ -138,8 +160,8 @@ namespace TextRight.Editor.Wpf.View
     {
       base.OnRenderSizeChanged(sizeInfo);
 
-      _rootView.Width = sizeInfo.NewSize.Width;
-      _rootView.Height = sizeInfo.NewSize.Height;
+      _scrollView.Width = sizeInfo.NewSize.Width;
+      _scrollView.Height = sizeInfo.NewSize.Height;
     }
 
     protected override void OnTextInput(TextCompositionEventArgs e)
@@ -151,6 +173,10 @@ namespace TextRight.Editor.Wpf.View
 
       InsertText(e.Text);
       UpdateCaretPosition();
+
+      // This seem to bring the previous position into view, not the current. We may have to defer
+      // this until the caret has been redrawn. 
+      _cursorView.CaretElement.BringIntoView();
     }
 
     protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -179,10 +205,8 @@ namespace TextRight.Editor.Wpf.View
       }
     }
 
-    protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+    protected void HandlePreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
-      base.OnPreviewMouseDown(e);
-
       var position = e.GetPosition(this);
       var point = new DocumentPoint(position.X, position.Y);
 
