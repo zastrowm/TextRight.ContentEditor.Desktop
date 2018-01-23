@@ -39,9 +39,18 @@ namespace TextRight.Core.ObjectModel.Cursors
     /// <param name="blockCaret"> The block caret. </param>
     public void MoveTo(BlockCaret blockCaret)
     {
+      MoveTo(blockCaret, ShouldExtendSelection);
+    }
+    
+    /// <summary> Move to the given caret location. </summary>
+    /// <param name="blockCaret"> The block caret. </param>
+    /// <param name="shouldExtendSelection"> True if the selection should be extended, false if it should move both
+    /// the start and the end of the selection. </param>
+    public void MoveTo(BlockCaret blockCaret, bool shouldExtendSelection)
+    {
       _caretStart = blockCaret;
 
-      if (!ShouldExtendSelection)
+      if (!shouldExtendSelection)
       {
         _caretEnd = blockCaret;
       }

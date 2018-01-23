@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -207,17 +208,37 @@ namespace TextRight.Editor.Wpf.View
 
     protected void HandlePreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
-      var position = e.GetPosition(this);
+      UpdateSelection(e.GetPosition(this), _editor.Selection.ShouldExtendSelection);
+
+      // TODO, do something with mouse events
+      e.Handled = true;
+    }
+
+    protected override void OnPreviewMouseMove(MouseEventArgs e)
+    {
+      base.OnMouseMove(e);
+
+      if (e.LeftButton == MouseButtonState.Pressed)
+      {
+        UpdateSelection(e.GetPosition(this), true);
+        e.Handled = true;
+      }
+      
+      UpdateCaretPosition();
+    }
+
+    /// <summary>
+    ///   Updates the selection of the editor to point at the given location.
+    /// </summary>
+    private void UpdateSelection(Point position, bool shouldUpdateSelection)
+    {
       var point = new DocumentPoint(position.X, position.Y);
 
       if (_editor.Target?.GetBlockFor(point) is IDocumentItem block)
       {
         var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
-        _editor.Selection.MoveTo(caret);
+        _editor.Selection.MoveTo(caret, shouldUpdateSelection);
       }
-
-      // TODO, do something with mouse events
-      e.Handled = true;
 
       UpdateCaretPosition();
     }

@@ -34,5 +34,9 @@ namespace TextRight.Core
       var dY = (left.Y - right.Y);
       return dX * dX + dY * dY;
     }
+
+    /// <inheritdoc />
+    public override string ToString() 
+      => $"{X}, {Y}";
   }
 }
