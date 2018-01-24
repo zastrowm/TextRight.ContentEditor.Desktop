@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media.TextFormatting;
 using TextRight.Core.ObjectModel.Blocks.Text;
-using TextRight.Editor.View.Blocks;
 
 namespace TextRight.Editor.Wpf.View
 {

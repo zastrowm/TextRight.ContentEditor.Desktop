@@ -19,7 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TextRight.Core.Basics\TextRight.Core.Basics.csproj" />
     <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj" />
-    <ProjectReference Include="..\TextRight.Editor.View\TextRight.Editor.View.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Guapr.ClientHosting">
