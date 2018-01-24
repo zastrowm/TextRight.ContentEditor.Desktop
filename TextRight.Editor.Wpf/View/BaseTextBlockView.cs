@@ -23,7 +23,6 @@ namespace TextRight.Editor.Wpf.View
     private readonly CustomStringRenderer _renderer;
 
     private ChangeIndex _cachedIndex;
-    private Point _cachedOffset;
 
     /// <summary> Constructor. </summary>
     /// <param name="root"> The root view that this TextBox is ultimately a part of. </param>
@@ -41,10 +40,9 @@ namespace TextRight.Editor.Wpf.View
       RecreateText();
     }
 
-    // TODO what if this isn't valid yet
     /// <inheritdoc />
     public Point Offset
-      => _cachedOffset;
+      => GetOffset();
 
     /// <summary> The document item for the view. </summary>
     public abstract IDocumentItem DocumentItem { get; }
@@ -58,6 +56,27 @@ namespace TextRight.Editor.Wpf.View
       }
 
       return new Size(_renderer.MaxWidth, _renderer.GetHeight());
+    }
+
+    /// <summary>
+    ///  Calculates the offset from the upper left of this block to the upper left of the root.
+    /// </summary>
+    private Point GetOffset()
+    {
+      FrameworkElement instance = this;
+
+      var offset = new Point();
+
+      while (instance != null && instance != _root.RootVisual)
+      {
+        var next = VisualTreeHelper.GetOffset(instance);
+        offset.X += next.X;
+        offset.Y += next.Y;
+
+        instance = instance.Parent as FrameworkElement;
+      }
+
+      return offset;
     }
 
     /// <inheritdoc />
@@ -91,8 +110,10 @@ namespace TextRight.Editor.Wpf.View
       if (!rect.IsValid)
         return rect;
 
-      rect.X += _cachedOffset.X;
-      rect.Y += _cachedOffset.Y;
+      var offset = GetOffset();
+
+      rect.X += offset.X;
+      rect.Y += offset.Y;
 
       return rect;
     }
@@ -105,10 +126,12 @@ namespace TextRight.Editor.Wpf.View
       if (!IsValidForMeasuring)
         return MeasuredRectangle.Invalid;
 
+      var offset = GetOffset();
+
       return new MeasuredRectangle()
              {
-               X = _cachedOffset.X,
-               Y = _cachedOffset.Y,
+               X = offset.X,
+               Y = offset.Y,
                Width = ActualWidth,
                Height = ActualHeight
              };
@@ -134,8 +157,10 @@ namespace TextRight.Editor.Wpf.View
 
     public TextCaret GetCursor(DocumentPoint point)
     {
-      point.X -= _cachedOffset.X;
-      point.Y -= _cachedOffset.Y;
+      var offset = GetOffset();
+
+      point.X -= offset.X;
+      point.Y -= offset.Y;
 
       return _renderer.GetCursor(point);
     }
@@ -146,12 +171,10 @@ namespace TextRight.Editor.Wpf.View
     /// </summary>
     private void Revalidate()
     {
+      // n/a at moment
+
       if (!_root.LayoutChangeIndex.HasChanged(ref _cachedIndex))
         return;
-
-      // TODO see if there is a faster way of doing this
-      // TODO do we have to mark changed in RecreateText()?
-      _cachedOffset = TransformToAncestor(_root.RootVisual).Transform(new Point(0, 0));
     }
 
     /// <summary> Recreates the FormmatedText due to a text-change event. </summary>

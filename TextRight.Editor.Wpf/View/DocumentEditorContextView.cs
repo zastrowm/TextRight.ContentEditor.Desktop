@@ -84,8 +84,7 @@ namespace TextRight.Editor.Wpf.View
       var layoutAbsolute = new Canvas();
       layoutGrid.Children.Add(layoutAbsolute);
       UIElementCollection parentCollection = layoutAbsolute.Children;
-      parentCollection.Add(_cursorView.CaretElement);
-      parentCollection.Add(_cursorView.SelectionElement);
+      parentCollection.Add(_cursorView);
 
       var keyboardShortcutCollection = ConfigureCommands();
 
@@ -154,7 +153,7 @@ namespace TextRight.Editor.Wpf.View
 
     public void Initialize()
     {
-      UpdateCaretPosition();
+      MarkChanged();
     }
 
     protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -163,6 +162,8 @@ namespace TextRight.Editor.Wpf.View
 
       _scrollView.Width = sizeInfo.NewSize.Width;
       _scrollView.Height = sizeInfo.NewSize.Height;
+
+      MarkChanged();
     }
 
     protected override void OnTextInput(TextCompositionEventArgs e)
@@ -173,7 +174,6 @@ namespace TextRight.Editor.Wpf.View
         return;
 
       InsertText(e.Text);
-      UpdateCaretPosition();
 
       // This seem to bring the previous position into view, not the current. We may have to defer
       // this until the caret has been redrawn. 
@@ -191,7 +191,6 @@ namespace TextRight.Editor.Wpf.View
 
       if (HandleKeyDown(e.Key))
       {
-        UpdateCaretPosition();
         e.Handled = true;
       }
     }
@@ -216,15 +215,13 @@ namespace TextRight.Editor.Wpf.View
 
     protected override void OnPreviewMouseMove(MouseEventArgs e)
     {
-      base.OnMouseMove(e);
+      OnMouseMove(e);
 
       if (e.LeftButton == MouseButtonState.Pressed)
       {
         UpdateSelection(e.GetPosition(this), true);
         e.Handled = true;
       }
-      
-      UpdateCaretPosition();
     }
 
     /// <summary>
@@ -239,8 +236,6 @@ namespace TextRight.Editor.Wpf.View
         var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
         _editor.Selection.MoveTo(caret, shouldUpdateSelection);
       }
-
-      UpdateCaretPosition();
     }
 
     public bool HandleKeyDown(Key key)
@@ -267,11 +262,6 @@ namespace TextRight.Editor.Wpf.View
     public void InsertText(string text)
     {
       _insertText.Activate(_editor, _editor.UndoStack, text);
-    }
-
-    public void UpdateCaretPosition()
-    {
-      _cursorView.Refresh();
     }
 
     public Block GetBlockFor(DocumentPoint point)

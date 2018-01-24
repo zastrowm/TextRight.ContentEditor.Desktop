@@ -6,137 +6,160 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.Utilities;
 
 namespace TextRight.Editor.Wpf.View
 {
-  /// <summary> The visual representation of a DocumentCursor. </summary>
-  public class DocumentCursorView
+  /// <summary> The visual representation of a DocumentCursor and the selection. </summary>
+  public class DocumentCursorView : Grid
   {
     private readonly DocumentSelection _cursor;
-    private readonly PointCollection _pointCollection;
-    private readonly Polygon _polygon;
-    private readonly Rectangle _rectangle;
-    private bool _isDirty;
+    private readonly PointCollection _selectionPointCollection;
+    private readonly PointCollection _caretPointsCollection;
+    private readonly Polygon _selectionPolygon;
+    private readonly Polygon _caretRect;
+    private const int CaretWidth = 2;
+
+    private bool _isDirty = true;
 
     /// <summary> Default constructor. </summary>
     public DocumentCursorView(DocumentSelection cursor)
     {
       _cursor = cursor;
-      _cursor.CursorMoved += InvalidateCursor;
+      _cursor.CursorMoved += HandleCaretChanged;
 
-      _rectangle = new Rectangle()
-                   {
-                     Height = 20,
-                     Width = 1,
-                     Fill = Brushes.Black,
-                   };
-      Panel.SetZIndex(_rectangle, 10);
+      // selection
+      _selectionPointCollection = new PointCollection(8)
+                                  {
+                                    new Point(0, 0),
+                                    new Point(0, 50),
+                                    new Point(50, 50),
+                                    new Point(50, 0),
+                                    new Point(0, 0),
+                                    new Point(0, 50),
+                                    new Point(50, 50),
+                                    new Point(50, 0),
+                                  };
 
-      _polygon = new Polygon
-                 {
-                   Fill = new SolidColorBrush()
+      _selectionPolygon = new Polygon
                           {
-                            Color = Color.FromArgb(128, 128, 128, 128)
-                          },
-                   Points = _pointCollection
-                 };
-      Panel.SetZIndex(_polygon, 10);
+                            Fill = new SolidColorBrush()
+                                   {
+                                     Color = Color.FromArgb(128, 128, 128, 128)
+                                   },
+                            Points = _selectionPointCollection
+                          };
 
-      _pointCollection = new PointCollection()
-                         {
-                           new Point(0, 0),
-                           new Point(0, 50),
-                           new Point(50, 50),
-                           new Point(50, 0),
-                           new Point(0, 0),
-                           new Point(0, 50),
-                           new Point(50, 50),
-                           new Point(50, 0),
-                         };
 
-      _polygon.Points = _pointCollection;
+      // caret
+      _caretPointsCollection = new PointCollection(4)
+                               {
+                                 new Point(0, 0),
+                                 new Point(1, 0),
+                                 new Point(1, 30),
+                                 new Point(0, 30),
+                               };
+
+      _caretRect = new Polygon()
+                   {
+                     Fill = new SolidColorBrush()
+                            {
+                              Color = Colors.Black,
+                            },
+                     Points = _caretPointsCollection,
+                   };
+
+      Children.Add(_selectionPolygon);
+      Children.Add(_caretRect);
     }
 
-    private void InvalidateCursor(object sender, EventArgs e)
+    private void HandleCaretChanged(object sender, EventArgs e)
     {
       _isDirty = true;
+      InvalidateMeasure();
+    }
+
+    protected override Size MeasureOverride(Size constraint)
+    {
+      MeasureCursor();
+
+      return base.MeasureOverride(constraint);
+    }
+
+    protected override Size ArrangeOverride(Size arrangeSize)
+    {
+      MeasureCursor();
+
+      return base.ArrangeOverride(arrangeSize);
     }
 
     /// <summary> The visual that represents the caret. </summary>
     public FrameworkElement CaretElement
-      => _rectangle;
+      => _caretRect;
 
     /// <summary> The visual that represents the selection. </summary>
     public FrameworkElement SelectionElement
-      => _polygon;
+      => _selectionPolygon;
 
-    /// <summary> Refreshes the caret position if the position is stale. </summary>
-    public void Refresh()
+    private void MeasureCursor()
     {
-      Refresh(false);
-    }
-
-    /// <summary> Refreshes the caret so that it's redrawn. </summary>
-    /// <param name="shouldForce"> True to force the caret to refresh its position.  False if it
-    ///  should only be refreshed if the value is stale. </param>
-    public void Refresh(bool shouldForce)
-    {
-      if (!shouldForce && !_isDirty)
+      if (!_isDirty)
         return;
-
-      _isDirty = true;
 
       var start = _cursor.Start.Measure();
       if (!start.IsValid)
       {
         // it's possible that we haven't had a new-layout yet, in which case we need to wait until the next tick
-
-        // TODO OPTIMIZE by having some sort of queue of future actions
-        Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(Refresh));
+        //Debug.Fail("How");
         return;
       }
 
       if (_cursor.HasSelection)
       {
-        _polygon.Visibility = Visibility.Visible;
+        _selectionPolygon.Visibility = Visibility.Visible;
         UpdateSelectionPolygon(start);
       }
       else
       {
-        _polygon.Visibility = Visibility.Hidden;
+        _selectionPolygon.Visibility = Visibility.Hidden;
       }
 
       UpdateCaretRectangle(start);
+
+      _isDirty = false;
     }
 
     /// <summary> Updates the rectangle for displaying the caret. </summary>
     private void UpdateCaretRectangle(MeasuredRectangle caretPosition)
     {
-      // always update the caret position
-      Canvas.SetLeft(_rectangle, caretPosition.X);
-      Canvas.SetTop(_rectangle, caretPosition.Y);
-      _rectangle.Height = caretPosition.Height;
+
+      /**
+         *                  
+         *      0---------1
+         *      |         |
+         *  ----3---------2---
+         */
+      _caretPointsCollection[0] = new Point(caretPosition.X, caretPosition.Y);
+      _caretPointsCollection[1] = new Point(caretPosition.X, caretPosition.Y + caretPosition.Height);
+      _caretPointsCollection[2] = new Point(caretPosition.X + CaretWidth, caretPosition.Y + caretPosition.Height);
+      _caretPointsCollection[3] = new Point(caretPosition.X + CaretWidth, caretPosition.Y);
+
+      _caretRect.Points = _caretPointsCollection;
     }
 
     /// <summary> Updates the rectangle that shows the current selection. </summary>
     private void UpdateSelectionPolygon(MeasuredRectangle caretPosition)
     {
-      MeasuredRectangle start = caretPosition;
+      var start = caretPosition;
       var end = _cursor.End.Measure();
 
       if (MeasuredRectangle.AreInline(start, end))
-      {
         DrawInlineSelection(start, end);
-      }
       else
-      {
         DrawSpanningSelection(start, end);
-      }
 
-      _polygon.Points = _pointCollection;
+      _selectionPolygon.Points = _selectionPointCollection;
     }
 
     /// <summary> Draw the selection as existing on a single line. </summary>
@@ -165,19 +188,19 @@ namespace TextRight.Editor.Wpf.View
          *  ----0---------3---
          */
 
-      double topMost = Math.Min(leftRect.Top, rightRect.Top);
-      double botMost = Math.Max(leftRect.Bottom, rightRect.Bottom);
+      var topMost = Math.Min(leftRect.Top, rightRect.Top);
+      var botMost = Math.Max(leftRect.Bottom, rightRect.Bottom);
 
-      _pointCollection[0] = new Point(leftRect.Left, botMost);
-      _pointCollection[1] = new Point(leftRect.Left, topMost);
+      _selectionPointCollection[0] = new Point(leftRect.Left, botMost);
+      _selectionPointCollection[1] = new Point(leftRect.Left, topMost);
 
-      _pointCollection[2] = new Point(rightRect.Right, topMost);
-      _pointCollection[3] = new Point(rightRect.Right, botMost);
+      _selectionPointCollection[2] = new Point(rightRect.Right, topMost);
+      _selectionPointCollection[3] = new Point(rightRect.Right, botMost);
 
-      _pointCollection[4] = _pointCollection[3];
-      _pointCollection[5] = _pointCollection[3];
-      _pointCollection[6] = _pointCollection[3];
-      _pointCollection[7] = _pointCollection[3];
+      _selectionPointCollection[4] = _selectionPointCollection[3];
+      _selectionPointCollection[5] = _selectionPointCollection[3];
+      _selectionPointCollection[6] = _selectionPointCollection[3];
+      _selectionPointCollection[7] = _selectionPointCollection[3];
     }
 
     /// <summary> Draw the selection as spanning one or more lines. </summary>
@@ -189,8 +212,8 @@ namespace TextRight.Editor.Wpf.View
       var startBlockRect = _cursor.Start.Block.GetBounds();
       var endBlockRect = _cursor.End.Block.GetBounds();
 
-      double maxRight = Math.Max(startBlockRect.Right, endBlockRect.Right);
-      double maxLeft = Math.Max(startBlockRect.Left, endBlockRect.Left);
+      var maxRight = Math.Max(startBlockRect.Right, endBlockRect.Right);
+      var maxLeft = Math.Max(startBlockRect.Left, endBlockRect.Left);
 
       // It may not be strictly needed, but it's easier for me to understand the code if I know
       // which rect is the "upper" rect and which one is the "lower" rect.
@@ -223,17 +246,17 @@ namespace TextRight.Editor.Wpf.View
          *  6-----------5
          */
 
-      _pointCollection[0] = new Point(upperRect.Left, upperRect.Bottom);
-      _pointCollection[1] = new Point(upperRect.Left, upperRect.Top);
+      _selectionPointCollection[0] = new Point(upperRect.Left, upperRect.Bottom);
+      _selectionPointCollection[1] = new Point(upperRect.Left, upperRect.Top);
 
-      _pointCollection[2] = new Point(maxRight, upperRect.Top);
-      _pointCollection[3] = new Point(maxRight, lowerRect.Top);
+      _selectionPointCollection[2] = new Point(maxRight, upperRect.Top);
+      _selectionPointCollection[3] = new Point(maxRight, lowerRect.Top);
 
-      _pointCollection[4] = new Point(lowerRect.Right, lowerRect.Top);
-      _pointCollection[5] = new Point(lowerRect.Right, lowerRect.Bottom);
+      _selectionPointCollection[4] = new Point(lowerRect.Right, lowerRect.Top);
+      _selectionPointCollection[5] = new Point(lowerRect.Right, lowerRect.Bottom);
 
-      _pointCollection[6] = new Point(maxLeft, lowerRect.Bottom);
-      _pointCollection[7] = new Point(maxLeft, upperRect.Bottom);
+      _selectionPointCollection[6] = new Point(maxLeft, lowerRect.Bottom);
+      _selectionPointCollection[7] = new Point(maxLeft, upperRect.Bottom);
     }
   }
 }
