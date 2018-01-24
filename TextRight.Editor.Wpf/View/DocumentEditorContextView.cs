@@ -109,7 +109,8 @@ namespace TextRight.Editor.Wpf.View
 
       _editor.UndoStack.Clear();
 
-      _blockCollectionView.PreviewMouseDown += HandlePreviewMouseDown;
+      layoutGrid.PreviewMouseDown += HandlePreviewMouseDown;
+      layoutGrid.PreviewMouseMove += HandlePreviewMouseMove;
     }
 
     /// <summary>
@@ -213,15 +214,13 @@ namespace TextRight.Editor.Wpf.View
       e.Handled = true;
     }
 
-    protected override void OnPreviewMouseMove(MouseEventArgs e)
+    protected void HandlePreviewMouseMove(object sender, MouseEventArgs e)
     {
-      OnMouseMove(e);
+      if (e.LeftButton != MouseButtonState.Pressed)
+        return;
 
-      if (e.LeftButton == MouseButtonState.Pressed)
-      {
-        UpdateSelection(e.GetPosition(this), true);
-        e.Handled = true;
-      }
+      UpdateSelection(e.GetPosition(this), true);
+      e.Handled = true;
     }
 
     /// <summary>
