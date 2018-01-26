@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
-  /// <summary> Buffer for the text representation of a <see cref="StyledTextFragment"/>. </summary>
+  /// <summary> Buffer for the text representation of a <see cref="TextSpan"/>. </summary>
   internal interface IFragmentBuffer
   {
     /// <summary> Inserts the given text at the given position. </summary>

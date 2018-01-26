@@ -24,13 +24,13 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         return new TextBlockContent();
 
       var start = GetStart(startCursor);
-      var end = new FragmentAndOffset(endCursor.Fragment, endCursor.Offset.GraphemeOffset);
+      var end = new FragmentAndOffset(endCursor.Span, endCursor.Offset.GraphemeOffset);
 
       if (startCursor.IsAtBlockStart && endCursor.IsAtBlockEnd)
       {
         return ExtractAllContent(content);
       }
-      else if (start.Fragment == end.Fragment)
+      else if (start.Span == end.Span)
       {
         if (start.Offset == end.Offset)
           return new TextBlockContent();
@@ -45,7 +45,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     private static TextBlockContent ExtractAllContent(TextBlockContent content)
     {
-      var fragments = content.Fragments.ToList();
+      var fragments = content.Spans.ToList();
       content.RemoveAll(fragments);
 
       var other = new TextBlockContent();
@@ -58,15 +58,15 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
                                                 TextCaret startCursor,
                                                 TextCaret endCursor)
     {
-      if (!startCursor.IsValid || startCursor.Fragment.Owner != content)
+      if (!startCursor.IsValid || startCursor.Span.Owner != content)
         throw new ArgumentException("Start cursor is not pointing at this content", nameof(startCursor));
-      if (!endCursor.IsValid || endCursor.Fragment.Owner != content)
+      if (!endCursor.IsValid || endCursor.Span.Owner != content)
         throw new ArgumentException("End cursor is not pointing at this content", nameof(endCursor));
-      if (startCursor.Fragment == endCursor.Fragment && startCursor.Offset.GraphemeOffset > endCursor.Offset.GraphemeOffset)
+      if (startCursor.Span == endCursor.Span && startCursor.Offset.GraphemeOffset > endCursor.Offset.GraphemeOffset)
         throw new ArgumentException("End cursor does not come after the start cursor", nameof(endCursor));
 
-      var current = startCursor.Fragment;
-      while (current != endCursor.Fragment)
+      var current = startCursor.Span;
+      while (current != endCursor.Span)
       {
         current = current.Next;
         if (current == null)
@@ -76,60 +76,60 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     private static TextBlockContent ExtractWithinFragment(FragmentAndOffset end, FragmentAndOffset start)
     {
-      StyledTextFragment singleFragment;
+      TextSpan singleSpan;
 
       int totalSize = end.Offset - start.Offset;
-      if (totalSize == start.Fragment.NumberOfChars)
+      if (totalSize == start.Span.NumberOfChars)
       {
-        start.Fragment.Owner.RemoveSpan(start.Fragment);
-        singleFragment = start.Fragment;
+        start.Span.Owner.RemoveSpan(start.Span);
+        singleSpan = start.Span;
       }
       else
       {
-        singleFragment = CloneInnerContent(start.Fragment, start.Offset, end.Offset);
+        singleSpan = CloneInnerContent(start.Span, start.Offset, end.Offset);
       }
 
       var clonedContent = new TextBlockContent();
-      clonedContent.AppendSpan(singleFragment);
+      clonedContent.AppendSpan(singleSpan);
       return clonedContent;
     }
 
-    private static StyledTextFragment CloneInnerContent(StyledTextFragment fragment, int startIndex, int endIndex)
+    private static TextSpan CloneInnerContent(TextSpan span, int startIndex, int endIndex)
     {
-      var cloned = fragment.Clone();
+      var cloned = span.Clone();
       cloned.RemoveCharacters(endIndex, cloned.NumberOfChars - endIndex);
       cloned.RemoveCharacters(0, startIndex);
 
-      fragment.RemoveCharacters(startIndex, endIndex - startIndex);
+      span.RemoveCharacters(startIndex, endIndex - startIndex);
       return cloned;
     }
 
     private static TextBlockContent ExtractBetweenFragments(FragmentAndOffset start, FragmentAndOffset end)
     {
-      Debug.Assert(start.Fragment != end.Fragment);
+      Debug.Assert(start.Span != end.Span);
 
       var clone = new TextBlockContent();
-      var original = start.Fragment.Owner;
+      var original = start.Span.Owner;
 
       // need to save this in case we remove the start from the original
-      var current = start.Fragment.Next;
+      var current = start.Span.Next;
 
       // start fragment
 
       if (start.Offset == 0)
       {
-        original.RemoveSpan(start.Fragment);
-        clone.AppendSpan(start.Fragment);
+        original.RemoveSpan(start.Span);
+        clone.AppendSpan(start.Span);
       }
       else
       {
-        var startContent = CloneInnerContent(start.Fragment, start.Offset, start.Fragment.NumberOfChars);
+        var startContent = CloneInnerContent(start.Span, start.Offset, start.Span.NumberOfChars);
         clone.AppendSpan(startContent);
       }
 
       // in-between
 
-      while (current != end.Fragment)
+      while (current != end.Span)
       {
         var next = current.Next;
         original.RemoveSpan(current);
@@ -139,14 +139,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       // end fragment
 
-      if (end.Offset == end.Fragment.NumberOfChars)
+      if (end.Offset == end.Span.NumberOfChars)
       {
-        original.RemoveSpan(end.Fragment);
-        clone.AppendSpan(end.Fragment);
+        original.RemoveSpan(end.Span);
+        clone.AppendSpan(end.Span);
       }
       else
       {
-        var endContent = CloneInnerContent(end.Fragment, 0, end.Offset);
+        var endContent = CloneInnerContent(end.Span, 0, end.Offset);
         clone.AppendSpan(endContent);
       }
 
@@ -156,21 +156,21 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     private static FragmentAndOffset GetStart(TextCaret start)
     {
       if (start.IsAtBlockStart)
-        return new FragmentAndOffset(start.Fragment, 0);
-      else if (start.Offset.GraphemeOffset == start.Fragment.NumberOfChars && start.Fragment.Next != null)
-        return new FragmentAndOffset(start.Fragment.Next, 0);
+        return new FragmentAndOffset(start.Span, 0);
+      else if (start.Offset.GraphemeOffset == start.Span.NumberOfChars && start.Span.Next != null)
+        return new FragmentAndOffset(start.Span.Next, 0);
       else
-        return new FragmentAndOffset(start.Fragment, start.Offset.GraphemeOffset);
+        return new FragmentAndOffset(start.Span, start.Offset.GraphemeOffset);
     }
 
     private struct FragmentAndOffset
     {
-      public readonly StyledTextFragment Fragment;
+      public readonly TextSpan Span;
       public readonly int Offset;
 
-      public FragmentAndOffset(StyledTextFragment fragment, int offset)
+      public FragmentAndOffset(TextSpan span, int offset)
       {
-        Fragment = fragment;
+        Span = span;
         Offset = offset;
       }
     }

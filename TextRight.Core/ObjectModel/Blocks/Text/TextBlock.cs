@@ -165,10 +165,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     private TextCaret MoveCaretTowardsPosition(TextCaret caret, double position)
     {
-      if (caret.Fragment.Owner.Target == null)
+      if (caret.Span.Owner.Target == null)
         return caret;
 
-      return caret.Fragment.Owner.Target.GetLineFor(caret).FindClosestTo(position);
+      return caret.Span.Owner.Target.GetLineFor(caret).FindClosestTo(position);
     }
 
     /// <summary> Listens to events on the TextBlock. </summary>

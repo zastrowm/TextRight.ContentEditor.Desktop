@@ -141,16 +141,16 @@ namespace TextRight.Editor.Wpf.View
       => MeasureCharacter(caret);
 
     /// <summary> Invoked by a child fragment when the fragment's text has changed. </summary>
-    /// <param name="fragment"> The fragment that changed. </param>
-    public void MarkTextChanged(StyledTextFragment fragment)
+    /// <param name="span"> The fragment that changed. </param>
+    public void MarkTextChanged(TextSpan span)
     {
       RecreateText();
     }
 
     /// <inheritdoc />
-    public void NotifyFragmentInserted(StyledTextFragment previousSibling,
-                                       StyledTextFragment newFragment,
-                                       StyledTextFragment nextSibling)
+    public void NotifyFragmentInserted(TextSpan previousSibling,
+                                       TextSpan newSpan,
+                                       TextSpan nextSibling)
     {
       RecreateText();
     }
@@ -206,14 +206,14 @@ namespace TextRight.Editor.Wpf.View
     public ITextLine GetLineFor(TextCaret caret)
       => RevalidateAndGetRenderer().GetLineFor(caret);
 
-    void ITextBlockContentEventListener.NotifyFragmentRemoved(StyledTextFragment previousSibling,
-                                                              StyledTextFragment removedFragment,
-                                                              StyledTextFragment nextSibling)
+    void ITextBlockContentEventListener.NotifyFragmentRemoved(TextSpan previousSibling,
+                                                              TextSpan removedSpan,
+                                                              TextSpan nextSibling)
     {
       RecreateText();
     }
 
-    void ITextBlockContentEventListener.NotifyTextChanged(StyledTextFragment changedFragment)
+    void ITextBlockContentEventListener.NotifyTextChanged(TextSpan changedSpan)
     {
       RecreateText();
     }

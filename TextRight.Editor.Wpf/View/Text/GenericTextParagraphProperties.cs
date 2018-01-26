@@ -14,7 +14,7 @@ namespace TextRight.Editor.Wpf.View
       TextAlignment = TextAlignment.Left;
       LineHeight = 0; // AUTO
       FirstLineInParagraph = isFirst;
-      DefaultTextRunProperties = new StyledTextRunProperties();
+      DefaultTextRunProperties = new TextSpanRunProperties();
       TextWrapping = TextWrapping.Wrap;
       TextMarkerProperties = null;
       Indent = 0;

@@ -8,9 +8,9 @@ using System.Windows.Media.TextFormatting;
 
 namespace TextRight.Editor.Wpf.View
 {
-  internal class StyledTextRunProperties : TextRunProperties
+  internal class TextSpanRunProperties : TextRunProperties
   {
-    public StyledTextRunProperties()
+    public TextSpanRunProperties()
     {
       Typeface = new Typeface("Tahoma");
       FontRenderingEmSize = FontHintingEmSize = 24;

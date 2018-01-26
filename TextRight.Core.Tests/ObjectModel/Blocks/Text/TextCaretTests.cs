@@ -51,7 +51,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     private static TextBlockContent CreateContent(params string[] texts)
     {
       var content = new TextBlockContent();
-      content.AppendAll(texts.Select((t, i) => new StyledTextFragment(t, $"Style_{i}")));
+      content.AppendAll(texts.Select((t, i) => new TextSpan(t, $"Style_{i}")));
       return content;
     }
 

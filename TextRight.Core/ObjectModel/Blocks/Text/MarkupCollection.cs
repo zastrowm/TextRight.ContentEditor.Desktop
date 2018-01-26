@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
-  /// <summary> Contains a collection of SubFragmentMarkups for a specific <see cref="StyledTextFragment"/>. </summary>
+  /// <summary> Contains a collection of SubFragmentMarkups for a specific <see cref="TextSpan"/>. </summary>
   public class MarkupCollection : IEnumerable<Markup>
   {
     // at some point we may want to consider using some form of an Interval Tree but for now our

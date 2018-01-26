@@ -42,7 +42,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     {
       var block = new ParagraphBlock();
 
-      DidYouKnow.That(block.Content.Fragments.Count()).Should().Be(1);
+      DidYouKnow.That(block.Content.Spans.Count()).Should().Be(1);
     }
 
     [Fact]
@@ -53,8 +53,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       DidYouKnow.That(nextBlock).Should().NotBeNull();
 
-      DidYouKnow.That(_block.Content.Fragments.First().GetText()).Should().Be("abc");
-      DidYouKnow.That(nextBlock.Content.Fragments.First().GetText()).Should().Be("123");
+      DidYouKnow.That(_block.Content.Spans.First().GetText()).Should().Be("abc");
+      DidYouKnow.That(nextBlock.Content.Spans.First().GetText()).Should().Be("123");
     }
   }
 }

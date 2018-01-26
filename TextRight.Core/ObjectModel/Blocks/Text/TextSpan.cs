@@ -20,13 +20,13 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   ///  associated with it.
   /// </summary>
   [DebuggerDisplay("StyledTextFragment(text={GetText()}, Index={Index})")]
-  public class StyledTextFragment : DocumentNode, IEquatable<StyledTextFragment>
+  public class TextSpan : DocumentNode, IEquatable<TextSpan>
   {
     private readonly string _styleId;
     internal IFragmentBuffer _buffer;
 
     /// <summary> Default constructor. </summary>
-    public StyledTextFragment(string text, string styleId = null)
+    public TextSpan(string text, string styleId = null)
     {
       _styleId = styleId;
       _buffer = new StringFragmentBuffer(text);
@@ -43,10 +43,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public TextBlock Parent => Owner.Owner;
 
     /// <summary> The sibling fragment that follows this fragment. </summary>
-    public StyledTextFragment Next { get; internal set; }
+    public TextSpan Next { get; internal set; }
 
     /// <summary> The sibling fragment that this fragment follows. </summary>
-    public StyledTextFragment Previous { get; internal set; }
+    public TextSpan Previous { get; internal set; }
 
     /// <summary> The number of characters in the TextSpan. </summary>
     public int NumberOfChars
@@ -63,20 +63,20 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary>
     ///  True if the given fragment has the same style and could be merged with this instance.
     /// </summary>
-    /// <param name="fragment"> The fragment to compare against. </param>
+    /// <param name="span"> The fragment to compare against. </param>
     /// <returns>
     ///  True if the styles are the same and the fragment could be merged, false otherwise.
     /// </returns>
-    public bool IsSameStyleAs(StyledTextFragment fragment)
+    public bool IsSameStyleAs(TextSpan span)
     {
-      return fragment._styleId == _styleId;
+      return span._styleId == _styleId;
     }
 
     /// <summary> Makes a deep copy of this instance. </summary>
     /// <returns> A copy of this instance. </returns>
-    public StyledTextFragment Clone()
+    public TextSpan Clone()
     {
-      return new StyledTextFragment(_buffer.GetText());
+      return new TextSpan(_buffer.GetText());
     }
 
     /// <summary> Appends the text in this span to the given string builder. </summary>
@@ -87,7 +87,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <inheritdoc />
-    public bool Equals(StyledTextFragment other)
+    public bool Equals(TextSpan other)
     {
       if (ReferenceEquals(null, other))
         return false;
@@ -106,7 +106,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         return true;
       if (obj.GetType() != GetType())
         return false;
-      return Equals((StyledTextFragment)obj);
+      return Equals((TextSpan)obj);
     }
 
     /// <inheritdoc />

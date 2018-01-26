@@ -28,10 +28,10 @@ namespace TextRight.Core.Commands.Caret
 
       double desiredPosition = UpdateMovementMode(movementMode, textCaret);
 
-      if (textCaret.Fragment.Owner.Target == null)
+      if (textCaret.Span.Owner.Target == null)
         return false;
 
-      var currentLine = textCaret.Fragment.Owner.Target.GetLineFor(textCaret);
+      var currentLine = textCaret.Span.Owner.Target.GetLineFor(textCaret);
       var nextLine = currentLine.Next;
 
       if (nextLine != null)

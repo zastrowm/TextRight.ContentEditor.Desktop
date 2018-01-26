@@ -14,7 +14,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       //while (numberOfCharacters > 0)
       {
-        int numberOfCharactersRemainingInCurrentFragment = caret.Fragment.NumberOfChars - caret.Offset.CharOffset;
+        int numberOfCharactersRemainingInCurrentFragment = caret.Span.NumberOfChars - caret.Offset.CharOffset;
         int numberOfCharactersToRemove = numberOfCharacters;
 
         if (numberOfCharactersToRemove > numberOfCharactersRemainingInCurrentFragment)
@@ -23,11 +23,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         }
 
         // TODO special case when we're deleting the entire fragment
-        caret.Fragment.RemoveCharacters(caret.Offset.CharOffset, numberOfCharactersToRemove);
+        caret.Span.RemoveCharacters(caret.Offset.CharOffset, numberOfCharactersToRemove);
 
         numberOfCharacters -= numberOfCharactersToRemove;
         // TODO what happens for multiple fragments
-        return TextCaret.FromOffset(caret.Fragment, caret.Offset.GraphemeOffset);
+        return TextCaret.FromOffset(caret.Span, caret.Offset.GraphemeOffset);
       }
     }
 
@@ -36,7 +36,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       var caret = original;
       var newDestination = caret.Offset.CharOffset + text.Length;
-      caret.Fragment.InsertText(text, caret.Offset.CharOffset);
+      caret.Span.InsertText(text, caret.Offset.CharOffset);
 
       while (caret.Offset.CharOffset < newDestination)
       {

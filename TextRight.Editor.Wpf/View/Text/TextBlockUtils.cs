@@ -7,18 +7,18 @@ namespace TextRight.Editor.Wpf.View.Text
 {
   public struct FragmentAndCharCount
   {
-    public StyledTextFragment Fragment;
+    public TextSpan Span;
     public int NumCharsBeforeFragment;
 
-    public FragmentAndCharCount(StyledTextFragment fragment, int numCharsBeforeFragment)
+    public FragmentAndCharCount(TextSpan span, int numCharsBeforeFragment)
     {
-      this.Fragment = fragment;
+      this.Span = span;
       this.NumCharsBeforeFragment = numCharsBeforeFragment;
     }
 
-    public void Deconstruct(out StyledTextFragment fragment, out int numCharsBeforeFragment)
+    public void Deconstruct(out TextSpan span, out int numCharsBeforeFragment)
     {
-      fragment = Fragment;
+      span = Span;
       numCharsBeforeFragment = NumCharsBeforeFragment;
     }
   }
@@ -29,7 +29,7 @@ namespace TextRight.Editor.Wpf.View.Text
     // TODO base off graphemes
     public static FragmentAndCharCount GetFragmentFromBlockCharacterIndex(int index, TextBlock textBlock)
     {
-      var fragment = textBlock.Content.FirstFragment;
+      var fragment = textBlock.Content.FirstSpan;
       int numberOfCharactersBeforeFragment = 0;
 
       while (fragment.Next != null && index < numberOfCharactersBeforeFragment + fragment.NumberOfChars)
@@ -49,13 +49,13 @@ namespace TextRight.Editor.Wpf.View.Text
     /// </returns>
     public static int GetCharacterIndex(TextCaret cursor)
     {
-      var currentFragment = cursor.Fragment.Owner.FirstFragment;
+      var currentFragment = cursor.Span.Owner.FirstSpan;
 
       int total = 0;
 
       while (currentFragment != null)
       {
-        if (currentFragment == cursor.Fragment)
+        if (currentFragment == cursor.Span)
         {
           return total + cursor.Offset.GraphemeOffset;
         }

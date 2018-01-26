@@ -118,7 +118,7 @@ namespace TextRight.Editor.Wpf.View
     {
       if (_cachedLineBounds == null)
       {
-        var iterator = TextCaret.FromOffset(container.Fragment, container.Offset.GraphemeOffset);
+        var iterator = TextCaret.FromOffset(container.Span, container.Offset.GraphemeOffset);
 
         var sizes = new List<TextBounds>();
 
@@ -145,7 +145,7 @@ namespace TextRight.Editor.Wpf.View
       double DistanceTo(TextCaret caretToMeasure)
         => Math.Abs(xPosition - caretToMeasure.Measure().Left);
 
-      var caret = TextCaret.FromOffset(container.Fragment, container.Offset.GraphemeOffset);
+      var caret = TextCaret.FromOffset(container.Span, container.Offset.GraphemeOffset);
 
       var closest = (
         caret: caret,

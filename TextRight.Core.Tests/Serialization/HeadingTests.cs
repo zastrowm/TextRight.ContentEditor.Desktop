@@ -18,7 +18,7 @@ namespace TextRight.Core.Tests.Serialization
       var caret = (TextCaret)paragraph.GetCaretAtStart();
 
       caret.InsertText("This is some of the text");
-      paragraph.Content.AppendSpan(new StyledTextFragment("Some additional text"));
+      paragraph.Content.AppendSpan(new TextSpan("Some additional text"));
 
       var descriptorsLookup = new DescriptorsLookup(HeadingBlock.DescriptorInstance.Descriptor);
 

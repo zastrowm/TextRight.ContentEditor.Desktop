@@ -9,7 +9,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 {
   public class TextBlockContentTests
   {
-    public StyledTextFragment a,
+    public TextSpan a,
                               b,
                               c,
                               d,
@@ -20,9 +20,9 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     public TextBlockContentTests()
     {
       Content = new TextBlockContent();
-      Content.AppendSpan((a = new StyledTextFragment("123", "a")));
-      Content.AppendSpan((b = new StyledTextFragment("456", "b")));
-      Content.AppendSpan((c = new StyledTextFragment("789", "c")));
+      Content.AppendSpan((a = new TextSpan("123", "a")));
+      Content.AppendSpan((b = new TextSpan("456", "b")));
+      Content.AppendSpan((c = new TextSpan("789", "c")));
     }
 
     public static TheoryData<int, int> VerifyExtractionEverywhereData()

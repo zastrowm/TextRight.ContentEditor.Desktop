@@ -202,7 +202,7 @@ namespace TextRight.Editor.Wpf.View
       double maxWidth = 0;
       bool isFirst = true;
 
-      StyledTextFragment currentFragment = _block.Content.FirstFragment;
+      TextSpan currentSpan = _block.Content.FirstSpan;
       int currentFragmentOffset = 0;
 
       int textStorePositionInChars = 0;
@@ -217,10 +217,10 @@ namespace TextRight.Editor.Wpf.View
         // (if the change was text being added/removed)
 
         // TODO when we switch length to be graphemes, this will have to change
-        while (textStorePositionInChars > currentFragmentOffset + currentFragment.NumberOfChars)
+        while (textStorePositionInChars > currentFragmentOffset + currentSpan.NumberOfChars)
         {
-          currentFragmentOffset += currentFragment.NumberOfChars;
-          currentFragment = currentFragment.Next;
+          currentFragmentOffset += currentSpan.NumberOfChars;
+          currentSpan = currentSpan.Next;
         }
 
         // Create a textline from the text store using the TextFormatter object.
@@ -231,7 +231,7 @@ namespace TextRight.Editor.Wpf.View
           new GenericTextParagraphProperties(isFirst),
           null);
 
-        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, caret.Offset, currentFragment));
+        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, caret.Offset, currentSpan));
 
         // Update the index position in the text store.
         textStorePositionInChars += myTextLine.Length;
@@ -257,7 +257,7 @@ namespace TextRight.Editor.Wpf.View
     {
       int textLength = 0;
 
-      foreach (var s in _block.Content.Fragments)
+      foreach (var s in _block.Content.Spans)
       {
         textLength += s.NumberOfChars;
       }

@@ -14,11 +14,11 @@ namespace TextRight.Editor.Wpf.View
     public TextLineContainer(Point point,
                              TextLine line,
                              TextOffset offset,
-                             StyledTextFragment fragment
+                             TextSpan span
       )
     {
       Line = line;
-      Fragment = fragment;
+      Span = span;
       Point = point;
       Offset = offset;
     }
@@ -27,7 +27,7 @@ namespace TextRight.Editor.Wpf.View
 
     public TextOffset Offset { get; }
 
-    public StyledTextFragment Fragment { get; }
+    public TextSpan Span { get; }
 
     public Point Point { get; }
   }
