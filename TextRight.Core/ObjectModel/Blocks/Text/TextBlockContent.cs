@@ -197,15 +197,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <param name="end"> The position at which the content extraction should end. </param>
     /// <returns> The extracted content. </returns>
     public TextBlockContent ExtractContent(TextCaret start, TextCaret end)
-      => TextBlockContentExtractor.Extract(this, start, end);
+      => new TextBlockContentExtractor(this, removeContentOnExtraction: true).Extract(start, end);
 
-    public TextBlockContent Clone()
-    {
-      var clone = new TextBlockContent();
-      clone._spans.Clear();
-      clone.AppendAll(_spans.Select(s => s.Clone()));
-      return clone;
-    }
+    // TODO
+    public TextBlockContent CloneContent(TextCaret start, TextCaret end)
+      => new TextBlockContentExtractor(this, removeContentOnExtraction: false).Extract(start, end);
+
+    public TextBlockContent Clone() 
+      => CloneContent(TextCaret.FromBeginning(this), TextCaret.FromEnd(this));
 
     /// <inheritdoc />
     public void SerializeInto(SerializeNode node)

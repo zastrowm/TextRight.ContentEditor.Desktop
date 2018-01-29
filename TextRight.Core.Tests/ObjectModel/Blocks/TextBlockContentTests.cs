@@ -10,10 +10,10 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
   public class TextBlockContentTests
   {
     public TextSpan a,
-                              b,
-                              c,
-                              d,
-                              e;
+                    b,
+                    c,
+                    d,
+                    e;
 
     public TextBlockContent Content;
 
@@ -62,6 +62,37 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       DidYouKnow.That(Content.AsText()).Should().Be(modifiedText);
       DidYouKnow.That(extracted.AsText()).Should().Be(removedText);
+    }
+
+    [Theory]
+    [MemberData(nameof(VerifyExtractionEverywhereData))]
+    public void VerifyCloneContentEverywhere(int start, int end)
+    {
+      var originalText = Content.AsText();
+      var originalSpans = Content.Spans.ToList();
+
+      var extracted = Content.CloneContent(Content.CursorFromGraphemeIndex(start),
+                                           Content.CursorFromGraphemeIndex(end));
+
+      var extractedText = originalText.Substring(start, end - start);
+
+      DidYouKnow.That(Content.AsText()).Should().Be(originalText);
+      DidYouKnow.That(extracted.AsText()).Should().Be(extractedText);
+
+      DidYouKnow.That(Content.Spans).Should().ContainInOrder(originalSpans);
+      DidYouKnow.That(extracted.Spans).Should().NotContain(it => originalSpans.Any(s => ReferenceEquals(s, it)));
+    }
+
+    [Theory]
+    [MemberData(nameof(VerifyExtractionEverywhereData))]
+    public void ExtractParameterOrderDoesNotMatter(int start, int end)
+    {
+      var extractedInOrder = Content.CloneContent(Content.CursorFromGraphemeIndex(start),
+                                                  Content.CursorFromGraphemeIndex(end));
+      var extractedInReverse = Content.CloneContent(Content.CursorFromGraphemeIndex(end),
+                                                    Content.CursorFromGraphemeIndex(start));
+
+      DidYouKnow.That(extractedInOrder.AsText()).Should().Be(extractedInReverse.AsText());
     }
   }
 }

@@ -2,40 +2,50 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
 using JetBrains.Annotations;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> Handles extracting content from a <see cref="TextBlockContent"/>. </summary>
-  internal static class TextBlockContentExtractor
+  internal class TextBlockContentExtractor
   {
-    /// <see cref="TextBlockContent.ExtractContent"/>
-    public static TextBlockContent Extract(TextBlockContent content,
-                                           TextCaret startCursor,
-                                           TextCaret endCursor)
+    private readonly bool _removeContentOnExtraction;
+    private readonly TextBlockContent _originContent;
+
+
+    public TextBlockContentExtractor(TextBlockContent originContent, bool removeContentOnExtraction)
     {
-      VerifyExtractParameters(content, startCursor, endCursor);
+      _originContent = originContent;
+      _removeContentOnExtraction = removeContentOnExtraction;
+    }
+
+    /// <see cref="TextBlockContent.ExtractContent"/>
+    public TextBlockContent Extract(TextCaret caretStart,
+                                    TextCaret caretEnd)
+    {
+      VerifyExtractParameters(caretStart, caretEnd);
+
+      NormalizePositioning(ref caretStart, ref caretEnd);
 
       // zero-width; this check is needed, as the normalization process might shift the end to be
       // before the start when both are pointing at the end of a fragment (the start is normalized to
       // point at the beginning of the next fragment instead). 
-      if (startCursor == endCursor)
+      if (caretStart == caretEnd)
         return new TextBlockContent();
 
-      var start = GetStart(startCursor);
-      var end = new FragmentAndOffset(endCursor.Span, endCursor.Offset.GraphemeOffset);
+      var start = GetStart(caretStart);
+      var end = new SpanAndOffset(caretEnd.Span, caretEnd.Offset.GraphemeOffset);
 
-      if (startCursor.IsAtBlockStart && endCursor.IsAtBlockEnd)
+      if (caretStart.IsAtBlockStart && caretEnd.IsAtBlockEnd)
       {
-        return ExtractAllContent(content);
+        return ExtractAllContent();
       }
       else if (start.Span == end.Span)
       {
         if (start.Offset == end.Offset)
           return new TextBlockContent();
 
-        return ExtractWithinFragment(end, start);
+        return ExtractWithinSpan(start, end);
       }
       else
       {
@@ -43,46 +53,42 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       }
     }
 
-    private static TextBlockContent ExtractAllContent(TextBlockContent content)
+    private TextBlockContent ExtractAllContent()
     {
-      var fragments = content.Spans.ToList();
-      content.RemoveAll(fragments);
+      var newContent = new TextBlockContent();
+      newContent.AppendAll(_originContent.Spans.Select(s => s.Clone()));
 
-      var other = new TextBlockContent();
-      other.AppendAll(fragments);
-      return other;
+      if (_removeContentOnExtraction)
+      {
+        _originContent.RemoveAll(_originContent.Spans);
+      }
+
+      return newContent;
     }
 
     [AssertionMethod]
-    private static void VerifyExtractParameters(TextBlockContent content,
-                                                TextCaret startCursor,
-                                                TextCaret endCursor)
+    private void VerifyExtractParameters(TextCaret caretStart,
+                                         TextCaret caretEnd)
     {
-      if (!startCursor.IsValid || startCursor.Span.Owner != content)
-        throw new ArgumentException("Start cursor is not pointing at this content", nameof(startCursor));
-      if (!endCursor.IsValid || endCursor.Span.Owner != content)
-        throw new ArgumentException("End cursor is not pointing at this content", nameof(endCursor));
-      if (startCursor.Span == endCursor.Span && startCursor.Offset.GraphemeOffset > endCursor.Offset.GraphemeOffset)
-        throw new ArgumentException("End cursor does not come after the start cursor", nameof(endCursor));
-
-      var current = startCursor.Span;
-      while (current != endCursor.Span)
-      {
-        current = current.Next;
-        if (current == null)
-          throw new ArgumentException("End cursor does not come after the start cursor", nameof(endCursor));
-      }
+      if (!caretStart.IsValid || caretStart.Span.Owner != _originContent)
+        throw new ArgumentException("Start cursor is not pointing at this content", nameof(caretStart));
+      if (!caretEnd.IsValid || caretEnd.Span.Owner != _originContent)
+        throw new ArgumentException("End cursor is not pointing at this content", nameof(caretEnd));
     }
 
-    private static TextBlockContent ExtractWithinFragment(FragmentAndOffset end, FragmentAndOffset start)
+    private TextBlockContent ExtractWithinSpan(SpanAndOffset start, SpanAndOffset end)
     {
       TextSpan singleSpan;
 
       int totalSize = end.Offset - start.Offset;
       if (totalSize == start.Span.NumberOfChars)
       {
-        start.Span.Owner.RemoveSpan(start.Span);
-        singleSpan = start.Span;
+        singleSpan = start.Span.Clone();
+
+        if (_removeContentOnExtraction)
+        {
+          start.Span.Owner.RemoveSpan(start.Span);
+        }
       }
       else
       {
@@ -94,22 +100,25 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return clonedContent;
     }
 
-    private static TextSpan CloneInnerContent(TextSpan span, int startIndex, int endIndex)
+    private TextSpan CloneInnerContent(TextSpan span, int startIndex, int endIndex)
     {
-      var cloned = span.Clone();
-      cloned.RemoveCharacters(endIndex, cloned.NumberOfChars - endIndex);
-      cloned.RemoveCharacters(0, startIndex);
+      var newSpan = span.Clone();
+      newSpan.RemoveCharacters(endIndex, newSpan.NumberOfChars - endIndex);
+      newSpan.RemoveCharacters(0, startIndex);
 
-      span.RemoveCharacters(startIndex, endIndex - startIndex);
-      return cloned;
+      if (_removeContentOnExtraction)
+      {
+        span.RemoveCharacters(startIndex, endIndex - startIndex);
+      }
+
+      return newSpan;
     }
 
-    private static TextBlockContent ExtractBetweenFragments(FragmentAndOffset start, FragmentAndOffset end)
+    private TextBlockContent ExtractBetweenFragments(SpanAndOffset start, SpanAndOffset end)
     {
       Debug.Assert(start.Span != end.Span);
 
       var clone = new TextBlockContent();
-      var original = start.Span.Owner;
 
       // need to save this in case we remove the start from the original
       var current = start.Span.Next;
@@ -118,8 +127,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       if (start.Offset == 0)
       {
-        original.RemoveSpan(start.Span);
-        clone.AppendSpan(start.Span);
+        if (_removeContentOnExtraction)
+        {
+          _originContent.RemoveSpan(start.Span);
+        }
+        clone.AppendSpan(start.Span.Clone());
       }
       else
       {
@@ -132,8 +144,13 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       while (current != end.Span)
       {
         var next = current.Next;
-        original.RemoveSpan(current);
-        clone.AppendSpan(current);
+        clone.AppendSpan(current.Clone());
+
+        if (_removeContentOnExtraction)
+        {
+          _originContent.RemoveSpan(current);
+        }
+
         current = next;
       }
 
@@ -141,8 +158,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       if (end.Offset == end.Span.NumberOfChars)
       {
-        original.RemoveSpan(end.Span);
-        clone.AppendSpan(end.Span);
+        if (_removeContentOnExtraction)
+        {
+          _originContent.RemoveSpan(end.Span);
+        }
+        clone.AppendSpan(end.Span.Clone());
       }
       else
       {
@@ -153,22 +173,42 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return clone;
     }
 
-    private static FragmentAndOffset GetStart(TextCaret start)
+    /// <summary> Makes sure that <paramref name="caretStart"/> comes before <paramref name="caretEnd"/>. </summary>
+    private void NormalizePositioning(ref TextCaret caretStart, ref TextCaret caretEnd)
     {
-      if (start.IsAtBlockStart)
-        return new FragmentAndOffset(start.Span, 0);
-      else if (start.Offset.GraphemeOffset == start.Span.NumberOfChars && start.Span.Next != null)
-        return new FragmentAndOffset(start.Span.Next, 0);
-      else
-        return new FragmentAndOffset(start.Span, start.Offset.GraphemeOffset);
+      int comparer = caretStart.Span.Index.CompareTo(caretEnd.Span.Index);
+
+      if (comparer == 0)
+      {
+        // they're pointing at the same span, so try grapheme
+        comparer = caretStart.Offset.GraphemeOffset.CompareTo(caretEnd.Offset.GraphemeOffset);
+      }
+
+      // start comes after end, so reverse them
+      if (comparer > 0)
+      {
+        var temp = caretStart;
+        caretStart = caretEnd;
+        caretEnd = temp;
+      }
     }
 
-    private struct FragmentAndOffset
+    private SpanAndOffset GetStart(TextCaret start)
+    {
+      if (start.IsAtBlockStart)
+        return new SpanAndOffset(start.Span, 0);
+      else if (start.Offset.GraphemeOffset == start.Span.NumberOfChars && start.Span.Next != null)
+        return new SpanAndOffset(start.Span.Next, 0);
+      else
+        return new SpanAndOffset(start.Span, start.Offset.GraphemeOffset);
+    }
+
+    private struct SpanAndOffset
     {
       public readonly TextSpan Span;
       public readonly int Offset;
 
-      public FragmentAndOffset(TextSpan span, int offset)
+      public SpanAndOffset(TextSpan span, int offset)
       {
         Span = span;
         Offset = offset;
