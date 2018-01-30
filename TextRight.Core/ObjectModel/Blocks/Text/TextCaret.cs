@@ -45,21 +45,12 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> The offset into <see cref="Span"/> that this cursor is pointing. </summary>
     public TextOffset Offset { get; }
 
-    /// <summary> True if the cursor is pointing at the beginning of the current fragment. </summary>
+    /// <summary>
+    ///  True if the <see cref="CharacterAfter"/> is pointing at the first character of the current
+    ///  span.
+    /// </summary>
     public bool IsAtFragmentStart
       => Offset.GraphemeOffset == 0;
-
-    /// <summary> True if the cursor is pointing at the end of the current fragment. </summary>
-    public bool IsAtFragmentEnd
-    {
-      get
-      {
-        if (Span.Next == null)
-          return Offset.GraphemeOffset >= Span.GraphemeLength;
-        else
-          return Offset.GraphemeOffset >= Span.GraphemeLength - 1;
-      }
-    }
 
     /// <inheritdoc />
     public bool IsAtBlockStart
@@ -67,7 +58,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <inheritdoc />
     public bool IsAtBlockEnd
-      => Span.Next == null && IsAtFragmentEnd;
+      => Span.Next == null && Offset.GraphemeOffset >= Span.GraphemeLength;
 
     /// <summary> Get the character after the current cursor position. </summary>
     public TextUnit CharacterAfter

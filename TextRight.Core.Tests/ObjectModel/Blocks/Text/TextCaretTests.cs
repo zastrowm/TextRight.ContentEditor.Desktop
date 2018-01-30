@@ -22,7 +22,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       DidYouKnow.That(cursor.IsAtFragmentStart).Should().BeTrue();
 
       DidYouKnow.That(cursor.IsAtBlockEnd).Should().BeFalse();
-      DidYouKnow.That(cursor.IsAtFragmentEnd).Should().BeFalse();
+      //DidYouKnow.That(cursor.IsAtFragmentEnd).Should().BeFalse();
 
       DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(0);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('0');
@@ -41,7 +41,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       DidYouKnow.That(cursor.IsAtFragmentStart).Should().BeFalse();
 
       DidYouKnow.That(cursor.IsAtBlockEnd).Should().BeTrue();
-      DidYouKnow.That(cursor.IsAtFragmentEnd).Should().BeTrue();
+      //DidYouKnow.That(cursor.IsAtFragmentEnd).Should().BeTrue();
 
       DidYouKnow.That(cursor.Offset.GraphemeOffset).Should().Be(10);
       DidYouKnow.That(cursor.CharacterAfter.Character).Should().Be('\0');
@@ -154,8 +154,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       DidYouKnow.That(cursor.IsAtBlockStart)
                 .Should().Be(testData.IsAtBlockStart);
 
-      DidYouKnow.That(cursor.IsAtFragmentEnd)
-                .Should().Be(testData.IsAtFragmentEnd);
+      //DidYouKnow.That(cursor.IsAtFragmentEnd)
+      //          .Should().Be(testData.IsAtFragmentEnd);
 
       DidYouKnow.That(cursor.IsAtBlockEnd)
                 .Should().Be(testData.IsAtBlockEnd);
@@ -209,8 +209,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
       DidYouKnow.That(cursor.IsAtBlockStart)
                 .Should().Be(testData.IsAtBlockStart);
 
-      DidYouKnow.That(cursor.IsAtFragmentEnd)
-                .Should().Be(testData.IsAtFragmentEnd);
+      //DidYouKnow.That(cursor.IsAtFragmentEnd)
+      //          .Should().Be(testData.IsAtFragmentEnd);
 
       DidYouKnow.That(cursor.IsAtBlockEnd)
                 .Should().Be(testData.IsAtBlockEnd);
