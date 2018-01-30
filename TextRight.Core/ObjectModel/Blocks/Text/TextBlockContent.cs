@@ -70,11 +70,167 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return TextCaret.FromOffset(current, graphemeIndex - numberOfGraphemes);
     }
 
+    /// <summary> Inserts the given content into this instance. </summary>
+    /// <param name="caret"> The caret which represents the point at which the content should be
+    ///  inserted. </param>
+    /// <param name="content"> The content to insert. </param>
+    /// <param name="autoMerge"> (Optional) True to automatically merge similar fragments together. </param>
+    public TextCaret Insert(TextCaret caret, TextBlockContent content, bool autoMerge = true)
+    {
+      if (caret.Span.Owner != this)
+        throw new ArgumentException("Caret does not refer to this Content instance", nameof(caret));
+
+      if (content == this)
+        throw new ArgumentException("Content cannot be inserted into itself", nameof(content));
+
+      // easy, it's empty
+      if (content.ChildCount == 1 && content.FirstSpan.NumberOfChars == 0)
+        return caret;
+
+      // fast-mode, we have no existing content so just add the content in `content`. 
+      if (ChildCount == 1 && FirstSpan.NumberOfChars == 0)
+      {
+        ReplaceContent(content);
+        return GetCaretAtEnd();
+      }
+      else
+      {
+        return InsertContentInline(caret, content, autoMerge);
+      }
+    }
+
+    /// <summary>
+    ///  Inserts the content into the current instance, assuming that the current instance is not
+    ///  empty and that the content to be inserted is not empty.
+    /// </summary>
+    private TextCaret InsertContentInline(TextCaret caret, TextBlockContent content, bool autoMerge)
+    {
+      TextSpan extraSpanToInsert;
+
+      int indexAtWhichFirstSpanShouldBeInserted;
+      int indexAtWhichRenumberingShouldStart;
+
+      if (caret.IsAtBlockStart)
+      {
+        indexAtWhichFirstSpanShouldBeInserted = 0;
+        indexAtWhichRenumberingShouldStart = 0;
+        extraSpanToInsert = null;
+      }
+      else if (caret.IsAtBlockEnd)
+      {
+        indexAtWhichFirstSpanShouldBeInserted = LastSpan.Index + 1;
+        indexAtWhichRenumberingShouldStart = LastSpan.Index;
+        extraSpanToInsert = null;
+      }
+      else
+      {
+        // split up the current span into two
+        var currentSpan = caret.Span;
+        indexAtWhichFirstSpanShouldBeInserted = currentSpan.Index + 1;
+        indexAtWhichRenumberingShouldStart = currentSpan.Index;
+
+        extraSpanToInsert = CloneInnerContent(currentSpan, caret.Offset.CharOffset, currentSpan.NumberOfChars);
+      }
+
+      // referenced from inner function
+      int numberOfSpansInsertedThusFar = 0;
+
+      // Inserts the given span into `insertionIndex + numberOfSpansInserted` position
+      void InsertSpan(TextSpan textSpan)
+      {
+        var desiredIndex = indexAtWhichFirstSpanShouldBeInserted + numberOfSpansInsertedThusFar;
+        _spans.Insert(desiredIndex, textSpan);
+        PrepareForOwnership(textSpan, desiredIndex);
+
+        numberOfSpansInsertedThusFar += 1;
+      }
+
+      // actually insert the content which we were asked to insert
+      foreach (var span in content._spans)
+      {
+        InsertSpan(span.Clone());
+      }
+
+      if (extraSpanToInsert != null)
+      {
+        InsertSpan(extraSpanToInsert);
+      }
+
+      UpdateChildrenNumbering(indexAtWhichRenumberingShouldStart);
+
+      // fire events for each span that was inserted
+      for (int i = indexAtWhichFirstSpanShouldBeInserted;
+           i < indexAtWhichFirstSpanShouldBeInserted + numberOfSpansInsertedThusFar;
+           i++)
+      {
+        var span = _spans[i];
+        FireEvent(new TextSpanInsertedEventArgs(span.Previous, span, span.Next));
+      }
+
+      // and then figure out what caret position to return
+      var lastSpanInserted = _spans[indexAtWhichFirstSpanShouldBeInserted + numberOfSpansInsertedThusFar - 1];
+
+      if (extraSpanToInsert != null)
+      {
+        return TextCaret.FromOffset(extraSpanToInsert, 0);
+      }
+      else if (LastSpan == lastSpanInserted)
+      {
+        return GetCaretAtEnd();
+      }
+      else
+      {
+        return TextCaret.FromOffset(lastSpanInserted.Next, 0);
+      }
+    }
+
+    private TextSpan CloneInnerContent(TextSpan span, int startIndex, int endIndex)
+    {
+      var newSpan = span.Clone();
+      newSpan.RemoveCharacters(endIndex, newSpan.NumberOfChars - endIndex);
+      newSpan.RemoveCharacters(0, startIndex);
+
+      span.RemoveCharacters(startIndex, endIndex - startIndex);
+
+      return newSpan;
+    }
+
+    /// <summary>
+    ///  Simply remove all spans from this instance and add all of the content from
+    ///  <paramref name="content"/> and insert it into this instance.
+    /// </summary>
+    private void ReplaceContent(TextBlockContent content)
+    {
+      var removedEvent = new TextSpanRemovedEventArgs(FirstSpan.Previous, FirstSpan, FirstSpan.Next);
+      ClearFragment(removedEvent.RemoveSpan);
+
+      _spans.Clear();
+
+      foreach (var span in content.Spans)
+      {
+        var spanInserted = span.Clone();
+        PrepareForOwnership(spanInserted, _spans.Count);
+        _spans.Add(spanInserted);
+      }
+
+      UpdateChildrenNumbering();
+
+      FireEvent(removedEvent);
+
+      foreach (var span in _spans)
+      {
+        FireEvent(new TextSpanInsertedEventArgs(span.Previous, span, span.Next));
+      }
+    }
+
     /// <summary> Appends the given span to the TextBlock. </summary>
     /// <param name="span"> The span to add. </param>
     /// <param name="autoMerge"> True to automatically merge similar fragments together. </param>
     public void AppendSpan(TextSpan span, bool autoMerge = true)
     {
+      // we always deal with clones, never with
+      span = span.Clone();
+
       // FYI early exit
 
       if (_spans.Count == 1 && FirstSpan.NumberOfChars == 0)
@@ -93,8 +249,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         }
       }
 
-      span.Index = _spans.Count;
-      span.Owner = this;
+      PrepareForOwnership(span, _spans.Count);
       _spans.Add(span);
       UpdateChildrenNumbering(Math.Max(span.Index - 1, 0));
 
@@ -103,9 +258,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <summary> Appends all fragments to the text block.  </summary>
     /// <param name="fragments"> The fragments to add to the text block. </param>
-    public void AppendAll(IEnumerable<TextSpan> fragments)
+    public void AppendAll(IEnumerable<TextSpan> fragments, bool autoMerge = true)
     {
-      bool autoMerge = true;
       // TODO optimize
       foreach (var fragment in fragments)
       {
@@ -152,6 +306,13 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       {
         RemoveSpan(frags[i]);
       }
+    }
+
+    /// <summary> Prepare a span to be inserted into this instance. </summary>
+    private void PrepareForOwnership(TextSpan span, int index)
+    {
+      span.Owner = this;
+      span.Index = index;
     }
 
     private static void ClearFragment(TextSpan span)

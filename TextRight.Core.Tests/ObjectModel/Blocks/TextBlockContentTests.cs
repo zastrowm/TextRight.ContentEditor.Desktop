@@ -83,16 +83,42 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       DidYouKnow.That(extracted.Spans).Should().NotContain(it => originalSpans.Any(s => ReferenceEquals(s, it)));
     }
 
-    [Theory]
-    [MemberData(nameof(VerifyExtractionEverywhereData))]
-    public void ExtractParameterOrderDoesNotMatter(int start, int end)
+    public static TheoryData<int> Generate0to9Indices()
     {
-      var extractedInOrder = Content.CloneContent(Content.CursorFromGraphemeIndex(start),
-                                                  Content.CursorFromGraphemeIndex(end));
-      var extractedInReverse = Content.CloneContent(Content.CursorFromGraphemeIndex(end),
-                                                    Content.CursorFromGraphemeIndex(start));
+      var data = new TheoryData<int>();
 
-      DidYouKnow.That(extractedInOrder.AsText()).Should().Be(extractedInReverse.AsText());
+      foreach (var item in Enumerable.Range(0, 10))
+      {
+        data.Add(item);
+      }
+
+      return data;
+    }
+
+    [Theory]
+    [MemberData(nameof(Generate0to9Indices))]
+    public void ExtractParameterOrderDoesNotMatter(int insertionIndex)
+    {
+      var caret = Content.CursorFromGraphemeIndex(insertionIndex);
+
+      var originalText = Content.AsText();
+
+      var content = new TextBlockContent();
+      content.AppendSpan(new TextSpan("ABCDEF"));
+      content.AppendSpan(new TextSpan("GHIJ"));
+
+      var newPosition = Content.Insert(caret, content);
+
+      // make sure the inserted text is correct by comparing the text we get by simply inserted the
+      // same text into a string. 
+      var expectedFinalText = originalText.Insert(insertionIndex, content.AsText());
+      DidYouKnow.That(Content.AsText()).Should().Be(expectedFinalText);
+
+      // make sure the caret returned is correct by comparing it to the text that should come after
+      // the caret. 
+      var expectedAfterText = originalText.Substring(0, insertionIndex) + "ABCDEFGHIJ";
+      DidYouKnow.That(Content.CloneContent(Content.GetCaretAtStart(), newPosition).AsText())
+                .Should().Be(expectedAfterText);
     }
   }
 }
