@@ -3,7 +3,7 @@
   <Block type="RootCollection">
     <Block type="paragraph">
       <Block type="temp/fragment">
-        <Attribute key="Body" value="This is an example of a document within the editor. జో It has many features that extend onto multiple lines enough that we can start to create paragraphs.  Don't also forgetabout X &amp; Y and those other things that extend the line length for the X-Files.  Isn't that great? జో" />
+        <Attribute key="Body" value=" It has many X-Files.  Isn't that great? జో" />
       </Block>
     </Block>
     <Block type="paragraph">

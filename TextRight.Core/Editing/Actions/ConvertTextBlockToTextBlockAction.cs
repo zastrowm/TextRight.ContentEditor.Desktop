@@ -17,7 +17,7 @@ namespace TextRight.Core.Actions
     private readonly DocumentCursorHandle _handle;
 
     private readonly BlobSerializedData _originalProperties;
-    private readonly RegisteredDescriptor _originalDescriptor;
+    private readonly BlockDescriptor _originalDescriptor;
 
     /// <summary> Constructor. </summary>
     protected ConvertTextBlockToTextBlockAction(TextCaret caret)
@@ -30,7 +30,7 @@ namespace TextRight.Core.Actions
       _originalProperties = block.SerializeProperties();
     }
 
-    public abstract RegisteredDescriptor GetDestinationDescriptor();
+    public abstract BlockDescriptor GetDestinationDescriptor();
 
     /// <inheritdoc />
     public override void Do(DocumentEditorContext context)
@@ -48,7 +48,7 @@ namespace TextRight.Core.Actions
       }
       else
       {
-        var newBlock = (TBlock)destinationDescriptor.Descriptor.CreateInstance();
+        var newBlock = (TBlock)destinationDescriptor.CreateInstance();
         MakeChangesTo(newBlock);
 
         Replace(context, block,newBlock);

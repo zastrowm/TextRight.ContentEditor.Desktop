@@ -6,6 +6,7 @@ using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Serialization;
+using TextRight.Core.Events;
 
 namespace TextRight.Core.Blocks
 {
@@ -15,11 +16,11 @@ namespace TextRight.Core.Blocks
     private int _headingLevel;
 
     /// <summary> Singleton-Instance of a descriptor. </summary>
-    public static readonly RegisteredDescriptor DescriptorInstance
-      = RegisteredDescriptor.Register<HeadingBlockDescriptor>();
+    public static readonly HeadingBlockDescriptor DescriptorInstance
+      = new HeadingBlockDescriptor();
 
     /// <inheritdoc />
-    public override RegisteredDescriptor DescriptorHandle
+    public override BlockDescriptor DescriptorHandle
       => DescriptorInstance;
 
     /// <summary> The level of heading that the block represents. </summary>
@@ -27,16 +28,7 @@ namespace TextRight.Core.Blocks
     public int HeadingLevel
     {
       get => _headingLevel;
-      set
-      {
-        if (_headingLevel == value)
-          return;
-
-        int oldLevel = _headingLevel;
-        _headingLevel = value;
-
-        FireEvent(new HeadingLevelChangedEventArgs(oldLevel, value));
-      }
+      set => SetValue(DescriptorInstance.HeadingLevelProperty, ref _headingLevel, value);
     }
 
     /// <inheritdoc/>
@@ -46,40 +38,42 @@ namespace TextRight.Core.Blocks
     protected override IContentBlockView ContentBlockView
       => Target;
 
-    /// <summary> Invoked when the heading level changes. </summary>
-    public class HeadingLevelChangedEventArgs : EventEmitterArgs<IHeadingBlockListener>
+
+    public void MarkChanged<T>(IPropertyDescriptor<T> descriptor, T oldValue, T newValue)
     {
-      public HeadingLevelChangedEventArgs(int oldLevel, int newLevel)
+      if (Target is IChangeListener listener)
       {
-        OldLevel = oldLevel;
-        NewLevel = newLevel;
-      }
-
-      public int OldLevel { get; }
-
-      public int NewLevel { get; }
-
-      protected override void Handle(object sender, IHeadingBlockListener reciever)
-      {
-        reciever.NotifyLevelChanged(OldLevel, NewLevel);
+        var changeEvent = new PropertyChangedEvent<T>(this, descriptor, oldValue, newValue);
+        listener.HandleEvent(changeEvent);
       }
     }
 
-    /// <summary> View interface for <see cref="HeadingBlock"/> </summary>
-    public interface IHeadingBlockListener : IEventListener
+    public bool SetValue<T>(IPropertyDescriptor<T> descriptor, ref T field, T value)
     {
-      /// <summary>
-      ///  Indicates that the heading level of the associated heading-block has changed.
-      /// </summary>
-      void NotifyLevelChanged(int oldLevel, int newLevel);
+      if (EqualityComparer<T>.Default.Equals(field, value))
+        return false;
+
+      var oldValue = field;
+      field = value;
+
+      MarkChanged(descriptor, oldValue, value);
+      return true;
     }
 
     /// <summary> BlockDescriptor for <see cref="HeadingBlock"/>. </summary>
-    private class HeadingBlockDescriptor : BlockDescriptor<HeadingBlock>
+    public class HeadingBlockDescriptor : BlockDescriptor<HeadingBlock>
     {
+      internal HeadingBlockDescriptor()
+      {
+        HeadingLevelProperty = RegisterProperty(it => it.HeadingLevel, "HeadingLevel");
+      }
+
       /// <inheritdoc />
       public override string Id
         => "heading+multilevel";
+
+      /// <see cref="HeadingLevel"/>
+      public IPropertyDescriptor<int> HeadingLevelProperty { get; }
 
       /// <inheritdoc />
       public override IEnumerable<IContextualCommand> GetCommands(DocumentOwner document)

@@ -30,7 +30,7 @@ namespace TextRight.Core.Actions
       => "Convert paragraph into a heading";
 
     /// <inheritdoc />
-    public override RegisteredDescriptor GetDestinationDescriptor() 
+    public override BlockDescriptor GetDestinationDescriptor() 
       => HeadingBlock.DescriptorInstance;
 
     /// <inheritdoc />

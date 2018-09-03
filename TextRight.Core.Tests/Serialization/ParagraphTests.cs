@@ -19,7 +19,7 @@ namespace TextRight.Core.Tests.Serialization
       TextSpan span = new TextSpan("Some additional text");
       paragraph.Content.AppendSpan(span, true);
 
-      var descriptorsLookup = new DescriptorsLookup(ParagraphBlock.RegisteredDescriptor.Descriptor);
+      var descriptorsLookup = new DescriptorsLookup(ParagraphBlock.Descriptor);
 
       // Act
       SerializationHelpers.VerifyDeserialization(paragraph, descriptorsLookup);

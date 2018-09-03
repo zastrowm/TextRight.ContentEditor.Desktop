@@ -56,7 +56,7 @@ namespace TextRight.Core.ObjectModel.Blocks
       => new BlockPath(this);
 
     /// <summary> Gets a handle to the descriptor for this specific block type. </summary>
-    public abstract RegisteredDescriptor DescriptorHandle { get; }
+    public abstract BlockDescriptor DescriptorHandle { get; }
 
     /// <summary> Makes a deep copy of this instance. </summary>
     /// <returns> A copy of this instance. </returns>

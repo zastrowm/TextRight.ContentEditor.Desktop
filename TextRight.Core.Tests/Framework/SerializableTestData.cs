@@ -23,7 +23,7 @@ namespace TextRight.Core.Tests.Framework
       {
         DeserializeParts("", info, this);
       }
-      catch (Exception e)
+      catch (Exception)
       {
       }
     }
@@ -34,7 +34,7 @@ namespace TextRight.Core.Tests.Framework
       {
         SerializeParts("", info, this);
       }
-      catch (Exception e)
+      catch (Exception)
       {
       }
     }

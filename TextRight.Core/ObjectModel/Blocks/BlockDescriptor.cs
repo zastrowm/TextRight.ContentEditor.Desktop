@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using JetBrains.Annotations;
 using TextRight.Core.Commands;
+using TextRight.Core.Events;
 
 namespace TextRight.Core.ObjectModel.Blocks
 {
@@ -56,5 +58,8 @@ namespace TextRight.Core.ObjectModel.Blocks
     /// <inheritdoc />
     public override Block CreateInstance()
       => new TBlock();
+
+    public IPropertyDescriptor<T> RegisterProperty<T>(Expression<Func<TBlock, T>> propertyGetter, string id)
+      => PropertyDescriptorRegistry<TBlock>.RegisterProperty(propertyGetter, id);
   }
 }

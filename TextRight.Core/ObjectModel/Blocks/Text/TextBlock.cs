@@ -87,20 +87,20 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <param name="reader"> The reader from which to read . </param>
     public virtual void ReadProperties(IDataReader reader)
     {
-      DescriptorHandle.Descriptor.DefaultPropertySerializer.Read(this, reader);
+      DescriptorHandle.DefaultPropertySerializer.Read(this, reader);
     }
 
     /// <summary> Writes the properties of this block to the given data writer. </summary>
     /// <param name="writer"> The writer to which to write. </param>
     public virtual void WriteProperties(IDataWriter writer)
     {
-      DescriptorHandle.Descriptor.DefaultPropertySerializer.Write(this, writer);
+      DescriptorHandle.DefaultPropertySerializer.Write(this, writer);
     }
 
     /// <inheritdoc/>
     public override Block Clone()
     {
-      var clone = (TextBlock)DescriptorHandle.Descriptor.CreateInstance();
+      var clone = (TextBlock)DescriptorHandle.CreateInstance();
       clone.Content = Content.Clone();
       return clone;
     }

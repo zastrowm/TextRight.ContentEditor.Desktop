@@ -20,7 +20,7 @@ namespace TextRight.Core.Tests.Serialization
       caret.InsertText("This is some of the text");
       paragraph.Content.AppendSpan(new TextSpan("Some additional text"));
 
-      var descriptorsLookup = new DescriptorsLookup(HeadingBlock.DescriptorInstance.Descriptor);
+      var descriptorsLookup = new DescriptorsLookup((BlockDescriptor)HeadingBlock.DescriptorInstance);
 
       // Act
       SerializationHelpers.VerifyDeserialization(paragraph, descriptorsLookup);

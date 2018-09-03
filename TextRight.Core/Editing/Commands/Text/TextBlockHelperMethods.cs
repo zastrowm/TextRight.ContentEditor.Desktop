@@ -83,7 +83,7 @@ namespace TextRight.Core.Commands.Text
 
     private static ContentBlock CreateSimilarBlock(ContentBlock block)
     {
-      return (ContentBlock)block.DescriptorHandle.Descriptor.CreateInstance();
+      return (ContentBlock)block.DescriptorHandle.CreateInstance();
     }
 
     /// <summary>

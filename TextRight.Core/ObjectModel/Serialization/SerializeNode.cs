@@ -23,8 +23,8 @@ namespace TextRight.Core.ObjectModel.Serialization
     }
 
     /// <summary> Constructor. </summary>
-    public SerializeNode(RegisteredDescriptor descriptor)
-      : this(descriptor.Descriptor.Id)
+    public SerializeNode(BlockDescriptor descriptor)
+      : this(descriptor.Id)
     {
     }
 
