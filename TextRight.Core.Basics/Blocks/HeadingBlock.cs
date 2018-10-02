@@ -24,7 +24,6 @@ namespace TextRight.Core.Blocks
       => Descriptor;
 
     /// <summary> The level of heading that the block represents. </summary>
-    [BlockProperty("HeadingLevel")]
     public int HeadingLevel
     {
       get => _headingLevel;
