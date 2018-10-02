@@ -152,9 +152,13 @@ namespace TextRight.Editor.Wpf.View
       base.Focus();
     }
 
-    public void Initialize()
+    public async void Initialize()
     {
       MarkChanged();
+
+      await Task.Yield();
+
+      _cursorView.MarkDirty();
     }
 
     protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
