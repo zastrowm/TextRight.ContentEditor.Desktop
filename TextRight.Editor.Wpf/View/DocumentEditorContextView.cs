@@ -152,9 +152,13 @@ namespace TextRight.Editor.Wpf.View
       base.Focus();
     }
 
-    public void Initialize()
+    public async void Initialize()
     {
       MarkChanged();
+
+      await Task.Yield();
+
+      _cursorView.MarkDirty();
     }
 
     protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -329,11 +333,11 @@ namespace TextRight.Editor.Wpf.View
     {
       var configuration = File.ReadAllLines(@"keyboard.trcfg");
 
-      RegisteredDescriptor[] descriptors = new[]
-                                           {
-                                             ParagraphBlock.RegisteredDescriptor,
-                                             HeadingBlock.DescriptorInstance,
-                                           };
+      var descriptors = new BlockDescriptor[]
+                        {
+                          ParagraphBlock.Descriptor,
+                          HeadingBlock.Descriptor,
+                        };
 
       var addedCommands = new IContextualCommand[]
                           {
@@ -354,7 +358,7 @@ namespace TextRight.Editor.Wpf.View
                           };
 
       var allCommands = addedCommands
-        .Concat(descriptors.SelectMany(d => d.Descriptor.GetCommands(_editor.Document)))
+        .Concat(descriptors.SelectMany(d => d.GetCommands(_editor.Document)))
         .ToDictionary(c => c.Id, c => c, StringComparer.InvariantCultureIgnoreCase);
 
       var converter = new KeyGestureConverter();

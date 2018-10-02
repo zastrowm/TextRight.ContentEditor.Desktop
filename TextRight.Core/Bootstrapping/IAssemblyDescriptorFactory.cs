@@ -11,6 +11,6 @@ namespace TextRight.Core.Bootstrapping
   {
     /// <summary> Gets the registered descriptors for the assembly. </summary>
     /// <returns> The registered descriptors. </returns>
-    IEnumerable<RegisteredDescriptor> GetRegisteredDescriptors();
+    IEnumerable<RegisteredDescriptors> GetRegisteredDescriptors();
   }
 }

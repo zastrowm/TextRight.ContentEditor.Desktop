@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using JetBrains.Annotations;
 using TextRight.Core.Commands;
+using TextRight.Core.Events;
 
 namespace TextRight.Core.ObjectModel.Blocks
 {
@@ -11,6 +13,10 @@ namespace TextRight.Core.ObjectModel.Blocks
   /// </summary>
   public abstract class BlockDescriptor
   {
+    /// <summary> All of the properties registered to this descriptor. </summary>
+    public PropertyDescriptorCollection Properties { get; }
+      = new PropertyDescriptorCollection();
+
     /// <summary> The unique id of the block. </summary>
     public abstract string Id { get; }
 
@@ -21,17 +27,6 @@ namespace TextRight.Core.ObjectModel.Blocks
     /// <returns> The new instance of the block. </returns>
     [Pure]
     public abstract Block CreateInstance();
-
-    protected BlockDescriptor()
-    {
-      DefaultPropertySerializer = new DefaultBlockPropertySerializer(BlockType);
-    }
-
-    /// <summary>
-    ///  A serializer which can be used to serialize the propertes of a block annotated with the
-    ///  correct attribute.
-    /// </summary>
-    internal DefaultBlockPropertySerializer DefaultPropertySerializer { get; }
 
     /// <summary> All of the commands that should be available when the block is in a document. </summary>
     /// <param name="document"></param>
@@ -56,5 +51,9 @@ namespace TextRight.Core.ObjectModel.Blocks
     /// <inheritdoc />
     public override Block CreateInstance()
       => new TBlock();
+
+    /// <summary> Registers the given properties with <see cref="BlockDescriptor.Properties"/>. </summary>
+    public IPropertyDescriptor<T> RegisterProperty<T>(Expression<Func<TBlock, T>> propertyGetter, string id)
+      => Properties.RegisterProperty(propertyGetter, id);
   }
 }

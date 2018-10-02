@@ -6,12 +6,13 @@ using System.Windows.Media;
 using TextRight.Core.Blocks;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.Events;
 
 namespace TextRight.Editor.Wpf.View
 {
   /// <summary />
   public class HeadingBlockView : BaseTextBlockView,
-                                  HeadingBlock.IHeadingBlockListener
+                                  IChangeListener
   {
     private readonly HeadingBlock _block;
 
@@ -36,9 +37,13 @@ namespace TextRight.Editor.Wpf.View
     public override IDocumentItem DocumentItem
       => _block;
 
-    void HeadingBlock.IHeadingBlockListener.NotifyLevelChanged(int oldLevel, int newLevel)
+    public void HandleEvent(ChangeEvent changeEvent)
     {
-      SyncTextSize();
+      if (changeEvent is PropertyChangedEvent<int> propertyChange
+          && propertyChange.Descriptor == HeadingBlock.Descriptor.HeadingLevelProperty)
+      {
+        SyncTextSize();
+      }
     }
   }
 }

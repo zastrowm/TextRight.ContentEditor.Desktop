@@ -13,15 +13,18 @@ using TextRight.Editor.Wpf;
 
 namespace TextRight.Editor.Wpf
 {
-  internal class WatchEntryPoint : HostedEntryPoint<DocumentEditor, WatchEntryPoint.State>
+  internal class WatchEntryPoint : SimpleStateHostedEntryPoint<DocumentEditor, WatchEntryPoint.State>
   {
-    protected override DocumentEditor Startup(IEntryPointStartupApi startupApi, State data)
+    /// <inheritdoc />
+    public override State CreateDefaultState()
+      => new State();
+
+    /// <inheritdoc />
+    public override DocumentEditor CreateControl()
     {
       var editor = new DocumentEditor();
+      var sessionDoc = Path.Combine(StateDirectory.FullName, CurrentState.DocumentPath);
 
-      data = data ?? new State();
-
-      var sessionDoc = Path.Combine(startupApi.StateDirectory.FullName, data.DocumentPath);
       if (File.Exists(sessionDoc))
       {
         DevLoader.LoadInto(XElement.Load(sessionDoc), editor.EditorContext);
@@ -30,11 +33,13 @@ namespace TextRight.Editor.Wpf
       return editor;
     }
 
-    protected override State Shutdown(DocumentEditor gui, IEntryPointShutdownApi shutdownApi)
+    /// <inheritdoc />
+    public override State GetStateToPersist()
     {
-      var doc = DevLoader.SaveIntoElement(gui.EditorContext);
-      doc.Save(Path.Combine(shutdownApi.StateDirectory.FullName, "document.xml"));
-      return new State();
+      var doc = DevLoader.SaveIntoElement(Control.EditorContext);
+      doc.Save(Path.Combine(StateDirectory.FullName, CurrentState.DocumentPath));
+
+      return base.GetStateToPersist();
     }
 
     public class State

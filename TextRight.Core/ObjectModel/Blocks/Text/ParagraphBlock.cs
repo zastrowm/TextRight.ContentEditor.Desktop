@@ -10,15 +10,15 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   public sealed class ParagraphBlock : TextBlock, IDocumentItem<IContentBlockView>
   {
     /// <summary> Singleton-Instance of a descriptor. </summary>
-    public static readonly RegisteredDescriptor RegisteredDescriptor
-      = RegisteredDescriptor.Register<BlockDescriptor>();
+    public static readonly ParagraphBlockDescriptor Descriptor
+      = RegisteredDescriptors.Register<ParagraphBlockDescriptor>();
 
     /// <inheritdoc />
-    public override RegisteredDescriptor DescriptorHandle
-      => RegisteredDescriptor;
+    public override BlockDescriptor DescriptorHandle
+      => Descriptor;
 
     /// <summary> Describes the <see cref="ParagraphBlock"/> block. </summary>
-    private class BlockDescriptor : BlockDescriptor<ParagraphBlock>
+    public class ParagraphBlockDescriptor : BlockDescriptor<ParagraphBlock>
     {
       /// <inheritdoc />
       public override string Id

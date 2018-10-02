@@ -14,7 +14,7 @@ namespace TextRight.Core.Bootstrapping
   public class CoreFactory : IAssemblyDescriptorFactory
   {
     /// <inheritdoc/>
-    public IEnumerable<RegisteredDescriptor> GetRegisteredDescriptors()
+    public IEnumerable<RegisteredDescriptors> GetRegisteredDescriptors()
     {
       // TODO
       yield break;

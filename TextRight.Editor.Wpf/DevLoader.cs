@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using TextRight.Core;
 using TextRight.Core.Blocks;
+using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.ObjectModel.Serialization;
@@ -22,8 +23,8 @@ namespace TextRight.Editor.Wpf
         var node = XmlNodeSerializer.Deserialize(contentXml);
 
         var serializationContext = new SerializationContext(
-                                     new DescriptorsLookup(ParagraphBlock.RegisteredDescriptor.Descriptor,
-                                                           HeadingBlock.DescriptorInstance.Descriptor
+                                     new DescriptorsLookup(ParagraphBlock.Descriptor,
+                                                           (BlockDescriptor)HeadingBlock.Descriptor
                                      )
                                    );
 

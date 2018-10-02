@@ -74,10 +74,15 @@ namespace TextRight.Editor.Wpf.View
       Children.Add(_caretRect);
     }
 
-    private void HandleCaretChanged(object sender, EventArgs e)
+    public void MarkDirty()
     {
       _isDirty = true;
       InvalidateMeasure();
+    }
+
+    private void HandleCaretChanged(object sender, EventArgs e)
+    {
+      MarkDirty();
     }
 
     protected override Size MeasureOverride(Size constraint)

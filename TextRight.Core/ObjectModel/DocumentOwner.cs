@@ -11,7 +11,7 @@ namespace TextRight.Core.ObjectModel
   {
     /// <summary> Default constructor. </summary>
     public DocumentOwner()
-      : this((RootBlockCollection)RootBlockCollection.RegisteredDescriptor.Descriptor.CreateInstance())
+      : this((RootBlockCollection)RootBlockCollection.Descriptor.CreateInstance())
     {
     }
 

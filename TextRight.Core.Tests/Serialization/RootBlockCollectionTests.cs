@@ -20,8 +20,8 @@ namespace TextRight.Core.Tests.Serialization
       collection.Append(CreateBlock());
       collection.Append(CreateBlock());
 
-      var descriptorsLookup = new DescriptorsLookup(RootBlockCollection.RegisteredDescriptor.Descriptor,
-                                                    ParagraphBlock.RegisteredDescriptor.Descriptor);
+      var descriptorsLookup = new DescriptorsLookup(RootBlockCollection.Descriptor,
+                                                    ParagraphBlock.Descriptor);
 
       // Act
       SerializationHelpers.VerifyDeserialization(collection, descriptorsLookup);

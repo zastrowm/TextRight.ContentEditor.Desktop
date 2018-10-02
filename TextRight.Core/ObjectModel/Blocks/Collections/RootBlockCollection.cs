@@ -9,8 +9,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
   /// <summary> The collection of blocks that exist at the top of the document. </summary>
   public class RootBlockCollection : VerticalBlockCollectionBase<IBlockCollectionView>
   {
-    public static readonly RegisteredDescriptor RegisteredDescriptor
-      = RegisteredDescriptor.Register<BlockDescriptor>();
+    public static readonly RootBlockCollectionDescriptor Descriptor
+      = RegisteredDescriptors.Register<RootBlockCollectionDescriptor>();
 
     internal RootBlockCollection()
       : base(new ParagraphBlock())
@@ -18,10 +18,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     }
 
     /// <inheritdoc />
-    public override RegisteredDescriptor DescriptorHandle
-      => RegisteredDescriptor;
+    public override BlockDescriptor DescriptorHandle
+      => Descriptor;
 
-    private class BlockDescriptor : FactoryBlockDescriptor<RootBlockCollection>
+    public class RootBlockCollectionDescriptor : FactoryBlockDescriptor<RootBlockCollection>
     {
       /// <inheritdoc />
       public override string Id

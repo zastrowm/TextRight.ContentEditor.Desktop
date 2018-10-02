@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TextRight.Core.Events;
 
 namespace TextRight.Core.ObjectModel.Serialization
 {
   /// <summary>
   ///  Implementation of <see cref="IDataReader"/> that reads data from byte stream.
   /// </summary>
-  public class ByteDataReader : IDataReader
+  public class ByteDataReader : IPropertyReader
   {
     private readonly BinaryReader _binaryReader;
     private readonly MemoryStream _stream;
@@ -31,40 +32,46 @@ namespace TextRight.Core.ObjectModel.Serialization
     }
 
     /// <inheritdoc />
-    long IDataReader.ReadInt64(string name)
-      => _binaryReader.ReadInt64();
-
-    /// <inheritdoc />
-    string IDataReader.ReadString(string name)
-      => _binaryReader.ReadString();
-
-    /// <inheritdoc />
-    byte[] IDataReader.ReadBytes(string name)
+    bool IPropertyReader.TryRead(IPropertyDescriptor name, out long value)
     {
-      int length = _binaryReader.ReadInt32();
-      return _binaryReader.ReadBytes(length);
+      value = _binaryReader.ReadInt64();
+      return true;
     }
 
     /// <inheritdoc />
-    void IDataReader.ReadBytes(string name, ArraySegment<byte> arraySegment)
+    bool IPropertyReader.TryRead(IPropertyDescriptor name, out int value)
     {
-      // not currently used
-      long length = _binaryReader.ReadInt32();
-
-      if (arraySegment.Count != length)
-        throw new ArgumentException($"Actual length ({length}) does not match expected length ({arraySegment.Count}.",
-                                    nameof(arraySegment));
-
-      var bytes = _binaryReader.ReadBytes(arraySegment.Count);
-      bytes.CopyTo(arraySegment.Array, arraySegment.Offset);
+      value = _binaryReader.ReadInt32();
+      return true;
     }
 
     /// <inheritdoc />
-    double IDataReader.ReadDouble(string name)
-      => _binaryReader.ReadDouble();
+    bool IPropertyReader.TryRead(IPropertyDescriptor name, out byte[] bytes)
+    {
+      int size = _binaryReader.ReadInt32();
+      bytes = _binaryReader.ReadBytes(size);
+      return true;
+    }
 
     /// <inheritdoc />
-    bool IDataReader.ReadBool(string name)
-      => _binaryReader.ReadBoolean();
+    bool IPropertyReader.TryRead(IPropertyDescriptor name, out double value)
+    {
+      value = _binaryReader.ReadDouble();
+      return true;
+    }
+
+    /// <inheritdoc />
+    bool IPropertyReader.TryRead(IPropertyDescriptor name, out bool value)
+    {
+      value = _binaryReader.ReadBoolean();
+      return true;
+    }
+
+    /// <inheritdoc />
+    bool IPropertyReader.TryRead(IPropertyDescriptor name, out string value)
+    {
+      value = _binaryReader.ReadString();
+      return true;
+    }
   }
 }

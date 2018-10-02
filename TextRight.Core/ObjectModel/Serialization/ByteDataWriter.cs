@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TextRight.Core.Events;
 
 namespace TextRight.Core.ObjectModel.Serialization
 {
   /// <summary>
   ///  An implementation of <see cref="IDataWriter"/> that writes data to a byte stream.
   /// </summary>
-  public class ByteDataWriter : IDataWriter
+  public class ByteDataWriter : IPropertyWriter
   {
     private readonly BinaryWriter _binaryWriter;
     private readonly MemoryStream _stream;
@@ -33,33 +34,30 @@ namespace TextRight.Core.ObjectModel.Serialization
       => _stream.ToArray();
 
     /// <inheritdoc />
-    void IDataWriter.Write(string name, long datum)
+    void IPropertyWriter.Write(IPropertyDescriptor name, long datum)
       => _binaryWriter.Write(datum);
 
     /// <inheritdoc />
-    void IDataWriter.Write(string name, string datum)
+    void IPropertyWriter.Write(IPropertyDescriptor name, int datum)
       => _binaryWriter.Write(datum);
 
     /// <inheritdoc />
-    void IDataWriter.Write(string name, byte[] datum)
+    void IPropertyWriter.Write(IPropertyDescriptor name, string datum)
+      => _binaryWriter.Write(datum);
+
+    /// <inheritdoc />
+    void IPropertyWriter.Write(IPropertyDescriptor name, byte[] datum)
     {
       _binaryWriter.Write(datum.Length);
       _binaryWriter.Write(datum);
     }
 
     /// <inheritdoc />
-    void IDataWriter.Write(string name, ArraySegment<byte> data)
-    {
-      _binaryWriter.Write(data.Count);
-      _binaryWriter.Write(data.Array, data.Offset, data.Count);
-    }
-
-    /// <inheritdoc />
-    void IDataWriter.Write(string name, double datum)
+    void IPropertyWriter.Write(IPropertyDescriptor name, double datum)
       => _binaryWriter.Write(datum);
 
     /// <inheritdoc />
-    void IDataWriter.Write(string name, bool datum)
+    void IPropertyWriter.Write(IPropertyDescriptor name, bool datum)
       => _binaryWriter.Write(datum);
   }
 }

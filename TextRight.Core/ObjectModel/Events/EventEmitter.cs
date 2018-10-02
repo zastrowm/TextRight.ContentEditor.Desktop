@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using TextRight.Core.Events;
 
 namespace TextRight.Core.ObjectModel
 {
   /// <summary>
   ///  A class that emits events that <see cref="IEventListener"/>s can listen to.
   /// </summary>
-  public abstract class EventEmitter : IEventEmitter
+  public abstract class EventEmitter : DocumentEntity, IEventEmitter
   {
     private object _listeners;
 

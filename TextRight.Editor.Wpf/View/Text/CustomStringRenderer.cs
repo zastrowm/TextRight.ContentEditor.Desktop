@@ -206,7 +206,7 @@ namespace TextRight.Editor.Wpf.View
       int currentFragmentOffset = 0;
 
       int textStorePositionInChars = 0;
-      int textStorePositionInGraphemes = 0;
+      //int textStorePositionInGraphemes = 0;
 
       var caret = TextCaret.FromBeginning(_block.Content);
 
