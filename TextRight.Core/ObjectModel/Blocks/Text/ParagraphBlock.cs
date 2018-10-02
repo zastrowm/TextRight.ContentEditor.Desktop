@@ -11,7 +11,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   {
     /// <summary> Singleton-Instance of a descriptor. </summary>
     public static readonly ParagraphBlockDescriptor Descriptor
-      = RegisteredDescriptor.Register<ParagraphBlockDescriptor>();
+      = RegisteredDescriptors.Register<ParagraphBlockDescriptor>();
 
     /// <inheritdoc />
     public override BlockDescriptor DescriptorHandle

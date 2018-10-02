@@ -40,7 +40,7 @@ namespace TextRight.Editor.Wpf.View
     public void HandleEvent(ChangeEvent changeEvent)
     {
       if (changeEvent is PropertyChangedEvent<int> propertyChange
-          && propertyChange.Descriptor == HeadingBlock.DescriptorInstance.HeadingLevelProperty)
+          && propertyChange.Descriptor == HeadingBlock.Descriptor.HeadingLevelProperty)
       {
         SyncTextSize();
       }

@@ -332,7 +332,7 @@ namespace TextRight.Editor.Wpf.View
       var descriptors = new BlockDescriptor[]
                         {
                           ParagraphBlock.Descriptor,
-                          HeadingBlock.DescriptorInstance,
+                          HeadingBlock.Descriptor,
                         };
 
       var addedCommands = new IContextualCommand[]

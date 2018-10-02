@@ -17,7 +17,7 @@ namespace TextRight.Core.Blocks
   public class ListItemBlock : VerticalBlockCollectionBase<IListItemBlockView>
   {
     public static readonly ListItemBlockDescriptor Descriptor
-      = RegisteredDescriptor.Register<ListItemBlockDescriptor>();
+      = RegisteredDescriptors.Register<ListItemBlockDescriptor>();
 
     public override BlockDescriptor DescriptorHandle
       => Descriptor;

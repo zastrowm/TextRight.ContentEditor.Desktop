@@ -31,7 +31,7 @@ namespace TextRight.Core.Actions
 
     /// <inheritdoc />
     public override BlockDescriptor GetDestinationDescriptor() 
-      => HeadingBlock.DescriptorInstance;
+      => HeadingBlock.Descriptor;
 
     /// <inheritdoc />
     public override void MakeChangesTo(HeadingBlock block)

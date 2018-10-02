@@ -8,10 +8,10 @@ namespace TextRight.Core.ObjectModel.Blocks
   ///  Contains a handle to a <see cref="BlockDescriptor"/> that has been registered app-
   ///  domain wide.
   /// </summary>
-  public sealed class RegisteredDescriptor
+  public sealed class RegisteredDescriptors
   {
     /// <summary> All handle types that have been registered in this AppDomain. </summary>
-    private static readonly Dictionary<Type, BlockDescriptor> RegisteredHandles
+    private static readonly Dictionary<Type, BlockDescriptor> Descriptors
       = new Dictionary<Type, BlockDescriptor>();
 
     /// <summary> Registers a new ContentBlockDescriptor type. </summary>
@@ -20,11 +20,11 @@ namespace TextRight.Core.ObjectModel.Blocks
     public static T Register<T>()
       where T : BlockDescriptor, new()
     {
-      if (RegisteredHandles.TryGetValue(typeof(T), out var value))
+      if (Descriptors.TryGetValue(typeof(T), out var value))
         return (T)value;
 
       var instance = new T();
-      RegisteredHandles.Add(typeof(T), instance);
+      Descriptors.Add(typeof(T), instance);
       return instance;
     }
   }

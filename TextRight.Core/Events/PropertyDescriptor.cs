@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using TextRight.Core.ObjectModel.Serialization;
 
 namespace TextRight.Core.Events
 {
@@ -12,17 +13,19 @@ namespace TextRight.Core.Events
   {
     private readonly Func<object, T> _getter;
     private readonly Action<object, T> _setter;
+    private readonly IValueSerializer<T> _serializer;
 
-    public PropertyDescriptor(string id, PropertyInfo property)
-      : this(id, CreateGetter(property), CreateSetter(property))
+    public PropertyDescriptor(string id, PropertyInfo property, IValueSerializer<T> serializer)
+      : this(id, CreateGetter(property), CreateSetter(property), serializer)
     {
     }
 
-    public PropertyDescriptor(string id, Func<object, T> getter, Action<object, T> setter)
+    public PropertyDescriptor(string id, Func<object, T> getter, Action<object, T> setter, IValueSerializer<T> serializer)
     {
       Id = id;
       _getter = getter;
       _setter = setter;
+      _serializer = serializer;
     }
 
     /// <inheritdoc />
@@ -31,6 +34,25 @@ namespace TextRight.Core.Events
     /// <inheritdoc cref="IPropertyDescriptor.DataType" />
     public Type DataType
       => typeof(T);
+
+    /// <inheritdoc />
+    public void Serialize(object instance, IPropertyWriter writer)
+    {
+      var value = GetValue(instance);
+      _serializer.Write(writer, this, value);
+    }
+
+    /// <inheritdoc />
+    public bool Deserialize(object instance, IPropertyReader reader)
+    {
+      if (_serializer.TryRead(reader, this, out var value))
+      {
+        SetValue(instance, value);
+        return true;
+      }
+
+      return false;
+    }
 
     /// <inheritdoc />
     public void SetValue(object instance, T value)

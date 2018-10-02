@@ -13,6 +13,10 @@ namespace TextRight.Core.ObjectModel.Blocks
   /// </summary>
   public abstract class BlockDescriptor
   {
+    /// <summary> All of the properties registered to this descriptor. </summary>
+    public PropertyDescriptorCollection Properties { get; }
+      = new PropertyDescriptorCollection();
+
     /// <summary> The unique id of the block. </summary>
     public abstract string Id { get; }
 
@@ -59,7 +63,8 @@ namespace TextRight.Core.ObjectModel.Blocks
     public override Block CreateInstance()
       => new TBlock();
 
+    /// <summary> Registers the given properties with <see cref="BlockDescriptor.Properties"/>. </summary>
     public IPropertyDescriptor<T> RegisterProperty<T>(Expression<Func<TBlock, T>> propertyGetter, string id)
-      => PropertyDescriptorRegistry<TBlock>.RegisterProperty(propertyGetter, id);
+      => Properties.RegisterProperty(propertyGetter, id);
   }
 }

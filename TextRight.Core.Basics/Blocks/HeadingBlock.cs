@@ -16,19 +16,19 @@ namespace TextRight.Core.Blocks
     private int _headingLevel;
 
     /// <summary> Singleton-Instance of a descriptor. </summary>
-    public static readonly HeadingBlockDescriptor DescriptorInstance
+    public static readonly HeadingBlockDescriptor Descriptor
       = new HeadingBlockDescriptor();
 
     /// <inheritdoc />
     public override BlockDescriptor DescriptorHandle
-      => DescriptorInstance;
+      => Descriptor;
 
     /// <summary> The level of heading that the block represents. </summary>
     [BlockProperty("HeadingLevel")]
     public int HeadingLevel
     {
       get => _headingLevel;
-      set => SetValue(DescriptorInstance.HeadingLevelProperty, ref _headingLevel, value);
+      set => SetValue(Descriptor.HeadingLevelProperty, ref _headingLevel, value);
     }
 
     /// <inheritdoc/>

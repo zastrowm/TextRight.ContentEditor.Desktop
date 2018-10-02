@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TextRight.Core.Events;
 using TextRight.Core.ObjectModel.Blocks;
 
 namespace TextRight.Core.ObjectModel.Serialization

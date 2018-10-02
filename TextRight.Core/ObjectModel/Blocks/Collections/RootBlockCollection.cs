@@ -10,7 +10,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
   public class RootBlockCollection : VerticalBlockCollectionBase<IBlockCollectionView>
   {
     public static readonly RootBlockCollectionDescriptor Descriptor
-      = RegisteredDescriptor.Register<RootBlockCollectionDescriptor>();
+      = RegisteredDescriptors.Register<RootBlockCollectionDescriptor>();
 
     internal RootBlockCollection()
       : base(new ParagraphBlock())
