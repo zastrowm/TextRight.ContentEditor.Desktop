@@ -59,8 +59,7 @@ namespace TextRight.Core.ObjectModel.Serialization
     /// </returns>
     public T GetDataOrDefault<T>(string name)
     {
-      string strValue;
-      if (_attributes.TryGetValue(name, out strValue))
+      if (_attributes.TryGetValue(name, out var strValue))
       {
         return (T)Convert.ChangeType(strValue, typeof(T));
       }
