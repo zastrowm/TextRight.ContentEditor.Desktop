@@ -10,10 +10,10 @@ namespace TextRight.Editor.Wpf.View
 {
   internal class TextSpanRunProperties : TextRunProperties
   {
-    public TextSpanRunProperties()
+    public TextSpanRunProperties(int fontSize = 24)
     {
       Typeface = new Typeface("Tahoma");
-      FontRenderingEmSize = FontHintingEmSize = 24;
+      FontRenderingEmSize = FontHintingEmSize = fontSize;
       TextDecorations = new TextDecorationCollection();
       ForegroundBrush = new SolidColorBrush() { Color = Colors.Black };
       BackgroundBrush = new SolidColorBrush() { Color = Colors.White };

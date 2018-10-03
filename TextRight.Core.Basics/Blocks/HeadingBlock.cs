@@ -37,7 +37,6 @@ namespace TextRight.Core.Blocks
     protected override IContentBlockView ContentBlockView
       => Target;
 
-
     public void MarkChanged<T>(IPropertyDescriptor<T> descriptor, T oldValue, T newValue)
     {
       if (Target is IChangeListener listener)

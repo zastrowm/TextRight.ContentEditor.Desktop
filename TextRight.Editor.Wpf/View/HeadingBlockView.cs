@@ -29,7 +29,7 @@ namespace TextRight.Editor.Wpf.View
 
     private void SyncTextSize()
     {
-      //Text.TextFontSize = 20 - _block.HeadingLevel * 2;
+      FontSize = 30 - _block.HeadingLevel * 2;
       InvalidateMeasure();
     }
 

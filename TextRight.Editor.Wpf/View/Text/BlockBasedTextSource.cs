@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using TextRight.Core.ObjectModel.Blocks.Text;
 
@@ -18,6 +19,9 @@ namespace TextRight.Editor.Wpf.View
       _block = block;
     }
 
+    public int FontSize { get; set; }
+      = 24;
+
     /// <inheritdoc />
     public override TextRun GetTextRun(int desiredCharacterIndex)
     {
@@ -31,10 +35,12 @@ namespace TextRight.Editor.Wpf.View
         if (endIndex <= desiredCharacterIndex)
           break;
 
+        var props = new TextSpanRunProperties(FontSize);
+
         if (startIndex <= desiredCharacterIndex)
           return CreateCharactersObject(desiredCharacterIndex,
                                         fragment, startIndex, endIndex,
-                                        new TextSpanRunProperties());
+                                        props);
 
         startIndex += fragment.NumberOfChars;
         fragment = fragment.Next;
@@ -43,7 +49,13 @@ namespace TextRight.Editor.Wpf.View
       return new TextEndOfParagraph(1);
     }
 
-    public static TextCharacters CreateCharactersObject(int characterStartIndex, TextSpan span, int startIndex, int endIndex, TextSpanRunProperties properties)
+    public static TextCharacters CreateCharactersObject(
+      int characterStartIndex,
+      TextSpan span,
+      int startIndex, 
+      int endIndex, 
+      TextSpanRunProperties properties
+      )
     {
       return new TextCharacters(span.GetText(),
                                 characterStartIndex - startIndex,

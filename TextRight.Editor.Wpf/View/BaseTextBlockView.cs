@@ -47,6 +47,16 @@ namespace TextRight.Editor.Wpf.View
     /// <summary> The document item for the view. </summary>
     public abstract IDocumentItem DocumentItem { get; }
 
+    public int FontSize
+    {
+      get => _renderer.FontSize;
+      set
+      {
+        _renderer.FontSize = value;
+        RecreateText();
+      }
+    }
+
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size constraint)
     {
@@ -139,13 +149,6 @@ namespace TextRight.Editor.Wpf.View
 
     public MeasuredRectangle Measure(TextCaret caret)
       => MeasureCharacter(caret);
-
-    /// <summary> Invoked by a child fragment when the fragment's text has changed. </summary>
-    /// <param name="span"> The fragment that changed. </param>
-    public void MarkTextChanged(TextSpan span)
-    {
-      RecreateText();
-    }
 
     /// <inheritdoc />
     public void NotifyFragmentInserted(TextSpan previousSibling,

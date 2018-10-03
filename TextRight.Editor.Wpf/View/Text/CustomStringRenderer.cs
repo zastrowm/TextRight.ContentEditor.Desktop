@@ -41,6 +41,16 @@ namespace TextRight.Editor.Wpf.View
     /// <summary> The maximum width of the lines in this renderer </summary>
     public double MaxWidth { get; private set; }
 
+    public int FontSize
+    {
+      get => _textSource.FontSize;
+      set
+      {
+        _textSource.FontSize = value;
+        _isDirty = true;
+      }
+    }
+
     public Point Offset 
       => _parent.Offset;
 
