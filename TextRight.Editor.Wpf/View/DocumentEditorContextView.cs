@@ -83,6 +83,7 @@ namespace TextRight.Editor.Wpf.View
 
       var layoutAbsolute = new Canvas();
       layoutGrid.Children.Add(layoutAbsolute);
+
       UIElementCollection parentCollection = layoutAbsolute.Children;
       parentCollection.Add(_cursorView);
 
@@ -256,6 +257,8 @@ namespace TextRight.Editor.Wpf.View
       if (action != null)
       {
         action.Activate(_editor, _editor.UndoStack);
+        _cursorView.VerifyNotStale();
+
         return true;
       }
 

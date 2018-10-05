@@ -12,7 +12,7 @@ using TextRight.Core.Utilities;
 namespace TextRight.Editor.Wpf.View
 {
   /// <summary> Shared view representation for subclasses of <see cref="TextBlock"/> </summary>
-  public abstract class BaseTextBlockView : FrameworkElement,
+  public abstract class BaseTextBlockView : BaseBlockView,
                                             IOffsetBasedItem,
                                             ITextBlockContentView,
                                             ITextBlockContentEventListener,
@@ -22,7 +22,7 @@ namespace TextRight.Editor.Wpf.View
     private readonly TextBlock _block;
     private readonly CustomStringRenderer _renderer;
 
-    private ChangeIndex _cachedIndex;
+    private ChangeIndex _parentIndex;
 
     /// <summary> Constructor. </summary>
     /// <param name="root"> The root view that this TextBox is ultimately a part of. </param>
@@ -113,7 +113,7 @@ namespace TextRight.Editor.Wpf.View
     {
       Revalidate();
 
-      if (!IsValidForMeasuring)
+      if (!IsValidForMeasuring || !IsArrangeValid)
         return MeasuredRectangle.Invalid;
 
       var rect = _renderer.MeasureCharacter(caret);
@@ -176,13 +176,15 @@ namespace TextRight.Editor.Wpf.View
     {
       // n/a at moment
 
-      if (!_root.LayoutChangeIndex.HasChanged(ref _cachedIndex))
+      if (!_root.LayoutChangeIndex.HasChanged(ref _parentIndex))
         return;
     }
 
     /// <summary> Recreates the FormmatedText due to a text-change event. </summary>
     private void RecreateText()
     {
+      MarkLayoutChanged();
+
       _root.MarkChanged();
       _renderer.Invalidate();
 

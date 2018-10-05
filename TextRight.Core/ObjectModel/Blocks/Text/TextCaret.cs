@@ -154,7 +154,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <inheritdoc />
     public MeasuredRectangle Measure()
     {
-      if (IsAtBlockStart && IsAtBlockEnd)
+      bool isAtBlockStart = IsAtBlockStart;
+      bool isAtBlockEnd = IsAtBlockEnd;
+
+      if (isAtBlockStart && isAtBlockEnd)
       {
         // if it's empty, there is no character to measure
         return Block.GetBounds().FlattenLeft();
@@ -162,8 +165,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       // we want to measure the next character unless the previous character was
       // a space (as the text will most likely appear on the next line anyways) 
-      bool shouldMeasureNext = IsAtBlockStart
-                               || (!IsAtBlockStart && GetPreviousPosition().CharacterAfter.Character == ' ');
+      bool shouldMeasureNext = isAtBlockStart
+                               || (!isAtBlockEnd && GetPreviousPosition().CharacterAfter.Character == ' ');
 
       return shouldMeasureNext
         ? MeasureForward().FlattenLeft()
@@ -173,7 +176,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     private MeasuredRectangle MeasureForward()
     {
       if (IsAtBlockEnd || Span.Owner?.Target == null)
+      {
+        Debug.Assert(!IsAtBlockEnd, "This usually indicates an error");
         return MeasuredRectangle.Invalid;
+      }
 
       return Span.Owner.Target.Measure(this);
     }

@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.Utilities;
 
@@ -19,6 +20,10 @@ namespace TextRight.Editor.Wpf.View
     private readonly PointCollection _caretPointsCollection;
     private readonly Polygon _selectionPolygon;
     private readonly Polygon _caretRect;
+
+    /// <summary> Indicates if the caret's block changed and we need to re-render. </summary>
+    private IndexLayout _layoutIndex;
+
     private const int CaretWidth = 2;
 
     private bool _isDirty = true;
@@ -74,6 +79,18 @@ namespace TextRight.Editor.Wpf.View
       Children.Add(_caretRect);
     }
 
+    /// <summary> Verify that the cursor is not rendering according to the last layout. </summary>
+    public void VerifyNotStale()
+    {
+      var newIndex = GetCurrentLayoutIndex();
+
+      if (newIndex.HasChanged(ref _layoutIndex))
+      {
+        MarkDirty();
+      }
+    }
+
+    /// <summary> Force the view to re-render. </summary>
     public void MarkDirty()
     {
       _isDirty = true;
@@ -83,6 +100,25 @@ namespace TextRight.Editor.Wpf.View
     private void HandleCaretChanged(object sender, EventArgs e)
     {
       MarkDirty();
+    }
+
+    private bool _isQueued = false;
+
+    private async void RemeasureUntilNotInvalid()
+    {
+      if (_isQueued)
+        return;
+
+      _isQueued = true;
+
+      await Task.Yield();
+
+      _isQueued = false;
+
+      if (MeasureCursor())
+      {
+        InvalidateMeasure();
+      }
     }
 
     protected override Size MeasureOverride(Size constraint)
@@ -107,17 +143,18 @@ namespace TextRight.Editor.Wpf.View
     public FrameworkElement SelectionElement
       => _selectionPolygon;
 
-    private void MeasureCursor()
+    private bool MeasureCursor()
     {
       if (!_isDirty)
-        return;
+        return true;
 
       var start = _cursor.Start.Measure();
       if (!start.IsValid)
       {
+        RemeasureUntilNotInvalid();
         // it's possible that we haven't had a new-layout yet, in which case we need to wait until the next tick
         //Debug.Fail("How");
-        return;
+        return false;
       }
 
       if (_cursor.HasSelection)
@@ -132,7 +169,18 @@ namespace TextRight.Editor.Wpf.View
 
       UpdateCaretRectangle(start);
 
+      _layoutIndex = GetCurrentLayoutIndex();
+
       _isDirty = false;
+      return true;
+    }
+
+    private IndexLayout GetCurrentLayoutIndex()
+    {
+      // TODO how can we do this not having so many 'as' casts?
+      var associatedView = (_cursor.Start.Block as IDocumentItem)?.DocumentItemView as ILayoutable;
+      var layoutIndex = new IndexLayout(associatedView);
+      return layoutIndex;
     }
 
     /// <summary> Updates the rectangle for displaying the caret. </summary>

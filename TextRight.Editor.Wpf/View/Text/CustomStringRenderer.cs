@@ -95,8 +95,6 @@ namespace TextRight.Editor.Wpf.View
     {
       RecalculateIfDirty();
 
-      bool shouldShowDebugView = true;
-
       // TODO refactor
       var textLine = FirstTextLine;
 
@@ -105,7 +103,7 @@ namespace TextRight.Editor.Wpf.View
         // Draw the formatted text into the drawing context.
         cachedLine.Line.Draw(drawingContext, cachedLine.Point, InvertAxes.None);
 
-        if (shouldShowDebugView)
+        if (GlobalFlags.ShouldShowDebugTextGraphics)
         {
           textLine.DebugDraw(drawingContext);
         }
