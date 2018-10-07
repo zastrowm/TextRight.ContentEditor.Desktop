@@ -79,6 +79,7 @@ namespace TextRight.Editor.Wpf.View
 
       var localPoint = _ownerView.ToPoint(point);
       var instance = _ownerView.InputHitTest(localPoint);
+
       if (instance is IDocumentItemView view 
           && GetAssociatedBlock(view) is Block block)
       {
@@ -89,7 +90,7 @@ namespace TextRight.Editor.Wpf.View
         VisualTreeHelper.HitTest(_ownerView,
                                  _hitTestFilterCallback,
                                  _hitTestResultCallback,
-                                 new PointHitTestParameters(new Point(point.X, point.Y)));
+                                 new PointHitTestParameters(localPoint));
       }
 
       return _block;

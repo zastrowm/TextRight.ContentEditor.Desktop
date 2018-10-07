@@ -150,6 +150,7 @@ namespace TextRight.Editor.Wpf.View
     public FrameworkElement RootVisual
       => _blockCollectionView;
 
+    /// <summary> Convert a Document Point to a relative/WPF point. </summary>
     public Point ToPoint(DocumentPoint point)
     {
       var localPoint = new Point(point.X, point.Y);
