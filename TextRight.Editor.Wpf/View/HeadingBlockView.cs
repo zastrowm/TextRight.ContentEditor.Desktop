@@ -21,7 +21,7 @@ namespace TextRight.Editor.Wpf.View
     {
       _block = block;
       _block.Target = this;
-      Margin = new Thickness(10);
+      Padding = new Thickness(10);
 
       SyncTextSize();
       //Text.TextFont = new Typeface("Segoe UI Semibold");

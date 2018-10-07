@@ -18,11 +18,24 @@ namespace TextRight.Editor.Wpf.View
                                             ITextBlockContentEventListener,
                                             TextBlock.ITextBlockListener
   {
+    protected internal static readonly Thickness BoxedEmptyThickness 
+      = new Thickness(0);
+
     private readonly DocumentEditorContextView _root;
     private readonly TextBlock _block;
     private readonly CustomStringRenderer _renderer;
-
     private ChangeIndex _parentIndex;
+
+    /// <summary> Static constructor. </summary>
+    static BaseTextBlockView()
+    {
+      // Prevent the base.Margin from ever taking effect in blocks
+      MarginProperty.AddOwner(typeof(BaseTextBlockView),
+                              new FrameworkPropertyMetadata()
+                              {
+                                CoerceValueCallback = (instance, value) => BoxedEmptyThickness
+                              });
+    }
 
     /// <summary> Constructor. </summary>
     /// <param name="root"> The root view that this TextBox is ultimately a part of. </param>
@@ -41,7 +54,7 @@ namespace TextRight.Editor.Wpf.View
     }
 
     /// <summary> The area around the element that should be free of space. </summary>
-    public new Thickness Margin { get; set; }
+    public Thickness Padding { get; set; }
 
     /// <inheritdoc />
     public Point Offset
@@ -63,8 +76,8 @@ namespace TextRight.Editor.Wpf.View
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size constraint)
     {
-      var width = Margin.Left + Margin.Right;
-      var height = Margin.Top + Margin.Bottom;
+      var width = Padding.Left + Padding.Right;
+      var height = Padding.Top + Padding.Bottom;
 
       if (_renderer.SetMaxWidth(constraint.Width - width))
       {
@@ -103,7 +116,7 @@ namespace TextRight.Editor.Wpf.View
       if (_block == null)
         return;
 
-      _renderer.Render(drawingContext, new Point(Margin.Left, Margin.Top));
+      _renderer.Render(drawingContext, new Point(Padding.Left, Padding.Top));
     }
 
     /// <summary>
@@ -128,8 +141,8 @@ namespace TextRight.Editor.Wpf.View
 
       var offset = GetOffset();
 
-      rect.X += offset.X + Margin.Left;
-      rect.Y += offset.Y + Margin.Top;
+      rect.X += offset.X + Padding.Left;
+      rect.Y += offset.Y + Padding.Top;
 
       return rect;
     }
@@ -146,10 +159,10 @@ namespace TextRight.Editor.Wpf.View
 
       return new MeasuredRectangle()
              {
-               X = offset.X + Margin.Left,
-               Y = offset.Y + Margin.Top,
-               Width = ActualWidth - Margin.Left - Margin.Right,
-               Height = ActualHeight - Margin.Top - Margin.Bottom
+               X = offset.X + Padding.Left,
+               Y = offset.Y + Padding.Top,
+               Width = ActualWidth - Padding.Left - Padding.Right,
+               Height = ActualHeight - Padding.Top - Padding.Bottom
              };
     }
 
@@ -168,8 +181,8 @@ namespace TextRight.Editor.Wpf.View
     {
       var offset = GetOffset();
 
-      point.X -= offset.X + Margin.Left;
-      point.Y -= offset.Y + Margin.Top;
+      point.X -= offset.X + Padding.Left;
+      point.Y -= offset.Y + Padding.Top;
 
       return _renderer.GetCaret(point);
     }

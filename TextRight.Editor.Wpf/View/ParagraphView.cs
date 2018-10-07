@@ -16,7 +16,7 @@ namespace TextRight.Editor.Wpf.View
     public ParagraphView(DocumentEditorContextView root, ParagraphBlock block)
       : base(root, block)
     {
-      Margin = new Thickness(10);
+      Padding = new Thickness(10);
 
       _block = block;
       _block.Target = this;
