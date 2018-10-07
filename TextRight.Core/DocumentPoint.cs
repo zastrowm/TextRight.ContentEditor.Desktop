@@ -5,7 +5,9 @@ using System.Linq;
 
 namespace TextRight.Core
 {
-  /// <summary> A simple X,Y value.  Not named Point, because everyone uses that. </summary>
+  /// <summary>
+  ///  A simple X,Y value that represents a point relative to the top of the document.
+  /// </summary>
   [DebuggerDisplay("X: {X}, Y: {Y}")]
   public struct DocumentPoint
   {

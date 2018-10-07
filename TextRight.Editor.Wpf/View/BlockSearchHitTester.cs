@@ -67,7 +67,18 @@ namespace TextRight.Editor.Wpf.View
     {
       _block = null;
 
-      var instance = _ownerView.InputHitTest(new Point(point.X, point.Y));
+      if (point.Y < 0)
+      {
+        return _ownerView.GetBlockFor(new DocumentPoint(0, 0));
+      }
+      else if (point.Y > _ownerView.RootVisual.ActualHeight)
+      {
+        var lastBlock = _ownerView.Context.Document.Root.LastBlock;
+        return BlockTreeWalker.GetNextNonContainerBlock(lastBlock);
+      }
+
+      var localPoint = _ownerView.ToPoint(point);
+      var instance = _ownerView.InputHitTest(localPoint);
       if (instance is IDocumentItemView view 
           && GetAssociatedBlock(view) is Block block)
       {

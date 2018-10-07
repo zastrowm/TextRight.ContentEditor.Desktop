@@ -139,12 +139,29 @@ namespace TextRight.Editor.Wpf.View
     public IDocumentItem DocumentItem
       => _editor;
 
+    /// <summary> The editor context associated with the view. </summary>
+    public DocumentEditorContext Context
+      => _editor;
+
     /// <summary>
     ///  The visual that serves as the root of where carets are measured from.  This visual hosts all
     ///  content of the document.
     /// </summary>
-    public Visual RootVisual
+    public FrameworkElement RootVisual
       => _blockCollectionView;
+
+    public Point ToPoint(DocumentPoint point)
+    {
+      var localPoint = new Point(point.X, point.Y);
+      return RootVisual.TranslatePoint(localPoint, _scrollView);
+    }
+
+    /// <summary> Convert a Wpf/relative point into a point within the document that is absolutely positioned. </summary>
+    private DocumentPoint ToDocumentPoint(Point point)
+    {
+      var documentPoint = _scrollView.TranslatePoint(point, RootVisual);
+      return new DocumentPoint(documentPoint.X, documentPoint.Y);
+    }
 
     public new void Focus()
     {
@@ -231,11 +248,12 @@ namespace TextRight.Editor.Wpf.View
     /// </summary>
     private void UpdateSelection(Point position, bool shouldUpdateSelection)
     {
-      var point = new DocumentPoint(position.X, position.Y);
+      var point = ToDocumentPoint(position);
 
-      if (_editor.Target?.GetBlockFor(point) is IDocumentItem block)
+      if (GetBlockFor(point) is IDocumentItem block)
       {
-        var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
+
+          var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
         _editor.Selection.MoveTo(caret, shouldUpdateSelection);
       }
     }

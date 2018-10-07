@@ -177,6 +177,7 @@ namespace TextRight.Editor.Wpf.View
       RecreateText();
     }
 
+    /// <summary> Gets a caret that represents the given position in the Text. </summary>
     public TextCaret GetCursor(DocumentPoint point)
     {
       var offset = GetOffset();
