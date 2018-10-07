@@ -262,8 +262,8 @@ namespace TextRight.Editor.Wpf.View
     private void DrawSpanningSelection(MeasuredRectangle start, MeasuredRectangle end)
     {
       // TODO we really should go line-by-line or block-by-block as needed
-      var startBlockRect = _cursor.Start.Block.GetBounds();
-      var endBlockRect = _cursor.End.Block.GetBounds();
+      var startBlockRect = _cursor.Start.Block.GetSelectionBounds();
+      var endBlockRect = _cursor.End.Block.GetSelectionBounds();
 
       var maxRight = Math.Max(startBlockRect.Right, endBlockRect.Right);
       var maxLeft = Math.Max(startBlockRect.Left, endBlockRect.Left);

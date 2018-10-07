@@ -42,7 +42,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     }
 
     /// <inheritdoc />
-    public override MeasuredRectangle GetBounds()
+    public override MeasuredRectangle GetSelectionBounds()
     {
       return Target?.MeasureBounds() ?? MeasuredRectangle.Invalid;
     }

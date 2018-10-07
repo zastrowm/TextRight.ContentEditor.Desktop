@@ -11,8 +11,11 @@ namespace TextRight.Core.ObjectModel.Blocks
   public interface IContentBlockView : IDocumentItemView
   {
     /// <summary> Returns the area consumed by the block. </summary>
-    /// <returns> A MeasuredRectangle representing the area required to display the block. </returns>
-    MeasuredRectangle MeasureBounds();
+    /// <returns>
+    ///  A MeasuredRectangle representing the area that would be selected if the entire block was
+    ///  selected.
+    /// </returns>
+    MeasuredRectangle MeasureSelectionBounds();
   }
 
   /// <summary>
@@ -29,7 +32,7 @@ namespace TextRight.Core.ObjectModel.Blocks
     protected abstract IContentBlockView ContentBlockView { get; }
 
     /// <inheritdoc />
-    public override MeasuredRectangle GetBounds()
-      => ContentBlockView?.MeasureBounds() ?? MeasuredRectangle.Invalid;
+    public override MeasuredRectangle GetSelectionBounds()
+      => ContentBlockView?.MeasureSelectionBounds() ?? MeasuredRectangle.Invalid;
   }
 }

@@ -160,7 +160,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (isAtBlockStart && isAtBlockEnd)
       {
         // if it's empty, there is no character to measure
-        return Block.GetBounds().FlattenLeft();
+        return Block.GetSelectionBounds().FlattenLeft();
       }
 
       // we want to measure the next character unless the previous character was

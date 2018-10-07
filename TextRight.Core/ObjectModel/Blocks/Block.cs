@@ -90,9 +90,9 @@ namespace TextRight.Core.ObjectModel.Blocks
     /// </summary>
     internal Block PreviousBlock { get; set; }
 
-    /// <summary> Gets the bounds of the block. </summary>
+    /// <summary> Gets the bounds of the block if the entire thing was selected. </summary>
     /// <returns> The bounds that encompass the area consumed by the block. </returns>
-    public abstract MeasuredRectangle GetBounds();
+    public abstract MeasuredRectangle GetSelectionBounds();
 
     /// <summary>
     ///  Retrieves a caret within the block that represents the given

@@ -91,7 +91,8 @@ namespace TextRight.Editor.Wpf.View
       return line;
     }
 
-    internal void Render(DrawingContext drawingContext)
+    /// <summary> Renders the lines in this string at the given offset. </summary>
+    internal void Render(DrawingContext drawingContext, Point offset)
     {
       RecalculateIfDirty();
 
@@ -101,7 +102,8 @@ namespace TextRight.Editor.Wpf.View
       foreach (var cachedLine in CachedLines)
       {
         // Draw the formatted text into the drawing context.
-        cachedLine.Line.Draw(drawingContext, cachedLine.Point, InvertAxes.None);
+        var drawPoint = new Point(cachedLine.Point.X + offset.X, cachedLine.Point.Y + offset.Y);
+        cachedLine.Line.Draw(drawingContext, drawPoint, InvertAxes.None);
 
         if (GlobalFlags.ShouldShowDebugTextGraphics)
         {

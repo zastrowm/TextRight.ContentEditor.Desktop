@@ -40,6 +40,9 @@ namespace TextRight.Editor.Wpf.View
       RecreateText();
     }
 
+    /// <summary> The area around the element that should be free of space. </summary>
+    public new Thickness Margin { get; set; }
+
     /// <inheritdoc />
     public Point Offset
       => GetOffset();
@@ -60,12 +63,15 @@ namespace TextRight.Editor.Wpf.View
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size constraint)
     {
-      if (_renderer.SetMaxWidth(constraint.Width))
+      var width = Margin.Left + Margin.Right;
+      var height = Margin.Top + Margin.Bottom;
+
+      if (_renderer.SetMaxWidth(constraint.Width - width))
       {
         _root.MarkChanged();
       }
 
-      return new Size(_renderer.MaxWidth, _renderer.GetHeight());
+      return new Size(_renderer.MaxWidth + width, _renderer.GetHeight() + height);
     }
 
     /// <summary>
@@ -97,11 +103,11 @@ namespace TextRight.Editor.Wpf.View
       if (_block == null)
         return;
 
-      _renderer.Render(drawingContext);
+      _renderer.Render(drawingContext, new Point(Margin.Left, Margin.Top));
     }
 
     /// <summary>
-    ///  True if <see cref="MeasureCharacter"/> and <see cref="MeasureBounds"/> will return valid data,
+    ///  True if <see cref="MeasureCharacter"/> and <see cref="MeasureSelectionBounds"/> will return valid data,
     ///  false otherwise.
     /// </summary>
     public bool IsValidForMeasuring
@@ -122,14 +128,14 @@ namespace TextRight.Editor.Wpf.View
 
       var offset = GetOffset();
 
-      rect.X += offset.X;
-      rect.Y += offset.Y;
+      rect.X += offset.X + Margin.Left;
+      rect.Y += offset.Y + Margin.Top;
 
       return rect;
     }
 
     /// <inheritdoc />
-    public MeasuredRectangle MeasureBounds()
+    public MeasuredRectangle MeasureSelectionBounds()
     {
       Revalidate();
 
@@ -140,10 +146,10 @@ namespace TextRight.Editor.Wpf.View
 
       return new MeasuredRectangle()
              {
-               X = offset.X,
-               Y = offset.Y,
-               Width = ActualWidth,
-               Height = ActualHeight
+               X = offset.X + Margin.Left,
+               Y = offset.Y + Margin.Top,
+               Width = ActualWidth - Margin.Left - Margin.Right,
+               Height = ActualHeight - Margin.Top - Margin.Bottom
              };
     }
 
@@ -162,8 +168,8 @@ namespace TextRight.Editor.Wpf.View
     {
       var offset = GetOffset();
 
-      point.X -= offset.X;
-      point.Y -= offset.Y;
+      point.X -= offset.X + Margin.Left;
+      point.Y -= offset.Y + Margin.Top;
 
       return _renderer.GetCaret(point);
     }
