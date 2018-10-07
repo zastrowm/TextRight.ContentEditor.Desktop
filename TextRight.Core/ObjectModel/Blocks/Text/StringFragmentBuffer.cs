@@ -115,14 +115,21 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (graphemeIndex == _graphemeOffsets.Length)
         return new TextOffset(_text.Length, graphemeIndex, 0);
 
-      int graphemOffset = graphemeIndex;
-      int charOffset = _graphemeOffsets[graphemOffset];
-      int length = graphemOffset == _graphemeOffsets.Length - 1
+      int graphemeOffset = graphemeIndex;
+      int charOffset = _graphemeOffsets[graphemeOffset];
+      int length = graphemeOffset == _graphemeOffsets.Length - 1
         ? _text.Length - charOffset
-        : _graphemeOffsets[graphemOffset + 1] - charOffset;
+        : _graphemeOffsets[graphemeOffset + 1] - charOffset;
 
       // TODO
-      return new TextOffset(charOffset, graphemOffset, length);
+      return new TextOffset(charOffset, graphemeOffset, length);
+    }
+
+    /// <inheritdoc />
+    public TextOffset? GetOffsetToCharacterIndex(int characterIndex)
+    {
+      int graphemeIndex = Array.BinarySearch(_graphemeOffsets, characterIndex);
+      return GetOffsetToGraphemeIndex(graphemeIndex);
     }
 
     /// <inheritdoc />

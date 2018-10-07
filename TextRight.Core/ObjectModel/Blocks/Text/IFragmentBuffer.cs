@@ -69,5 +69,13 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     ///  given index.
     /// </returns>
     TextOffset? GetOffsetToGraphemeIndex(int graphemeIndex);
+
+    /// <summary> Gets the offset to the given character index. </summary>
+    /// <param name="graphemeIndex"> The offset to the given character. </param>
+    /// <returns>
+    ///  The offset that represents the given character index, or null if no such grapheme exists at the
+    ///  given index.
+    /// </returns>
+    TextOffset? GetOffsetToCharacterIndex(int graphemeIndex);
   }
 }

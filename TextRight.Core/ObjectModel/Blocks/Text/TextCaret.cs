@@ -218,6 +218,18 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
                            TextOffsetHelpers.CreateAfterTextOffset(content.LastSpan.Buffer));
     }
 
+    /// <summary>
+    ///  Gets a cursor that is looking at the character at the given index.
+    ///  
+    ///  Potentially very expensive, and should be avoided in favor of
+    ///  <see cref="FromOffset(TextSpan,int)"/> instead.
+    /// </summary>
+    /// <param name="span"> The span that the cursor is currently pointing towards. </param>
+    public static TextCaret FromCharacterIndex(TextSpan span, int characterIndex)
+    {
+      return FromOffset(span, span.Buffer.GetOffsetToCharacterIndex(characterIndex).GetValueOrDefault());
+    }
+
     /// <summary> Gets a cursor that is looking at the grapheme at the given index. </summary>
     public static TextCaret FromOffset(TextSpan span, int graphemeIndex)
     {

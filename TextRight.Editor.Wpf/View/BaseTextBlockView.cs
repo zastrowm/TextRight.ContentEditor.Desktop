@@ -165,7 +165,7 @@ namespace TextRight.Editor.Wpf.View
       point.X -= offset.X;
       point.Y -= offset.Y;
 
-      return _renderer.GetCursor(point);
+      return _renderer.GetCaret(point);
     }
 
     /// <summary>

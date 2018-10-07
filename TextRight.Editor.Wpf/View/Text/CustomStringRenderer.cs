@@ -134,30 +134,21 @@ namespace TextRight.Editor.Wpf.View
       return _height;
     }
 
-    /// <summary> Gets the cursor at the designated point. </summary>
-    /// <param name="point"> The point at which the cursor should be pointing.. </param>
-    /// <returns> The cursor at the designated point. </returns>
-    public TextCaret GetCursor(DocumentPoint point)
+    /// <summary> Gets the caret at the designated point. </summary>
+    /// <param name="point"> The point at which the cursor should be pointing. </param>
+    /// <returns> The caret at the designated point. </returns>
+    public TextCaret GetCaret(DocumentPoint point)
     {
-      var (currentLine, numberOfCharactersBeforeLine) = GetLineForYPosition(point.Y);
-
-      var characterHit = currentLine.Line.GetCharacterHitFromDistance(point.X);
-      int absoluteIndexOfCharacter = characterHit.FirstCharacterIndex;
-
-      var (fragment, numberOfCharactersBeforeFragment) = TextBlockUtils.GetFragmentFromBlockCharacterIndex(absoluteIndexOfCharacter, _block);
-
-      int indexOfCharacterInFragment = absoluteIndexOfCharacter - numberOfCharactersBeforeFragment;
-
-      var cursor = TextCaret.FromOffset(fragment, indexOfCharacterInFragment);
+      var caret = GetCaretAtPointClicked(point);
 
       // We clicked on a character, but the caret position actually represents the left side of the character.
       // For example, given "|a|", when we click on 'a', the | represents the possible places for the caret
       // to be placed.  If we're closer to the left, choose the current caret position.  If the right is closer
       // to where we clicked, choose the next caret position.
-      var nextPosition = cursor.GetNextPosition();
+      var nextPosition = caret.GetNextPosition();
       if (nextPosition.IsValid)
       {
-        var positionPrevious = MeasureCharacter(cursor).FlattenLeft();
+        var positionPrevious = MeasureCharacter(caret).FlattenLeft();
         var positionNext = MeasureCharacter(nextPosition).FlattenLeft();
 
         var distancePrevious = DocumentPoint.MeasureDistanceSquared(positionPrevious.Center, point);
@@ -166,11 +157,29 @@ namespace TextRight.Editor.Wpf.View
         // prefer left over right, thus the <
         if (distanceNext < distancePrevious)
         {
-          cursor = nextPosition;
+          caret = nextPosition;
         }
       }
 
-      return cursor;
+      return caret;
+    }
+
+    /// <summary> Gets a caret representing the next character closest to where the point is. </summary>
+    private TextCaret GetCaretAtPointClicked(DocumentPoint point)
+    {
+      var (currentLine, numberOfCharactersBeforeLine) = GetLineForYPosition(point.Y);
+
+      // note - this returns the character index (e.g. 'char'), not the grapheme index, so we'll have
+      // to convert it further down. 
+      var characterHit = currentLine.Line.GetCharacterHitFromDistance(point.X);
+      int absoluteIndexOfCharacter = characterHit.FirstCharacterIndex;
+
+      var (fragment, numberOfCharactersBeforeFragment) =
+        TextBlockUtils.GetFragmentFromBlockCharacterIndex(absoluteIndexOfCharacter, _block);
+
+      int indexOfCharacterInFragment = absoluteIndexOfCharacter - numberOfCharactersBeforeFragment;
+
+      return TextCaret.FromCharacterIndex(fragment, indexOfCharacterInFragment);
     }
 
     private (TextLineContainer line, int numCharactersBefore) GetLineForYPosition(double y)
