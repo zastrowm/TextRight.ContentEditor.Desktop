@@ -66,11 +66,37 @@ namespace TextRight.Editor.Wpf.View
     public Block GetBlockAt(DocumentPoint point)
     {
       _block = null;
-      VisualTreeHelper.HitTest(_ownerView,
-                               _hitTestFilterCallback,
-                               _hitTestResultCallback,
-                               new PointHitTestParameters(new Point(point.X, point.Y)));
+
+      var instance = _ownerView.InputHitTest(new Point(point.X, point.Y));
+      if (instance is IDocumentItemView view 
+          && GetAssociatedBlock(view) is Block block)
+      {
+        _block = block;
+      }
+      else
+      {
+        VisualTreeHelper.HitTest(_ownerView,
+                                 _hitTestFilterCallback,
+                                 _hitTestResultCallback,
+                                 new PointHitTestParameters(new Point(point.X, point.Y)));
+      }
+
       return _block;
+    }
+
+    /// <summary>
+    ///  Tries to get the block associated with the given <see cref="IDocumentItemView"/>, or null if
+    ///  no such block is associated with it.
+    /// </summary>
+    private static Block GetAssociatedBlock(IDocumentItemView documentItemView)
+    {
+      if (documentItemView.DocumentItem is Block block 
+          && !(block is BlockCollection))
+      {
+        return block;
+      }
+
+      return null;
     }
 
     /// <summary>
@@ -87,7 +113,7 @@ namespace TextRight.Editor.Wpf.View
         return shouldStop ? HitTestFilterBehavior.ContinueSkipSelfAndChildren : HitTestFilterBehavior.Continue;
       }
 
-      if (documentItemView.DocumentItem is Block block && !(block is BlockCollection))
+      if (GetAssociatedBlock(documentItemView) is Block block)
       {
         _block = block;
         return HitTestFilterBehavior.Stop;
