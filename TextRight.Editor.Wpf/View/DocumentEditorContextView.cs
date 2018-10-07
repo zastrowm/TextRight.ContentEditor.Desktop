@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,8 +16,6 @@ using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using Block = TextRight.Core.ObjectModel.Blocks.Block;
-using BlockCollection = TextRight.Core.ObjectModel.Blocks.Collections.BlockCollection;
-using TextBlock = TextRight.Core.ObjectModel.Blocks.Text.TextBlock;
 
 namespace TextRight.Editor.Wpf.View
 {
@@ -112,6 +107,9 @@ namespace TextRight.Editor.Wpf.View
 
       layoutGrid.PreviewMouseDown += HandlePreviewMouseDown;
       layoutGrid.PreviewMouseMove += HandlePreviewMouseMove;
+
+      BlockSearchHitTester.SetShouldStopHitTesting(_cursorView, true);
+      BlockSearchHitTester.SetShouldStopHitTesting(layoutAbsolute, true);
     }
 
     /// <summary>
@@ -273,63 +271,6 @@ namespace TextRight.Editor.Wpf.View
     public Block GetBlockFor(DocumentPoint point)
     {
       return _blockSearchHitTester.GetBlockAt(point);
-    }
-
-    /// <summary> Performs a HitTest to determine which block a point belongs to. </summary>
-    private class BlockSearchHitTester
-    {
-      private readonly DocumentEditorContextView _ownerView;
-      private readonly HitTestFilterCallback _hitTestFilterCallback;
-      private readonly HitTestResultCallback _hitTestResultCallback;
-      private Block _block;
-
-      /// <summary> Constructor. </summary>
-      /// <param name="ownerView"> The visual that is performing the hit test. </param>
-      public BlockSearchHitTester(DocumentEditorContextView ownerView)
-      {
-        _ownerView = ownerView;
-        _hitTestFilterCallback = FilterCallback;
-        _hitTestResultCallback = ResultCallback;
-      }
-
-      /// <summary> Uses HitTesting to determine the block at the specified point. </summary>
-      /// <param name="point"> The point at which the hit test should be performed. </param>
-      /// <returns> The block at a the given point. </returns>
-      public Block GetBlockAt(DocumentPoint point)
-      {
-        _block = null;
-        VisualTreeHelper.HitTest(_ownerView,
-                                 _hitTestFilterCallback,
-                                 _hitTestResultCallback,
-                                 new PointHitTestParameters(new Point(point.X, point.Y)));
-        return _block;
-      }
-
-      /// <summary>
-      ///  Callback for use with
-      ///  <see cref="VisualTreeHelper.HitTest(Visual, HitTestFilterCallback, HitTestResultCallback, HitTestParameters)"/>
-      /// </summary>
-      private HitTestFilterBehavior FilterCallback(DependencyObject potentialhittesttarget)
-      {
-        var documentItemView = potentialhittesttarget as IDocumentItemView;
-        var block = documentItemView?.DocumentItem as Block;
-        if (block != null && !(block is BlockCollection))
-        {
-          _block = block;
-          return HitTestFilterBehavior.Stop;
-        }
-
-        return HitTestFilterBehavior.Continue;
-      }
-
-      /// <summary>
-      ///  Callback for use with
-      ///  <see cref="VisualTreeHelper.HitTest(Visual, HitTestFilterCallback, HitTestResultCallback, HitTestParameters)"/>
-      /// </summary>
-      private HitTestResultBehavior ResultCallback(HitTestResult result)
-      {
-        return HitTestResultBehavior.Continue;
-      }
     }
 
     private KeyboardShortcutCollection ConfigureCommands()
