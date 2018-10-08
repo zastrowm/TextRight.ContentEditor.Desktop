@@ -46,7 +46,7 @@ namespace TextRight.Editor.Wpf.View
     /// <inheritdoc />
     public void NotifyBlockRemoved(Block oldPreviousSibling,
                                    Block blockRemoved,
-                                   Block oldNextSibiling,
+                                   Block oldNextSibling,
                                    int indexOfBlockRemoved)
     {
       var view = (FrameworkElement)((IDocumentItem)blockRemoved).DocumentItemView;

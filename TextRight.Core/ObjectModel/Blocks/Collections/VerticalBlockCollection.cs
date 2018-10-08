@@ -112,7 +112,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling);
 
     /// <summary> Invoked when a block has been removed from the collection. </summary>
-    void NotifyBlockRemoved(Block oldPreviousSibling, Block blockRemoved, Block oldNextSibiling, int indexOfBlockRemoved);
+    void NotifyBlockRemoved(Block oldPreviousSibling, Block blockRemoved, Block oldNextSibling, int indexOfBlockRemoved);
 
     /// <summary> Returns the area consumed by the block. </summary>
     /// <returns> A MeasuredRectangle representing the area required to display the block. </returns>
