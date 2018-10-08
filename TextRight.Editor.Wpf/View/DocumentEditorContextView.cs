@@ -113,6 +113,7 @@ namespace TextRight.Editor.Wpf.View
       _editor.UndoStack.Clear();
 
       layoutGrid.PreviewMouseDown += HandlePreviewMouseDown;
+      layoutGrid.PreviewMouseUp += HandlePreviewMouseUp;
       layoutGrid.PreviewMouseMove += HandlePreviewMouseMove;
 
       BlockSearchHitTester.SetShouldStopHitTesting(_cursorView, true);
@@ -240,6 +241,27 @@ namespace TextRight.Editor.Wpf.View
 
       // TODO, do something with mouse events
       e.Handled = true;
+
+      // start capturing (which will start calling the mouse overrides, not the preview methods) so
+      // that even if they move the caret outside of the window/control, we still get mouse-move
+      // events. 
+      CaptureMouse();
+    }
+
+    protected void HandlePreviewMouseUp(object sender, MouseButtonEventArgs e)
+    {
+      if (IsMouseCaptured)
+      {
+        ReleaseMouseCapture();
+      }
+    }
+
+    protected override void OnMouseUp(MouseButtonEventArgs e)
+    {
+      if (!IsMouseCaptured)
+        return;
+
+      HandlePreviewMouseUp(this, e);
     }
 
     protected void HandlePreviewMouseMove(object sender, MouseEventArgs e)
@@ -249,6 +271,14 @@ namespace TextRight.Editor.Wpf.View
 
       UpdateSelection(e.GetPosition(this), true);
       e.Handled = true;
+    }
+
+    protected override void OnMouseMove(MouseEventArgs e)
+    {
+      if (!IsMouseCaptured)
+        return;
+
+      HandlePreviewMouseMove(this, e);
     }
 
     /// <summary>
