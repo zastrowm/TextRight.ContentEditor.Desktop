@@ -74,7 +74,14 @@ namespace TextRight.Editor.Wpf.View
       _scrollView.Content = layoutGrid;
 
       // simply add the content in
-      layoutGrid.Children.Add(_blockCollectionView);
+      layoutGrid.Children.Add(new StackPanel
+                              {
+                                Background = Brushes.Transparent,
+                                Children =
+                                {
+                                  _blockCollectionView
+                                }
+                              });
 
       var layoutAbsolute = new Canvas();
       layoutGrid.Children.Add(layoutAbsolute);

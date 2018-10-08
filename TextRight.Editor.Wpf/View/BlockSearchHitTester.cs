@@ -74,7 +74,8 @@ namespace TextRight.Editor.Wpf.View
       else if (point.Y > _ownerView.RootVisual.ActualHeight)
       {
         var lastBlock = _ownerView.Context.Document.Root.LastBlock;
-        return BlockTreeWalker.GetNextNonContainerBlock(lastBlock);
+        return BlockTreeWalker.GetNextNonContainerBlock(lastBlock)
+               ?? lastBlock as ContentBlock;
       }
 
       var localPoint = _ownerView.ToPoint(point);
