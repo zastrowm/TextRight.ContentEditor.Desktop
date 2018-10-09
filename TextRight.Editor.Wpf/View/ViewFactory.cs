@@ -31,9 +31,8 @@ namespace TextRight.Editor.Wpf.View
     /// <summary> Gets a view that can be used for the given block. </summary>
     public FrameworkElement GetViewFor(DocumentEditorContextView context, Block block)
     {
-      Func<DocumentEditorContextView, Block, FrameworkElement> creator;
-      if (!_lookup.TryGetValue(block.GetType(), out creator))
-        throw new KeyNotFoundException();
+      if (!_lookup.TryGetValue(block.GetType(), out var creator))
+        throw new KeyNotFoundException() { Data = { { "Key", block.GetType() } } };
 
       return creator.Invoke(context, block);
     }

@@ -30,14 +30,16 @@ namespace TextRight.Editor.Wpf.View
     private readonly ScrollViewer _scrollView;
     private readonly DocumentCursorView _cursorView;
     private readonly KeyboardShortcutCollection _keyCommands;
+    private readonly ViewFactory _viewFactory;
 
     private readonly BlockSearchHitTester _blockSearchHitTester;
     private ChangeIndex _layoutChangeIndex;
 
     private readonly IContextualCommand<string> _insertText = new InsertTextCommand();
 
-    public DocumentEditorContextView(DocumentEditorContext editor)
+    public DocumentEditorContextView(DocumentEditorContext editor)                                      
     {
+      _viewFactory = new ViewFactory();
       _blockSearchHitTester = new BlockSearchHitTester(this);
 
       editor.Target = this;
@@ -130,9 +132,9 @@ namespace TextRight.Editor.Wpf.View
     public ChangeIndex LayoutChangeIndex
       => _layoutChangeIndex;
 
-    /// <summary> The view-factory for this instance. </summary>
-    public ViewFactory ViewFactory
-      = new ViewFactory();
+    /// <summary> Constructs a new view for a given block instance. </summary>
+    public UIElement CreateViewFor(Block block)
+      => _viewFactory.GetViewFor(this, block);
 
     /// <summary>
     ///  Changes <see cref="LayoutChangeIndex"/> to indicate that a change to the layout of the document has

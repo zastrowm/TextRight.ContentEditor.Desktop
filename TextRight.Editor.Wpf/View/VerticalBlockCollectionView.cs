@@ -39,7 +39,7 @@ namespace TextRight.Editor.Wpf.View
     /// <inheritdoc />
     public void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling)
     {
-      var newBlockView = _root.ViewFactory.GetViewFor(_root, newBlock);
+      var newBlockView = _root.CreateViewFor(newBlock);
       Children.Insert(newBlock.Index, newBlockView);
     }
 

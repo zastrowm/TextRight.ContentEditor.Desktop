@@ -42,7 +42,8 @@ namespace TextRight.Editor.Wpf.View
       // TODO make this not just for TextBlocks
       foreach (var block in listItemBlock.Children)
       {
-        Children.Add(new ParagraphView(_root, (Core.ObjectModel.Blocks.Text.ParagraphBlock)block));
+        var view = _root.CreateViewFor(block);
+        Children.Add(view);
       }
     }
 
@@ -52,7 +53,7 @@ namespace TextRight.Editor.Wpf.View
 
     public void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling)
     {
-      var newBlockView = _root.ViewFactory.GetViewFor(_root, newBlock);
+      var newBlockView = _root.CreateViewFor(newBlock);
       _childContents.Children.Insert(newBlock.Index, newBlockView);
     }
 
