@@ -10,7 +10,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   /// <summary>
   ///  A position within a <see cref="TextSpan"/> where text can be inserted.
   /// </summary>
-  public struct TextCaret : IEquatable<TextCaret>,
+  public struct TextCaret : ISimpleCaret<TextCaret, TextBlock>,
+                            IEquatable<TextCaret>,
                             IBlockCaret
   {
     /// <summary> A cursor which represents an invalid location. </summary>
@@ -148,7 +149,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (!IsValid)
         return BlockCaret.Invalid;
 
-      return new BlockCaret(TextCaretMover.Instance, Span, Offset.CharOffset, Offset.GraphemeOffset, Offset.GraphemeLength);
+      return new BlockCaret(TextCaretMover.Instance,
+                            Span,
+                            Offset.CharOffset,
+                            Offset.GraphemeOffset,
+                            Offset.GraphemeLength);
     }
 
     /// <inheritdoc />
@@ -192,19 +197,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return Span.Owner.Target.Measure(GetPreviousPosition());
     }
 
-    /// <summary>
-    ///  Converts the given caret into a TextCaret, assuming that the BlockCaret is pointing at text
-    ///  content.
-    /// </summary>
-    public static TextCaret FromBlockCaret(BlockCaret caret)
-    {
-      if (caret.Mover != TextCaretMover.Instance)
-        throw new ArgumentException("Caret does not represent the content of a TextCaret", nameof(caret));
-
-      var offset = new TextOffset(caret.InstanceOffset1, caret.InstanceOffset2, caret.InstanceOffset3);
-      return new TextCaret((TextSpan)caret.InstanceDatum, offset);
-    }
-
     /// <summary> Gets a cursor that is looking at the beginning of the content. </summary>
     public static TextCaret FromBeginning(TextBlockContent content)
     {
@@ -245,7 +237,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <summary> Gets an object that holds the serialized data for this caret. </summary>
-    private ISerializedBlockCaret Serialize()
+    public ISerializedBlockCaret Serialize()
       => new SerializedData(this);
 
     /// <summary />
@@ -262,7 +254,23 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <summary> Explicit cast that converts the given BlockCaret to a TextCaret. </summary>
     public static explicit operator TextCaret(BlockCaret caret)
-      => FromBlockCaret(caret);
+      => TextCaretMover.Instance.FromBlockCaret(caret);
+
+    private class TextCaretMover : SimpleCaretMover<TextCaret, TextBlock>
+    {
+      internal static readonly TextCaretMover Instance
+        = new TextCaretMover();
+
+      /// <inheritdoc />
+      public override TextCaret FromBlockCaret(BlockCaret caret)
+      {
+        if (caret.Mover != Instance)
+          throw new ArgumentException("Caret does not represent the content of a TextCaret", nameof(caret));
+
+        var offset = new TextOffset(caret.InstanceOffset1, caret.InstanceOffset2, caret.InstanceOffset3);
+        return new TextCaret((TextSpan)caret.InstanceDatum, offset);
+      }
+    }
 
     private class SerializedData : ISerializedBlockCaret
     {
@@ -283,37 +291,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         var fragment = ((TextBlock)block).Content.GetSpanAtIndex(_spanIndex);
         return TextCaret.FromOffset(fragment, _graphemeOffset);
       }
-    }
-
-    private class TextCaretMover : ICaretMover<TextCaret>
-    {
-      internal static readonly TextCaretMover Instance
-        = new TextCaretMover();
-
-      /// <inheritdoc />
-      public TextCaret Convert(BlockCaret caret)
-        => FromBlockCaret(caret);
-
-      public BlockCaret MoveForward(BlockCaret caret)
-        => FromBlockCaret(caret).GetNextPosition().ToBlockCaret();
-
-      public BlockCaret MoveBackward(BlockCaret caret)
-        => FromBlockCaret(caret).GetPreviousPosition().ToBlockCaret();
-
-      public bool IsAtBlockEnd(BlockCaret caret)
-        => FromBlockCaret(caret).IsAtBlockEnd;
-
-      public ContentBlock GetBlock(BlockCaret blockCaret) 
-        => FromBlockCaret(blockCaret).Block;
-
-      public bool IsAtBlockStart(BlockCaret caret)
-        => FromBlockCaret(caret).IsAtBlockStart;
-
-      public MeasuredRectangle Measure(BlockCaret blockCaret)
-        => FromBlockCaret(blockCaret).Measure();
-
-      public ISerializedBlockCaret Serialize(BlockCaret caret)
-        => FromBlockCaret(caret).Serialize();
     }
   }
 }
