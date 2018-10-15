@@ -14,14 +14,14 @@ namespace TextRight.Core.ObjectModel.Blocks.Text.View
     MeasuredRectangle Measure(TextCaret caret);
 
     /// <summary> The first line in the renderer. </summary>
-    ITextLine FirstTextLine { get; }
+    IVisualLine<TextCaret> FirstTextLine { get; }
 
     /// <summary> The second line in the renderer. </summary>
-    ITextLine LastTextLine { get; }
+    IVisualLine<TextCaret> LastTextLine { get; }
 
     /// <summary> Gets the line on which the caret appears. </summary>
     /// <param name="caret"> The caret for which the associated line should be retrieved. </param>
     /// <returns> The line for. </returns>
-    ITextLine GetLineFor(TextCaret caret);
+    IVisualLine<TextCaret> GetLineFor(TextCaret caret);
   }
 }

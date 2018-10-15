@@ -11,9 +11,9 @@ using TextRight.Core.Utilities;
 namespace TextRight.Editor.Wpf.View
 {
   /// <summary>
-  ///  Implementation of <see cref="ITextLine"/> for <see cref="CustomStringRenderer"/>.
+  ///  Implementation of <see cref="IVisualLine{TCaret}<TextCaret>"/> for <see cref="CustomStringRenderer"/>.
   /// </summary>
-  internal class TextLineRender : ITextLine
+  internal class TextLineRender : IVisualLine<TextCaret>
   {
     private readonly CustomStringRenderer _owner;
     private readonly int _index;
@@ -25,11 +25,11 @@ namespace TextRight.Editor.Wpf.View
     }
 
     /// <inheritdoc />
-    ITextLine ITextLine.Next
+    IVisualLine<TextCaret> IVisualLine<TextCaret>.Next
       => Next;
 
     /// <inheritdoc />
-    ITextLine ITextLine.Previous 
+    IVisualLine<TextCaret> IVisualLine<TextCaret>.Previous 
       => Previous;
 
     /// <summary />
@@ -137,7 +137,7 @@ namespace TextRight.Editor.Wpf.View
       return _cachedLineBounds;
     }
 
-    TextCaret ITextLine.FindClosestTo(double xPosition)
+    TextCaret IVisualLine<TextCaret>.FindClosestTo(double xPosition)
     {
       var container = GetContainer();
       var lineBounds = GetCachedLineBounds(container);
@@ -147,11 +147,11 @@ namespace TextRight.Editor.Wpf.View
 
       var caret = TextCaret.FromOffset(container.Span, container.Offset.GraphemeOffset);
 
-      var closest = (
-        caret: caret,
+      var closest =
+        (caret: caret,
           index: 0,
           distance: DistanceTo(caret)
-        );
+          );
 
       for (int i = 1; i < lineBounds.Length; i++)
       {

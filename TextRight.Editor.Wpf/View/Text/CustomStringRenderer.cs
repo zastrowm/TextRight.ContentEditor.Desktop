@@ -79,9 +79,11 @@ namespace TextRight.Editor.Wpf.View
       => new TextLineRender(this, CachedLines.Count - 1);
 
     /// <inheritdoc />
-    public ITextLine GetLineFor(TextCaret caret)
+    public IVisualLine<TextCaret> GetLineFor(TextCaret caret)
     {
       var line = FirstTextLine;
+
+      // TODO use binary search
 
       // NOTE - we need to pass it index into the larger text string.  Not sure if that's the underlying 
       // string or a some other buffer (The TextRun?, the Paragraph?)

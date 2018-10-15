@@ -220,15 +220,15 @@ namespace TextRight.Editor.Wpf.View
     }
 
     /// <inheritdoc />
-    public ITextLine FirstTextLine
+    public IVisualLine<TextCaret> FirstTextLine
       => RevalidateAndGetRenderer().FirstTextLine;
 
     /// <inheritdoc />
-    public ITextLine LastTextLine
+    public IVisualLine<TextCaret> LastTextLine
       => RevalidateAndGetRenderer().LastTextLine;
 
     /// <inheritdoc />
-    public ITextLine GetLineFor(TextCaret caret)
+    public IVisualLine<TextCaret> GetLineFor(TextCaret caret)
       => RevalidateAndGetRenderer().GetLineFor(caret);
 
     void ITextBlockContentEventListener.NotifyFragmentRemoved(TextSpan previousSibling,
