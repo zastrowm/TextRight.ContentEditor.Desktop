@@ -23,7 +23,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   public class TextSpan : DocumentNode, IEquatable<TextSpan>
   {
     private readonly string _styleId;
-    internal IFragmentBuffer _buffer;
+    internal StringFragmentBuffer _buffer;
 
     /// <summary> Default constructor. </summary>
     public TextSpan(string text, string styleId = null)
@@ -57,7 +57,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       => _buffer.GraphemeLength;
 
     /// <summary> The buffer associated with this fragment.. </summary>
-    internal IFragmentBuffer Buffer
+    internal StringFragmentBuffer Buffer
       => _buffer;
 
     /// <summary>

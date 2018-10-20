@@ -9,7 +9,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> Creates a TextOffset that exists after all content in the buffer. </summary>
     /// <param name="buffer"> The buffer for which the text offset should be created. </param>
     /// <returns> The offset representing the content after the buffer. </returns>
-    internal static TextOffset CreateAfterTextOffset(IFragmentBuffer buffer)
+    internal static TextOffset CreateAfterTextOffset(StringFragmentBuffer buffer)
     {
       return new TextOffset(
         buffer.NumberOfChars,
