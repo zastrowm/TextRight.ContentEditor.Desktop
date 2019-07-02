@@ -6,9 +6,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="keyboard.trcfg" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="keyboard.trcfg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -24,15 +21,9 @@
     <Reference Include="Guapr.ClientHosting">
       <HintPath>..\..\..\WpfWatcher\.bin\Debug\Guapr.App\Guapr.ClientHosting.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\PresentationCore.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationFramework">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\PresentationFramework.dll</HintPath>
-    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\WindowsBase.dll</HintPath>
-    </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
 </Project>
