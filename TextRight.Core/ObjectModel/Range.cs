@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextRight.Core.ObjectModel.Blocks.Text
+namespace TextRight.Core.ObjectModel
 {
   /// <summary> Represents a start index and end index of a specific string. </summary>
-  public struct TextRange
+  public struct Range
   {
     /// <summary> Constructor. </summary>
     /// <param name="startIndex"> The start index within a string. </param>
     /// <param name="endIndex"> The end index within a string. </param>
-    public TextRange(int startIndex, int endIndex)
+    public Range(int startIndex, int endIndex)
     {
       StartIndex = startIndex;
       EndIndex = endIndex;
@@ -50,7 +50,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
              && index <= EndIndex;
     }
 
-    public bool OverlapsInclusive(TextRange range)
+    public bool OverlapsInclusive(Range range)
     {
       // http://stackoverflow.com/a/12888920/548304
       int x1 = StartIndex;

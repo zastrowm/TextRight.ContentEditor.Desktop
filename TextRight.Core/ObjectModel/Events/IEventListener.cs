@@ -5,7 +5,7 @@ using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.ObjectModel
 {
-  /// <summary> An object that listens to events from  </summary>
+  /// <summary> An object that listens to events from another object. </summary>
   public interface IEventListener
   {
     

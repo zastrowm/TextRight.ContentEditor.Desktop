@@ -20,7 +20,7 @@ namespace TextRight.Core
   }
 
   /// <summary> Represents a TextRight document that is being edited. </summary>
-  public class DocumentEditorContext : IDocumentItem<IDocumentEditorView>
+  public class DocumentEditorContext : EventEmitter, IDocumentItem<IDocumentEditorView>
   {
     public DocumentEditorContext()
       : this(new DocumentOwner())
@@ -72,5 +72,9 @@ namespace TextRight.Core
 
     /// <summary> The stack of actions that can be undone. </summary>
     public ActionStack UndoStack { get; }
+
+    /// <inheritdoc />
+    protected override EventEmitter ParentEmitter
+      => null;
   }
 }

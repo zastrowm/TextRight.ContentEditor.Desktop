@@ -13,7 +13,7 @@ namespace TextRight.Core.ObjectModel.Blocks
   ///  Represents the base class for both <see cref="BlockCollection"/> and
   ///  <see cref="ContentBlock"/>.
   /// </summary>
-  public abstract class Block : EventEmitter
+  public abstract class Block : DocumentItem
   {
     /// <summary> Default constructor. </summary>
     internal Block()

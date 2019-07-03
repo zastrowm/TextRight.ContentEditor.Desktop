@@ -1,14 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
+using TextRight.Core.ObjectModel.Blocks.Text;
 
-namespace TextRight.Core.ObjectModel.Blocks.Text
+namespace TextRight.Core.ObjectModel
 {
   /// <summary> Contains a collection of SubFragmentMarkups for a specific <see cref="TextSpan"/>. </summary>
-  public class MarkupCollection : IEnumerable<Markup>
+  public partial class MarkupCollection : IEnumerable<Markup>
   {
     // at some point we may want to consider using some form of an Interval Tree but for now our
     // current architecture is acceptable. (http:// en.wikipedia.org/wiki/Interval_tree) 
@@ -29,16 +28,16 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside
     ///  the required range. </exception>
     /// <param name="range"> The range of text to mark. </param>
-    /// <param name="type"> The type of markup to apply to the range. </param>
-    /// <param name="additionalData"> Any additional data to store with the markup. </param>
-    public Markup MarkRange(TextRange range, MarkupType type, object additionalData)
+    /// <param name="descriptor"> The type of markup to apply to the range. </param>
+    /// <param name="markupData"> The markup data to store with the markup. </param>
+    public Markup MarkRange(Range range, IMarkupDescriptor descriptor, IMarkupData markupData)
     {
       if (range.StartIndex < 0)
         throw new ArgumentOutOfRangeException(nameof(range));
       if (range.EndIndex > _owner.Length)
         throw new ArgumentOutOfRangeException(nameof(range));
 
-      var newFragment = new MarkupNodeReference(this, type, additionalData)
+      var newFragment = new MarkupNodeReference(this, descriptor, markupData)
                         {
                           Length = range.Length
                         };
@@ -87,7 +86,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <summary> Updates the collection based on the given text-changed event. </summary>
     /// <param name="changeEvent"> The event for which the collection of entries should be updated. </param>
-    internal void UpdateFromEvent(TextModification changeEvent)
+    internal void UpdateFromEvent(RangeModification changeEvent)
     {
       if (changeEvent.WasAdded)
       {
@@ -131,28 +130,33 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return lastNode;
     }
 
-    private void Invalidate(MarkupNodeReference value)
+    private void Invalidate(MarkupNodeReference value, bool didExpand)
     {
       // TODO notify callers that this fragment needs to be updated
-      value.IsValid = false;
+      value.Status = MarkupNodeReference.NodeStatus.NeedsRevalidation;
+    }
+
+    private void MarkForRemoval(MarkupNodeReference value)
+    {
+      value.Status = MarkupNodeReference.NodeStatus.MarkedForRemoval;
     }
 
     /// <summary> Finds a series of nodes that are affected by a change at the given index. </summary>
-    /// <param name="indexOfChange"> The index at which a change is being applied </param>
+    /// <param name="range"> The range at which a change is being applied </param>
     /// <returns> The nodes that are affected by the change. </returns>
-    private FoundNode GetAffectedNodes(TextRange range)
+    private FoundNode GetAffectedNodes(Range range)
     {
-      LinkedListNode<MarkupNodeReference> listNode = _subFragments.First;
+      var listNode = _subFragments.First;
       int absoluteIndexOfLastSubFragment = 0;
 
-      FoundNode foundNode = new FoundNode();
+      var foundNode = new FoundNode();
 
       while (listNode != null)
       {
         MarkupNodeReference subFragment = listNode.Value;
 
         var subFragmentAbsoluteStart = absoluteIndexOfLastSubFragment + subFragment.RelativeOffsetSinceLastNode;
-        var nodeRange = new TextRange(subFragmentAbsoluteStart, subFragmentAbsoluteStart + subFragment.Length);
+        var nodeRange = new Range(subFragmentAbsoluteStart, subFragmentAbsoluteStart + subFragment.Length);
 
         if (range.EndIndex < nodeRange.StartIndex)
         {
@@ -174,9 +178,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <summary> Updates the ranges as a result of a insert text modification. </summary>
-    private void UpdateFromInsert(TextModification changeEvent)
+    private void UpdateFromInsert(RangeModification changeEvent)
     {
-      var findings = GetAffectedNodes(new TextRange(changeEvent.Index, changeEvent.Index));
+      var findings = GetAffectedNodes(new Range(changeEvent.Index, changeEvent.Index));
 
       bool didAdjustedOffset = false;
 
@@ -188,30 +192,30 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         if (currentRange.ContainsExclusive(changeEvent.Index))
         {
           // if the change is in the middle, extend the range to include the newly inserted text. 
-          currentFragmentNode.Length += changeEvent.NumberOfCharacters;
+          currentFragmentNode.Length += changeEvent.NumberOfItems;
         }
         else if (!didAdjustedOffset && currentRange.StartIndex == changeEvent.Index)
         {
           didAdjustedOffset = true;
-          currentFragmentNode.RelativeOffsetSinceLastNode += changeEvent.NumberOfCharacters;
+          currentFragmentNode.RelativeOffsetSinceLastNode += changeEvent.NumberOfItems;
         }
 
-        Invalidate(currentFragmentNode);
+        ProcessForOwner(currentFragmentNode.Descriptor.ExpandBehavior, currentFragmentNode, true);
       }
 
       if (!didAdjustedOffset && findings.RemainingNode != null)
       {
         // we need to offset the remaining nodes, so make sure this offset is adjusted
-        findings.RemainingNode.Value.RelativeOffsetSinceLastNode += changeEvent.NumberOfCharacters;
+        findings.RemainingNode.Value.RelativeOffsetSinceLastNode += changeEvent.NumberOfItems;
       }
     }
 
     /// <summary> Updates the ranges as a result of a delete text modification. </summary>
-    private void UpdateFromDelete(TextModification changeEvent)
+    private void UpdateFromDelete(RangeModification changeEvent)
     {
-      // $Simpler?$: NOTE deletion is so much more complicated that insert.  It's possible that this
+      // $Simpler?$: NOTE deletion is so much more complicated than insert.  It's possible that this
       // implementation is just overly complicated, so we may want to revisit this at some point. 
-      var deletionRange = new TextRange(changeEvent.Index, changeEvent.Index + changeEvent.NumberOfCharacters);
+      var deletionRange = new Range(changeEvent.Index, changeEvent.Index + changeEvent.NumberOfItems);
       var findings = GetAffectedNodes(deletionRange);
 
       bool didAdjustedOffset = false;
@@ -226,7 +230,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         // the algorithm didn't originally use the originalRange, but after finding the edge cases that
         // the UTs exposed, it was determined that it was easier to reason about.  However, it's
         // possible that a simpler algorithm exists (see $Simpler?$ above)
-        var originalRange = new TextRange(currentRange.StartIndex + adjustmentsThusFar,
+        var originalRange = new Range(currentRange.StartIndex + adjustmentsThusFar,
                                           currentRange.EndIndex + adjustmentsThusFar);
 
         // if the deletion range is before the markup range, we need to both reduce the length and shift it over
@@ -263,7 +267,13 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
           currentFragmentNode.Length -= numberOfCharactersToRemove;
         }
 
-        Invalidate(currentFragmentNode);
+        var associatedDescriptor = currentFragmentNode.Descriptor;
+
+        var behavior = currentRange.Length == 0
+          ? associatedDescriptor.ShrinkToEmptyBehavior
+          : associatedDescriptor.ShrinkBehavior;
+
+        ProcessForOwner(behavior, currentFragmentNode, false);
       }
 
       // this would only occur if nothing above adjusted the offset, in which case all of the nodes
@@ -271,7 +281,24 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       if (!didAdjustedOffset && findings.RemainingNode != null)
       {
         // we need to offset the remaining nodes, so make sure this offset is adjusted
-        findings.RemainingNode.Value.RelativeOffsetSinceLastNode -= changeEvent.NumberOfCharacters;
+        findings.RemainingNode.Value.RelativeOffsetSinceLastNode -= changeEvent.NumberOfItems;
+      }
+    }
+
+    private void ProcessForOwner(MarkupChangeBehavior behavior, MarkupNodeReference currentFragmentNode, bool didExpand)
+    {
+      switch (behavior)
+      {
+        case MarkupChangeBehavior.None:
+        default:
+          // no-op
+          break;
+        case MarkupChangeBehavior.Invalidate:
+          Invalidate(currentFragmentNode, didExpand);
+          break;
+        case MarkupChangeBehavior.Delete:
+          MarkForRemoval(currentFragmentNode);
+          break;
       }
     }
 
@@ -293,156 +320,20 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       return GetEnumerator();
     }
 
-    /// <summary>
-    ///  Internal data-structure for holding the relevent data for a <see cref="Markup"/>.
-    /// </summary>
-    internal class MarkupNodeReference
+    internal int CalculateAbsoluteIndex(MarkupNodeReference desiredNode)
     {
-      // ReSharper disable once NotNullMemberIsNotInitialized
-      public MarkupNodeReference(MarkupCollection owner, MarkupType type, object associatedData)
+      int offset = 0;
+
+      foreach (var node in _subFragments)
       {
-        Owner = owner;
-        Type = type;
-        AssociatedData = associatedData;
-
-        Markup = new Markup(this);
-      }
-
-      /// <summary> The collection that owns this node. </summary>
-      public MarkupCollection Owner { get; }
-
-      /// <summary> The actual Markup instance associated with this node. </summary>
-      public Markup Markup { get; }
-
-      /// <summary> The type of markup that this span represents. </summary>
-      public MarkupType Type { get; }
-
-      /// <summary> Any additional data associated with the markup. </summary>
-      public object AssociatedData { get; }
-
-      #region Externally modified
-
-      /// <summary> The linked list node associated with the SubFragmentNode. </summary>
-      [NotNull]
-      public LinkedListNode<MarkupNodeReference> Node { get; set; }
-
-      /// <summary> The gap between this node and the previous node. </summary>
-      public int RelativeOffsetSinceLastNode { get; set; }
-
-      /// <summary> The number of elements that this markup node covers. </summary>
-      public int Length { get; set; }
-
-      /// <summary>
-      ///  True if this node has been processed by the associated <see cref="MarkupType"/>
-      ///  since the last update to its range.
-      /// </summary>
-      public bool IsValid { get; set; }
-
-      #endregion
-
-      /// <summary>
-      ///  Calculates the AbsoluteIndex for this node, by iterating through all nodes until we get to
-      ///  ourselves.
-      /// </summary>
-      /// <returns> The calculated absolute index. </returns>
-      public int CalculateAbsoluteIndex()
-      {
-        int offset = 0;
-
-        foreach (var node in Owner._subFragments)
+        offset += node.RelativeOffsetSinceLastNode;
+        if (node == desiredNode)
         {
-          offset += node.RelativeOffsetSinceLastNode;
-          if (node == this)
-          {
-            break;
-          }
+          break;
         }
-
-        return offset;
-      }
-    }
-
-    /// <summary>
-    ///  Return value of <see cref="MarkupCollection.GetAffectedNodes"/> containing the first node that changed and
-    ///  the last node that changed.
-    /// </summary>
-    private struct FoundNode
-    {
-      private int _absoluteIndexOfFirstFoundNode;
-
-      private LinkedListNode<MarkupNodeReference> _firstFoundNode;
-      private LinkedListNode<MarkupNodeReference> _lastFoundNode;
-
-      public LinkedListNode<MarkupNodeReference> RemainingNode { get; private set; }
-
-      /// <summary> Remembers the given node as the first changed node (of no-others have been found) and the last changed node. </summary>
-      /// <param name="absoluteIndex"> The absolute offset of the node. </param>
-      /// <param name="node"> The node to remember. </param>
-      public void RememberFirstAndLast(int absoluteIndex, LinkedListNode<MarkupNodeReference> node)
-      {
-        if (_firstFoundNode == null)
-        {
-          _firstFoundNode = node;
-          _absoluteIndexOfFirstFoundNode = absoluteIndex;
-        }
-        _lastFoundNode = node;
       }
 
-      /// <summary>
-      ///  Marks the node as the first node that is not directly affected by the change, but rather is
-      ///  after the change.
-      /// </summary>
-      public void MarkRemaining(LinkedListNode<MarkupNodeReference> theNode)
-      {
-        RemainingNode = theNode;
-      }
-
-      /// <summary> Gets an iterator that goes through all of the affected fragments. </summary>
-      /// <returns>
-      ///  An enumerator that allows foreach to be used to process the affected fragments in this
-      ///  collection.
-      /// </returns>
-      public IEnumerable<FragmentAndOffset> GetAffectedFragments()
-      {
-        var current = _firstFoundNode;
-
-        // NOTE: we bail out early if we have zero nodes
-        if (current == null)
-          yield break;
-
-        int totalAbsoluteOffset = _absoluteIndexOfFirstFoundNode - current.Value.RelativeOffsetSinceLastNode;
-
-        while (current != _lastFoundNode)
-        {
-          Debug.Assert(current != null,
-                       "Between _firstFoundNode & _lastFoundNode was a null node somehow.  This is bad");
-
-          int offsetSnapshot = current.Value.RelativeOffsetSinceLastNode;
-          totalAbsoluteOffset += offsetSnapshot;
-          yield return new FragmentAndOffset(current.Value, totalAbsoluteOffset);
-
-          // it's possible that the caller changed the relative offset by the time we return.  We always
-          // provide the "current" absolute index as it is when we yield it, therefore we need to include
-          // any changes that the caller changed.
-          // 
-          // Note that if the caller changes the offset of an earlier node (e.g. not the node that was
-          // just yielded) then we unfortunately do not track that (and we couldn't unless we wanted to
-          // re-iterate the entire collection) 
-          if (offsetSnapshot != current.Value.RelativeOffsetSinceLastNode)
-          {
-            var offsetDifference = offsetSnapshot - current.Value.RelativeOffsetSinceLastNode;
-            totalAbsoluteOffset -= offsetDifference;
-          }
-
-          current = current.Next;
-        }
-
-        Debug.Assert(current != null,
-                     "This doesn't even make sense");
-
-        totalAbsoluteOffset += current.Value.RelativeOffsetSinceLastNode;
-        yield return new FragmentAndOffset(current.Value, totalAbsoluteOffset);
-      }
+      return offset;
     }
 
     /// <summary>
@@ -454,11 +345,11 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       public FragmentAndOffset(MarkupNodeReference node, int absoluteOffset)
       {
         Node = node;
-        Range = new TextRange(absoluteOffset, absoluteOffset + Node.Length);
+        Range = new Range(absoluteOffset, absoluteOffset + Node.Length);
       }
 
       public readonly MarkupNodeReference Node;
-      public readonly TextRange Range;
+      public readonly Range Range;
     }
   }
 }

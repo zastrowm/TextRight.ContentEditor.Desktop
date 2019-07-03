@@ -11,7 +11,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   ///  Contains various <see cref="TextSpan"/> parts that is presumed to be part of a
   ///  larger block.
   /// </summary>
-  public sealed class TextBlockContent : EventEmitter, IDocumentItem<ITextBlockContentView>
+  public sealed class TextBlockContent : DocumentItem,
+                                         IDocumentItem<ITextBlockContentView>
   {
     private readonly List<TextSpan> _spans;
 
