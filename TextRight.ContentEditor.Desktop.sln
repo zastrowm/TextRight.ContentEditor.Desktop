@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{75243A59-F2DC-49A3-8360-90AD1EB6521E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{A3B01608-414E-4248-A952-04C866F2742C}"
 EndProject
@@ -14,6 +17,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextRight.Core.Basics", "TextRight.Core.Basics\TextRight.Core.Basics.csproj", "{733F902F-A277-49BE-923D-62613EAE315D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextRight.Core", "TextRight.Core\TextRight.Core.csproj", "{424DB80D-6350-4339-A5D8-CCF4E66FE16A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRight.Core.Additions", "TextRight.Core.Additions\TextRight.Core.Additions.csproj", "{E3B06EB3-6019-4229-9891-8C59CDA2A55C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +42,10 @@ Global
 		{424DB80D-6350-4339-A5D8-CCF4E66FE16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{424DB80D-6350-4339-A5D8-CCF4E66FE16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{424DB80D-6350-4339-A5D8-CCF4E66FE16A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3B06EB3-6019-4229-9891-8C59CDA2A55C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3B06EB3-6019-4229-9891-8C59CDA2A55C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3B06EB3-6019-4229-9891-8C59CDA2A55C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3B06EB3-6019-4229-9891-8C59CDA2A55C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +55,7 @@ Global
 		{1A4B7968-1C46-41FF-A49E-3758925B4EE2} = {75243A59-F2DC-49A3-8360-90AD1EB6521E}
 		{733F902F-A277-49BE-923D-62613EAE315D} = {75243A59-F2DC-49A3-8360-90AD1EB6521E}
 		{424DB80D-6350-4339-A5D8-CCF4E66FE16A} = {75243A59-F2DC-49A3-8360-90AD1EB6521E}
+		{E3B06EB3-6019-4229-9891-8C59CDA2A55C} = {75243A59-F2DC-49A3-8360-90AD1EB6521E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {046C1E32-30D2-40CF-B951-A4F412D59061}

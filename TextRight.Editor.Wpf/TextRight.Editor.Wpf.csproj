@@ -14,6 +14,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="11.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TextRight.Core.Additions\TextRight.Core.Additions.csproj" />
     <ProjectReference Include="..\TextRight.Core.Basics\TextRight.Core.Basics.csproj" />
     <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj" />
   </ItemGroup>
