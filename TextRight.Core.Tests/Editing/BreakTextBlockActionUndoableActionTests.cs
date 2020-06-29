@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using FluentAssertions;
 using TextRight.Core.Actions;
@@ -11,60 +12,46 @@ namespace TextRight.Core.Tests
 {
   public class BreakTextBlockActionUndoableActionTests : UndoBasedTest
   {
-    [Fact]
-    public void BreakAtEndOfBlock_BreaksIntoTwo()
+    [Theory]
+    [InlineData("|Start of text")]
+    [InlineData("Start of text|")]
+    [InlineData("Start of| text")]
+    [InlineData("Start జో s| text")]
+    [InlineData("Start |s జో text")]
+    [InlineData("Start |జో text")]
+    [InlineData("Start జో| text")]
+    public void Break_BreaksIntoTwo(string text)
     {
+      var parts = text.Split("|", 2);
+      var whole = string.Join("", parts);
+
+
+      int splitIndex = GetGraphemes(text).TakeWhile(t => t != "|").Count();
+
       var it = DoAll(new Func<UndoableAction>[]
                      {
-                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"),
-                       FromCommand<BreakTextBlockCommand>(() => BlockAt(0).EndCursor().ToHandle()),
-                     }
-      );
-
-      DidYouKnow.That(Document.Root.ChildCount).Should().Be(2);
-      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
-      DidYouKnow.That(BlockAt(1)).Should().BeAssignableTo<TextBlock>();
-
-      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("Start of text");
-      DidYouKnow.That(BlockAt(1).As<TextBlock>().AsText()).Should().Be("");
-
-      it.VerifyUndo();
-    }
-
-    [Fact]
-    public void BreakAtBeginning_BreaksIntoTwo()
-    {
-      var it = DoAll(new Func<UndoableAction>[]
-                     {
-                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"), FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor().ToHandle()),
+                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), whole),
+                       FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(splitIndex).ToHandle()),
                      });
 
       DidYouKnow.That(Document.Root.ChildCount).Should().Be(2);
       DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
       DidYouKnow.That(BlockAt(1)).Should().BeAssignableTo<TextBlock>();
 
-      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("");
-      DidYouKnow.That(BlockAt(1).As<TextBlock>().AsText()).Should().Be("Start of text");
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be(parts[0]);
+      DidYouKnow.That(BlockAt(1).As<TextBlock>().AsText()).Should().Be(parts[1]);
 
       it.VerifyUndo();
-    }
 
-    [Fact]
-    public void BreakInMiddle_BreaksIntoTwo()
-    {
-      var it = DoAll(new Func<UndoableAction>[]
-                     {
-                       FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), "Start of text"), FromCommand<BreakTextBlockCommand>(() => BlockAt(0).BeginCursor(5).ToHandle()),
-                     });
-
-      DidYouKnow.That(Document.Root.ChildCount).Should().Be(2);
-      DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
-      DidYouKnow.That(BlockAt(1)).Should().BeAssignableTo<TextBlock>();
-
-      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be("Start");
-      DidYouKnow.That(BlockAt(1).As<TextBlock>().AsText()).Should().Be(" of text");
-
-      it.VerifyUndo();
+      IEnumerable<string> GetGraphemes(string str)
+      {
+        var enumerator = StringInfo.GetTextElementEnumerator(str);
+        enumerator.Reset();
+        while (enumerator.MoveNext())
+        {
+          yield return (string) enumerator.Current;
+        }
+      }
     }
 
     [Fact]
