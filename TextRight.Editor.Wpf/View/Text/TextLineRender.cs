@@ -127,7 +127,14 @@ namespace TextRight.Editor.Wpf.View
         {
           sizes.Add(container.Line.GetTextBounds(iterator.Offset.CharOffset, 1)[0]);
 
+          int lastOffset = iterator.Offset.CharOffset;
           iterator = iterator.GetNextPosition();
+
+          if (lastOffset == iterator.Offset.CharOffset)
+          {
+            // we're stuck, or we're empty
+            break;
+          }
         }
 
         _cachedLineBounds = sizes.ToArray();

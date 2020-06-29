@@ -269,6 +269,19 @@ namespace TextRight.Editor.Wpf.View
         isFirst = false;
       }
 
+      // we always want at least one line to be rendered so that the block renders the correct height
+      if (linesToDraw.Count == 0)
+      {
+        var myTextLine = _textFormatter.FormatLine(new BlankLineSource(_textSource),
+                                                   textStorePositionInChars,
+                                                   _restrictedWidth,
+                                                   new GenericTextParagraphProperties(isFirst: true),
+                                                   null);
+        currentLinePosition.Y += myTextLine.Height;
+
+        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, caret.Offset, currentSpan));
+      }
+
       MaxWidth = maxWidth;
 
       return currentLinePosition.Y;
@@ -288,6 +301,36 @@ namespace TextRight.Editor.Wpf.View
     public void Invalidate()
     {
       _isDirty = true;
+    }
+
+    private class BlankLineSource : TextSource
+    {
+      private BlockBasedTextSource _properties;
+
+      public BlankLineSource(BlockBasedTextSource properties)
+      {
+        _properties = properties;
+      }
+
+      public override TextRun GetTextRun(int textSourceCharacterIndex)
+      {
+        // render a single character with the correct font characteristics
+        if (textSourceCharacterIndex == 0)
+        {
+          return new TextCharacters(" ",
+                                    0,
+                                    1,
+                                    _properties.CreateTextSpanRunProperties());
+        }
+
+        return new TextEndOfParagraph(1, _properties.CreateTextSpanRunProperties());
+      }
+
+      public override TextSpan<CultureSpecificCharacterBufferRange> GetPrecedingText(int textSourceCharacterIndexLimit)
+        => throw new NotImplementedException();
+
+      public override int GetTextEffectCharacterIndexFromTextSourceCharacterIndex(int textSourceCharacterIndex)
+        => throw new NotImplementedException();
     }
   }
 }

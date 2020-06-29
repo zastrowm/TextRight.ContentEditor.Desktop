@@ -35,7 +35,7 @@ namespace TextRight.Editor.Wpf.View
         if (endIndex <= desiredCharacterIndex)
           break;
 
-        var props = new TextSpanRunProperties(FontSize);
+        var props = CreateTextSpanRunProperties();
 
         if (startIndex <= desiredCharacterIndex)
           return CreateCharactersObject(desiredCharacterIndex,
@@ -48,6 +48,9 @@ namespace TextRight.Editor.Wpf.View
 
       return new TextEndOfParagraph(1);
     }
+
+    internal TextSpanRunProperties CreateTextSpanRunProperties()
+      => new TextSpanRunProperties(FontSize);
 
     public static TextCharacters CreateCharactersObject(
       int characterStartIndex,
