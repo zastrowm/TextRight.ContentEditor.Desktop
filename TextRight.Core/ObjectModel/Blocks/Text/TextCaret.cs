@@ -92,8 +92,12 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         return new TextCaret(nextFragment, nextFragment.Buffer.GetFirstOffset());
       }
 
-      if (Span.Buffer.GetLastOffset().GraphemeOffset == Offset.GraphemeOffset)
+      // point to just after the last character (unless we're empty in which case we're already doing that)
+      if (Span.Buffer.GetLastOffset().GraphemeOffset == Offset.GraphemeOffset
+          && Span.Buffer.GraphemeLength != 0)
+      {
         return new TextCaret(Span, TextOffsetHelpers.CreateAfterTextOffset(Span.Buffer));
+      }
 
       return Invalid;
     }
