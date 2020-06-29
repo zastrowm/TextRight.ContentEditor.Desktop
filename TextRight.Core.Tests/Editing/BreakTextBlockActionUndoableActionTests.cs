@@ -12,22 +12,61 @@ namespace TextRight.Core.Tests
 {
   public class BreakTextBlockActionUndoableActionTests : UndoBasedTest
   {
-    [Theory]
-    [InlineData("|Start of text")]
-    [InlineData("Start of text|")]
-    [InlineData("Start of| text")]
-    [InlineData("Start జో s| text")]
-    [InlineData("Start |s జో text")]
-    [InlineData("Start |జో text")]
-    [InlineData("Start జో| text")]
-    public void Break_BreaksIntoTwo(string text)
+    public static IEnumerable<object[]> GetBreakTestCases()
     {
-      var parts = text.Split("|", 2);
-      var whole = string.Join("", parts);
+      return new[]
+             {
+               GenerateTestCases("Pln Text"),
+               GenerateTestCases("AB జోCD"),
+               GenerateTestCases("Abజో Tt"),
+               GenerateTestCases("Ab జో Tt"),
+             }.SelectMany(it => it);
+
+      IEnumerable<object[]> GenerateTestCases(string testString)
+      {
+        var graphemes = GetGraphemes(testString).ToArray();
+
+        for (int i = 0; i < graphemes.Length; i++)
+        {
+          var left = string.Join("", graphemes.Take(i));
+          var right = string.Join("", graphemes.Skip(i));
+
+          yield return new object[]
+                 {
+                   left + right,
+                   i,
+                   left,
+                   right
+                 };
+        }
+      }
+
+      IEnumerable<string> GetGraphemes(string str)
+      {
+        var enumerator = StringInfo.GetTextElementEnumerator(str);
+        enumerator.Reset();
+        while (enumerator.MoveNext())
+        {
+          yield return (string)enumerator.Current;
+        }
+      }
 
 
-      int splitIndex = GetGraphemes(text).TakeWhile(t => t != "|").Count();
+      object[] TestCase(params object[] args)
+        => args;
+    }
 
+    [Theory]
+    [MemberData(nameof(GetBreakTestCases))]
+    //[InlineData("|Start of text")]
+    //[InlineData("Start of text|")]
+    //[InlineData("Start of| text")]
+    //[InlineData("Start జో s| text")]
+    //[InlineData("Start |s జో text")]
+    //[InlineData("Start |జో text")]
+    //[InlineData("Start జో| text")]
+    public void Break_BreaksIntoTwo(string whole, int splitIndex, string left, string right)
+    {
       var it = DoAll(new Func<UndoableAction>[]
                      {
                        FromCommand<InsertTextCommand, string>(() => BlockAt(0).EndCursor().ToHandle(), whole),
@@ -38,20 +77,10 @@ namespace TextRight.Core.Tests
       DidYouKnow.That(BlockAt(0)).Should().BeAssignableTo<TextBlock>();
       DidYouKnow.That(BlockAt(1)).Should().BeAssignableTo<TextBlock>();
 
-      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be(parts[0]);
-      DidYouKnow.That(BlockAt(1).As<TextBlock>().AsText()).Should().Be(parts[1]);
+      DidYouKnow.That(BlockAt(0).As<TextBlock>().AsText()).Should().Be(left);
+      DidYouKnow.That(BlockAt(1).As<TextBlock>().AsText()).Should().Be(right);
 
       it.VerifyUndo();
-
-      IEnumerable<string> GetGraphemes(string str)
-      {
-        var enumerator = StringInfo.GetTextElementEnumerator(str);
-        enumerator.Reset();
-        while (enumerator.MoveNext())
-        {
-          yield return (string) enumerator.Current;
-        }
-      }
     }
 
     [Fact]

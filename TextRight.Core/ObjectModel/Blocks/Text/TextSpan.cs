@@ -132,6 +132,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <param name="numberOfCharactersToRemove"> The number of characters to remove. </param>
     public void RemoveCharacters(int offsetIntoSpan, int numberOfCharactersToRemove)
     {
+      if (numberOfCharactersToRemove == 0)
+        return;
+
       _buffer.DeleteText(offsetIntoSpan, numberOfCharactersToRemove);
       Owner?.NotifyChanged(this);
     }

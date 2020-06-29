@@ -34,7 +34,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         return new TextBlockContent();
 
       var start = GetStart(caretStart);
-      var end = new SpanAndOffset(caretEnd.Span, caretEnd.Offset.GraphemeOffset);
+      var end = new SpanAndOffset(caretEnd.Span, caretEnd.Offset);
 
       if (caretStart.IsAtBlockStart && caretEnd.IsAtBlockEnd)
       {
@@ -196,19 +196,32 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     private SpanAndOffset GetStart(TextCaret start)
     {
       if (start.IsAtBlockStart)
-        return new SpanAndOffset(start.Span, 0);
+        return new SpanAndOffset(start.Span);
       else if (start.Offset.GraphemeOffset == start.Span.NumberOfChars && start.Span.Next != null)
-        return new SpanAndOffset(start.Span.Next, 0);
+        return new SpanAndOffset(start.Span.Next);
       else
-        return new SpanAndOffset(start.Span, start.Offset.GraphemeOffset);
+        return new SpanAndOffset(start.Span, start.Offset);
     }
 
     private struct SpanAndOffset
     {
+      /// <summary> The span for which this was created </summary>
       public readonly TextSpan Span;
+
+      /// <summary> The offset in characters. </summary>
       public readonly int Offset;
 
-      public SpanAndOffset(TextSpan span, int offset)
+      public SpanAndOffset(TextSpan span)
+        : this(span, 0)
+      {
+      }
+
+      public SpanAndOffset(TextSpan span, TextOffset offset)
+        : this(span, offset.CharOffset)
+      {
+      }
+
+      private SpanAndOffset(TextSpan span, int offset)
       {
         Span = span;
         Offset = offset;
