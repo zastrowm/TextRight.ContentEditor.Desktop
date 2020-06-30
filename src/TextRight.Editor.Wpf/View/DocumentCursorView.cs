@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.Utilities;
@@ -20,11 +24,13 @@ namespace TextRight.Editor.Wpf.View
     private readonly PointCollection _caretPointsCollection;
     private readonly Polygon _selectionPolygon;
     private readonly Polygon _caretRect;
+    private readonly DispatcherTimer _blinkTimer;
 
     /// <summary> Indicates if the caret's block changed and we need to re-render. </summary>
     private IndexLayout _layoutIndex;
+    private bool _isRemeasureQueued;
 
-    private const int CaretWidth = 2;
+    private readonly int _caretWidth = 2;
 
     private bool _isDirty = true;
 
@@ -77,8 +83,36 @@ namespace TextRight.Editor.Wpf.View
 
       Children.Add(_selectionPolygon);
       Children.Add(_caretRect);
-    }
 
+      _caretWidth = SystemInformation.CaretWidth;
+      _blinkTimer = new DispatcherTimer
+                    {
+                      Interval = TimeSpan.FromMilliseconds(SystemInformation.CaretBlinkTime)
+                    };
+      _blinkTimer.Tick += OnBlinkTimerTick;
+      _blinkTimer.Start();
+
+      IsEnabledChanged += HandleEnabledChanged;
+    }
+    
+    /// <summary>
+    ///   True if the caret should be visible. False if it should not be (usually because of caret blinking).
+    /// </summary>
+    private bool IsCaretVisible
+    {
+      get => _caretRect.Visibility == Visibility.Visible;
+      set => _caretRect.Visibility = value ? Visibility.Visible : Visibility.Hidden;
+    }
+    
+    /// <summary>
+    ///   True if the selection should be visible.
+    /// </summary>
+    private bool IsSelectionVisible
+    {
+      get => _selectionPolygon.Visibility == Visibility.Hidden;
+      set => _selectionPolygon.Visibility = value ? Visibility.Visible : Visibility.Hidden;
+    }
+    
     /// <summary> Verify that the cursor is not rendering according to the last layout. </summary>
     public void VerifyNotStale()
     {
@@ -100,20 +134,22 @@ namespace TextRight.Editor.Wpf.View
     private void HandleCaretChanged(object sender, EventArgs e)
     {
       MarkDirty();
-    }
 
-    private bool _isQueued;
+      IsCaretVisible = true;
+      _blinkTimer.Stop();
+      _blinkTimer.Start();
+    }
 
     private async void RemeasureUntilNotInvalid()
     {
-      if (_isQueued)
+      if (_isRemeasureQueued)
         return;
 
-      _isQueued = true;
+      _isRemeasureQueued = true;
 
       await Task.Yield();
 
-      _isQueued = false;
+      _isRemeasureQueued = false;
 
       if (MeasureCursor())
       {
@@ -159,12 +195,12 @@ namespace TextRight.Editor.Wpf.View
 
       if (_cursor.HasSelection)
       {
-        _selectionPolygon.Visibility = Visibility.Visible;
+        IsSelectionVisible = true;
         UpdateSelectionPolygon(start);
       }
       else
       {
-        _selectionPolygon.Visibility = Visibility.Hidden;
+        IsSelectionVisible = false;
       }
 
       UpdateCaretRectangle(start);
@@ -196,8 +232,8 @@ namespace TextRight.Editor.Wpf.View
          */
       _caretPointsCollection[0] = new Point(caretPosition.X, caretPosition.Y);
       _caretPointsCollection[1] = new Point(caretPosition.X, caretPosition.Y + caretPosition.Height);
-      _caretPointsCollection[2] = new Point(caretPosition.X + CaretWidth, caretPosition.Y + caretPosition.Height);
-      _caretPointsCollection[3] = new Point(caretPosition.X + CaretWidth, caretPosition.Y);
+      _caretPointsCollection[2] = new Point(caretPosition.X + _caretWidth, caretPosition.Y + caretPosition.Height);
+      _caretPointsCollection[3] = new Point(caretPosition.X + _caretWidth, caretPosition.Y);
 
       _caretRect.Points = _caretPointsCollection;
     }
@@ -317,6 +353,24 @@ namespace TextRight.Editor.Wpf.View
 
       _selectionPointCollection[6] = new Point(maxLeft, lowerRect.Bottom);
       _selectionPointCollection[7] = new Point(maxLeft, upperRect.Bottom);
+    }
+
+    private void OnBlinkTimerTick(object sender, EventArgs e)
+    {
+      IsCaretVisible = !IsCaretVisible;
+    }
+
+    private void HandleEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+      if (IsEnabled)
+      {
+        IsCaretVisible = true;
+        _blinkTimer.Start();
+      }
+      else
+      {
+        _blinkTimer.Stop();
+      }
     }
   }
 }

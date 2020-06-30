@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using TextRight.Core;
 using TextRight.Core.Blocks;
@@ -140,6 +141,19 @@ namespace TextRight.Editor.Wpf.View
 
       BlockSearchHitTester.SetShouldStopHitTesting(_cursorView, true);
       BlockSearchHitTester.SetShouldStopHitTesting(layoutAbsolute, true);
+
+      Loaded += OnLoaded;
+      Unloaded += OnUnloaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+      _cursorView.IsEnabled = true;
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+      _cursorView.IsEnabled = false;
     }
 
     /// <summary>
@@ -313,7 +327,7 @@ namespace TextRight.Editor.Wpf.View
 
       if (GetBlockFor(point) is IDocumentItem block)
       {
-          var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
+        var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
         _editor.Selection.MoveTo(caret, mode);
       }
     }
