@@ -102,7 +102,7 @@ namespace TextRight.Editor.Wpf.View
       MarkDirty();
     }
 
-    private bool _isQueued = false;
+    private bool _isQueued;
 
     private async void RemeasureUntilNotInvalid()
     {
@@ -187,6 +187,7 @@ namespace TextRight.Editor.Wpf.View
     private void UpdateCaretRectangle(MeasuredRectangle caretPosition)
     {
 
+      // ReSharper disable once InvalidXmlDocComment
       /**
          *                  
          *      0---------1
@@ -234,6 +235,7 @@ namespace TextRight.Editor.Wpf.View
         leftRect = end;
       }
 
+      // ReSharper disable once InvalidXmlDocComment
       /**
          *                  
          *      1---------2
@@ -284,6 +286,7 @@ namespace TextRight.Editor.Wpf.View
         upperRect = end;
       }
 
+      // ReSharper disable once InvalidXmlDocComment
       /**
          *                  
          *      1------------2
