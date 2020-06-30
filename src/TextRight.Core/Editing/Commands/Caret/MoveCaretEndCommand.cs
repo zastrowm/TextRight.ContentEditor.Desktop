@@ -22,7 +22,7 @@ namespace TextRight.Core.Commands.Caret
       => context.Selection.Is<TextCaret>();
 
     /// <inheritdoc/>
-    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode)
+    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode, SelectionMode mode)
     {
       var textCaret = cursor.Start.As<TextCaret>();
 
@@ -31,7 +31,7 @@ namespace TextRight.Core.Commands.Caret
         return false;
 
       textCaret = contentView.GetLineFor(textCaret).FindClosestTo(double.MaxValue);
-      cursor.MoveTo(textCaret);
+      cursor.MoveTo(textCaret, mode);
       return true;
     }
   }

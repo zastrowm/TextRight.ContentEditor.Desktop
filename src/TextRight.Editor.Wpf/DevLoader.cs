@@ -33,7 +33,8 @@ namespace TextRight.Editor.Wpf
 
         editorContext.Document.Root.Deserialize(serializationContext, node.Children.First());
         editorContext.Selection.MoveTo(
-                       editorContext.Document.Root.GetCaretFromBottom(mode));
+                       editorContext.Document.Root.GetCaretFromBottom(mode),
+                       SelectionMode.Replace);
       }
       catch (Exception)
       {

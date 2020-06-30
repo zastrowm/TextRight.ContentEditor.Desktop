@@ -14,7 +14,7 @@ namespace TextRight.Core.Commands.Caret
       => "caret.moveForward";
 
     /// <inheritdoc />
-    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode)
+    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode, SelectionMode mode)
     {
       // first we try to move the cursor directly
       var caret = cursor.Start;
@@ -23,7 +23,7 @@ namespace TextRight.Core.Commands.Caret
       // try a simply to move the cursor forwards
       if (next.IsValid)
       {
-        cursor.MoveTo(next);
+        cursor.MoveTo(next, mode);
         return true;
       }
 
@@ -31,7 +31,7 @@ namespace TextRight.Core.Commands.Caret
       var block = caret.Block?.Parent.GetBlockTo(BlockDirection.Forward, caret.Block) as ContentBlock;
       if (block != null)
       {
-        cursor.MoveTo(block.GetCaretAtStart());
+        cursor.MoveTo(block.GetCaretAtStart(), mode);
         return true;
       }
 

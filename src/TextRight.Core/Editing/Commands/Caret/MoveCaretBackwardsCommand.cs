@@ -15,7 +15,7 @@ namespace TextRight.Core.Commands.Caret
       => "caret.moveBackward";
 
     /// <inheritdoc />
-    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode)
+    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode, SelectionMode mode)
     {
       var caret = cursor.Start;
       var next = caret.MoveBackward();
@@ -23,7 +23,7 @@ namespace TextRight.Core.Commands.Caret
       // try a simply to move the cursor backwards
       if (next.IsValid)
       {
-        cursor.MoveTo(next);
+        cursor.MoveTo(next, mode);
         return true;
       }
 
@@ -31,7 +31,7 @@ namespace TextRight.Core.Commands.Caret
       var block = caret.Block?.Parent.GetBlockTo(BlockDirection.Backward, caret.Block) as ContentBlock;
       if (block != null)
       {
-        cursor.MoveTo(block.GetCaretAtEnd());
+        cursor.MoveTo(block.GetCaretAtEnd(), mode);
         return true;
       }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.Actions;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Cursors;
 
 namespace TextRight.Core.Commands.Text
 {
@@ -67,7 +68,7 @@ namespace TextRight.Core.Commands.Text
         var caretPosition = TextBlockHelperMethods.TryBreakBlock(caret);
         if (!caretPosition.IsValid)
           return;
-        context.Selection.MoveTo(caretPosition);
+        context.Selection.MoveTo(caretPosition, SelectionMode.Replace);
       }
 
       /// <inheritdoc />

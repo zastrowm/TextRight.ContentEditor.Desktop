@@ -19,13 +19,13 @@ namespace TextRight.Core.Commands.Caret
       => context.Selection.Start.TryCast<TextCaret>(out var caret) && !caret.IsAtBlockEnd;
 
     /// <inheritdoc/>
-    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode)
+    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode, SelectionMode mode)
     {
       var original = (TextCaret)cursor.Start;
       var newPosition = TextBlockMoveToNextWord(original);
       if (original != newPosition)
       {
-        cursor.MoveTo(newPosition);
+        cursor.MoveTo(newPosition, mode);
         return true;
       }
 

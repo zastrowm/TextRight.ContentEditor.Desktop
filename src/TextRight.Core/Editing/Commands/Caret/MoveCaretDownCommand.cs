@@ -23,7 +23,7 @@ namespace TextRight.Core.Commands.Caret
       => context.Selection.Is<TextCaret>();
 
     /// <inheritdoc />
-    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode)
+    public override bool Activate(DocumentSelection cursor, CaretMovementMode movementMode, SelectionMode mode)
     {
       var textCaret = cursor.Start.As<TextCaret>();
 
@@ -42,7 +42,7 @@ namespace TextRight.Core.Commands.Caret
         if (!caret.IsValid)
           return false;
 
-        cursor.MoveTo(caret);
+        cursor.MoveTo(caret, mode);
         return true;
       }
 
@@ -51,7 +51,7 @@ namespace TextRight.Core.Commands.Caret
       if (previousBlock != null)
       {
         var newCursor = previousBlock.GetCaretFromTop(movementMode);
-        cursor.MoveTo(newCursor);
+        cursor.MoveTo(newCursor, mode);
 
         return true;
       }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.Actions;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Cursors;
 
 namespace TextRight.Core.Commands.Text
 {
@@ -66,7 +67,7 @@ namespace TextRight.Core.Commands.Text
       {
         var textCaret = _insertionPoint.GetCaret(context).As<TextCaret>();
         textCaret = textCaret.InsertText(Text);
-        context.Selection.MoveTo(textCaret);
+        context.Selection.MoveTo(textCaret, SelectionMode.Replace);
       }
 
       /// <inheritdoc />
@@ -75,7 +76,7 @@ namespace TextRight.Core.Commands.Text
         // TODO graphemes?
         var textCaret = (TextCaret)_insertionPoint.GetCaret(context);
         textCaret = textCaret.DeleteText(Text.Length);
-        context.Selection.MoveTo(textCaret);
+        context.Selection.MoveTo(textCaret, SelectionMode.Replace);
       }
 
       /// <inheritdoc/>

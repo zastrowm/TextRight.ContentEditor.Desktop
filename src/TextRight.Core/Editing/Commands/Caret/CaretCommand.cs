@@ -15,12 +15,6 @@ namespace TextRight.Core.Commands.Caret
     protected virtual bool ShouldPreserveCaretMovementMode
       => false;
 
-    /// <summary> Activates the given command, acting on the given caret. </summary>
-    /// <param name="cursor"> The caret on which to act. </param>
-    /// <param name="movementMode"></param>
-    /// <returns> true if it succeeds, false if it fails. </returns>
-    public abstract bool Activate(DocumentSelection cursor, CaretMovementMode movementMode);
-
     /// <inheritdoc />
     public abstract string Id { get; }
 
@@ -39,11 +33,21 @@ namespace TextRight.Core.Commands.Caret
     /// <inheritdoc/>
     public virtual void Activate(DocumentEditorContext context, IActionStack actionStack)
     {
-      Activate(context.Selection, context.CaretMovementMode);
+      Activate(context.Selection,
+               context.CaretMovementMode,
+               context.IsSelectionExtendActive ? SelectionMode.Extend : SelectionMode.Replace);
+      
       if (!ShouldPreserveCaretMovementMode)
       {
         context.CaretMovementMode.SetModeToNone();
       }
     }
+
+    /// <summary> Activates the given command, acting on the given caret. </summary>
+    /// <param name="cursor"> The caret on which to act. </param>
+    /// <param name="movementMode"> The current caret mode. </param>
+    /// <param name="mode"></param>
+    /// <param name="shouldExtend"> How the caret should be moved. </returns>
+    public abstract bool Activate(DocumentSelection cursor, CaretMovementMode movementMode, SelectionMode mode);
   }
 }

@@ -16,6 +16,7 @@ using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using Block = TextRight.Core.ObjectModel.Blocks.Block;
+using SelectionMode = TextRight.Core.ObjectModel.Cursors.SelectionMode;
 
 namespace TextRight.Editor.Wpf.View
 {
@@ -237,7 +238,8 @@ namespace TextRight.Editor.Wpf.View
 
     protected void HandlePreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
-      UpdateSelection(e.GetPosition(this), _editor.Selection.ShouldExtendSelection);
+      UpdateSelection(e.GetPosition(this),
+                      _editor.Selection.ShouldExtendSelection ? SelectionMode.Extend : SelectionMode.Replace);
 
       // TODO, do something with mouse events
       e.Handled = true;
@@ -269,7 +271,7 @@ namespace TextRight.Editor.Wpf.View
       if (e.LeftButton != MouseButtonState.Pressed)
         return;
 
-      UpdateSelection(e.GetPosition(this), true);
+      UpdateSelection(e.GetPosition(this), SelectionMode.Extend);
       e.Handled = true;
     }
 
@@ -284,14 +286,14 @@ namespace TextRight.Editor.Wpf.View
     /// <summary>
     ///   Updates the selection of the editor to point at the given location.
     /// </summary>
-    private void UpdateSelection(Point position, bool shouldUpdateSelection)
+    private void UpdateSelection(Point position, SelectionMode mode)
     {
       var point = ToDocumentPoint(position);
 
       if (GetBlockFor(point) is IDocumentItem block)
       {
           var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
-        _editor.Selection.MoveTo(caret, shouldUpdateSelection);
+        _editor.Selection.MoveTo(caret, mode);
       }
     }
 

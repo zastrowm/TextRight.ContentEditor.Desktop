@@ -51,6 +51,6 @@ namespace TextRight.Core.Actions
     ///  Moves to he cursor to point to the location given by <paramref name="handle"/>.
     /// </summary>
     public static void MoveTo(this DocumentSelection cursor, DocumentCursorHandle handle, DocumentEditorContext context)
-      => cursor.MoveTo(handle.GetCaret(context));
+      => cursor.MoveTo(handle.GetCaret(context), SelectionMode.Replace);
   }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using TextRight.Core.Actions;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Cursors;
 
 namespace TextRight.Core.Commands.Text
 {
@@ -118,7 +119,7 @@ namespace TextRight.Core.Commands.Text
         var next = _nextPath.Get(context.Document);
 
         TextBlockHelperMethods.MergeWithPrevious((TextBlock)next);
-        context.Selection.MoveTo(_endOfPreviousBlockHandle.GetCaret(context));
+        context.Selection.MoveTo(_endOfPreviousBlockHandle.GetCaret(context), SelectionMode.Replace);
       }
 
       /// <inheritdoc />
@@ -128,7 +129,7 @@ namespace TextRight.Core.Commands.Text
 
         TextBlockHelperMethods.TryBreakBlock(caret);
 
-        context.Selection.MoveTo(_originalCaretPosition.GetCaret(context));
+        context.Selection.MoveTo(_originalCaretPosition.GetCaret(context), SelectionMode.Replace);
     }
     }
   }
