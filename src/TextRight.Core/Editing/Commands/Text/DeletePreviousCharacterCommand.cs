@@ -69,7 +69,7 @@ namespace TextRight.Core.Commands.Text
       {
         var caret = (TextCaret)CursorHandle.GetCaret(context);
         caret = caret.DeleteText(1);
-        context.Selection.MoveTo(caret, SelectionMode.Replace);
+        context.Selection.Replace(caret);
       }
 
       /// <inheritdoc />
@@ -77,7 +77,7 @@ namespace TextRight.Core.Commands.Text
       {
         var caret = (TextCaret)CursorHandle.GetCaret(context);
         caret = caret.InsertText(OriginalText);
-        context.Selection.MoveTo(caret, SelectionMode.Replace);
+        context.Selection.Replace(caret);
       }
     }
   }

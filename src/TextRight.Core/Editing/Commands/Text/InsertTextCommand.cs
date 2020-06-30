@@ -67,7 +67,7 @@ namespace TextRight.Core.Commands.Text
       {
         var textCaret = _insertionPoint.GetCaret(context).As<TextCaret>();
         textCaret = textCaret.InsertText(Text);
-        context.Selection.MoveTo(textCaret, SelectionMode.Replace);
+        context.Selection.Replace(textCaret);
       }
 
       /// <inheritdoc />
@@ -76,7 +76,7 @@ namespace TextRight.Core.Commands.Text
         // TODO graphemes?
         var textCaret = (TextCaret)_insertionPoint.GetCaret(context);
         textCaret = textCaret.DeleteText(Text.Length);
-        context.Selection.MoveTo(textCaret, SelectionMode.Replace);
+        context.Selection.Replace(textCaret);
       }
 
       /// <inheritdoc/>

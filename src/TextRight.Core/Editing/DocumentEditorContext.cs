@@ -50,7 +50,7 @@ namespace TextRight.Core
     public BlockCaret Caret
     {
       get => Selection.Start;
-      set => Selection.MoveTo(value, SelectionMode.Replace);
+      set => Selection.Replace(value);
     }
 
     /// <summary> Movement information about the caret. </summary>

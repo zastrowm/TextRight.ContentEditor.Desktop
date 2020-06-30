@@ -82,7 +82,7 @@ namespace TextRight.Core.Tests
                var fake = new FakeActionStack();
                var command = new TCommand();
                var handle = handleGetter.Invoke();
-               Context.Selection.MoveTo(handle.GetCaret(Context), TODO);
+               Context.Selection.Replace(handle.GetCaret(Context));
                command.Activate(Context, fake);
                return fake.Action;
              };
@@ -98,7 +98,7 @@ namespace TextRight.Core.Tests
                var fake = new FakeActionStack();
                var command = new TCommand();
                var handle = handleGetter.Invoke();
-               Context.Selection.MoveTo(handle.GetCaret(Context), TODO);
+               Context.Selection.Replace(handle.GetCaret(Context));
                command.Activate(Context, fake, argument);
                return fake.Action;
              };

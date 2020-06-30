@@ -119,7 +119,7 @@ namespace TextRight.Core.Commands.Text
         var next = _nextPath.Get(context.Document);
 
         TextBlockHelperMethods.MergeWithPrevious((TextBlock)next);
-        context.Selection.MoveTo(_endOfPreviousBlockHandle.GetCaret(context), SelectionMode.Replace);
+        context.Selection.Replace(_endOfPreviousBlockHandle.GetCaret(context));
       }
 
       /// <inheritdoc />
@@ -129,7 +129,7 @@ namespace TextRight.Core.Commands.Text
 
         TextBlockHelperMethods.TryBreakBlock(caret);
 
-        context.Selection.MoveTo(_originalCaretPosition.GetCaret(context), SelectionMode.Replace);
+        context.Selection.Replace(_originalCaretPosition.GetCaret(context));
     }
     }
   }

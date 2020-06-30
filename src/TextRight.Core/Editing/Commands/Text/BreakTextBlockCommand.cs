@@ -68,7 +68,7 @@ namespace TextRight.Core.Commands.Text
         var caretPosition = TextBlockHelperMethods.TryBreakBlock(caret);
         if (!caretPosition.IsValid)
           return;
-        context.Selection.MoveTo(caretPosition, SelectionMode.Replace);
+        context.Selection.Replace(caretPosition);
       }
 
       /// <inheritdoc />
