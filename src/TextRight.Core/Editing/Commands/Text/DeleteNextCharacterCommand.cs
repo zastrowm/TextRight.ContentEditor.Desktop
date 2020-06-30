@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TextRight.Core.Actions;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Cursors;
 
 namespace TextRight.Core.Commands.Text
 {
@@ -60,6 +61,7 @@ namespace TextRight.Core.Commands.Text
       {
         var caret = (TextCaret)_cursorHandle.GetCaret(context);
         caret.DeleteText(1);
+        context.Selection.Replace(caret);
       }
 
       /// <inheritdoc />
@@ -67,6 +69,7 @@ namespace TextRight.Core.Commands.Text
       {
         var caret = (TextCaret)_cursorHandle.GetCaret(context);
         caret.InsertText(_originalText);
+        context.Selection.Replace(caret);
       }
     }
   }

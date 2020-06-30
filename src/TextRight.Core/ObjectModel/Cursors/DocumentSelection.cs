@@ -48,6 +48,12 @@ namespace TextRight.Core.ObjectModel.Cursors
       CursorMoved?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    ///   Calls <see cref="MoveTo"/> with <see cref="SelectionMode.Replace"/>
+    /// </summary>
+    public void Replace(BlockCaret caret)
+      => MoveTo(caret, SelectionMode.Replace);
+
     /// <summary> The starting position of the selection. </summary>
     public BlockCaret Start
       => _caretStart;
