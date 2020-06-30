@@ -66,9 +66,8 @@ namespace TextRight.Core.Commands.Text
       /// <inheritdoc />
       public override void Do(DocumentEditorContext context)
       {
-        // TODO grapheme
         var caret = (TextCaret)CursorHandle.GetCaret(context);
-        caret = caret.DeleteText(OriginalText.Length);
+        caret = caret.DeleteText(1);
         context.Selection.MoveTo(caret);
       }
 

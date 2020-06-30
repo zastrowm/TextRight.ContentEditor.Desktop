@@ -173,6 +173,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <param name="offset"> The index within the span for the character to retrieve. </param>
     /// <returns> The character at the given index. </returns>
     public TextUnit GetCharacterAt(TextOffset offset)
-      => new TextUnit(_text[offset.CharOffset]);
+      => new TextUnit(_text.Substring(offset.CharOffset, offset.GraphemeLength));
   }
 }

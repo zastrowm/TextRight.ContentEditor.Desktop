@@ -24,7 +24,7 @@ namespace TextRight.Core.Tests
 
       IEnumerable<object[]> GenerateTestCases(string testString)
       {
-        var graphemes = GetGraphemes(testString).ToArray();
+        var graphemes = GraphemeHelper.GetGraphemes(testString).ToArray();
 
         for (int i = 0; i < graphemes.Length; i++)
         {
@@ -40,31 +40,10 @@ namespace TextRight.Core.Tests
                  };
         }
       }
-
-      IEnumerable<string> GetGraphemes(string str)
-      {
-        var enumerator = StringInfo.GetTextElementEnumerator(str);
-        enumerator.Reset();
-        while (enumerator.MoveNext())
-        {
-          yield return (string)enumerator.Current;
-        }
-      }
-
-
-      object[] TestCase(params object[] args)
-        => args;
     }
 
     [Theory]
     [MemberData(nameof(GetBreakTestCases))]
-    //[InlineData("|Start of text")]
-    //[InlineData("Start of text|")]
-    //[InlineData("Start of| text")]
-    //[InlineData("Start జో s| text")]
-    //[InlineData("Start |s జో text")]
-    //[InlineData("Start |జో text")]
-    //[InlineData("Start జో| text")]
     public void Break_BreaksIntoTwo(string whole, int splitIndex, string left, string right)
     {
       var it = DoAll(new Func<UndoableAction>[]

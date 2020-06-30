@@ -26,5 +26,15 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       int graphemeLength = InternalStringMethods.GetCurrentTextElementLen(text, index, textLength, ref uc, ref charLen);
       return graphemeLength;
     }
+
+    public static IEnumerable<string> GetGraphemes(string text)
+    {
+      var enumerator = StringInfo.GetTextElementEnumerator(text);
+      enumerator.Reset();
+      while (enumerator.MoveNext())
+      {
+        yield return (string)enumerator.Current;
+      }
+    }
   }
 }

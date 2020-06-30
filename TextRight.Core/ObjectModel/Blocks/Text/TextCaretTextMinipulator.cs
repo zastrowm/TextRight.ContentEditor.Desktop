@@ -8,20 +8,20 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   public static class TextCaretTextMinipulator
   {
     /// <summary> Deletes text at the given position. </summary>
-    public static TextCaret DeleteText(this TextCaret caret, int numberOfCharacters)
+    public static TextCaret DeleteText(this TextCaret caret, int numberOfGraphemes)
     {
       // TODO GRAPHEMES
 
       var endCaret = caret;
 
-      while (numberOfCharacters > 0)
+      while (numberOfGraphemes > 0)
       {
         var next = endCaret.GetNextPosition();
         if (!next.IsValid)
           break;
         
         endCaret = next;
-        numberOfCharacters--;
+        numberOfGraphemes--;
       }
       
       // TODO special case when we're deleting the entire fragment
