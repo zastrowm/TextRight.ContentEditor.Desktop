@@ -70,7 +70,9 @@ namespace TextRight.Core.Additions
         while (!_currentlyProcessingToken.IsCancellationRequested
                && !caret.IsAtBlockEnd)
         {
-          var currentCharacter = caret.CharacterAfter.Character;
+          // TODO account for whitespace graphemes (does that exist)
+          var currentText = caret.CharacterAfter.Text ?? "\0";
+          var currentCharacter = currentText[0];
 
           if (char.IsWhiteSpace(currentCharacter)
               || char.IsSeparator(currentCharacter)
@@ -82,7 +84,7 @@ namespace TextRight.Core.Additions
           }
           else
           {
-            wordBuilder.Append(currentCharacter);
+            wordBuilder.Append(currentText);
           }
         }
 

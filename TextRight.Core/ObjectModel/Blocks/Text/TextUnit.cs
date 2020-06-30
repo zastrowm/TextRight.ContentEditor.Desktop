@@ -16,12 +16,5 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     public string Text { get; }
-
-    // TODO remove
-    public char Character
-      => Text?[0] ?? '\0';
-
-    public bool IsWhitespace
-      => char.IsWhiteSpace(Character);
   }
 }

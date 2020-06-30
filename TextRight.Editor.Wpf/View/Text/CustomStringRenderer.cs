@@ -273,7 +273,7 @@ namespace TextRight.Editor.Wpf.View
 
     private int GetTotalTextLength()
     {
-      return _block.Content.GetText().Length;
+      return _block.Content.TextLength;
     }
 
     public void Invalidate()
