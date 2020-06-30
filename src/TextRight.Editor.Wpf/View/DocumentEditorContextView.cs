@@ -104,8 +104,6 @@ namespace TextRight.Editor.Wpf.View
 
       InsertText("Another paragraph with addition text sits here, right where you need it to be.");
 
-      var document = editor.Document;
-
       //var listItem = new ListItemBlock();
       //document.Root.Append(listItem);
       //var cursor = ((Core.ObjectModel.Blocks.Text.TextBlock)listItem.FirstBlock).GetTextCursor();
@@ -292,7 +290,6 @@ namespace TextRight.Editor.Wpf.View
 
       if (GetBlockFor(point) is IDocumentItem block)
       {
-
           var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
         _editor.Selection.MoveTo(caret, shouldUpdateSelection);
       }
@@ -368,7 +365,7 @@ namespace TextRight.Editor.Wpf.View
       var items = configuration
           .Where(s => !string.IsNullOrWhiteSpace(s))
           .Select(s => s.Trim())
-          .Select(s => s.Split(new string[] { " => " }, StringSplitOptions.RemoveEmptyEntries))
+          .Select(s => s.Split(new[] { " => " }, StringSplitOptions.RemoveEmptyEntries))
           .Select(p => new { StringKey = p[0], Id = p[1] })
           .Select(i => new { Key = (KeyGesture)converter.ConvertFromString(i.StringKey), Command = allCommands[i.Id] })
           .GroupBy(i => i.Key)
