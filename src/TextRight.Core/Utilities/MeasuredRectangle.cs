@@ -119,8 +119,12 @@ namespace TextRight.Core.Utilities
       // if the second point has its top between the top of the first
       // point and the first points bottom, the second point is considered
       // inline with the other
-      // TODO do we need some sort of buffer (perhaps subtracting a small number from top?
-      return second.Top < first.Bottom;
+      double distanceBetween = first.Bottom - second.Top;
+
+      // we give a buffer of 1% to account for rounding errors; there have been instances of
+      //    first.Bottom = ~3.999 and second.Top = 4.00
+      // (see Issue #5)
+      return distanceBetween > second.Height * .01;
     }
 
     /// <summary> Add the given x and y values to create a new point. </summary>

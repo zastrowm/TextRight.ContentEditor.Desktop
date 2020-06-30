@@ -209,9 +209,13 @@ namespace TextRight.Editor.Wpf.View
       var end = _cursor.End.Measure();
 
       if (MeasuredRectangle.AreInline(start, end))
+      {
         DrawInlineSelection(start, end);
+      }
       else
+      {
         DrawSpanningSelection(start, end);
+      }
 
       _selectionPolygon.Points = _selectionPointCollection;
     }
