@@ -169,14 +169,6 @@ namespace TextRight.Editor.Wpf.View
     public MeasuredRectangle Measure(TextCaret caret)
       => MeasureCharacter(caret);
 
-    /// <inheritdoc />
-    public void NotifyFragmentInserted(TextSpan previousSibling,
-                                       TextSpan newSpan,
-                                       TextSpan nextSibling)
-    {
-      RecreateText();
-    }
-
     /// <summary> Gets a caret that represents the given position in the Text. </summary>
     public TextCaret GetCursor(DocumentPoint point)
     {
@@ -231,18 +223,11 @@ namespace TextRight.Editor.Wpf.View
     public IVisualLine<TextCaret> GetLineFor(TextCaret caret)
       => RevalidateAndGetRenderer().GetLineFor(caret);
 
-    void ITextBlockContentEventListener.NotifyFragmentRemoved(TextSpan previousSibling,
-                                                              TextSpan removedSpan,
-                                                              TextSpan nextSibling)
+    /// <inheritdoc />
+    void ITextBlockContentEventListener.NotifyTextChanged(TextBlockContent changedContent)
     {
       RecreateText();
     }
-
-    void ITextBlockContentEventListener.NotifyTextChanged(TextSpan changedSpan)
-    {
-      RecreateText();
-    }
-
     public void TextBlockChanged(TextBlockContent oldContent, TextBlockContent newContent)
     {
       if (oldContent?.Target == this)

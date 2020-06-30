@@ -32,7 +32,7 @@ namespace TextRight.Core.Commands.Text
         return false;
 
       var contentToMerge = textBlock.Content.ExtractContent(caret, (TextCaret)textBlock.GetCaretAtEnd());
-      previous.Content.AppendAll(contentToMerge.Spans);
+      previous.Content.Insert(previous.Content.GetCaretAtEnd(), contentToMerge);
 
       collection.RemoveBlock(textBlock);
 
@@ -54,7 +54,7 @@ namespace TextRight.Core.Commands.Text
       if (!CanBreak(caret))
         return TextCaret.Invalid;
 
-      var targetBlock = caret.Span.Parent;
+      var targetBlock = caret.Block;
       var blockCollection = targetBlock.Parent;
 
       if (caret.IsAtBlockEnd)
@@ -70,7 +70,7 @@ namespace TextRight.Core.Commands.Text
         return targetBlock.Content.GetCaretAtStart();
       }
 
-      var textBlockContent = caret.Span.Owner;
+      var textBlockContent = caret.Content;
       var extractedContent = textBlockContent.ExtractContent(caret, textBlockContent.GetCaretAtEnd());
 
       var newTextBlock = (TextBlock)CreateSimilarBlock(targetBlock);

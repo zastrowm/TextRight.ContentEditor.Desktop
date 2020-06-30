@@ -20,7 +20,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       _text = text;
 
-      OnTextChanged();
+      Recalculate();
     }
 
     /// <summary> The number of characters in the TextSpan. </summary>
@@ -38,23 +38,33 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       _text = _text.Insert(position, textToInsert);
 
-      OnTextChanged();
+      Recalculate();
     }
 
     /// <summary> Reparse the string for Graphemes. </summary>
-    private void OnTextChanged()
+    private void Recalculate()
     {
       _graphemeOffsets = StringInfo.ParseCombiningCharacters(_text) ?? Array.Empty<int>();
+    }
+
+    /// <summary>
+    ///   Removes all of the text from the given buffer.
+    /// </summary>
+    public void DeleteAllText()
+    {
+      _text = "";
+      
+      Recalculate();
     }
 
     /// <summary> Removes the given number of characters. </summary>
     /// <param name="position"> The offset at which the characters should be removed. </param>
     /// <param name="numberOfCharacters"> The number of characters to remove. </param>
-    public void DeleteText(int position, int numberOfCharacters)
+    public void DeleteText(TextOffset start, TextOffset end)
     {
-      _text = _text.Remove(position, numberOfCharacters);
+      _text = _text.Remove(start.CharOffset, end.CharOffset - start.CharOffset);
 
-      OnTextChanged();
+      Recalculate();
     }
 
     /// <summary> Appends the text in this span to the given string builder. </summary>
@@ -65,17 +75,12 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <summary> Retrieves the text within the buffer. </summary>
-    /// 
     public string GetText()
-    {
-      return _text;
-    }
-
-    /// <summary> Gets the hashcode for the current buffer. </summary>
-    public int GetHashCodeImplementation()
-    {
-      return _text.GetHashCode();
-    }
+      => _text;
+    
+    /// <summary> Retrieves the text within the buffer between two offsets. </summary>
+    public string GetText(in TextOffset start, in TextOffset end)
+      => _text.Substring(start.CharOffset, end.CharOffset - start.CharOffset);
 
     /// <summary> Checks if the text within this buffer is equal to the text in the other buffer. </summary>
     public bool Equals(StringFragmentBuffer buffer)

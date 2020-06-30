@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Serialization;
@@ -15,9 +16,12 @@ namespace TextRight.Core.Tests.Serialization
     {
       var paragraph = new ParagraphBlock();
       var cursor = (TextCaret)paragraph.GetCaretAtStart();
-      cursor.InsertText("This is some of the text");
-      TextSpan span = new TextSpan("Some additional text");
-      paragraph.Content.AppendSpan(span, true);
+      var next = cursor.InsertText("This is some of the text");
+      next.InsertText("Some additional text");
+
+      next.Content.GetText()
+          .Should()
+          .BeEquivalentTo("This is some of the textSome additional text");
 
       var descriptorsLookup = new DescriptorsLookup(ParagraphBlock.Descriptor);
 

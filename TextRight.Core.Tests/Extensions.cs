@@ -26,18 +26,16 @@ namespace TextRight.Core.Tests
     ///  Allows using a collection initializer to initialize a block with text
     ///  fragments.
     /// </summary>
-    public static void Add(this TextBlock block, TextSpan span)
+    public static void Add(this TextBlock block, string text)
     {
-      block.Content.AppendSpan(span, false);
+      block.Content.Insert(block.Content.GetCaretAtStart(), text);
     }
 
     /// <summary> Set the text of the TextBlock to be equal to the given text. </summary>
     public static TextBlock WithText(this TextBlock block, string text)
     {
-      TextSpan fragment1 = block.Content.Spans.First();
-      block.Content.RemoveSpan(fragment1);
-      TextSpan span = new TextSpan(text);
-      block.Content.AppendSpan(span, true);
+      block.Content.RemoveAll();
+      block.Add(text);
       return block;
     }
 
@@ -56,12 +54,7 @@ namespace TextRight.Core.Tests
     public static string AsText(this TextBlockContent content)
     {
       var builder = new StringBuilder();
-
-      foreach (var fragment in content.Spans)
-      {
-        fragment.AppendTo(builder);
-      }
-
+      content.Buffer.AppendTo(builder);
       return builder.ToString();
     }
 

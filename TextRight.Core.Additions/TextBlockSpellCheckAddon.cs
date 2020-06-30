@@ -97,15 +97,10 @@ namespace TextRight.Core.Additions
 
       return;
     }
-
-    public void NotifyFragmentInserted(TextSpan previousSibling, TextSpan newSpan, TextSpan nextSibling)
-      => ReParse(newSpan.Parent);
-
-    public void NotifyFragmentRemoved(TextSpan previousSibling, TextSpan removedSpan, TextSpan nextSibling)
-      => ReParse(previousSibling?.Parent ?? nextSibling?.Parent);
-
-    public void NotifyTextChanged(TextSpan changedSpan)
-      => ReParse(changedSpan.Parent);
+    
+    
+    public void NotifyTextChanged(TextBlockContent changedContent)
+      => ReParse(changedContent.Owner);
 
     public MarkupInvalidationResult HandleInvalidated(Markup markup)
     {

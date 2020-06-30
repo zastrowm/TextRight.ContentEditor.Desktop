@@ -17,8 +17,8 @@ namespace TextRight.Core.Tests.Serialization
       var paragraph = new HeadingBlock();
       var caret = (TextCaret)paragraph.GetCaretAtStart();
 
-      caret.InsertText("This is some of the text");
-      paragraph.Content.AppendSpan(new TextSpan("Some additional text"));
+      caret.InsertText("This is some of the text")
+           .InsertText("Some additional text");
 
       var descriptorsLookup = new DescriptorsLookup((BlockDescriptor)HeadingBlock.Descriptor);
 
