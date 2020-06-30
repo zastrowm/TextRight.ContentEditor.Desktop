@@ -67,7 +67,7 @@ namespace TextRight.Core.Commands.Text
       public override void Do(DocumentEditorContext context)
       {
         var caret = (TextCaret)CursorHandle.GetCaret(context);
-        caret = caret.DeleteText(OriginalText.Length);
+        caret = caret.DeleteText(1);
         context.Selection.MoveTo(caret);
       }
 

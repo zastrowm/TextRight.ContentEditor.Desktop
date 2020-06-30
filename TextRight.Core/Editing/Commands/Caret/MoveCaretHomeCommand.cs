@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Cursors;
 
 namespace TextRight.Core.Commands.Caret
@@ -26,10 +27,10 @@ namespace TextRight.Core.Commands.Caret
       var textCaret = cursor.Start.As<TextCaret>();
 
       movementMode.SetModeToHome();
-      if (textCaret.Span.Owner.Target == null)
+      if (!(textCaret.Content.Target is ITextBlockContentView contentView))
         return false;
 
-      textCaret = textCaret.Span.Owner.Target.GetLineFor(textCaret).FindClosestTo(0);
+      textCaret = contentView.GetLineFor(textCaret).FindClosestTo(0);
       cursor.MoveTo(textCaret);
       return true;
     }

@@ -23,28 +23,22 @@ namespace TextRight.Core.Tests
       DidYouKnow.That(BlockAt(0).AsText()).Should().Be("ThWord");
       it.VerifyUndo();
     }
-
+    
     [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(4)]
-    [InlineData(5)]
-    [InlineData(6)]
-    [InlineData(7)]
-      // we start at 1 and go up to (including Length) because we're deleting the previous character.
-    public void DeleteNextCharacter_WorksAtAllLocationsInTheParagraph(int index)
+    [MemberData(nameof(DeleteNextCharacterCommandUndoableActionTests.DeleteCharacterTestCases),
+                MemberType = typeof(DeleteNextCharacterCommandUndoableActionTests))]
+    public void DeleteNextCharacter_WorksAtAllLocationsInTheParagraph(string text, int deleteIndex, string expected)
     {
-      string text = "TheWord";
-
       var it = DoAll(
         new Func<UndoableAction>[]
         {
           FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), text),
-          FromCommand<DeletePreviousCharacterCommand>(() => BlockAt(0).BeginCursor(index).AsTextCursor().ToHandle()),
+          () =>
+          {
+            var caretLocation = BlockAt(0).BeginCaret(deleteIndex + 1);
+            return new DeletePreviousCharacterCommand.DeletePreviousCharacterAction(caretLocation.AsTextCursor());
+          },
         });
-
-      var expected = text.Remove(index - 1, 1);
 
       DidYouKnow.That(BlockAt(0).AsText()).Should().Be(expected);
       it.VerifyUndo();

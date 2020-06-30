@@ -5,24 +5,16 @@ using System.Linq;
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> Represents a single grapheme that will be rendered. </summary>
-  public struct TextUnit
+  public readonly struct TextUnit
   {
-    // TODO make this actually grapheme based instead of character based
-
     public static TextUnit Default { get; }
       = new TextUnit();
 
-    public TextUnit(char character)
+    public TextUnit(string text)
     {
-      Character = character;
+      Text = text;
     }
 
-    public char Character { get; }
-
-    public bool IsWhitespace
-      => char.IsWhiteSpace(Character);
-
-    public string Text
-      => Character.ToString();
+    public string Text { get; }
   }
 }

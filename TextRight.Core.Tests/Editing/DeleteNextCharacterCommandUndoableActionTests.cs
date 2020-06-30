@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using TextRight.Core.Actions;
 using TextRight.Core.Commands.Text;
+using TextRight.Core.ObjectModel.Blocks.Text;
 using Xunit;
 
 namespace TextRight.Core.Tests
@@ -25,27 +26,39 @@ namespace TextRight.Core.Tests
       it.VerifyUndo();
     }
 
-    [Fact]
-    public void DeleteNextCharacter_WorksAtAllLocationsInTheParagraph()
+    public static IEnumerable<object[]> DeleteCharacterTestCases()
     {
-      string text = "TheWord";
+      string text = "TheజోWord";
+      var graphemes = GraphemeHelper.GetGraphemes(text).ToArray();
 
       // we start at 0 and go up to length (but not including) because we're deleting the next
       // character. 
-      for (int i = 0; i < text.Length; i++)
+      for (int i = 0; i < graphemes.Length; i++)
       {
-        var it = DoAll(
-          new Func<UndoableAction>[]
-          {
-            FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), text),
-            () => new DeleteNextCharacterCommand.DeleteNextCharacterAction(BlockAt(0).BeginCaret(i).AsTextCursor()),
-          });
-
-        var expected = text.Remove(i, 1);
-
-        DidYouKnow.That(BlockAt(0).AsText()).Should().Be(expected);
-        it.VerifyUndo();
+        var deleteIndex = i;
+        var expected = string.Join("", graphemes.Where((_,  index) => index != deleteIndex));
+        yield return new object[]
+                     {
+                       text,
+                       deleteIndex,
+                       expected
+                     };
       }
+    }
+
+    [Theory]
+    [MemberData(nameof(DeleteCharacterTestCases))]
+    public void DeleteNextCharacter_WorksAtAllLocationsInTheParagraph(string text, int deleteIndex, string expected)
+    {
+      var it = DoAll(
+        new Func<UndoableAction>[]
+        {
+          FromCommand<InsertTextCommand, string>(() => BlockAt(0).BeginCursor().ToHandle(), text),
+          () => new DeleteNextCharacterCommand.DeleteNextCharacterAction(BlockAt(0).BeginCaret(deleteIndex).AsTextCursor()),
+        });
+
+      DidYouKnow.That(BlockAt(0).AsText()).Should().Be(expected);
+      it.VerifyUndo();
     }
   }
 }

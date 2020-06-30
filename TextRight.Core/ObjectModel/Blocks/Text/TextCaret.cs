@@ -10,9 +10,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   /// <summary>
   ///  A position within a <see cref="TextSpan"/> where text can be inserted.
   /// </summary>
-  public struct TextCaret : ISimpleCaret<TextCaret, TextBlock>,
-                            IEquatable<TextCaret>,
-                            IBlockCaret
+  [DebuggerDisplay("Offset={Offset}, Content={Content}")]
+  public readonly struct TextCaret : ISimpleCaret<TextCaret, TextBlock>,
+                                     IEquatable<TextCaret>,
+                                     IBlockCaret
   {
     /// <summary> A cursor which represents an invalid location. </summary>
     public static readonly TextCaret Invalid
@@ -21,45 +22,39 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public static ICaretMover<TextCaret> Factory
       => TextCaretMover.Instance;
 
-    private TextCaret(TextSpan span, TextOffset offset)
+    private TextCaret(TextBlockContent content, TextOffset offset)
     {
-      Span = span;
+      Content = content;
       Offset = offset;
     }
 
+    /// <summary> The text-content object that this caret is pointing to. </summary>
+    public TextBlockContent Content { get; }
+    
+    internal StringFragmentBuffer Buffer
+      => Content.Buffer;
+    
     /// <summary>
     ///  True if the cursor represents a location in a fragment, false if there is no fragment
     ///  associated with the cursor.
     /// </summary>
     public bool IsValid
-      => Span != null;
-
-    /// <summary>
-    ///  The span that the cursor is currently pointing towards.
-    /// </summary>
-    public TextSpan Span { get; }
+      => Content != null;
 
     /// <summary> The block that this cursor is associated with. </summary>
     public TextBlock Block
-      => Span.Parent;
+      => Content.Owner;
 
     /// <summary> The offset into <see cref="Span"/> that this cursor is pointing. </summary>
     public TextOffset Offset { get; }
 
-    /// <summary>
-    ///  True if the <see cref="CharacterAfter"/> is pointing at the first character of the current
-    ///  span.
-    /// </summary>
-    public bool IsAtFragmentStart
+    /// <inheritdoc />
+    public bool IsAtBlockStart
       => Offset.GraphemeOffset == 0;
 
     /// <inheritdoc />
-    public bool IsAtBlockStart
-      => Span.Previous == null && IsAtFragmentStart;
-
-    /// <inheritdoc />
     public bool IsAtBlockEnd
-      => Span.Next == null && Offset.GraphemeOffset >= Span.GraphemeLength;
+      => Offset.GraphemeOffset >= Content.GraphemeLength;
 
     /// <summary> Get the character after the current cursor position. </summary>
     public TextUnit CharacterAfter
@@ -67,7 +62,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       get
       {
         if (!IsAtBlockEnd)
-          return Span.Buffer.GetCharacterAt(Offset);
+          return Buffer.GetCharacterAt(Offset);
 
         return TextUnit.Default;
       }
@@ -76,27 +71,18 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <inheritdoc />
     public TextCaret GetNextPosition()
     {
-      var maybeNextOffset = Span.Buffer.GetNextOffset(Offset);
+      var maybeNextOffset = Buffer.GetNextOffset(Offset);
       if (maybeNextOffset != null)
       {
         var nextOffset = maybeNextOffset.GetValueOrDefault();
-        return new TextCaret(Span, nextOffset);
-      }
-
-      var nextFragment = Span.Next;
-
-      // we're at the end of the span and as long as we can move to the next span,
-      // do so. 
-      if (nextFragment != null)
-      {
-        return new TextCaret(nextFragment, nextFragment.Buffer.GetFirstOffset());
+        return new TextCaret(Content, nextOffset);
       }
 
       // point to just after the last character (unless we're empty in which case we're already doing that)
-      if (Span.Buffer.GetLastOffset().GraphemeOffset == Offset.GraphemeOffset
-          && Span.Buffer.GraphemeLength != 0)
+      if (Buffer.GetLastOffset().GraphemeOffset == Offset.GraphemeOffset
+          &&Buffer.GraphemeLength != 0)
       {
-        return new TextCaret(Span, TextOffsetHelpers.CreateAfterTextOffset(Span.Buffer));
+        return new TextCaret(Content, TextOffsetHelpers.CreateAfterTextOffset(Buffer));
       }
 
       return Invalid;
@@ -111,14 +97,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       if (Offset.GraphemeOffset > 0)
       {
-        return new TextCaret(Span, Span.Buffer.GetPreviousOffset(Offset).GetValueOrDefault());
-      }
-
-      if (Offset.GraphemeOffset == 0 && Span.Previous != null)
-      {
-        // we're at the beginning of the current span, so go ahead and move into
-        // previous span. 
-        return new TextCaret(Span.Previous, Span.Previous.Buffer.GetLastOffset());
+        return new TextCaret(Content, Buffer.GetPreviousOffset(Offset).GetValueOrDefault());
       }
 
       Debug.Fail("How did we get here?");
@@ -127,7 +106,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     /// <inheritdoc />
     public bool Equals(TextCaret other)
-      => Equals(Span, other.Span) && Offset == other.Offset;
+      => Equals(Content, Content) && Offset == other.Offset;
 
     /// <inheritdoc />
     public override bool Equals(object obj)
@@ -143,7 +122,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     {
       unchecked
       {
-        return ((Span != null ? Span.GetHashCode() : 0) * 397) ^ Offset.GetHashCode();
+        return ((Content?.GetHashCode() ?? 0) * 397) ^ Offset.GetHashCode();
       }
     }
 
@@ -154,7 +133,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         return BlockCaret.Invalid;
 
       return new BlockCaret(TextCaretMover.Instance,
-                            Span,
+                            Content,
                             Offset.CharOffset,
                             Offset.GraphemeOffset,
                             Offset.GraphemeLength);
@@ -174,8 +153,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       // we want to measure the next character unless the previous character was
       // a space (as the text will most likely appear on the next line anyways) 
+      TextUnit tempQualifier = GetPreviousPosition().CharacterAfter;
+      // TODO account for more whitespace
       bool shouldMeasureNext = isAtBlockStart
-                               || (!isAtBlockEnd && GetPreviousPosition().CharacterAfter.Character == ' ');
+                               || (!isAtBlockEnd && tempQualifier.Text == " ");
 
       return shouldMeasureNext
         ? MeasureForward().FlattenLeft()
@@ -184,34 +165,34 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
     private MeasuredRectangle MeasureForward()
     {
-      if (IsAtBlockEnd || Span.Owner?.Target == null)
+      if (IsAtBlockEnd || Content?.Target == null)
       {
         Debug.Assert(!IsAtBlockEnd, "This usually indicates an error");
         return MeasuredRectangle.Invalid;
       }
 
-      return Span.Owner.Target.Measure(this);
+      return Content.Target.Measure(this);
     }
 
     private MeasuredRectangle MeasureBackward()
     {
-      if (IsAtBlockStart || Span.Owner?.Target == null)
+      if (IsAtBlockStart || Content?.Target == null)
         return MeasuredRectangle.Invalid;
 
-      return Span.Owner.Target.Measure(GetPreviousPosition());
+      return Content.Target.Measure(GetPreviousPosition());
     }
 
     /// <summary> Gets a cursor that is looking at the beginning of the content. </summary>
     public static TextCaret FromBeginning(TextBlockContent content)
     {
-      return new TextCaret(content.FirstSpan, content.FirstSpan.Buffer.GetFirstOffset());
+      return new TextCaret(content, content.Buffer.GetFirstOffset());
     }
 
     /// <summary> Gets a cursor that is looking at the end of the content. </summary>
     public static TextCaret FromEnd(TextBlockContent content)
     {
-      return new TextCaret(content.LastSpan,
-                           TextOffsetHelpers.CreateAfterTextOffset(content.LastSpan.Buffer));
+      return new TextCaret(content,
+                           TextOffsetHelpers.CreateAfterTextOffset(content.Buffer));
     }
 
     /// <summary>
@@ -221,20 +202,20 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     ///  <see cref="FromOffset(TextSpan,int)"/> instead.
     /// </summary>
     /// <param name="span"> The span that the cursor is currently pointing towards. </param>
-    public static TextCaret FromCharacterIndex(TextSpan span, int characterIndex)
+    public static TextCaret FromCharacterIndex(TextBlockContent content, int characterIndex)
     {
-      return FromOffset(span, span.Buffer.GetOffsetToCharacterIndex(characterIndex).GetValueOrDefault());
+      return FromOffset(content, content.Buffer.GetOffsetToCharacterIndex(characterIndex).GetValueOrDefault());
     }
 
     /// <summary> Gets a cursor that is looking at the grapheme at the given index. </summary>
-    public static TextCaret FromOffset(TextSpan span, int graphemeIndex)
+    public static TextCaret FromOffset(TextBlockContent content, int graphemeIndex)
     {
       // TODO validate
-      return FromOffset(span, span.Buffer.GetOffsetToGraphemeIndex(graphemeIndex).GetValueOrDefault());
+      return FromOffset(content, content.Buffer.GetOffsetToGraphemeIndex(graphemeIndex).GetValueOrDefault());
     }
 
     // <summary> Gets a cursor that is looking at the grapheme at the given index. </summary>
-    public static TextCaret FromOffset(TextSpan span, TextOffset offset)
+    public static TextCaret FromOffset(TextBlockContent span, TextOffset offset)
     {
       // TODO validate
       return new TextCaret(span, offset);
@@ -272,19 +253,17 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
           throw new ArgumentException("Caret does not represent the content of a TextCaret", nameof(caret));
 
         var offset = new TextOffset(caret.InstanceOffset1, caret.InstanceOffset2, caret.InstanceOffset3);
-        return new TextCaret((TextSpan)caret.InstanceDatum, offset);
+        return new TextCaret((TextBlockContent)caret.InstanceDatum, offset);
       }
     }
 
     private class SerializedData : ISerializedBlockCaret
     {
-      private readonly int _spanIndex;
       private readonly int _graphemeOffset;
       private readonly BlockPath _pathToBlock;
 
       public SerializedData(TextCaret caret)
       {
-        _spanIndex = caret.Span.Index;
         _graphemeOffset = caret.Offset.GraphemeOffset;
         _pathToBlock = caret.Block.GetBlockPath();
       }
@@ -292,8 +271,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       public BlockCaret Deserialize(DocumentEditorContext context)
       {
         var block = _pathToBlock.Get(context.Document);
-        var fragment = ((TextBlock)block).Content.GetSpanAtIndex(_spanIndex);
-        return TextCaret.FromOffset(fragment, _graphemeOffset);
+        var content = ((TextBlock)block).Content;
+        return FromOffset(content, _graphemeOffset);
       }
     }
   }

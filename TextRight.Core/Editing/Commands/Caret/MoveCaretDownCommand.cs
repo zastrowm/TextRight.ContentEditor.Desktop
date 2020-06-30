@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Cursors;
 
 namespace TextRight.Core.Commands.Caret
@@ -28,10 +29,10 @@ namespace TextRight.Core.Commands.Caret
 
       double desiredPosition = UpdateMovementMode(movementMode, textCaret);
 
-      if (textCaret.Span.Owner.Target == null)
+      if (!(textCaret.Content.Target is ITextBlockContentView contentView))
         return false;
 
-      var currentLine = textCaret.Span.Owner.Target.GetLineFor(textCaret);
+      var currentLine = contentView.GetLineFor(textCaret);
       var nextLine = currentLine.Next;
 
       if (nextLine != null)

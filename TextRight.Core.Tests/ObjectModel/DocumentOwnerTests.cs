@@ -17,7 +17,7 @@ namespace TextRight.Core.Tests.ObjectModel
       var documentOwner = new DocumentOwner();
 
       DidYouKnow.That(documentOwner.Root.FirstBlock).Should().BeAssignableTo<TextBlock>();
-      DidYouKnow.That(((TextBlock)documentOwner.Root.FirstBlock).Content.Spans.First().GetText()).Should().Be("");
+      DidYouKnow.That(((TextBlock)documentOwner.Root.FirstBlock).Content.GetText()).Should().Be("");
     }
   }
 }

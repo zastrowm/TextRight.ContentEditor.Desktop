@@ -70,7 +70,9 @@ namespace TextRight.Core.Additions
         while (!_currentlyProcessingToken.IsCancellationRequested
                && !caret.IsAtBlockEnd)
         {
-          var currentCharacter = caret.CharacterAfter.Character;
+          // TODO account for whitespace graphemes (does that exist)
+          var currentText = caret.CharacterAfter.Text ?? "\0";
+          var currentCharacter = currentText[0];
 
           if (char.IsWhiteSpace(currentCharacter)
               || char.IsSeparator(currentCharacter)
@@ -82,7 +84,7 @@ namespace TextRight.Core.Additions
           }
           else
           {
-            wordBuilder.Append(currentCharacter);
+            wordBuilder.Append(currentText);
           }
         }
 
@@ -97,15 +99,10 @@ namespace TextRight.Core.Additions
 
       return;
     }
-
-    public void NotifyFragmentInserted(TextSpan previousSibling, TextSpan newSpan, TextSpan nextSibling)
-      => ReParse(newSpan.Parent);
-
-    public void NotifyFragmentRemoved(TextSpan previousSibling, TextSpan removedSpan, TextSpan nextSibling)
-      => ReParse(previousSibling?.Parent ?? nextSibling?.Parent);
-
-    public void NotifyTextChanged(TextSpan changedSpan)
-      => ReParse(changedSpan.Parent);
+    
+    
+    public void NotifyTextChanged(TextBlockContent changedContent)
+      => ReParse(changedContent.Owner);
 
     public MarkupInvalidationResult HandleInvalidated(Markup markup)
     {

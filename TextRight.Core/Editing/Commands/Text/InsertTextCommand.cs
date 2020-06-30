@@ -105,9 +105,6 @@ namespace TextRight.Core.Commands.Text
         if (myCopy.Block != otherCopy.Block)
           return false;
 
-        if (myCopy.Span != otherCopy.Span)
-          return false;
-
         if (myCopy.Offset.GraphemeOffset + Text.Length != otherCopy.Offset.GraphemeOffset)
           return false;
 
@@ -128,9 +125,6 @@ namespace TextRight.Core.Commands.Text
           return false;
 
         if (myCopy.Block != otherCopy.Block)
-          return false;
-
-        if (myCopy.Span != otherCopy.Span)
           return false;
 
         var insertionPointAfterInsert = myCopy.Offset.GraphemeOffset + Text.Length;

@@ -38,14 +38,6 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     }
 
     [Fact]
-    public void ByDefault_HasSingleSpan()
-    {
-      var block = new ParagraphBlock();
-
-      DidYouKnow.That(block.Content.Spans.Count()).Should().Be(1);
-    }
-
-    [Fact]
     public void Break_AtBeginning_HasNewBlock()
     {
       Initialize("abc|123");
@@ -53,8 +45,8 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       DidYouKnow.That(nextBlock).Should().NotBeNull();
 
-      DidYouKnow.That(_block.Content.Spans.First().GetText()).Should().Be("abc");
-      DidYouKnow.That(nextBlock.Content.Spans.First().GetText()).Should().Be("123");
+      DidYouKnow.That(_block.Content.GetText()).Should().Be("abc");
+      DidYouKnow.That(nextBlock.Content.GetText()).Should().Be("123");
     }
   }
 }

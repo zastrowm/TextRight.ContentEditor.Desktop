@@ -31,9 +31,8 @@ namespace TextRight.Core.Tests.Serialization
     {
       var paragraph = new ParagraphBlock();
       var cursor = (TextCaret)paragraph.GetCaretAtStart();
-      cursor.InsertText("This is some of the text");
-      TextSpan span = new TextSpan("Some additional text");
-      paragraph.Content.AppendSpan(span, true);
+      cursor.InsertText("This is some of the text")
+            .InsertText("Some additional text");
       return paragraph;
     }
   }

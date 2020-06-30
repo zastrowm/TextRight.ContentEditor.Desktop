@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using JetBrains.Annotations;
 using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Serialization;
-using TextRight.Core.Utilities;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
@@ -14,36 +15,39 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   public sealed class TextBlockContent : DocumentItem,
                                          IDocumentItem<ITextBlockContentView>
   {
-    private readonly List<TextSpan> _spans;
+    private readonly StringFragmentBuffer _buffer;
 
     /// <summary> TextBlockContent constructor. </summary>
     public TextBlockContent()
+      : this("")
     {
-      _spans = new List<TextSpan>();
-      AppendSpan(new TextSpan(""));
+    }
+    
+    /// <summary> TextBlockContent constructor. </summary>
+    internal TextBlockContent(TextBlockContent content)
+      : this(content.GetText())
+    {
+    }
+    
+    /// <summary> TextBlockContent constructor. </summary>
+    private TextBlockContent(string text)
+    {
+      _buffer = new StringFragmentBuffer(text);
     }
 
     public TextBlock Owner { get; internal set; }
-
+    
+    /// <summary> The buffer associated with this fragment.. </summary>
+    internal StringFragmentBuffer Buffer
+      => _buffer;
+    
+    /// <summary> The total number of graphemes in this fragment. </summary>
+    public int GraphemeLength
+      => _buffer.GraphemeLength;
+    
     /// <inheritdoc />
     protected override EventEmitter ParentEmitter
       => Owner;
-
-    /// <summary> The number of fragments contained in this block. </summary>
-    public int ChildCount
-      => _spans.Count;
-
-    /// <summary> The first fragment in the block. </summary>
-    public TextSpan FirstSpan
-      => _spans[0];
-
-    /// <summary> The last fragment in the block. </summary>
-    public TextSpan LastSpan
-      => _spans[_spans.Count - 1];
-
-    /// <summary> All of the fragments contained in this textblock. </summary>
-    public IEnumerable<TextSpan> Spans
-      => _spans;
 
     /// <summary> Gets a cursor that is looking at the beginning of this content. </summary>
     public TextCaret GetCaretAtStart()
@@ -59,336 +63,166 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <returns> A TextBlockValueCursor that is pointing at the given grapheme. </returns>
     public TextCaret CursorFromGraphemeIndex(int graphemeIndex)
     {
-      int numberOfGraphemes = 0;
-      var current = FirstSpan;
+      if (graphemeIndex < 0 || graphemeIndex > _buffer.GraphemeLength)
+        throw new ArgumentException($"Invalid index for cursor; index={graphemeIndex}; maximum={_buffer.GraphemeLength}", nameof(graphemeIndex));
 
-      while (graphemeIndex > numberOfGraphemes + current.GraphemeLength)
-      {
-        numberOfGraphemes += current.NumberOfChars;
-        current = current.Next ?? throw new Exception("Invalid index for cursor");
-      }
-
-      return TextCaret.FromOffset(current, graphemeIndex - numberOfGraphemes);
+      return TextCaret.FromOffset(this, graphemeIndex);
     }
 
     /// <summary> Inserts the given content into this instance. </summary>
     /// <param name="caret"> The caret which represents the point at which the content should be
     ///  inserted. </param>
-    /// <param name="content"> The content to insert. </param>
+    /// <param name="newContent"> The content to insert. </param>
     /// <param name="autoMerge"> (Optional) True to automatically merge similar fragments together. </param>
-    public TextCaret Insert(TextCaret caret, TextBlockContent content, bool autoMerge = true)
+    public TextCaret Insert(TextCaret caret, TextBlockContent newContent, bool autoMerge = true)
     {
-      if (caret.Span.Owner != this)
-        throw new ArgumentException("Caret does not refer to this Content instance", nameof(caret));
+      if (newContent == this)
+        throw new ArgumentException("Content cannot be inserted into itself", nameof(newContent));
 
-      if (content == this)
-        throw new ArgumentException("Content cannot be inserted into itself", nameof(content));
+      return Insert(caret, newContent.GetText());
+    }
+
+    /// <summary> Inserts the given content into this instance. </summary>
+    /// <param name="caret"> The caret which represents the point at which the content should be
+    ///  inserted. </param>
+    /// <param name="text"> The text that should be inserted into the text fragment </param>
+    public TextCaret Insert(TextCaret caret, string text)
+    {
+      if (caret.Content != this)
+        throw new ArgumentException("Caret does not refer to this Content instance", nameof(caret));
+      if (text == null)
+          throw new ArgumentNullException(nameof(text));
 
       // easy, it's empty
-      if (content.ChildCount == 1 && content.FirstSpan.NumberOfChars == 0)
+      if (text == "")
         return caret;
 
-      // fast-mode, we have no existing content so just add the content in `content`. 
-      if (ChildCount == 1 && FirstSpan.NumberOfChars == 0)
-      {
-        ReplaceContent(content);
-        return GetCaretAtEnd();
-      }
-      else
-      {
-        return InsertContentInline(caret, content, autoMerge);
-      }
+      var originalNumGraphemes = _buffer.GraphemeLength;      
+      _buffer.InsertText(caret.Offset.CharOffset, text);
+      var nowNumGraphemes = _buffer.GraphemeLength;
+
+      NotifyChanged();
+      
+      return TextCaret.FromOffset(this, caret.Offset.GraphemeOffset + nowNumGraphemes - originalNumGraphemes);
     }
 
-    /// <summary>
-    ///  Inserts the content into the current instance, assuming that the current instance is not
-    ///  empty and that the content to be inserted is not empty.
-    /// </summary>
-    private TextCaret InsertContentInline(TextCaret caret, TextBlockContent content, bool autoMerge)
+    /// <summary> Removes all of the given text. </summary>
+    public void RemoveAll()
     {
-      TextSpan extraSpanToInsert;
-
-      int indexAtWhichFirstSpanShouldBeInserted;
-      int indexAtWhichRenumberingShouldStart;
-
-      if (caret.IsAtBlockStart)
-      {
-        indexAtWhichFirstSpanShouldBeInserted = 0;
-        indexAtWhichRenumberingShouldStart = 0;
-        extraSpanToInsert = null;
-      }
-      else if (caret.IsAtBlockEnd)
-      {
-        indexAtWhichFirstSpanShouldBeInserted = LastSpan.Index + 1;
-        indexAtWhichRenumberingShouldStart = LastSpan.Index;
-        extraSpanToInsert = null;
-      }
-      else
-      {
-        // split up the current span into two
-        var currentSpan = caret.Span;
-        indexAtWhichFirstSpanShouldBeInserted = currentSpan.Index + 1;
-        indexAtWhichRenumberingShouldStart = currentSpan.Index;
-
-        extraSpanToInsert = CloneInnerContent(currentSpan, caret.Offset.CharOffset, currentSpan.NumberOfChars);
-      }
-
-      // referenced from inner function
-      int numberOfSpansInsertedThusFar = 0;
-
-      // Inserts the given span into `insertionIndex + numberOfSpansInserted` position
-      void InsertSpan(TextSpan textSpan)
-      {
-        var desiredIndex = indexAtWhichFirstSpanShouldBeInserted + numberOfSpansInsertedThusFar;
-        _spans.Insert(desiredIndex, textSpan);
-        PrepareForOwnership(textSpan, desiredIndex);
-
-        numberOfSpansInsertedThusFar += 1;
-      }
-
-      // actually insert the content which we were asked to insert
-      foreach (var span in content._spans)
-      {
-        InsertSpan(span.Clone());
-      }
-
-      if (extraSpanToInsert != null)
-      {
-        InsertSpan(extraSpanToInsert);
-      }
-
-      UpdateChildrenNumbering(indexAtWhichRenumberingShouldStart);
-
-      // fire events for each span that was inserted
-      for (int i = indexAtWhichFirstSpanShouldBeInserted;
-           i < indexAtWhichFirstSpanShouldBeInserted + numberOfSpansInsertedThusFar;
-           i++)
-      {
-        var span = _spans[i];
-        FireEvent(new TextSpanInsertedEventArgs(span.Previous, span, span.Next));
-      }
-
-      // and then figure out what caret position to return
-      var lastSpanInserted = _spans[indexAtWhichFirstSpanShouldBeInserted + numberOfSpansInsertedThusFar - 1];
-
-      if (extraSpanToInsert != null)
-      {
-        return TextCaret.FromOffset(extraSpanToInsert, 0);
-      }
-      else if (LastSpan == lastSpanInserted)
-      {
-        return GetCaretAtEnd();
-      }
-      else
-      {
-        return TextCaret.FromOffset(lastSpanInserted.Next, 0);
-      }
+      _buffer.DeleteAllText();
+      NotifyChanged();
     }
-
-    private TextSpan CloneInnerContent(TextSpan span, int startIndex, int endIndex)
+    
+    /// <summary> Removes the given number of characters. </summary>
+    public void DeleteText(TextOffset start, TextOffset end)
     {
-      var newSpan = span.Clone();
-      newSpan.RemoveCharacters(endIndex, newSpan.NumberOfChars - endIndex);
-      newSpan.RemoveCharacters(0, startIndex);
-
-      span.RemoveCharacters(startIndex, endIndex - startIndex);
-
-      return newSpan;
+      var numberOfCharactersToRemove = end.CharOffset - start.CharOffset;
+      if (numberOfCharactersToRemove == 0)
+        return;
+    
+      _buffer.DeleteText(start, end);
+      NotifyChanged();
     }
+    
+    /// <summary> Retrieves the text within the fragment. </summary>
+    public string GetText()
+      => _buffer.GetText();
 
-    /// <summary>
-    ///  Simply remove all spans from this instance and add all of the content from
-    ///  <paramref name="content"/> and insert it into this instance.
-    /// </summary>
-    private void ReplaceContent(TextBlockContent content)
-    {
-      var removedEvent = new TextSpanRemovedEventArgs(FirstSpan.Previous, FirstSpan, FirstSpan.Next);
-      ClearFragment(removedEvent.RemoveSpan);
-
-      _spans.Clear();
-
-      foreach (var span in content.Spans)
-      {
-        var spanInserted = span.Clone();
-        PrepareForOwnership(spanInserted, _spans.Count);
-        _spans.Add(spanInserted);
-      }
-
-      UpdateChildrenNumbering();
-
-      FireEvent(removedEvent);
-
-      foreach (var span in _spans)
-      {
-        FireEvent(new TextSpanInsertedEventArgs(span.Previous, span, span.Next));
-      }
-    }
-
-    /// <summary> Appends the given span to the TextBlock. </summary>
-    /// <param name="span"> The span to add. </param>
-    /// <param name="autoMerge"> True to automatically merge similar fragments together. </param>
-    public void AppendSpan(TextSpan span, bool autoMerge = true)
-    {
-      // we always deal with clones, never with
-      span = span.Clone();
-
-      // FYI early exit
-
-      if (_spans.Count == 1 && FirstSpan.NumberOfChars == 0)
-      {
-        // if we had a single empty span, we treat that as a placeholder that didn't really mean anything other than
-        // "we have no content"
-        _spans.Clear();
-      }
-      else if (autoMerge && _spans.Count > 0)
-      {
-        var lastSpan = _spans[_spans.Count - 1];
-        if (lastSpan.IsSameStyleAs(span))
-        {
-          lastSpan.InsertText(span.GetText(), lastSpan.NumberOfChars);
-          return;
-        }
-      }
-
-      PrepareForOwnership(span, _spans.Count);
-      _spans.Add(span);
-      UpdateChildrenNumbering(Math.Max(span.Index - 1, 0));
-
-      FireEvent(new TextSpanInsertedEventArgs(span.Previous, span, span.Next));
-    }
-
-    /// <summary> Appends all fragments to the text block.  </summary>
-    /// <param name="fragments"> The fragments to add to the text block. </param>
-    public void AppendAll(IEnumerable<TextSpan> fragments, bool autoMerge = true)
-    {
-      // TODO optimize
-      foreach (var fragment in fragments)
-      {
-        AppendSpan(fragment, autoMerge);
-        autoMerge = false;
-      }
-    }
-
-    /// <summary> Removes the given span from the text block. </summary>
-    /// <param name="span"> The span to remove. </param>
-    public void RemoveSpan(TextSpan span)
-    {
-      var originalIndex = span.Index;
-      var removedArgs = new TextSpanRemovedEventArgs(span.Previous, span, span.Next);
-
-      _spans.RemoveAt(span.Index);
-      ClearFragment(span);
-
-      // renumber all of the subsequent blocks
-      var startIterateIndex = originalIndex - 1;
-      if (startIterateIndex < 0)
-      {
-        startIterateIndex = 0;
-      }
-
-      UpdateChildrenNumbering(startIterateIndex);
-
-      if (_spans.Count == 0)
-      {
-        AppendSpan(new TextSpan(""));
-      }
-
-      // TODO remove child from element tree
-      FireEvent(removedArgs);
-    }
-
-    /// <summary> Remove all of the given fragments from this text block. </summary>
-    /// <param name="fragments"> The fragments to remove from the text block. </param>
-    public void RemoveAll(IEnumerable<TextSpan> fragments)
-    {
-      var frags = fragments.OrderBy(f => f.Index).ToList();
-
-      for (var i = frags.Count - 1; i >= 0; i--)
-      {
-        RemoveSpan(frags[i]);
-      }
-    }
-
-    /// <summary> Prepare a span to be inserted into this instance. </summary>
-    private void PrepareForOwnership(TextSpan span, int index)
-    {
-      span.Owner = this;
-      span.Index = index;
-    }
-
-    private static void ClearFragment(TextSpan span)
-    {
-      span.Owner = null;
-      span.Index = -1;
-    }
-
-    /// <summary> Updates the children numbering starting at the given index. </summary>
-    /// <param name="startIndex"> The start index. </param>
-    private void UpdateChildrenNumbering(int startIndex = 0)
-    {
-      // OPTIMIZE to get rid of the two ifs inside here
-      for (var i = startIndex; i < _spans.Count; i++)
-      {
-        var currentSpan = _spans[i];
-
-        currentSpan.Previous = i > 0
-          ? _spans[i - 1]
-          : null;
-
-        currentSpan.Index = i;
-
-        currentSpan.Next = i < _spans.Count - 1
-          ? _spans[i + 1]
-          : null;
-      }
-    }
-
-    /// <summary> Retrieves the span at the given index. </summary>
-    /// <param name="spanIndex"> The zero-based index of the span to retrieve. </param>
-    /// <returns> The span at the given index. </returns>
-    public TextSpan GetSpanAtIndex(int spanIndex)
-    {
-      if (spanIndex < 0 || spanIndex >= _spans.Count)
-        throw new ArgumentOutOfRangeException(nameof(spanIndex), spanIndex, $"Number of spans: {_spans.Count}");
-
-      return _spans[spanIndex];
-    }
+    /// <summary> The number of characters in this content. </summary>
+    public int TextLength
+      => _buffer.NumberOfChars;
 
     /// <summary> Extracts the textual content of this block into a separate content object. </summary>
     /// <param name="start"> The position at which extraction should start. </param>
     /// <param name="end"> The position at which the content extraction should end. </param>
     /// <returns> The extracted content. </returns>
     public TextBlockContent ExtractContent(TextCaret start, TextCaret end)
-      => new TextBlockContentExtractor(this, removeContentOnExtraction: true).Extract(start, end);
+      => ExtractOrCloneContent(start, end, shouldRemoveContent: true);
+
+    public TextBlockContent CloneContent(TextCaret start, TextCaret end)
+      => ExtractOrCloneContent(start, end, shouldRemoveContent: false);
+
+    public TextBlockContent ExtractOrCloneContent(TextCaret caretStart, TextCaret caretEnd, bool shouldRemoveContent)
+    {
+      VerifyExtractParameters(caretStart, caretEnd);
+
+      NormalizePositioning(ref caretStart, ref caretEnd);
+
+      // zero-width; this check is needed, as the normalization process might shift the end to be
+      // before the start when both are pointing at the end of a fragment (the start is normalized to
+      // point at the beginning of the next fragment instead). 
+      if (caretStart == caretEnd)
+        return new TextBlockContent();
+
+      var start = caretStart.Offset;
+      var end = caretEnd.Offset;
+
+      if (start == end)
+      {
+        return new TextBlockContent();
+      }
+      else if (caretStart.IsAtBlockStart && caretEnd.IsAtBlockEnd)
+      {
+        var newContent = new TextBlockContent(this);
+
+        if (shouldRemoveContent)
+        {
+          RemoveAll();
+        }
+
+        return newContent;
+      }
+      else
+      {
+        var clone = new TextBlockContent(_buffer.GetText(start, end));
+
+        if (shouldRemoveContent)
+        {
+          _buffer.DeleteText(start, end);
+          NotifyChanged();
+        }
+
+        return clone;
+      }
+    }
+
+    [AssertionMethod]
+    private void VerifyExtractParameters(TextCaret caretStart,
+                                         TextCaret caretEnd)
+    {
+      if (!caretStart.IsValid || caretStart.Content != this)
+        throw new ArgumentException("Start cursor is not pointing at this content", nameof(caretStart));
+      if (!caretEnd.IsValid || caretStart.Content != this)
+        throw new ArgumentException("End cursor is not pointing at this content", nameof(caretEnd));
+    }
+
+    /// <summary> Makes sure that <paramref name="caretStart"/> comes before <paramref name="caretEnd"/>. </summary>
+    private void NormalizePositioning(ref TextCaret caretStart, ref TextCaret caretEnd)
+    {
+      if (caretStart.Offset.GraphemeOffset > caretEnd.Offset.GraphemeOffset)
+      {
+        var temp = caretStart;
+        caretStart = caretEnd;
+        caretEnd = temp;
+      }
+    }
 
     // TODO
-    public TextBlockContent CloneContent(TextCaret start, TextCaret end)
-      => new TextBlockContentExtractor(this, removeContentOnExtraction: false).Extract(start, end);
 
     public TextBlockContent Clone() 
       => CloneContent(TextCaret.FromBeginning(this), TextCaret.FromEnd(this));
 
-    /// <inheritdoc />
+    /// <summary />
     public void SerializeInto(SerializeNode node)
     {
-      foreach (var span in _spans)
-      {
-        var subSpanNode = new SerializeNode("temp/fragment");
-        subSpanNode.AddData<string>("Body", span.GetText());
-        node.Children.Add(subSpanNode);
-      }
+      node.AddData("Body", _buffer.GetText());
     }
 
-    /// <inheritdoc />
+    /// <summary />
     public void Deserialize(SerializationContext context, SerializeNode node)
     {
-      // TODO should we remove the original
-      var allSpans = from childNode in node.Children
-                     select childNode.GetDataOrDefault<string>("Body")
-                     into text
-                     select new TextSpan(text);
-
-      AppendAll(allSpans);
+      var text = node.GetDataOrDefault<string>("Body");
+      Insert(GetCaretAtStart(), new TextBlockContent(text), autoMerge: false);
     }
 
     /// <inheritdoc />
@@ -399,68 +233,24 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public ITextBlockContentView Target { get; set; }
 
     /// <summary> Notifies listeners that the given fragment has changed. </summary>
-    internal void NotifyChanged(TextSpan span)
+    internal void NotifyChanged()
     {
-      FireEvent(new TextFragmentChangedEventArgs(span));
-    }
-
-    /// <summary> EventArgs for when a StyledTextFragment is inserted into a <see cref="TextBlockContent"/> </summary>
-    public class TextSpanInsertedEventArgs : EventEmitterArgs<ITextBlockContentEventListener>
-    {
-      public TextSpanInsertedEventArgs(
-        TextSpan previousSpan,
-        TextSpan insertedSpan,
-        TextSpan nextSpan)
-      {
-        PreviousSpan = previousSpan;
-        InsertedSpan = insertedSpan;
-        NextSpan = nextSpan;
-      }
-
-      public TextSpan PreviousSpan { get; }
-      public TextSpan InsertedSpan { get; }
-      public TextSpan NextSpan { get; }
-
-      /// <inheritdoc />
-      protected override void Handle(object sender, ITextBlockContentEventListener listener) 
-        => listener.NotifyFragmentInserted(PreviousSpan, InsertedSpan, NextSpan);
-    }
-
-    /// <summary> EventArgs for when a StyledTextFragment is removed from a <see cref="TextBlockContent"/> </summary>
-    public class TextSpanRemovedEventArgs : EventEmitterArgs<ITextBlockContentEventListener>
-    {
-      public TextSpanRemovedEventArgs(
-        TextSpan previousSpan,
-        TextSpan removeSpan,
-        TextSpan nextSpan)
-      {
-        PreviousSpan = previousSpan;
-        RemoveSpan = removeSpan;
-        NextSpan = nextSpan;
-      }
-
-      public TextSpan PreviousSpan { get; }
-      public TextSpan RemoveSpan { get; }
-      public TextSpan NextSpan { get; }
-
-      /// <inheritdoc />
-      protected override void Handle(object sender, ITextBlockContentEventListener listener)
-        => listener.NotifyFragmentInserted(PreviousSpan, RemoveSpan, NextSpan);
+      FireEvent(new TextBlockContentChangedEventArgs(this));
     }
 
     /// <summary> EventArgs for when the text inside of a StyledTextFragment is changed. </summary>
-    public class TextFragmentChangedEventArgs : EventEmitterArgs<ITextBlockContentEventListener>
+    public class TextBlockContentChangedEventArgs : EventEmitterArgs<ITextBlockContentEventListener>
     {
-      public TextFragmentChangedEventArgs(TextSpan changedSpan)
+      public TextBlockContentChangedEventArgs(TextBlockContent changedBlockContent)
       {
-        ChangedSpan = changedSpan;
+        ChangedBlockContent = changedBlockContent;
       }
 
-      public TextSpan ChangedSpan { get; }
+      public TextBlockContent ChangedBlockContent { get; }
 
       /// <inheritdoc />
       protected override void Handle(object sender, ITextBlockContentEventListener listener)
-        => listener.NotifyTextChanged(ChangedSpan);
+        => listener.NotifyTextChanged(ChangedBlockContent);
     }
   }
 }

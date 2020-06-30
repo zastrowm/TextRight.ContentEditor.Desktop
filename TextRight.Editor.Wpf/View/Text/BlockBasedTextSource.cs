@@ -25,25 +25,12 @@ namespace TextRight.Editor.Wpf.View
     /// <inheritdoc />
     public override TextRun GetTextRun(int desiredCharacterIndex)
     {
-      int startIndex = 0;
-      var fragment = _block.Content.FirstSpan;
-
-      while (fragment != null)
+      if (_block.Content.TextLength > desiredCharacterIndex)
       {
-        int endIndex = startIndex + fragment.NumberOfChars;
-
-        if (endIndex <= desiredCharacterIndex)
-          break;
-
         var props = CreateTextSpanRunProperties();
-
-        if (startIndex <= desiredCharacterIndex)
-          return CreateCharactersObject(desiredCharacterIndex,
-                                        fragment, startIndex, endIndex,
-                                        props);
-
-        startIndex += fragment.NumberOfChars;
-        fragment = fragment.Next;
+        return CreateCharactersObject(desiredCharacterIndex,
+                                      _block.Content,
+                                      props);
       }
 
       return new TextEndOfParagraph(1);
@@ -54,15 +41,13 @@ namespace TextRight.Editor.Wpf.View
 
     public static TextCharacters CreateCharactersObject(
       int characterStartIndex,
-      TextSpan span,
-      int startIndex, 
-      int endIndex, 
+      TextBlockContent content,
       TextSpanRunProperties properties
       )
     {
-      return new TextCharacters(span.GetText(),
-                                characterStartIndex - startIndex,
-                                endIndex - characterStartIndex,
+      return new TextCharacters(content.GetText(),
+                                characterStartIndex,
+                                content.TextLength - characterStartIndex,
                                 properties);
     }
 

@@ -14,21 +14,21 @@ namespace TextRight.Editor.Wpf.View
     public TextLineContainer(Point point,
                              TextLine line,
                              TextOffset offset,
-                             TextSpan span
+                             TextBlockContent content
       )
     {
       Line = line;
-      Span = span;
       Point = point;
       Offset = offset;
+      Content = content;
     }
 
     public TextLine Line { get; }
 
     public TextOffset Offset { get; }
 
-    public TextSpan Span { get; }
-
     public Point Point { get; }
+    
+    public TextBlockContent Content { get; }
   }
 }

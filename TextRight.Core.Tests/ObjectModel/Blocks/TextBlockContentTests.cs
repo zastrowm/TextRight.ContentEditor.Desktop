@@ -9,20 +9,12 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 {
   public class TextBlockContentTests
   {
-    public TextSpan a,
-                    b,
-                    c,
-                    d,
-                    e;
-
     public TextBlockContent Content;
 
     public TextBlockContentTests()
     {
       Content = new TextBlockContent();
-      Content.AppendSpan((a = new TextSpan("123", "a")));
-      Content.AppendSpan((b = new TextSpan("456", "b")));
-      Content.AppendSpan((c = new TextSpan("789", "c")));
+      Content.Insert(Content.GetCaretAtStart(), "123456789");
     }
 
     public static TheoryData<int, int> VerifyExtractionEverywhereData()
@@ -69,7 +61,6 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
     public void VerifyCloneContentEverywhere(int start, int end)
     {
       var originalText = Content.AsText();
-      var originalSpans = Content.Spans.ToList();
 
       var extracted = Content.CloneContent(Content.CursorFromGraphemeIndex(start),
                                            Content.CursorFromGraphemeIndex(end));
@@ -78,9 +69,6 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
 
       DidYouKnow.That(Content.AsText()).Should().Be(originalText);
       DidYouKnow.That(extracted.AsText()).Should().Be(extractedText);
-
-      DidYouKnow.That(Content.Spans).Should().ContainInOrder(originalSpans);
-      DidYouKnow.That(extracted.Spans).Should().NotContain(it => originalSpans.Any(s => ReferenceEquals(s, it)));
     }
 
     public static TheoryData<int> Generate0to9Indices()
@@ -104,8 +92,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks
       var originalText = Content.AsText();
 
       var content = new TextBlockContent();
-      content.AppendSpan(new TextSpan("ABCDEF"));
-      content.AppendSpan(new TextSpan("GHIJ"));
+      content.Insert(content.GetCaretAtStart(), "ABCDEFGHIJ");
 
       var newPosition = Content.Insert(caret, content);
 

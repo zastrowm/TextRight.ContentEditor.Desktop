@@ -9,7 +9,6 @@ using TextRight.Core;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.Utilities;
-using TextRight.Editor.Wpf.View.Text;
 
 namespace TextRight.Editor.Wpf.View
 {
@@ -178,12 +177,7 @@ namespace TextRight.Editor.Wpf.View
       var characterHit = currentLine.Line.GetCharacterHitFromDistance(point.X);
       int absoluteIndexOfCharacter = characterHit.FirstCharacterIndex;
 
-      var (fragment, numberOfCharactersBeforeFragment) =
-        TextBlockUtils.GetFragmentFromBlockCharacterIndex(absoluteIndexOfCharacter, _block);
-
-      int indexOfCharacterInFragment = absoluteIndexOfCharacter - numberOfCharactersBeforeFragment;
-
-      return TextCaret.FromCharacterIndex(fragment, indexOfCharacterInFragment);
+      return TextCaret.FromCharacterIndex(_block.Content, absoluteIndexOfCharacter);
     }
 
     private (TextLineContainer line, int numCharactersBefore) GetLineForYPosition(double y)
@@ -223,9 +217,6 @@ namespace TextRight.Editor.Wpf.View
       double maxWidth = 0;
       bool isFirst = true;
 
-      TextSpan currentSpan = _block.Content.FirstSpan;
-      int currentFragmentOffset = 0;
-
       int textStorePositionInChars = 0;
       //int textStorePositionInGraphemes = 0;
 
@@ -237,13 +228,6 @@ namespace TextRight.Editor.Wpf.View
         // OPTIMIZE we could just re-format the lines that changed, not everything
         // (if the change was text being added/removed)
 
-        // TODO when we switch length to be graphemes, this will have to change
-        while (textStorePositionInChars > currentFragmentOffset + currentSpan.NumberOfChars)
-        {
-          currentFragmentOffset += currentSpan.NumberOfChars;
-          currentSpan = currentSpan.Next;
-        }
-
         // Create a textline from the text store using the TextFormatter object.
         TextLine myTextLine = _textFormatter.FormatLine(
           _textSource,
@@ -252,7 +236,7 @@ namespace TextRight.Editor.Wpf.View
           new GenericTextParagraphProperties(isFirst),
           null);
 
-        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, caret.Offset, currentSpan));
+        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, caret.Offset, _block.Content));
 
         // Update the index position in the text store.
         textStorePositionInChars += myTextLine.Length;
@@ -279,7 +263,7 @@ namespace TextRight.Editor.Wpf.View
                                                    null);
         currentLinePosition.Y += myTextLine.Height;
 
-        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, caret.Offset, currentSpan));
+        linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, caret.Offset, _block.Content));
       }
 
       MaxWidth = maxWidth;
@@ -289,13 +273,7 @@ namespace TextRight.Editor.Wpf.View
 
     private int GetTotalTextLength()
     {
-      int textLength = 0;
-
-      foreach (var s in _block.Content.Spans)
-      {
-        textLength += s.NumberOfChars;
-      }
-      return textLength;
+      return _block.Content.TextLength;
     }
 
     public void Invalidate()
