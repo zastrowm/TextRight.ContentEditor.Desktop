@@ -58,8 +58,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
 
     /// <summary> Removes the given number of characters. </summary>
-    /// <param name="position"> The offset at which the characters should be removed. </param>
-    /// <param name="numberOfCharacters"> The number of characters to remove. </param>
+    /// <param name="start"> The location at which deletion should start. </param>
+    /// <param name="end"> The location where deletion should end, exclusive. </param>
     public void DeleteText(TextOffset start, TextOffset end)
     {
       _text = _text.Remove(start.CharOffset, end.CharOffset - start.CharOffset);
@@ -77,7 +77,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> Retrieves the text within the buffer. </summary>
     public string GetText()
       => _text;
-    
+
     /// <summary> Retrieves the text within the buffer between two offsets. </summary>
     public string GetText(in TextOffset start, in TextOffset end)
       => _text.Substring(start.CharOffset, end.CharOffset - start.CharOffset);

@@ -128,6 +128,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public string GetText()
       => _buffer.GetText();
 
+    /// <summary> The number of characters in this content. </summary>
+    public int TextLength
+      => _buffer.NumberOfChars;
+
     /// <summary> Extracts the textual content of this block into a separate content object. </summary>
     /// <param name="start"> The position at which extraction should start. </param>
     /// <param name="end"> The position at which the content extraction should end. </param>

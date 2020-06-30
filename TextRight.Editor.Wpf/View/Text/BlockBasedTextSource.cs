@@ -25,7 +25,7 @@ namespace TextRight.Editor.Wpf.View
     /// <inheritdoc />
     public override TextRun GetTextRun(int desiredCharacterIndex)
     {
-      if (_block.Content.GetText().Length > desiredCharacterIndex)
+      if (_block.Content.TextLength > desiredCharacterIndex)
       {
         var props = CreateTextSpanRunProperties();
         return CreateCharactersObject(desiredCharacterIndex,
@@ -47,7 +47,7 @@ namespace TextRight.Editor.Wpf.View
     {
       return new TextCharacters(content.GetText(),
                                 characterStartIndex,
-                                content.GetText().Length - characterStartIndex,
+                                content.TextLength - characterStartIndex,
                                 properties);
     }
 
