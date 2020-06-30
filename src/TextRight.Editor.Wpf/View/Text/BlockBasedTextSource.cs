@@ -20,7 +20,7 @@ namespace TextRight.Editor.Wpf.View
     }
 
     public int FontSize { get; set; }
-      = 24;
+      = 16;
 
     /// <inheritdoc />
     public override TextRun GetTextRun(int desiredCharacterIndex)

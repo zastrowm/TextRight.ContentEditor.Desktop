@@ -64,7 +64,11 @@ namespace TextRight.Editor.Wpf.View
                                Background = Brushes.White,
                              };
 
-      _scrollView = new ScrollViewer();
+      _scrollView = new ScrollViewer
+                    {
+                      Background = new SolidColorBrush(Color.FromRgb(244, 244, 244)),
+                      HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    };
       Children.Add(_scrollView);
 
       SetTop(_scrollView, 0);
@@ -73,8 +77,25 @@ namespace TextRight.Editor.Wpf.View
 
       // use a grid simply because it's convenient.  What we really need is a canvas (for absolute
       // positioning) that overlays the content of the scroll viewer. 
-      var layoutGrid = new Grid();
-      _scrollView.Content = layoutGrid;
+      var layoutGrid = new Grid
+                       {
+                         Margin = new Thickness(50),
+                       };
+      
+      _scrollView.Content = new Border()
+                            {
+                              BorderBrush = new SolidColorBrush(Color.FromRgb(158, 158, 158)),
+                              BorderThickness = new Thickness(1),
+                              Margin = new Thickness(20),
+                              Child = new Border()
+                                      {
+                                        Background = new SolidColorBrush(Colors.White),
+                                        Child = layoutGrid,
+                                      },
+                              Width = 800,
+                              Height = 1000,
+                              HorizontalAlignment = HorizontalAlignment.Center,
+                            };
 
       // simply add the content in
       layoutGrid.Children.Add(new StackPanel
