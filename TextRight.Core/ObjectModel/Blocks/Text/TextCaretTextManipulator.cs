@@ -5,13 +5,11 @@ using System.Linq;
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> Exposes methods for inserting and removing text using a TextCaret. </summary>
-  public static class TextCaretTextMinipulator
+  public static class TextCaretTextManipulator
   {
     /// <summary> Deletes text at the given position. </summary>
     public static TextCaret DeleteText(this TextCaret caret, int numberOfGraphemes)
     {
-      // TODO GRAPHEMES
-
       var endCaret = caret;
 
       while (numberOfGraphemes > 0)
@@ -25,7 +23,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       }
       
       // TODO special case when we're deleting the entire fragment
-      caret.Content.RemoveCharacters(caret.Offset, endCaret.Offset);
+      caret.Content.DeleteText(caret.Offset, endCaret.Offset);
 
       return TextCaret.FromOffset(caret.Content, caret.Offset.GraphemeOffset);
     }

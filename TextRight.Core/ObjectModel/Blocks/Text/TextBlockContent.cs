@@ -114,7 +114,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     }
     
     /// <summary> Removes the given number of characters. </summary>
-    public void RemoveCharacters(TextOffset start, TextOffset end)
+    public void DeleteText(TextOffset start, TextOffset end)
     {
       var numberOfCharactersToRemove = end.CharOffset - start.CharOffset;
       if (numberOfCharactersToRemove == 0)
