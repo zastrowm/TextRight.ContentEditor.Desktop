@@ -19,9 +19,6 @@
     <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Guapr.ClientHosting">
-      <HintPath>..\..\..\WpfWatcher\.bin\Debug\Guapr.App\Guapr.ClientHosting.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Xaml" />

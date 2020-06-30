@@ -13,10 +13,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TextRight.Core.Basics\TextRight.Core.Basics.csproj" />
-    <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    <ProjectReference Include="..\..\src\TextRight.Core.Basics\TextRight.Core.Basics.csproj" />
+    <ProjectReference Include="..\..\src\TextRight.Core\TextRight.Core.csproj" />
   </ItemGroup>
 </Project>
