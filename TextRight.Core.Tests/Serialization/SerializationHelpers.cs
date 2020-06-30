@@ -19,8 +19,8 @@ namespace TextRight.Core.Tests.Serialization
 
       var deserializedBlock = context.Deserialize(node);
       deserializedBlock.As<object>()
-                       .ShouldBeEquivalentTo(originalBlock,
-                                             c => c.IgnoringCyclicReferences());
+                       .Should()
+                       .BeEquivalentTo(originalBlock, c => c.IgnoringCyclicReferences());
     }
   }
 }

@@ -71,14 +71,14 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
     [Fact]
     public void MarkRange_ThrowsWhenOutOfRange()
     {
-      CreateActionFor(new Range(-1, 3)).ShouldThrow<ArgumentOutOfRangeException>();
-      CreateActionFor(new Range(3, _collectionOwner.Length + 1)).ShouldThrow<ArgumentOutOfRangeException>();
+      CreateActionFor(new Range(-1, 3)).Should().Throw<ArgumentOutOfRangeException>();
+      CreateActionFor(new Range(3, _collectionOwner.Length + 1)).Should().Throw<ArgumentOutOfRangeException>();
     }
 
     [Fact]
     public void MarkRange_DoesNotThrowForFullRange()
     {
-      CreateActionFor(new Range(0, _collectionOwner.Length)).ShouldNotThrow();
+      CreateActionFor(new Range(0, _collectionOwner.Length)).Should().NotThrow();
     }
 
     private Action CreateActionFor(Range r)
@@ -435,7 +435,7 @@ namespace TextRight.Core.Tests.ObjectModel.Blocks.Text
 
         /* Extra Check */
         var originalMarkup = _collection.First();
-        originalMarkup.GetRange().ShouldBeEquivalentTo(original);
+        originalMarkup.GetRange().Should().BeEquivalentTo(original);
         /* /Extra Check */
 
         _collection.UpdateFromEvent(modification);

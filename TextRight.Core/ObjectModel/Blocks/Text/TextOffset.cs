@@ -22,7 +22,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public bool HasContent
       => GraphemeLength > 0;
 
-    public bool Equals(TextOffset other) => CharOffset == other.CharOffset && GraphemeOffset == other.GraphemeOffset && GraphemeLength == other.GraphemeLength;
+    public bool Equals(TextOffset other) 
+      => CharOffset == other.CharOffset && GraphemeOffset == other.GraphemeOffset && GraphemeLength == other.GraphemeLength;
 
     public override bool Equals(object obj)
     {
