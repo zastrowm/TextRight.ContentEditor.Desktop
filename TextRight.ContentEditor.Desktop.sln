@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{75243A59-F2DC-49A3-8360-90AD1EB6521E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{75243A59-F2DC-49A3-8360-90AD1EB6521E}"
 	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
+		src\Directory.Build.props = src\Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextRight.Editor.Wpf", "src\TextRight.Editor.Wpf\TextRight.Editor.Wpf.csproj", "{1A4B7968-1C46-41FF-A49E-3758925B4EE2}"
@@ -16,9 +16,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextRight.Core", "src\TextR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRight.Core.Additions", "src\TextRight.Core.Additions\TextRight.Core.Additions.csproj", "{E3B06EB3-6019-4229-9891-8C59CDA2A55C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{A3B01608-414E-4248-A952-04C866F2742C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A3B01608-414E-4248-A952-04C866F2742C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextRight.Core.Tests", "tests\TextRight.Core.Tests\TextRight.Core.Tests.csproj", "{DFD9D3C0-F926-4D34-BD0A-4B182D5A09AA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".misc", ".misc", "{7C2868BA-F8C3-4483-8E55-4F386FE20DF6}"
+ProjectSection(SolutionItems) = preProject
+	.editorconfig = .editorconfig
+	readme.md = readme.md
+	.gitignore = .gitignore
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
