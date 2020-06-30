@@ -153,10 +153,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
 
       // we want to measure the next character unless the previous character was
       // a space (as the text will most likely appear on the next line anyways) 
-      TextUnit tempQualifier = GetPreviousPosition().CharacterAfter;
       // TODO account for more whitespace
       bool shouldMeasureNext = isAtBlockStart
-                               || (!isAtBlockEnd && tempQualifier.Text == " ");
+                               || (!isAtBlockEnd && GetPreviousPosition().CharacterAfter.Text == " ");
 
       return shouldMeasureNext
         ? MeasureForward().FlattenLeft()
