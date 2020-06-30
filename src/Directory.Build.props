@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+  <PropertyGroup Label="Default Targets">
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  
   <PropertyGroup Label="BasePath">
     <BaseOutputPath>$(MSBuildThisFileDirectory)..\bin\</BaseOutputPath>
     <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\bin\.out\$(MSBuildProjectName)</BaseIntermediateOutputPath>
   </PropertyGroup>
+
+  <ItemGroup Label="Common Packages">
+    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
 </Project>

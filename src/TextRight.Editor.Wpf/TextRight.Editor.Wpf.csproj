@@ -11,9 +11,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TextRight.Core.Additions\TextRight.Core.Additions.csproj" />
     <ProjectReference Include="..\TextRight.Core.Basics\TextRight.Core.Basics.csproj" />
     <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj" />
