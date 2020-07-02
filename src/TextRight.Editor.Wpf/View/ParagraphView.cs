@@ -19,7 +19,7 @@ namespace TextRight.Editor.Wpf.View
       Padding = new Thickness(10);
 
       _block = block;
-      _block.Target = this;
+      _block.Tag = this;
     }
 
     /// <inheritdoc />

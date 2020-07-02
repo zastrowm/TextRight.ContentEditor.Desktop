@@ -7,7 +7,7 @@ using TextRight.Core.Utilities;
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary> A block that holds text formatted as a paragraph. </summary>
-  public sealed class ParagraphBlock : TextBlock, IDocumentItem<IContentBlockView>
+  public sealed class ParagraphBlock : TextBlock
   {
     /// <summary> Singleton-Instance of a descriptor. </summary>
     public static readonly ParagraphBlockDescriptor Descriptor
@@ -31,12 +31,5 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         yield return new ConvertParagraphCommand();
       }
     }
-
-    /// <inheritdoc/>
-    public IContentBlockView Target { get; set; }
-
-    /// <inheritdoc/>
-    protected override IContentBlockView ContentBlockView
-      => Target;
   }
 }

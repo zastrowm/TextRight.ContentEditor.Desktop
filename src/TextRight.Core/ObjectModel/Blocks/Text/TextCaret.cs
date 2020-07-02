@@ -139,48 +139,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
                             Offset.GraphemeLength);
     }
 
-    /// <inheritdoc />
-    public MeasuredRectangle Measure()
-    {
-      bool isAtBlockStart = IsAtBlockStart;
-      bool isAtBlockEnd = IsAtBlockEnd;
-
-      if (isAtBlockStart && isAtBlockEnd)
-      {
-        // if it's empty, there is no character to measure
-        return Block.GetSelectionBounds().FlattenLeft();
-      }
-
-      // we want to measure the next character unless the previous character was
-      // a space (as the text will most likely appear on the next line anyways) 
-      // TODO account for more whitespace
-      bool shouldMeasureNext = isAtBlockStart
-                               || (!isAtBlockEnd && GetPreviousPosition().CharacterAfter.Text == " ");
-
-      return shouldMeasureNext
-        ? MeasureForward().FlattenLeft()
-        : MeasureBackward().FlattenRight();
-    }
-
-    private MeasuredRectangle MeasureForward()
-    {
-      if (IsAtBlockEnd || Content?.Target == null)
-      {
-        Debug.Assert(!IsAtBlockEnd, "This usually indicates an error");
-        return MeasuredRectangle.Invalid;
-      }
-
-      return Content.Target.Measure(this);
-    }
-
-    private MeasuredRectangle MeasureBackward()
-    {
-      if (IsAtBlockStart || Content?.Target == null)
-        return MeasuredRectangle.Invalid;
-
-      return Content.Target.Measure(GetPreviousPosition());
-    }
-
     /// <summary> Gets a cursor that is looking at the beginning of the content. </summary>
     public static TextCaret FromBeginning(TextBlockContent content)
     {

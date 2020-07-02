@@ -10,9 +10,12 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.Utilities;
+using TextRight.Editor.Text;
 
 namespace TextRight.Editor.Wpf.View
 {
@@ -179,12 +182,15 @@ namespace TextRight.Editor.Wpf.View
     public FrameworkElement SelectionElement
       => _selectionPolygon;
 
+    private MeasuredRectangle Measure(BlockCaret caret)
+      => caret.Block.GetView<IBlockView>().Measure(caret);
+
     private bool MeasureCursor()
     {
       if (!_isDirty)
         return true;
 
-      var start = _cursor.Start.Measure();
+      var start = Measure(_cursor.Start);
       if (!start.IsValid)
       {
         RemeasureUntilNotInvalid();
@@ -214,7 +220,7 @@ namespace TextRight.Editor.Wpf.View
     private IndexLayout GetCurrentLayoutIndex()
     {
       // TODO how can we do this not having so many 'as' casts?
-      var associatedView = (_cursor.Start.Block as IDocumentItem)?.DocumentItemView as ILayoutable;
+      var associatedView = (_cursor.Start.Block as IDocumentItem)?.Tag as ILayoutable;
       var layoutIndex = new IndexLayout(associatedView);
       return layoutIndex;
     }
@@ -242,7 +248,7 @@ namespace TextRight.Editor.Wpf.View
     private void UpdateSelectionPolygon(MeasuredRectangle caretPosition)
     {
       var start = caretPosition;
-      var end = _cursor.End.Measure();
+      var end = Measure(_cursor.End);
 
       if (MeasuredRectangle.AreInline(start, end))
       {
@@ -304,8 +310,8 @@ namespace TextRight.Editor.Wpf.View
     private void DrawSpanningSelection(MeasuredRectangle start, MeasuredRectangle end)
     {
       // TODO we really should go line-by-line or block-by-block as needed
-      var startBlockRect = _cursor.Start.Block.GetSelectionBounds();
-      var endBlockRect = _cursor.End.Block.GetSelectionBounds();
+      var startBlockRect = _cursor.Start.Block.GetView<IBlockView>().MeasureSelectionBounds();
+      var endBlockRect = _cursor.End.Block.GetView<IBlockView>().MeasureSelectionBounds();
 
       var maxRight = Math.Max(startBlockRect.Right, endBlockRect.Right);
       var maxLeft = Math.Max(startBlockRect.Left, endBlockRect.Left);

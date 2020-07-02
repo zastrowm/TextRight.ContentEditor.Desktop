@@ -23,7 +23,7 @@ namespace TextRight.Editor.Wpf.View
     {
       _root = root;
       _blockCollection = blockCollection;
-      _blockCollection.Target = this;
+      _blockCollection.Tag = this;
 
       // TODO make this not just for TextBlocks
       foreach (var block in _blockCollection.Children)
@@ -49,7 +49,7 @@ namespace TextRight.Editor.Wpf.View
                                    Block oldNextSibling,
                                    int indexOfBlockRemoved)
     {
-      var view = (FrameworkElement)((IDocumentItem)blockRemoved).DocumentItemView;
+      var view = (FrameworkElement)((IDocumentItem)blockRemoved).Tag;
       Children.Remove(view);
     }
 

@@ -62,7 +62,7 @@ namespace TextRight.Editor.Wpf.View
                                    Block oldNextSibling,
                                    int indexOfBlockRemoved)
     {
-      var view = (FrameworkElement)((IDocumentItem)blockRemoved).DocumentItemView;
+      var view = (FrameworkElement)((IDocumentItem)blockRemoved).Tag;
       _childContents.Children.Remove(view);
     }
 

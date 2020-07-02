@@ -36,10 +36,5 @@ namespace TextRight.Core.Cursors
 
     /// <summary> Gets an object that holds the serialized data for this caret. </summary>
     ISerializedBlockCaret Serialize();
-
-    /// <summary>
-    ///  Returns the position and size of the current caret position, according to the Block View.
-    /// </summary>
-    MeasuredRectangle Measure();
   }
 }

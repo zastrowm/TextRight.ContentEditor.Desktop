@@ -4,15 +4,16 @@ using System.Linq;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Cursors;
+using TextRight.Editor.Text;
 
 namespace TextRight.Core.Commands.Caret
 {
-  /// <summary> Moves the caret to the end of the current line. </summary>
-  public class MoveCaretEndCommand : CaretCommand
+  /// <summary> Moves the caret to the beginning of the line. </summary>
+  public class MoveCaretHomeCommand : CaretCommand
   {
     /// <inheritdoc />
     public override string Id
-      => "caret.moveEnd";
+      => "caret.moveHome";
 
     /// <inheritdoc />
     protected override bool ShouldPreserveCaretMovementMode
@@ -26,11 +27,12 @@ namespace TextRight.Core.Commands.Caret
     {
       var textCaret = cursor.Start.As<TextCaret>();
 
-      movementMode.SetModeToEnd();
-      if (!(textCaret.Content.Target is ITextBlockContentView contentView))
+      movementMode.SetModeToHome();
+      var contentView = textCaret.Block.GetViewOrNull<ITextBlockContentView>();
+      if (contentView == null)
         return false;
 
-      textCaret = contentView.GetLineFor(textCaret).FindClosestTo(double.MaxValue);
+      textCaret = contentView.GetLineFor(textCaret).FindClosestTo(0);
       cursor.MoveTo(textCaret, mode);
       return true;
     }

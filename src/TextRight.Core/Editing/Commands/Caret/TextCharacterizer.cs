@@ -6,7 +6,7 @@ using TextRight.Core.ObjectModel.Blocks.Text;
 namespace TextRight.Core.Commands.Caret
 {
   /// <summary> Characterizes text into Letter, punctuation, or letter.  Used when navigating text by words. </summary>
-  internal static class TextCharacterizer
+  public static class TextCharacterizer
   {
     /// <summary> Identifies the "type" of the character for analyzing groups of words. </summary>
     /// <param name="unit"> The TextUnit that should be categorized. </param>

@@ -5,6 +5,7 @@ using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Cursors;
+using TextRight.Editor.Text;
 
 namespace TextRight.Core.Commands.Caret
 {
@@ -29,7 +30,8 @@ namespace TextRight.Core.Commands.Caret
 
       double desiredPosition = UpdateMovementMode(movementMode, textCaret);
 
-      if (!(textCaret.Content.Target is ITextBlockContentView contentView))
+      var contentView = textCaret.Block.GetViewOrNull<ITextBlockContentView>();
+      if (contentView == null)
         return false;
 
       var currentLine = contentView.GetLineFor(textCaret);
@@ -50,10 +52,17 @@ namespace TextRight.Core.Commands.Caret
       var previousBlock = currentBlock.Parent.GetBlockTo(BlockDirection.Top, currentBlock);
       if (previousBlock != null)
       {
-        var newCursor = previousBlock.GetCaretFromBottom(movementMode);
-        cursor.MoveTo(newCursor, mode);
+        if (previousBlock.GetViewOrNull<IBlockView>() is IBlockView previousBlockView)
+        {
+          var newCursor = previousBlockView.GetCaretFromBottom(movementMode);
+          cursor.MoveTo(newCursor, mode);
 
-        return true;
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
 
       // TODO work the way up the document
@@ -65,7 +74,7 @@ namespace TextRight.Core.Commands.Caret
       switch (movementMode.CurrentMode)
       {
         case CaretMovementMode.Mode.None:
-          var position = caret.Measure().Left;
+          var position = TextCaretMeasurerHelper.Measure(caret).Left;
           movementMode.SetModeToPosition(position);
           return position;
         case CaretMovementMode.Mode.Position:

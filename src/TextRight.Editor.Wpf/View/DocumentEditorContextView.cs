@@ -44,7 +44,7 @@ namespace TextRight.Editor.Wpf.View
       _viewFactory = new ViewFactory();
       _blockSearchHitTester = new BlockSearchHitTester(this);
 
-      editor.Target = this;
+      editor.Tag = this;
       Focusable = true;
 
       TextElement.SetFontSize(this, 16);
@@ -327,7 +327,7 @@ namespace TextRight.Editor.Wpf.View
 
       if (GetBlockFor(point) is IDocumentItem block)
       {
-        var caret = ((BaseTextBlockView)block.DocumentItemView).GetCursor(point);
+        var caret = ((BaseTextBlockView)block.Tag).GetCursor(point);
         _editor.Selection.MoveTo(caret, mode);
       }
     }

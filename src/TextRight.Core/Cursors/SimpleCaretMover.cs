@@ -48,10 +48,6 @@ namespace TextRight.Core.Cursors
       => FromBlockCaret(caret).IsAtBlockStart;
 
     /// <inheritdoc />
-    public MeasuredRectangle Measure(BlockCaret blockCaret)
-      => FromBlockCaret(blockCaret).Measure();
-
-    /// <inheritdoc />
     public ISerializedBlockCaret Serialize(BlockCaret caret)
       => FromBlockCaret(caret).Serialize();
   }

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using TextRight.Core.Cursors;
 using TextRight.Core.Events;
-using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.ObjectModel.Serialization;
 
@@ -13,7 +11,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   /// <summary>
   ///  A block that contains a collection of TextSpans making up a single paragraph of text.
   /// </summary>
-  public abstract class TextBlock : ContentBlock, IDocumentItem
+  public abstract class TextBlock : ContentBlock
   {
     private TextBlockContent _content;
 
@@ -46,10 +44,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
         FireEvent(new TextSourceChangedEventArgs(oldValue, value));
       }
     }
-
-    /// <inheritdoc />
-    IDocumentItemView IDocumentItem.DocumentItemView
-      => ContentBlockView;
 
     /// <inheritdoc />
     public override BlockCaret GetCaretAtStart()
@@ -126,60 +120,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     public override void Deserialize(SerializationContext context, SerializeNode node)
     {
       Content.Deserialize(context, node);
-    }
-
-    /// <inheritdoc />
-    public override BlockCaret GetCaretFromBottom(CaretMovementMode movementMode)
-    {
-      var caret = Content.GetCaretAtEnd();
-
-      switch (movementMode.CurrentMode)
-      {
-        case CaretMovementMode.Mode.Position:
-          caret = MoveCaretTowardsPosition(caret, movementMode.Position);
-          break;
-        case CaretMovementMode.Mode.End:
-          // already done
-          break;
-        case CaretMovementMode.Mode.Home:
-          caret = MoveCaretTowardsPosition(caret, 0);
-          break;
-        default:
-          throw new ArgumentOutOfRangeException();
-      }
-
-      return caret;
-    }
-
-    /// <inheritdoc />
-    public override BlockCaret GetCaretFromTop(CaretMovementMode movementMode)
-    {
-      var caret = Content.GetCaretAtStart();
-
-      switch (movementMode.CurrentMode)
-      {
-        case CaretMovementMode.Mode.Position:
-          caret = MoveCaretTowardsPosition(caret, movementMode.Position);
-          break;
-        case CaretMovementMode.Mode.Home:
-          // already done
-          break;
-        case CaretMovementMode.Mode.End:
-          caret = MoveCaretTowardsPosition(caret, double.MaxValue);
-          break;
-        default:
-          throw new ArgumentOutOfRangeException();
-      }
-
-      return caret;
-    }
-
-    private TextCaret MoveCaretTowardsPosition(TextCaret caret, double position)
-    {
-      if (caret.Content?.Target == null)
-        return caret;
-
-      return caret.Content.Target.GetLineFor(caret).FindClosestTo(position);
     }
 
     /// <summary> Listens to events on the TextBlock. </summary>

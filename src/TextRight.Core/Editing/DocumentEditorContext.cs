@@ -20,7 +20,7 @@ namespace TextRight.Core
   }
 
   /// <summary> Represents a TextRight document that is being edited. </summary>
-  public class DocumentEditorContext : EventEmitter, IDocumentItem<IDocumentEditorView>
+  public class DocumentEditorContext : EventEmitter, IDocumentItem
   {
     public DocumentEditorContext()
       : this(new DocumentOwner())
@@ -56,13 +56,6 @@ namespace TextRight.Core
     /// <summary> Movement information about the caret. </summary>
     public CaretMovementMode CaretMovementMode { get; }
 
-    /// <summary> The View that is currently attached to the item. </summary>
-    public IDocumentEditorView Target { get; set; }
-
-    /// <inheritdoc />
-    IDocumentItemView IDocumentItem.DocumentItemView
-      => Target;
-
     /// <summary> True if the current selection should be extended. </summary>
     public bool IsSelectionExtendActive
     {
@@ -76,5 +69,8 @@ namespace TextRight.Core
     /// <inheritdoc />
     protected override EventEmitter ParentEmitter
       => null;
+
+    /// <inheritdoc />
+    public Block.ITagData Tag { get; set; }
   }
 }

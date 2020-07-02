@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Serialization;
 
 namespace TextRight.Core.ObjectModel.Blocks.Text
@@ -12,8 +11,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
   ///  Contains various <see cref="TextSpan"/> parts that is presumed to be part of a
   ///  larger block.
   /// </summary>
-  public sealed class TextBlockContent : DocumentItem,
-                                         IDocumentItem<ITextBlockContentView>
+  public sealed class TextBlockContent : DocumentItem
   {
     private readonly StringFragmentBuffer _buffer;
 
@@ -224,13 +222,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       var text = node.GetDataOrDefault<string>("Body");
       Insert(GetCaretAtStart(), new TextBlockContent(text), autoMerge: false);
     }
-
-    /// <inheritdoc />
-    IDocumentItemView IDocumentItem.DocumentItemView
-      => Target;
-
-    /// <inheritdoc />
-    public ITextBlockContentView Target { get; set; }
 
     /// <summary> Notifies listeners that the given fragment has changed. </summary>
     internal void NotifyChanged()

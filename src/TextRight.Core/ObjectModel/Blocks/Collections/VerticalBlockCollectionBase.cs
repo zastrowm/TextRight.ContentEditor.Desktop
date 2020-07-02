@@ -8,8 +8,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
   /// <summary> Base class for Vertical Block Collections. </summary>
   /// <typeparam name="TBlockView"> The type of view that observes the given collection. </typeparam>
   public abstract class VerticalBlockCollectionBase<TBlockView> : VerticalBlockCollection,
-                                                                  IDocumentItem<TBlockView>
-    where TBlockView : IDocumentItemView, IBlockCollectionView
+                                                                  IDocumentItem
+    where TBlockView : class, IDocumentItemView, IBlockCollectionView
   {
     protected VerticalBlockCollectionBase(Block firstChild)
       : base(firstChild)
@@ -17,14 +17,8 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
       
     }
 
-    /// <summary>
-    ///  The object that receives all notifications of changes from this instance.
-    /// </summary>
-    public TBlockView Target { get; set; }
-
-    /// <inheritdoc />
-    IDocumentItemView IDocumentItem.DocumentItemView
-      => Target;
+    private TBlockView Target
+      => ((Block)this).Tag as TBlockView;
 
     /// <inheritdoc />
     protected override void OnBlockInserted(Block previousBlock, Block newBlock, Block nextBlock)
@@ -39,12 +33,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
                                            int indexOfRemovedBlock)
     {
       Target?.NotifyBlockRemoved(previousBlock, removedBlock, nextBlock, indexOfRemovedBlock);
-    }
-
-    /// <inheritdoc />
-    public override MeasuredRectangle GetSelectionBounds()
-    {
-      return Target?.MeasureBounds() ?? MeasuredRectangle.Invalid;
     }
   }
 }

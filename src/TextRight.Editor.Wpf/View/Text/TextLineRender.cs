@@ -7,6 +7,7 @@ using System.Windows.Media.TextFormatting;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.Utilities;
+using TextRight.Editor.Text;
 
 namespace TextRight.Editor.Wpf.View
 {
@@ -150,7 +151,7 @@ namespace TextRight.Editor.Wpf.View
       var lineBounds = GetCachedLineBounds(container);
 
       double DistanceTo(TextCaret caretToMeasure)
-        => Math.Abs(xPosition - caretToMeasure.Measure().Left);
+        => Math.Abs(xPosition - TextCaretMeasurerHelper.Measure(caretToMeasure).Left);
 
       var caret = TextCaret.FromOffset(container.Content, container.Offset.GraphemeOffset);
 

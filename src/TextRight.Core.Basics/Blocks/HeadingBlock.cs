@@ -11,7 +11,7 @@ using TextRight.Core.Events;
 namespace TextRight.Core.Blocks
 {
   /// <summary> A block that holds text formatted as a heading. </summary>
-  public sealed class HeadingBlock : TextBlock, IDocumentItem<IContentBlockView>
+  public sealed class HeadingBlock : TextBlock
   {
     private int _headingLevel;
 
@@ -30,16 +30,9 @@ namespace TextRight.Core.Blocks
       set => SetValue(Descriptor.HeadingLevelProperty, ref _headingLevel, value);
     }
 
-    /// <inheritdoc/>
-    public IContentBlockView Target { get; set; }
-
-    /// <inheritdoc/>
-    protected override IContentBlockView ContentBlockView
-      => Target;
-
     public void MarkChanged<T>(IPropertyDescriptor<T> descriptor, T oldValue, T newValue)
     {
-      if (Target is IChangeListener listener)
+      if (Tag is IChangeListener listener)
       {
         var changeEvent = new PropertyChangedEvent<T>(this, descriptor, oldValue, newValue);
         listener.HandleEvent(changeEvent);

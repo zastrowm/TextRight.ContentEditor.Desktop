@@ -90,34 +90,11 @@ namespace TextRight.Core.ObjectModel.Blocks
     /// </summary>
     internal Block PreviousBlock { get; set; }
 
-    /// <summary> Gets the bounds of the block if the entire thing was selected. </summary>
-    /// <returns> The bounds that encompass the area consumed by the block. </returns>
-    public abstract MeasuredRectangle GetSelectionBounds();
+    public ITagData Tag { get; set; }
 
-    /// <summary>
-    ///  Retrieves a caret within the block that represents the given
-    ///  CaretMovementMode as if a cursor with the given mode was arriving from
-    ///  the top of the block.
-    ///  
-    ///  For example, for a CaretMovementMode with a Mode of
-    ///  <see cref="CaretMovementMode.Mode.Position"/>
-    ///  and a textblock, the caret should represent a caret that is
-    ///  <see cref="CaretMovementMode.Position"/> units from the left-side of the
-    ///  text on the first line in the text block.
-    /// </summary>
-    /// <seealso cref="GetCaretFromTop"/>
-    /// <param name="movementMode"> The caret movement mode. </param>
-    /// <returns> The given caret. </returns>
-    public abstract BlockCaret GetCaretFromBottom(CaretMovementMode movementMode);
-
-    /// <summary>
-    ///  Retrieves a caret within the block that represents the given
-    ///  CaretMovementMode as if a cursor with the given mode was arriving from
-    ///  the bottom of the block.
-    /// </summary>
-    /// <seealso cref="GetCaretFromTop"/>
-    /// <param name="movementMode"> The caret movement mode. </param>
-    /// <returns> The given caret. </returns>
-    public abstract BlockCaret GetCaretFromTop(CaretMovementMode movementMode);
+    public interface ITagData
+    {
+      
+    }
   }
 }
