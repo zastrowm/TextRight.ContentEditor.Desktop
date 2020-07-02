@@ -20,6 +20,9 @@ namespace TextRight.Editor.Wpf
       _theEditor = new DocumentEditor();
       Content = _theEditor;
 
+      Width = 900;
+      Title = TempFile;
+
       Loaded += delegate { LoadDocument(); };
       Closed += delegate { SaveDocument(); };
     }
