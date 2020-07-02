@@ -109,7 +109,7 @@ namespace TextRight.Editor.Wpf.View
     /// </summary>
     private bool IsSelectionVisible
     {
-      get => _selectionPolygon.Visibility == Visibility.Hidden;
+      get => _selectionPolygon.Visibility == Visibility.Visible;
       set => _selectionPolygon.Visibility = value ? Visibility.Visible : Visibility.Hidden;
     }
     
