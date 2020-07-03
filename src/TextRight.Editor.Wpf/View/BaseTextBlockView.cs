@@ -88,7 +88,8 @@ namespace TextRight.Editor.Wpf.View
         _root.MarkChanged();
       }
 
-      return new Size(_renderer.MaxWidth + width, _renderer.GetHeight() + height);
+      var size = _renderer.GetSize();
+      return new Size(size.Width + width, size.Height + height);
     }
 
     /// <summary>

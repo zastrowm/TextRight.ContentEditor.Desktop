@@ -20,9 +20,9 @@ namespace TextRight.Editor.Wpf.View
     private readonly TextBlock _block;
     private bool _isDirty = true;
     private double _restrictedWidth;
-    private double _height;
     private readonly BlockBasedTextSource _textSource;
     private readonly TextFormatter _textFormatter;
+    private Size _size;
 
     public CustomStringRenderer(IOffsetBasedItem parent, TextBlock block)
     {
@@ -36,9 +36,11 @@ namespace TextRight.Editor.Wpf.View
     }
 
     public List<TextLineContainer> CachedLines { get; }
-
-    /// <summary> The maximum width of the lines in this renderer </summary>
-    public double MaxWidth { get; private set; }
+    
+    public void Invalidate()
+    {
+      _isDirty = true;
+    }
 
     public int FontSize
     {
@@ -126,17 +128,20 @@ namespace TextRight.Editor.Wpf.View
         }
 
         CachedLines.Clear();
-        _height = GetLinesToDraw(CachedLines);
+        _size = CalculateLinesToDraw(CachedLines);
         _isDirty = false;
       }
     }
 
-    public double GetHeight()
+    /// <summary>
+    ///   Gets the size of the text to be rendered.
+    /// </summary>
+    public Size GetSize()
     {
       RecalculateIfDirty();
-      return _height;
+      return _size;
     }
-
+ 
     /// <summary> Gets the caret at the designated point. </summary>
     /// <param name="point"> The point at which the cursor should be pointing. </param>
     /// <returns> The caret at the designated point. </returns>
@@ -209,10 +214,10 @@ namespace TextRight.Editor.Wpf.View
              ?? MeasuredRectangle.Invalid;
     }
 
-    private double GetLinesToDraw(List<TextLineContainer> linesToDraw)
+    private Size CalculateLinesToDraw(List<TextLineContainer> linesToDraw)
     {
-      var textLengthInChars = GetTotalTextLength();
-      Point currentLinePosition = new Point();
+      var textLengthInChars = _block.Content.TextLength;
+      var currentLinePosition = new Point();
 
       double maxWidth = 0;
       bool isFirst = true;
@@ -266,19 +271,7 @@ namespace TextRight.Editor.Wpf.View
         linesToDraw.Add(new TextLineContainer(currentLinePosition, myTextLine, caret.Offset, _block.Content));
       }
 
-      MaxWidth = maxWidth;
-
-      return currentLinePosition.Y;
-    }
-
-    private int GetTotalTextLength()
-    {
-      return _block.Content.TextLength;
-    }
-
-    public void Invalidate()
-    {
-      _isDirty = true;
+      return new Size(maxWidth, currentLinePosition.Y);
     }
 
     private class BlankLineSource : TextSource

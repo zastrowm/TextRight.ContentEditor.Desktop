@@ -150,7 +150,7 @@ namespace TextRight.Editor.Wpf.View
 
       _isRemeasureQueued = true;
 
-      await Task.Yield();
+      await WaitForRenderComplete();
 
       _isRemeasureQueued = false;
 
@@ -159,6 +159,11 @@ namespace TextRight.Editor.Wpf.View
         InvalidateMeasure();
       }
     }
+
+    private static Action EmptyDelegate = () => { };
+    
+    private DispatcherOperation WaitForRenderComplete()
+      => Dispatcher.InvokeAsync(EmptyDelegate, DispatcherPriority.Background);
 
     protected override Size MeasureOverride(Size constraint)
     {
