@@ -28,7 +28,7 @@ namespace TextRight.Core.Commands.Caret
       var textCaret = cursor.Start.As<TextCaret>();
 
       movementMode.SetModeToHome();
-      var contentView = textCaret.Block.GetViewOrNull<ITextBlockContentView>();
+      var contentView = textCaret.Block.GetViewOrNull<ITextBlockView>();
       if (contentView == null)
         return false;
 

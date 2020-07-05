@@ -10,7 +10,7 @@ namespace TextRight.Editor.Text
   public static class TextCaretMeasurerHelper
   {
     public static MeasuredRectangle Measure(TextCaret caret)
-      => caret.Block.GetView<ITextBlockContentView>().Measure(caret);
+      => caret.Block.GetView<ITextBlockView>().Measure(caret);
 
     public static MeasuredRectangle Measure(TextCaret caret, ITextCaretMeasurer measurer)
     {

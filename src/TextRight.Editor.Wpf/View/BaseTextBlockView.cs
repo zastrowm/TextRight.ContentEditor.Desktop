@@ -17,7 +17,7 @@ namespace TextRight.Editor.Wpf.View
   /// <summary> Shared view representation for subclasses of <see cref="TextBlock"/> </summary>
   public abstract class BaseTextBlockView : BaseBlockView,
                                             IOffsetBasedItem,
-                                            ITextBlockContentView,
+                                            ITextBlockView,
                                             ITextBlockContentEventListener,
                                             TextBlock.ITextBlockListener,
                                             ITextCaretMeasurer
@@ -177,13 +177,13 @@ namespace TextRight.Editor.Wpf.View
              };
     }
 
-    IVisualLine<TextCaret> ITextBlockContentView.FirstTextLine
+    IVisualLine<TextCaret> ITextBlockView.FirstTextLine
       => FirstTextLine;
 
-    IVisualLine<TextCaret> ITextBlockContentView.LastTextLine
+    IVisualLine<TextCaret> ITextBlockView.LastTextLine
       => LastTextLine;
 
-    IVisualLine<TextCaret> ITextBlockContentView.GetLineFor(TextCaret caret)
+    IVisualLine<TextCaret> ITextBlockView.GetLineFor(TextCaret caret)
       => GetLineFor(caret);
 
     /// <summary> Gets a caret that represents the given position in the Text. </summary>

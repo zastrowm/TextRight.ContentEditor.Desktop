@@ -9,7 +9,10 @@ using TextRight.Core.Utilities;
 
 namespace TextRight.Editor.Text
 {
-  public interface ITextBlockContentView : IContentBlockView, IDocumentItemView
+  /// <summary>
+  ///   The view for a <see cref="TextBlock"/>
+  /// </summary>
+  public interface ITextBlockView : IContentBlockView, IDocumentItemView
   {
     /// <summary> The first line in the renderer. </summary>
     IVisualLine<TextCaret> FirstTextLine { get; }

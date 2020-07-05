@@ -29,7 +29,7 @@ namespace TextRight.Core.Commands.Caret
 
       double desiredPosition = UpdateMovementMode(movementMode, textCaret);
 
-      var contentView = textCaret.Block.GetViewOrNull<ITextBlockContentView>();
+      var contentView = textCaret.Block.GetViewOrNull<ITextBlockView>();
       if (contentView == null)
         return false;
 
