@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.Utilities;
 
-namespace TextRight.Core.ObjectModel.Blocks.Text.View
+namespace TextRight.Editor.Text
 {
   /// <summary>
   ///  Represents a visual line that can handle measuring a specific type of caret.

@@ -95,18 +95,10 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
       // need to return the last block too
       yield return current;
     }
-
-    /// <inheritdoc />
-    public override BlockCaret GetCaretFromBottom(CaretMovementMode movementMode) 
-      => LastBlock.GetCaretFromBottom(movementMode);
-
-    /// <inheritdoc />
-    public override BlockCaret GetCaretFromTop(CaretMovementMode movementMode) 
-      => LastBlock.GetCaretFromTop(movementMode);
   }
 
   /// <summary> Holds the view representation of the BlockCollection. </summary>
-  public interface IBlockCollectionView : IDocumentItemView
+  public interface IBlockCollectionView : IEditorData
   {
     /// <summary> Notifies a block inserted. </summary>
     void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling);

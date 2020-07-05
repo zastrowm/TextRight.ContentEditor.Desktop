@@ -68,9 +68,6 @@ namespace TextRight.Core.Cursors
     public BlockCaret MoveBackward()
       => Mover.MoveBackward(this);
 
-    public MeasuredRectangle Measure()
-      => Mover.Measure(this);
-
     public ISerializedBlockCaret Serialize()
       => Mover.Serialize(this);
 

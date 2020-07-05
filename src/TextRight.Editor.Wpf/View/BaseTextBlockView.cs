@@ -4,19 +4,22 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using TextRight.Core;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks.Text;
-using TextRight.Core.ObjectModel.Blocks.Text.View;
+using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.Utilities;
+using TextRight.Editor.Text;
 
 namespace TextRight.Editor.Wpf.View
 {
   /// <summary> Shared view representation for subclasses of <see cref="TextBlock"/> </summary>
   public abstract class BaseTextBlockView : BaseBlockView,
                                             IOffsetBasedItem,
-                                            ITextBlockContentView,
+                                            ITextBlockView,
                                             ITextBlockContentEventListener,
-                                            TextBlock.ITextBlockListener
+                                            TextBlock.ITextBlockListener,
+                                            ITextCaretMeasurer
   {
     protected internal static readonly Thickness BoxedEmptyThickness 
       = new Thickness(0);
@@ -60,9 +63,6 @@ namespace TextRight.Editor.Wpf.View
     public Point Offset
       => GetOffset();
 
-    /// <summary> The document item for the view. </summary>
-    public abstract IDocumentItem DocumentItem { get; }
-
     public int FontSize
     {
       get => _renderer.FontSize;
@@ -84,7 +84,8 @@ namespace TextRight.Editor.Wpf.View
         _root.MarkChanged();
       }
 
-      return new Size(_renderer.MaxWidth + width, _renderer.GetHeight() + height);
+      var size = _renderer.GetSize();
+      return new Size(size.Width + width, size.Height + height);
     }
 
     /// <summary>
@@ -120,15 +121,21 @@ namespace TextRight.Editor.Wpf.View
     }
 
     /// <summary>
-    ///  True if <see cref="MeasureCharacter"/> and <see cref="MeasureSelectionBounds"/> will return valid data,
+    ///  True if <see cref="MeasureCharacter"/> and <see cref="MeasureSelectionBounds()"/> will return valid data,
     ///  false otherwise.
     /// </summary>
     public bool IsValidForMeasuring
       => IsMeasureValid && _root.IsLayoutValid;
+    
+    public MeasuredRectangle Measure(BlockCaret caret)
+    {
+      var textCaret = caret.As<TextCaret>();
+      return TextCaretMeasurerHelper.Measure(textCaret, this);
+    }
 
     /// <summary> Measures the character at the given index for the given fragment. </summary>
     /// <returns> The size of the character. </returns>
-    public MeasuredRectangle MeasureCharacter(TextCaret caret)
+    public MeasuredRectangle MeasureTextPosition(TextCaret caret)
     {
       Revalidate();
 
@@ -166,8 +173,14 @@ namespace TextRight.Editor.Wpf.View
              };
     }
 
-    public MeasuredRectangle Measure(TextCaret caret)
-      => MeasureCharacter(caret);
+    IVisualLine<TextCaret> ITextBlockView.FirstTextLine
+      => FirstTextLine;
+
+    IVisualLine<TextCaret> ITextBlockView.LastTextLine
+      => LastTextLine;
+
+    IVisualLine<TextCaret> ITextBlockView.GetLineFor(TextCaret caret)
+      => GetLineFor(caret);
 
     /// <summary> Gets a caret that represents the given position in the Text. </summary>
     public TextCaret GetCursor(DocumentPoint point)
@@ -228,14 +241,61 @@ namespace TextRight.Editor.Wpf.View
     {
       RecreateText();
     }
+    
     public void TextBlockChanged(TextBlockContent oldContent, TextBlockContent newContent)
     {
-      if (oldContent?.Target == this)
+      // TODO
+    }
+
+    public BlockCaret GetCaretFromTop(CaretMovementMode movementMode)
+    {
+      var caret = _block.Content.GetCaretAtStart();
+
+      switch (movementMode.CurrentMode)
       {
-        oldContent.Target = null;
+        case CaretMovementMode.Mode.Position:
+          caret = MoveCaretTowardsPosition(caret, movementMode.Position);
+          break;
+        case CaretMovementMode.Mode.Home:
+          // already done
+          break;
+        case CaretMovementMode.Mode.End:
+          caret = MoveCaretTowardsPosition(caret, double.MaxValue);
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
       }
 
-      newContent.Target = this;
+      return caret;
     }
+    
+    public BlockCaret GetCaretFromBottom(CaretMovementMode movementMode)
+    {
+      var caret = _block.Content.GetCaretAtEnd();
+
+      switch (movementMode.CurrentMode)
+      {
+        case CaretMovementMode.Mode.Position:
+          caret = MoveCaretTowardsPosition(caret, movementMode.Position);
+          break;
+        case CaretMovementMode.Mode.End:
+          // already done
+          break;
+        case CaretMovementMode.Mode.Home:
+          caret = MoveCaretTowardsPosition(caret, 0);
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
+
+      return caret;
+    }
+
+    private TextCaret MoveCaretTowardsPosition(TextCaret caret, double position)
+    {
+      return GetLineFor(caret).FindClosestTo(position);
+    }
+
+    public IDocumentItemView DocumentItemView { get; }
   }
 }

@@ -43,10 +43,6 @@ namespace TextRight.Core.Cursors
     /// <param name="blockCaret"> The caret associated with the block. </param>
     ContentBlock GetBlock(BlockCaret blockCaret);
 
-    /// <summary> Returns a rectangle that represents the caret position at the given location. </summary>
-    /// <param name="blockCaret"> The caret position that should be measured. </param>
-    MeasuredRectangle Measure(BlockCaret blockCaret);
-
     /// <summary> Serializes the data in this caret so that it can be restored later. </summary>
     ISerializedBlockCaret Serialize(BlockCaret caret);
   }

@@ -1,18 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using TextRight.Core.Utilities;
+using TextRight.Core.ObjectModel;
+using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Editor.Text;
 
-namespace TextRight.Core.ObjectModel.Blocks.Text.View
+namespace TextRight.Editor
 {
-  /// <summary> View for a TextBlockContent. </summary>
-  public interface ITextBlockContentView : IContentBlockView, IDocumentItemView
+  /// <summary>
+  ///   The editor view for a <see cref="TextBlock"/>
+  /// </summary>
+  public interface ITextBlockView : IContentBlockView, IDocumentItemView
   {
-    /// <summary> Measures the given caret position. </summary>
-    /// <param name="caret"> The caret position to measure. </param>
-    /// <returns> A MeasuredRectangle representing the caret position. </returns>
-    MeasuredRectangle Measure(TextCaret caret);
-
     /// <summary> The first line in the renderer. </summary>
     IVisualLine<TextCaret> FirstTextLine { get; }
 

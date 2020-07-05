@@ -8,6 +8,7 @@ using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.ObjectModel.Serialization;
+using TextRight.Editor.Text;
 using TextRight.Editor.Wpf.Serialization;
 
 namespace TextRight.Editor.Wpf
@@ -32,7 +33,7 @@ namespace TextRight.Editor.Wpf
         mode.SetModeToEnd();
 
         editorContext.Document.Root.Deserialize(serializationContext, node.Children.First());
-        editorContext.Selection.Replace(editorContext.Document.Root.GetCaretFromBottom(mode));
+        editorContext.Selection.Replace(editorContext.Document.Root.GetView<IBlockView>().GetCaretFromBottom(mode));
       }
       catch (Exception)
       {

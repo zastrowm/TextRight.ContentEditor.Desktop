@@ -21,5 +21,7 @@ namespace TextRight.Editor.Wpf.View
       _layoutIndex = _layoutIndex.Next();
     }
 
+    /// <summary> The document item for the view. </summary>
+    public abstract IDocumentItem DocumentItem { get; }
   }
 }

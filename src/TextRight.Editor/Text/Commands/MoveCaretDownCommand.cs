@@ -1,19 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core;
+using TextRight.Core.Commands.Caret;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
-using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.Core.Commands.Caret
+namespace TextRight.Editor.Text.Commands
 {
-  /// <summary> Moves the caret backwards. </summary>
-  public class MoveCaretUpCommand : CaretCommand
+  /// <summary> Moves the caret down in the document. </summary>
+  public class MoveCaretDownCommand : CaretCommand
   {
     /// <inheritdoc />
     public override string Id
-      => "caret.moveUp";
+      => "caret.moveDown";
 
     /// <inheritdoc />
     protected override bool ShouldPreserveCaretMovementMode
@@ -29,16 +30,17 @@ namespace TextRight.Core.Commands.Caret
 
       double desiredPosition = UpdateMovementMode(movementMode, textCaret);
 
-      if (!(textCaret.Content.Target is ITextBlockContentView contentView))
+      var contentView = textCaret.Block.GetViewOrNull<ITextBlockView>();
+      if (contentView == null)
         return false;
 
       var currentLine = contentView.GetLineFor(textCaret);
-      var previousLine = currentLine.Previous;
+      var nextLine = currentLine.Next;
 
-      if (previousLine != null)
+      if (nextLine != null)
       {
         // TODO what if it's invalid (maybe only if the line couldn't be found?) 
-        var caret = previousLine.FindClosestTo(desiredPosition);
+        var caret = nextLine.FindClosestTo(desiredPosition);
         if (!caret.IsValid)
           return false;
 
@@ -47,16 +49,24 @@ namespace TextRight.Core.Commands.Caret
       }
 
       var currentBlock = textCaret.Block;
-      var previousBlock = currentBlock.Parent.GetBlockTo(BlockDirection.Top, currentBlock);
-      if (previousBlock != null)
+      var nextBlock = currentBlock.Parent.GetBlockTo(BlockDirection.Bottom, currentBlock);
+      if (nextBlock != null)
       {
-        var newCursor = previousBlock.GetCaretFromBottom(movementMode);
-        cursor.MoveTo(newCursor, mode);
+        if (nextBlock.GetViewOrNull<IBlockView>() is IBlockView nextBlockView)
+        {
+          var newCursor = nextBlockView.GetCaretFromTop(movementMode);
+          cursor.MoveTo(newCursor, mode);
 
-        return true;
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
 
       // TODO work the way up the document
+      // we couldn't do it
       return false;
     }
 
@@ -65,7 +75,7 @@ namespace TextRight.Core.Commands.Caret
       switch (movementMode.CurrentMode)
       {
         case CaretMovementMode.Mode.None:
-          var position = caret.Measure().Left;
+          var position = TextCaretMeasurerHelper.Measure(caret).Left;
           movementMode.SetModeToPosition(position);
           return position;
         case CaretMovementMode.Mode.Position:

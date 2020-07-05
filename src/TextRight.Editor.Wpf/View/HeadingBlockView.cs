@@ -20,7 +20,7 @@ namespace TextRight.Editor.Wpf.View
       : base(root, block)
     {
       _block = block;
-      _block.Target = this;
+      _block.Tag = this;
       Padding = new Thickness(10);
 
       SyncTextSize();

@@ -14,6 +14,7 @@
     <ProjectReference Include="..\TextRight.Core.Additions\TextRight.Core.Additions.csproj" />
     <ProjectReference Include="..\TextRight.Core.Basics\TextRight.Core.Basics.csproj" />
     <ProjectReference Include="..\TextRight.Core\TextRight.Core.csproj" />
+    <ProjectReference Include="..\TextRight.Editor\TextRight.Editor.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />

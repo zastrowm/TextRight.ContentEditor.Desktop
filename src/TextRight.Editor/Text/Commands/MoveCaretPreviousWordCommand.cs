@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core;
+using TextRight.Core.Commands.Caret;
 using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel.Blocks.Text;
 using TextRight.Core.ObjectModel.Cursors;
 
-namespace TextRight.Core.Commands.Caret
+namespace TextRight.Editor.Text.Commands
 {
   /// <summary> Move the caret to the previous word in a TextBlock. </summary>
   public class MoveCaretPreviousWordCommand : CaretCommand
