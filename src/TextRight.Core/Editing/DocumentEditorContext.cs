@@ -71,6 +71,6 @@ namespace TextRight.Core
       => null;
 
     /// <inheritdoc />
-    public Block.ITagData Tag { get; set; }
+    public IEditorData Tag { get; set; }
   }
 }

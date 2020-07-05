@@ -89,12 +89,5 @@ namespace TextRight.Core.ObjectModel.Blocks
     ///  Retrieves the block that comes before this block in the parent collection.
     /// </summary>
     internal Block PreviousBlock { get; set; }
-
-    public ITagData Tag { get; set; }
-
-    public interface ITagData
-    {
-      
-    }
   }
 }

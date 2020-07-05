@@ -44,7 +44,7 @@ namespace TextRight.Editor.Text
     BlockCaret GetCaretFromTop(CaretMovementMode movementMode);
   }
 
-  public interface IContentBlockView : IBlockView, Block.ITagData
+  public interface IContentBlockView : IBlockView, IEditorData
   {
     
   }

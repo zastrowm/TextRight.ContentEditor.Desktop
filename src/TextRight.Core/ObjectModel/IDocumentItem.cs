@@ -10,6 +10,6 @@ namespace TextRight.Core.ObjectModel
   public interface IDocumentItem
   {
     [CanBeNull]
-    Block.ITagData Tag { get; set; }
+    IEditorData Tag { get; set; }
   }
 }
