@@ -7,11 +7,18 @@ using TextRight.Core.Utilities;
 
 namespace TextRight.Editor.Text
 {
+  /// <summary>
+  ///   Helper methods for measuring <see cref="TextCaret"/> positions in a document.  Allows multiple editors
+  ///   to use the same general measuring logic.
+  /// </summary>
   public static class TextCaretMeasurerHelper
   {
     public static MeasuredRectangle Measure(TextCaret caret)
       => caret.Block.GetView<ITextBlockView>().Measure(caret);
 
+    /// <summary>
+    ///   Get the bounds of the given caret position.
+    /// </summary>
     public static MeasuredRectangle Measure(TextCaret caret, ITextCaretMeasurer measurer)
     {
       bool isAtBlockStart = caret.IsAtBlockStart;
@@ -33,7 +40,6 @@ namespace TextRight.Editor.Text
         ? MeasureForward(caret, measurer).FlattenLeft()
         : MeasureBackward(caret, measurer).FlattenRight();
     }
-    
     
     private static MeasuredRectangle MeasureForward(TextCaret caret, ITextCaretMeasurer measurer)
     {
