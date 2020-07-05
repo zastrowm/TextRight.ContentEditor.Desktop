@@ -10,12 +10,9 @@ namespace TextRight.Editor.Text
   ///   Interface that enables <see cref="TextCaretMeasurerHelper"/> to unify caret measuring for multiple
   ///   editor implementations.
   /// </summary>
-  public interface ITextCaretMeasurer
+  public interface ITextCaretMeasurer : IBlockView
   {
-    /// <summary> Gets the bounds of the block if the entire thing was selected. </summary>
-    /// <returns> The bounds that encompass the area consumed by the block. </returns>
-    MeasuredRectangle MeasureSelectionBounds();
-
+    // <summary> Measures the bounds of a specific caret position.  </summary>
     MeasuredRectangle MeasureTextPosition(TextCaret caret);
   }
 }

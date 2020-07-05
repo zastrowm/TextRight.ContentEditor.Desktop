@@ -9,12 +9,15 @@ using TextRight.Core.Utilities;
 
 namespace TextRight.Editor.Text
 {
+  /// <summary>
+  ///   A view representation for a block within the document.
+  /// </summary>
   public interface IBlockView
   {
-    /// <summary> Gets the bounds of the block if the entire thing was selected. </summary>
-    /// <returns> The bounds that encompass the area consumed by the block. </returns>
+    /// <summary> Measures the bounds of the block if the entire thing was selected. </summary>
     MeasuredRectangle MeasureSelectionBounds();
 
+    // <summary> Measures the bounds of a specific caret position. </summary>
     MeasuredRectangle Measure(BlockCaret caret);
 
     /// <summary>
