@@ -9,7 +9,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
   /// <typeparam name="TBlockView"> The type of view that observes the given collection. </typeparam>
   public abstract class VerticalBlockCollectionBase<TBlockView> : VerticalBlockCollection,
                                                                   IDocumentItem
-    where TBlockView : class, IDocumentItemView, IBlockCollectionView
+    where TBlockView : class, IBlockCollectionView
   {
     protected VerticalBlockCollectionBase(Block firstChild)
       : base(firstChild)
@@ -18,7 +18,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     }
 
     private TBlockView Target
-      => ((Block)this).Tag as TBlockView;
+      => Tag as TBlockView;
 
     /// <inheritdoc />
     protected override void OnBlockInserted(Block previousBlock, Block newBlock, Block nextBlock)

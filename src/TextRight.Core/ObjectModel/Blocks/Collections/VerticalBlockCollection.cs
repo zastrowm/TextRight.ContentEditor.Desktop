@@ -98,7 +98,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
   }
 
   /// <summary> Holds the view representation of the BlockCollection. </summary>
-  public interface IBlockCollectionView : IDocumentItemView
+  public interface IBlockCollectionView : IEditorData
   {
     /// <summary> Notifies a block inserted. </summary>
     void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling);

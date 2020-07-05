@@ -63,9 +63,6 @@ namespace TextRight.Editor.Wpf.View
     public Point Offset
       => GetOffset();
 
-    /// <summary> The document item for the view. </summary>
-    public abstract IDocumentItem DocumentItem { get; }
-
     public int FontSize
     {
       get => _renderer.FontSize;
