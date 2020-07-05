@@ -7,7 +7,6 @@ using TextRight.Core;
 using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks.Text;
-using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.Utilities;
 using TextRight.Editor.Text;

@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TextRight.Core.Cursors;
-using TextRight.Core.ObjectModel;
-using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.Utilities;
 
-namespace TextRight.Editor.Text
+namespace TextRight.Editor
 {
   /// <summary>
   ///   A view representation for a block within the document.
@@ -45,28 +43,5 @@ namespace TextRight.Editor.Text
     /// <param name="movementMode"> The caret movement mode. </param>
     /// <returns> The given caret. </returns>
     BlockCaret GetCaretFromTop(CaretMovementMode movementMode);
-  }
-
-  public interface IContentBlockView : IBlockView, IEditorData
-  {
-    
-  }
-
-  public static class Measurers
-  {
-    public static T GetView<T>(this Block block)
-      where T : class, IBlockView
-    {
-      return block.GetViewOrNull<T>()
-             ?? throw new InvalidOperationException($"block {block} does not have a view attached to it");
-    }
-    
-    
-    public static T GetViewOrNull<T>(this Block block)
-      where T : class, IBlockView
-    {
-      return block.Tag as T;
-    }
-  
   }
 }

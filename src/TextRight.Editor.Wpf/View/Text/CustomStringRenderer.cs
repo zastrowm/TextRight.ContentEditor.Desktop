@@ -7,8 +7,8 @@ using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using TextRight.Core;
 using TextRight.Core.ObjectModel.Blocks.Text;
-using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.Utilities;
+using TextRight.Editor.Text;
 
 namespace TextRight.Editor.Wpf.View
 {

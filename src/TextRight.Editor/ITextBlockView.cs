@@ -1,16 +1,14 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using TextRight.Core.ObjectModel;
-using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
-using TextRight.Core.ObjectModel.Blocks.Text.View;
-using TextRight.Core.Utilities;
+using TextRight.Editor.Text;
 
-namespace TextRight.Editor.Text
+namespace TextRight.Editor
 {
   /// <summary>
-  ///   The view for a <see cref="TextBlock"/>
+  ///   The editor view for a <see cref="TextBlock"/>
   /// </summary>
   public interface ITextBlockView : IContentBlockView, IDocumentItemView
   {

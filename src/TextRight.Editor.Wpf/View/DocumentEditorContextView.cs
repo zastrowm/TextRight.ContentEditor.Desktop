@@ -16,6 +16,7 @@ using TextRight.Core.Commands.Text;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Editor.Text.Commands;
 using Block = TextRight.Core.ObjectModel.Blocks.Block;
 using SelectionMode = TextRight.Core.ObjectModel.Cursors.SelectionMode;
 

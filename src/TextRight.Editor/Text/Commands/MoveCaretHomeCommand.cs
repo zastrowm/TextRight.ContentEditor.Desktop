@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextRight.Core;
+using TextRight.Core.Commands.Caret;
 using TextRight.Core.ObjectModel.Blocks.Text;
-using TextRight.Core.ObjectModel.Blocks.Text.View;
 using TextRight.Core.ObjectModel.Cursors;
-using TextRight.Editor.Text;
 
-namespace TextRight.Core.Commands.Caret
+namespace TextRight.Editor.Text.Commands
 {
   /// <summary> Moves the caret to the beginning of the line. </summary>
   public class MoveCaretHomeCommand : CaretCommand
