@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using TextRight.Core.ObjectModel.Serialization;
@@ -8,10 +7,9 @@ using TextRight.Core.ObjectModel.Serialization;
 namespace TextRight.Core.ObjectModel.Blocks.Text
 {
   /// <summary>
-  ///  Contains various <see cref="TextSpan"/> parts that is presumed to be part of a
-  ///  larger block.
+  ///  Contains the text parts that make up a <see cref="TextBlock"/>.
   /// </summary>
-  public sealed class TextBlockContent : DocumentItem
+  public sealed class TextBlockContent
   {
     private readonly StringFragmentBuffer _buffer;
 
@@ -42,10 +40,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> The total number of graphemes in this fragment. </summary>
     public int GraphemeLength
       => _buffer.GraphemeLength;
-    
-    /// <inheritdoc />
-    protected override EventEmitter ParentEmitter
-      => Owner;
 
     /// <summary> Gets a cursor that is looking at the beginning of this content. </summary>
     public TextCaret GetCaretAtStart()
@@ -205,8 +199,6 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       }
     }
 
-    // TODO
-
     public TextBlockContent Clone() 
       => CloneContent(TextCaret.FromBeginning(this), TextCaret.FromEnd(this));
 
@@ -226,7 +218,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
     /// <summary> Notifies listeners that the given fragment has changed. </summary>
     internal void NotifyChanged()
     {
-      FireEvent(new TextBlockContentChangedEventArgs(this));
+      Owner?.FireEvent(new TextBlockContentChangedEventArgs(this));
     }
 
     /// <summary> EventArgs for when the text inside of a StyledTextFragment is changed. </summary>
