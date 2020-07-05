@@ -12,7 +12,7 @@ namespace TextRight.Core.ObjectModel.Blocks
   ///  A block that contains content instead of blocks, and thus supports cursors through the
   ///  content.
   /// </summary>
-  public abstract class ContentBlock : Block, IDocumentItem
+  public abstract class ContentBlock : Block
   {
     public abstract BlockCaret GetCaretAtStart();
 

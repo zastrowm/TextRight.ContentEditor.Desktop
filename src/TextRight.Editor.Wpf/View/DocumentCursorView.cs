@@ -223,12 +223,7 @@ namespace TextRight.Editor.Wpf.View
     }
 
     private IndexLayout GetCurrentLayoutIndex()
-    {
-      // TODO how can we do this not having so many 'as' casts?
-      var associatedView = (_cursor.Start.Block as IDocumentItem)?.Tag as ILayoutable;
-      var layoutIndex = new IndexLayout(associatedView);
-      return layoutIndex;
-    }
+      => new IndexLayout(_cursor.Start.Block.GetView<ILayoutable>());
 
     /// <summary> Updates the rectangle for displaying the caret. </summary>
     private void UpdateCaretRectangle(MeasuredRectangle caretPosition)

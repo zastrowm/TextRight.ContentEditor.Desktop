@@ -10,7 +10,7 @@ namespace TextRight.Editor
   /// <summary>
   ///   A view representation for a block within the document.
   /// </summary>
-  public interface IBlockView
+  public interface IBlockView : IDocumentItemView
   {
     /// <summary> Measures the bounds of the block if the entire thing was selected. </summary>
     MeasuredRectangle MeasureSelectionBounds();

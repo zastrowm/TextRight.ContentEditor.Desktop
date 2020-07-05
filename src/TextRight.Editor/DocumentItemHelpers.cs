@@ -16,7 +16,7 @@ namespace TextRight.Editor
     ///   if the <see cref="IDocumentItem.Tag"/> is null or the tag is not compatible with T.
     /// </summary>
     public static T GetViewOrNull<T>(this IDocumentItem documentItem)
-      where T : class, IBlockView
+      where T : class, IDocumentItemView
     {
       return documentItem.Tag as T;
     }
@@ -26,7 +26,7 @@ namespace TextRight.Editor
     ///   if <see cref="IDocumentItem.Tag"/> is null or the tag is not compatible with T.
     /// </summary>
     public static T GetView<T>(this IDocumentItem documentItem)
-      where T : class, IBlockView
+      where T : class, IDocumentItemView
     {
       return documentItem.GetViewOrNull<T>()
              ?? throw new InvalidOperationException($"block {documentItem} does not have a view attached to it");
