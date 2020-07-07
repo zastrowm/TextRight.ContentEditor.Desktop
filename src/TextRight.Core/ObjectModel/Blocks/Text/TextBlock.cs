@@ -145,9 +145,9 @@ namespace TextRight.Core.ObjectModel.Blocks.Text
       public TextBlockContent NewContent { get; }
 
       /// <inheritdoc />
-      protected override void Handle(object sender, ITextBlockListener reciever)
+      protected override void Handle(object sender, ITextBlockListener listener)
       {
-        reciever.TextBlockChanged(OldContent, NewContent);
+        listener.TextBlockChanged(OldContent, NewContent);
       }
     }
   }

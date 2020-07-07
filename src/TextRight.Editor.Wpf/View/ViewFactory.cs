@@ -16,14 +16,15 @@ namespace TextRight.Editor.Wpf.View
 
     public ViewFactory()
     {
-      Add<ParagraphBlock>((c, b) => new ParagraphView(c, b));
-      Add<HeadingBlock>((c, b) => new HeadingBlockView(c, b));
-      Add<ListItemBlock>((c, b) => new ListItemBlockView(c, b));
+      Add<ParagraphBlock, ParagraphView>((c, b) => new ParagraphView(c, b));
+      Add<HeadingBlock, HeadingBlockView>((c, b) => new HeadingBlockView(c, b));
+      Add<ListItemBlock, ListItemBlockView>((c, b) => new ListItemBlockView(c, b));
     }
 
     /// <summary> Adds a factory function for the given block type. </summary>
-    public void Add<TBlock>(Func<DocumentEditorContextView, TBlock, FrameworkElement> creator)
+    public void Add<TBlock, TView>(Func<DocumentEditorContextView, TBlock, FrameworkElement> creator)
       where TBlock : Block
+      where TView : IBlockView
     {
       _lookup.Add(typeof(TBlock), (context, block) => creator.Invoke(context, (TBlock)block));
     }

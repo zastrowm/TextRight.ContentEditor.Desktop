@@ -48,6 +48,7 @@ namespace TextRight.Editor.Wpf.View
       _root = root;
       _block = block;
       _renderer = new CustomStringRenderer(this, block);
+      _block.Tag = this;
 
       _block.SubscribeListener(this);
 

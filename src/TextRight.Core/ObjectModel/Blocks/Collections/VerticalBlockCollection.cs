@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using TextRight.Core.Cursors;
-using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.ObjectModel.Serialization;
-using TextRight.Core.Utilities;
 
 namespace TextRight.Core.ObjectModel.Blocks.Collections
 {
@@ -14,7 +11,7 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
   public abstract class VerticalBlockCollection : BlockCollection
   {
     /// <summary> Default constructor. </summary>
-    internal VerticalBlockCollection(Block firstChild)
+    protected VerticalBlockCollection(Block firstChild)
       : base (firstChild)
     {
     }
@@ -95,19 +92,5 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
       // need to return the last block too
       yield return current;
     }
-  }
-
-  /// <summary> Holds the view representation of the BlockCollection. </summary>
-  public interface IBlockCollectionView : IEditorData
-  {
-    /// <summary> Notifies a block inserted. </summary>
-    void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling);
-
-    /// <summary> Invoked when a block has been removed from the collection. </summary>
-    void NotifyBlockRemoved(Block oldPreviousSibling, Block blockRemoved, Block oldNextSibling, int indexOfBlockRemoved);
-
-    /// <summary> Returns the area consumed by the block. </summary>
-    /// <returns> A MeasuredRectangle representing the area required to display the block. </returns>
-    MeasuredRectangle MeasureBounds();
   }
 }

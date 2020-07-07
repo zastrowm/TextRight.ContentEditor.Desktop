@@ -15,9 +15,6 @@ namespace TextRight.Editor
     /// <summary> Measures the bounds of the block if the entire thing was selected. </summary>
     MeasuredRectangle MeasureSelectionBounds();
 
-    // <summary> Measures the bounds of a specific caret position. </summary>
-    MeasuredRectangle Measure(BlockCaret caret);
-
     /// <summary>
     ///  Retrieves a caret within the block that represents the given
     ///  CaretMovementMode as if a cursor with the given mode was arriving from

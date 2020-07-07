@@ -4,8 +4,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using TextRight.Core.Blocks;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
+using TextRight.Core.ObjectModel.Blocks.Collections;
+using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.Utilities;
 
 using TextBlock = System.Windows.Controls.TextBlock;
@@ -13,7 +16,7 @@ using TextBlock = System.Windows.Controls.TextBlock;
 namespace TextRight.Editor.Wpf.View
 {
   public class ListItemBlockView : Grid,
-                                   IListItemBlockView
+                                   IBlockCollectionView
   {
     private readonly DocumentEditorContextView _root;
     private readonly ListItemBlock _listItemBlock;
@@ -39,7 +42,6 @@ namespace TextRight.Editor.Wpf.View
       ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
       ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
-      // TODO make this not just for TextBlocks
       foreach (var block in listItemBlock.Children)
       {
         var view = _root.CreateViewFor(block);
@@ -51,32 +53,30 @@ namespace TextRight.Editor.Wpf.View
     public IDocumentItem DocumentItem
       => _listItemBlock;
 
-    public void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling)
+    /// <inheritdoc />
+    public void NotifyBlockInserted(BlockInsertedEventArgs args)
     {
-      var newBlockView = _root.CreateViewFor(newBlock);
-      _childContents.Children.Insert(newBlock.Index, newBlockView);
+      var newBlock = args.NewBlock;
+      _childContents.Children.Insert(newBlock.Index, _root.CreateViewFor(newBlock));
     }
 
-    public void NotifyBlockRemoved(Block oldPreviousSibling,
-                                   Block blockRemoved,
-                                   Block oldNextSibling,
-                                   int indexOfBlockRemoved)
+    /// <inheritdoc />
+    public void NotifyBlockRemoved(BlockRemovedEventArgs args)
     {
-      var view = (FrameworkElement)((IDocumentItem)blockRemoved).Tag;
+      var view = (FrameworkElement)((IDocumentItem)args.BlockRemoved).Tag;
       _childContents.Children.Remove(view);
     }
 
-    public MeasuredRectangle MeasureBounds()
-    {
-      var offset = TransformToAncestor(_root).Transform(new Point(0, 0));
+    /// <inheritdoc />
+    public MeasuredRectangle MeasureSelectionBounds()
+      => CollectionViewHelper.MeasureSelectionBounds(_root, this);
 
-      return new MeasuredRectangle()
-             {
-               X = offset.X,
-               Y = offset.Y,
-               Width = ActualWidth,
-               Height = ActualHeight
-             };
-    }
+    /// <inheritdoc />
+    public BlockCaret GetCaretFromBottom(CaretMovementMode movementMode)
+      => CollectionViewHelper.GetCaretFromBottom(_childContents.Children, movementMode);
+
+    /// <inheritdoc />
+    public BlockCaret GetCaretFromTop(CaretMovementMode movementMode)
+      => CollectionViewHelper.GetCaretFromTop(_childContents.Children, movementMode);
   }
 }

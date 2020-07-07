@@ -188,7 +188,7 @@ namespace TextRight.Editor.Wpf.View
       => _selectionPolygon;
 
     private MeasuredRectangle Measure(BlockCaret caret)
-      => caret.Block.GetView<IBlockView>().Measure(caret);
+      => caret.Block.GetView<IContentBlockView>().Measure(caret);
 
     private bool MeasureCursor()
     {

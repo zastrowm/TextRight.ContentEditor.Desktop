@@ -7,7 +7,7 @@ using TextRight.Core.ObjectModel.Blocks.Text;
 namespace TextRight.Core.ObjectModel.Blocks.Collections
 {
   /// <summary> The collection of blocks that exist at the top of the document. </summary>
-  public class RootBlockCollection : VerticalBlockCollectionBase<IBlockCollectionView>
+  public class RootBlockCollection : VerticalBlockCollection
   {
     public static readonly RootBlockCollectionDescriptor Descriptor
       = RegisteredDescriptors.Register<RootBlockCollectionDescriptor>();

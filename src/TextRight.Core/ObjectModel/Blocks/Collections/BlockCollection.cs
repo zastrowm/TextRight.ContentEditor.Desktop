@@ -93,27 +93,19 @@ namespace TextRight.Core.ObjectModel.Blocks.Collections
     /// <param name="previousBlock"> The block before the newBlock. </param>
     /// <param name="newBlock"> The new block that was inserted. </param>
     /// <param name="nextBlock"> The block that is now after the new block. </param>
-    protected virtual void OnBlockInserted(Block previousBlock,
-                                           Block newBlock,
-                                           Block nextBlock)
-    {
-    }
+    protected void OnBlockInserted(Block previousBlock, Block newBlock, Block nextBlock)
+      => FireEvent(new BlockInsertedEventArgs(previousBlock, newBlock, nextBlock));
 
     /// <summary>
     ///  Invoked after a block has been removed from the collection.
     /// </summary>
-    /// <param name="previousBlock"> The block that used to come before the
-    ///  removed block. </param>
+    /// <param name="previousBlock"> The block that used to come before the  removed block. </param>
     /// <param name="removedBlock"> The block that was removed. </param>
     /// <param name="nextBlock"> The block that used to come after the removed
     ///  block. </param>
     /// <param name="indexOfRemovedBlock"> The old index of the removed block. </param>
-    protected virtual void OnBlockRemoved(Block previousBlock,
-                                          Block removedBlock,
-                                          Block nextBlock,
-                                          int indexOfRemovedBlock)
-    {
-    }
+    protected void OnBlockRemoved(Block previousBlock, Block removedBlock, Block nextBlock, int indexOfRemovedBlock)
+      => FireEvent(new BlockRemovedEventArgs(previousBlock, removedBlock, nextBlock, indexOfRemovedBlock));
 
     /// <summary> Get the first block in the collection. </summary>
     public Block FirstBlock

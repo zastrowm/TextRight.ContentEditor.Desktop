@@ -35,8 +35,22 @@ namespace TextRight.Core.ObjectModel
     /// <summary> Fire the given event to all listeners. </summary>
     protected bool FireEvent(IEventEmitter sender, EventEmitterArgs args)
     {
-      return FireEventSelf(sender, args)
-             || (ParentEmitter?.FireEvent(args) ?? false);
+      return FireEditorTarget(sender, args)
+             | FireEventSelf(sender, args)
+             | (ParentEmitter?.FireEvent(args) ?? false);
+    }
+
+    /// <summary> Fire the event to <see cref="IDocumentItem.Tag"/> if it is a listener. </summary>
+    private bool FireEditorTarget(IEventEmitter sender, EventEmitterArgs args)
+    {
+      if (this is IDocumentItem documentItem
+          && documentItem.Tag is IEventListener listener)
+      {
+        args.TryHandleOrGeneral(sender, listener);
+        return true;
+      }
+
+      return false;
     }
 
     /// <summary> Fire the given event to all listeners that are directly on this instance. </summary>

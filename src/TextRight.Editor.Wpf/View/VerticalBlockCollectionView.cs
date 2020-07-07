@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using TextRight.Core.Cursors;
 using TextRight.Core.ObjectModel;
 using TextRight.Core.ObjectModel.Blocks;
 using TextRight.Core.ObjectModel.Blocks.Collections;
 using TextRight.Core.ObjectModel.Blocks.Text;
+using TextRight.Core.ObjectModel.Cursors;
 using TextRight.Core.Utilities;
 
 namespace TextRight.Editor.Wpf.View
@@ -25,10 +28,9 @@ namespace TextRight.Editor.Wpf.View
       _blockCollection = blockCollection;
       _blockCollection.Tag = this;
 
-      // TODO make this not just for TextBlocks
       foreach (var block in _blockCollection.Children)
       {
-        Children.Add(new ParagraphView(_root, (ParagraphBlock)block));
+        Children.Add(_root.CreateViewFor(block));
       }
     }
 
@@ -37,34 +39,30 @@ namespace TextRight.Editor.Wpf.View
       => _blockCollection;
 
     /// <inheritdoc />
-    public void NotifyBlockInserted(Block previousSibling, Block newBlock, Block nextSibling)
+    public void NotifyBlockInserted(BlockInsertedEventArgs args)
     {
-      var newBlockView = _root.CreateViewFor(newBlock);
-      Children.Insert(newBlock.Index, newBlockView);
+      var newBlockView = _root.CreateViewFor(args.NewBlock);
+      Children.Insert(args.NewBlock.Index, newBlockView);
     }
 
     /// <inheritdoc />
-    public void NotifyBlockRemoved(Block oldPreviousSibling,
-                                   Block blockRemoved,
-                                   Block oldNextSibling,
-                                   int indexOfBlockRemoved)
+    public void NotifyBlockRemoved(BlockRemovedEventArgs args)
     {
-      var view = (FrameworkElement)((IDocumentItem)blockRemoved).Tag;
+      var view = (FrameworkElement)args.BlockRemoved.Tag;
+      Debug.Assert(Children.Contains(view));
       Children.Remove(view);
     }
 
     /// <inheritdoc />
-    public MeasuredRectangle MeasureBounds()
-    {
-      var offset = TransformToAncestor(_root).Transform(new Point(0, 0));
+    public MeasuredRectangle MeasureSelectionBounds()
+      => CollectionViewHelper.MeasureSelectionBounds(_root, this);
 
-      return new MeasuredRectangle()
-             {
-               X = offset.X,
-               Y = offset.Y,
-               Width = ActualWidth,
-               Height = ActualHeight
-             };
-    }
+    /// <inheritdoc />
+    public BlockCaret GetCaretFromBottom(CaretMovementMode movementMode)
+      => CollectionViewHelper.GetCaretFromBottom(Children, movementMode);
+
+    /// <inheritdoc />
+    public BlockCaret GetCaretFromTop(CaretMovementMode movementMode)
+      => CollectionViewHelper.GetCaretFromTop(Children, movementMode);
   }
 }

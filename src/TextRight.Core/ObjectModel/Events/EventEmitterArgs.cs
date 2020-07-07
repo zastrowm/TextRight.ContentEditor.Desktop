@@ -34,7 +34,7 @@ namespace TextRight.Core.ObjectModel
   public abstract class EventEmitterArgs<TReceiver> : EventEmitterArgs
     where TReceiver : class
   {
-    protected abstract void Handle(object sender, TReceiver reciever);
+    protected abstract void Handle(object sender, TReceiver listener);
 
     /// <inheritdoc />
     public override bool TryHandle(object sender, IEventListener listener)

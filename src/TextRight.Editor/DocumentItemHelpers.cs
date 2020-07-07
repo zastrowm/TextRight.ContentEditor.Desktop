@@ -29,7 +29,9 @@ namespace TextRight.Editor
       where T : class, IDocumentItemView
     {
       return documentItem.GetViewOrNull<T>()
-             ?? throw new InvalidOperationException($"block {documentItem} does not have a view attached to it");
+             ?? throw new InvalidOperationException(
+               $"block {documentItem} does not have a view of type {typeof(T)} attached to it" +
+               (documentItem.Tag == null ? " (it has no attached view)" : ""));
     }
   }
 }

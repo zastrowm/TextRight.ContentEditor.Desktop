@@ -10,11 +10,7 @@ using TextRight.Core.ObjectModel.Blocks.Text;
 
 namespace TextRight.Core.Blocks
 {
-  public interface IListItemBlockView : IBlockCollectionView
-  {
-  }
-
-  public class ListItemBlock : VerticalBlockCollectionBase<IListItemBlockView>
+  public class ListItemBlock : VerticalBlockCollection
   {
     public static readonly ListItemBlockDescriptor Descriptor
       = RegisteredDescriptors.Register<ListItemBlockDescriptor>();
