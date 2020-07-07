@@ -1,4 +1,6 @@
-The foundations of a text-document editor, written from the ground up using WPF primitives .
+The foundations of a text-document editor, written from the ground up using WPF primitives.
+
+![image-20200706202959017](docs/editor-basic-features-screenshot.png)
 
 ## Features
 
